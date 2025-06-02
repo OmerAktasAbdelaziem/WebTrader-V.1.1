@@ -1,0 +1,37 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # منع lang=en لغير المسموح بيهم
+    RewriteCond %{REQUEST_URI} ^/client/signup$
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} !^(LY|IQ|TR)$
+    RewriteRule ^ - [F]
+
+    # منع lang=ar لغير المسموح بيهم
+    RewriteCond %{REQUEST_URI} ^/client/signup$
+    RewriteCond %{QUERY_STRING} (^|&)lang=ar(&|$)
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} !^(LY|IQ|TR)$
+    RewriteRule ^ - [F]
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
