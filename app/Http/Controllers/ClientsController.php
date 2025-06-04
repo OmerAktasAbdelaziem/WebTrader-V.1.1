@@ -167,30 +167,54 @@ class ClientsController extends Controller
 
         $user    = Auth::guard('client')->user();
         $options = $user->options??[];
+        //var_dump($options);die;
 
         
         $finance = $this->get_financial_data($user->broker_id);
         $return  = true;
 
-        $balance = $finance['freeMargin'];
+        //$balance = $finance['freeMargin'];
+        $balance = $finance['balance'];
 
+        //echo $balance;die;
+        
         $canWithdrawalCredit = !empty($options['canWithdrawalCredit']);
         $canWithdrawalBonus  = !empty($options['canWithdrawalBonus']);
-    
-
-        if (($request->amount > $balance)) {
-            if (!$canWithdrawalCredit) {
-                if (!$canWithdrawalBonus) {
-                    $return = false;
-                }
-                if ($request->amount > ($balance + $finance['bonus'])) {
-                    $return = false;
-                }
-            }
-            if ($request->amount > ($balance + $finance['credit'])) {
+    //echo $canWithdrawalCredit.' - '.$canWithdrawalBonus;die;
+//echo ;die;
+        $temporaryFinalAmount = $balance-$finance['credit'];
+        if ($request->amount > $temporaryFinalAmount) {
+            if(!$canWithdrawalCredit && !$canWithdrawalBonus){
                 $return = false;
+            }else if(isset($canWithdrawalCredit) && $canWithdrawalCredit == 1 && isset($canWithdrawalBonus) && $canWithdrawalBonus == 1){
+                if($request->amount > ($temporaryFinalAmount+$finance['credit']+$finance['bonus'])){
+                    $return = false;
+                }
+            }else if(isset($canWithdrawalCredit) && $canWithdrawalCredit == 1 && !$canWithdrawalBonus){
+                if($request->amount > ($temporaryFinalAmount+$finance['credit'])){
+                    $return = false;
+                }
+            }else if(!$canWithdrawalCredit && isset($canWithdrawalBonus) && $canWithdrawalBonus == 1){
+                if($request->amount > ($temporaryFinalAmount+$finance['bonus'])){
+                    $return = false;
+                }
             }
+            
+       
+        
+//            if (!$canWithdrawalCredit) {
+//                if (!$canWithdrawalBonus) {
+//                    $return = false;
+//                }
+//                if ($request->amount > ($balance + $finance['bonus'])) {
+//                    $return = false;
+//                }
+//            }
+//            if ($request->amount > ($balance + $finance['credit'])) {
+//                $return = false;
+//            }
         }
+       // die('2');
         if ($return == false) {
             return redirect()->back()->with('fail', __('web.not_enough_balance'));
         }
@@ -422,6 +446,12 @@ class ClientsController extends Controller
             ->select('amount', 'type')
             ->latest()
             ->get();
+        
+        $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->select('money_trx_details.amount', 'money_trx_details.type')
+                ->get();
     
         foreach ($MoneyTrxs as $MoneyTrx) {
             if ($MoneyTrx->type == 'deposit') {
@@ -452,7 +482,7 @@ class ClientsController extends Controller
         Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl') +
         $finance['credit'];
     
-        $finance['equity'] = $finance['balance'] + $finance['currentPL'];
+        $finance['equity'] = $finance['balance'] + $finance['currentPL']+ $finance['bonus'];
     
         $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
     
