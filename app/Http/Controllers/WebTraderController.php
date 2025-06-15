@@ -100,7 +100,11 @@ class WebTraderController extends Controller
         $finance['balance']             = 0.00;
         $finance['credit']              = 0.00;
         $finance['bonus']               = 0.00;
-        $MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        //$MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->select('money_trx_details.amount','money_trx_details.type')->latest()->get();
 
         foreach ($MoneyTrxs as $MoneyTrx) {
             if ($MoneyTrx->type == 'deposit') {
@@ -129,7 +133,7 @@ class WebTraderController extends Controller
 
         
         $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + Order::where('broker_id',$broker_id)->whereNotNull('closed_at')->sum('pnl')+$finance['credit'];
-        $finance['equity']  = $finance['balance'] +  $finance['currentPL'];
+        $finance['equity']  = $finance['balance'] +  $finance['currentPL'] + $finance['bonus'];
         $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
 
         return $finance;
