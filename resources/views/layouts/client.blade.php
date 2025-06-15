@@ -215,7 +215,7 @@
             <div class="hidden lg:flex items-center space-x-4 ml-4">
                 <div class="flex items-center space-x-2">
                     <span class="text-white">{{__('web.balance')}}:</span>
-                    <span class="text-white">$ {{number_format($finance['balance'],'2','.',',')}}</span>
+                    <span class="text-white">$ {{number_format((floor($finance['balance'] * 100) / 100),'2','.',',')}}</span>
                 </div>
                 <div class="border-l h-6"></div>
                 <div class="flex items-center space-x-2">
@@ -230,7 +230,7 @@
                 <div class="border-l h-6"></div>
                 <div class="flex items-center space-x-2">
                     <span class="text-white">{{__('web.free_margin')}}:</span>
-                    <span class="text-white">$ {{number_format($finance['freeMargin'],'2','.',',')}}</span>
+                    <span class="text-white">$ {{number_format((floor($finance['freeMargin'] * 100) / 100),'2','.',',')}}</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="text-white">{{__('web.bonus')}}:</span>

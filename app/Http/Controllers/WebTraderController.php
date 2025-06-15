@@ -84,7 +84,9 @@ class WebTraderController extends Controller
 
     public function get_financial_data($broker_id)
     {
-        $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+        
+        
+        $openedOrders = Order::where('broker_id', $broker_id)->whereNull('closed_at')->get();
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
         $finance['totalWithdrawal']     = 0.00;
@@ -95,8 +97,19 @@ class WebTraderController extends Controller
         $finance['balance']             = 0.00;
         $finance['credit']              = 0.00;
         $finance['bonus']               = 0.00;
-        $MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
-
+    
+        $MoneyTrxs = MoneyTrx::where('broker_id', $broker_id)
+            ->where('status', 'accepted')
+            ->select('amount', 'type')
+            ->latest()
+            ->get();
+        
+        $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->select('money_trx_details.amount', 'money_trx_details.type')
+                ->get();
+    
         foreach ($MoneyTrxs as $MoneyTrx) {
             if ($MoneyTrx->type == 'deposit') {
                 if ($finance['last_deposit_amount'] == 0.00) {
@@ -121,13 +134,61 @@ class WebTraderController extends Controller
                 $finance['bonus'] -= $MoneyTrx->amount;
             }
         }
-
-        
-        $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + Order::where('broker_id',$broker_id)->whereNotNull('closed_at')->sum('pnl')+$finance['credit'];
-        $finance['equity']  = $finance['balance'] +  $finance['currentPL'];
-        $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
-
+    
+        $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) +
+        Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl') +
+        $finance['credit'];
+    
+        $finance['equity'] = $finance['balance'] + $finance['currentPL']+ $finance['bonus'];
+    
+        $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
+    
         return $finance;
+        
+//        $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+//        $finance = [];
+//        $finance['last_deposit_amount'] = 0.00;
+//        $finance['totalWithdrawal']     = 0.00;
+//        $finance['totalDeposit']        = 0.00;
+//        $finance['ftd_amount']          = 0.00;
+//        $finance['usedMargin']          = $openedOrders->sum('required_margin');
+//        $finance['currentPL']           = $openedOrders->sum('pnl');
+//        $finance['balance']             = 0.00;
+//        $finance['credit']              = 0.00;
+//        $finance['bonus']               = 0.00;
+//        $MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+//
+//        foreach ($MoneyTrxs as $MoneyTrx) {
+//            if ($MoneyTrx->type == 'deposit') {
+//                if ($finance['last_deposit_amount'] == 0.00) {
+//                    $finance['last_deposit_amount'] = $MoneyTrx->amount;
+//                }
+//                $finance['totalDeposit'] += $MoneyTrx->amount;
+//                $finance['ftd_amount']    = $MoneyTrx->amount;
+//            }
+//            if ($MoneyTrx->type == 'withdraw') {
+//                $finance['totalWithdrawal'] += $MoneyTrx->amount;
+//            }
+//            if ($MoneyTrx->type == 'credit in') {
+//                $finance['credit'] += $MoneyTrx->amount;
+//            }
+//            if ($MoneyTrx->type == 'credit out') {
+//                $finance['credit'] -= $MoneyTrx->amount;
+//            }
+//            if ($MoneyTrx->type == 'bonus in') {
+//                $finance['bonus'] += $MoneyTrx->amount;
+//            }
+//            if ($MoneyTrx->type == 'bonus out') {
+//                $finance['bonus'] -= $MoneyTrx->amount;
+//            }
+//        }
+//
+//        
+//        $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + Order::where('broker_id',$broker_id)->whereNotNull('closed_at')->sum('pnl')+$finance['credit'];
+//        $finance['equity']  = $finance['balance'] +  $finance['currentPL'];
+//        $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
+//
+//        return $finance;
     }
 
     public function get_assets()
