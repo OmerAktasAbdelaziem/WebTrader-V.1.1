@@ -264,7 +264,7 @@
         @else
             <span class="fw-bold text-black">{{__('web.welcome')}}, {{__('web.guest')}}</span>
         @endif
-        <span class="text-black">{{__('web.equity')}} : <span class="equity">$ {{number_format((floor($finance['equity']) * 100) / 100), '2','.',',')}}</span></span>
+        <span class="text-black">{{__('web.equity')}} : <span class="equity">$ {{number_format((floor($finance['equity'] * 100) / 100), '2','.',',')}}</span></span>
         <span class="text-black">{{__('web.credit')}} : <span>$ {{$finance['credit']}}</span></span>
         <span class="text-black">{{__('web.balance')}} : <span>$ {{number_format((floor($finance['balance'] * 100) / 100), '2','.',',')}}</span></span>
         <span class="text-black">{{__('web.bonus')}} : <span>$ {{number_format((floor($finance['bonus'] * 100) / 100), '2','.',',')}}</span></span>
