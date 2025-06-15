@@ -264,10 +264,10 @@
         @else
             <span class="fw-bold text-black">{{__('web.welcome')}}, {{__('web.guest')}}</span>
         @endif
-        <span class="text-black">{{__('web.equity')}} : <span class="equity">$ {{ number_format($finance['equity']) }}</span></span>
+        <span class="text-black">{{__('web.equity')}} : <span class="equity">$ {{ number_format($finance['equity']) }}aa</span></span>
         <span class="text-black">{{__('web.credit')}} : <span>$ {{$finance['credit']}}</span></span>
         <span class="text-black">{{__('web.balance')}} : <span>$ {{number_format($finance['balance'], '2','.',',')}}</span></span>
-        <span class="text-black">{{__('web.bonus')}} : <span>$ {{$finance['bonus']}}</span></span>
+        <span class="text-black">{{__('web.bonus')}} : <span>$ {{number_format($finance['bonus'], '2','.',',')}}</span></span>
         <div class="d-flex align-items-center">
             @isset(auth()->guard('client')->user()->options['enableDepositRequest'])
                 <button class="btn btn-success w-100 me-2" data-bs-toggle="modal" data-bs-target="#depositModal">{{__('web.deposit')}}</button>
