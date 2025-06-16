@@ -619,36 +619,32 @@
             </div>
         
             <!-- Quick Trading Floating -->
-            <!--@if(!isset(auth()->guard('client')->user()->options['cantOpen']))-->
-            <!--    <div class="quick-trading">-->
-            <!--        <form method="POST" class="form form2 ng-untouched ng-pristine ng-valid d-flex align-items-center m-0">-->
-                        <!-- Sell Button -->
-            <!--            <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">-->
-            <!--                <span>{{__('web.sell')}}<strong class="sellPrice">{{$asset->bid_price}}</strong></span>-->
-            <!--            </button>-->
+            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                <div class="quick-trading">
+                    <form method="POST" class="form form2 ng-untouched ng-pristine ng-valid d-flex align-items-center m-0">
+                        <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">
+                            <span>{{__('web.sell')}}<strong class="sellPrice">{{$asset->bid_price}}</strong></span>
+                        </button>
                 
-                        <!-- Counter Input -->
-            <!--            <div class="formset d-flex align-items-center" style="gap: 5px;">-->
-            <!--                <a class="btn-counter btn-minus" href="#" style="padding: 1px 5px;">-</a>-->
-            <!--                <input name="amount" id="orderAmount" type="text" value="0.01" step="0.01" min="0.01" style="width: 55px; padding: 2px; text-align: center;">-->
-            <!--                <a class="btn-counter btn-plus" href="#" style="padding: 1px 5px;">+</a>-->
-            <!--            </div>-->
+                        <div class="formset d-flex align-items-center" style="gap: 5px;">
+                            <a class="btn-counter btn-minus" href="#" style="padding: 1px 5px;">-</a>
+                            <input name="amount" id="orderAmount" type="text" value="0.01" step="0.01" min="0.01" style="width: 55px; padding: 2px; text-align: center;">
+                            <a class="btn-counter btn-plus" href="#" style="padding: 1px 5px;">+</a>
+                        </div>
                 
-                        <!-- Buy Button -->
-            <!--            <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">-->
-            <!--                <span>{{__('web.buy')}}<strong class="buyPrice">{{$asset->ask_price}} </strong></span>-->
-            <!--            </button>-->
+                        <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">
+                            <span>{{__('web.buy')}}<strong class="buyPrice">{{$asset->ask_price}} </strong></span>
+                        </button>
                 
-                        <!-- Navigation Button (Behind Buy Button) -->
-            <!--            <button type="button" id="openNavModal" class="btn btn-white btn-md ms-2 d-flex align-items-center justify-content-center">-->
-            <!--                <span class="iconify" data-icon="fluent:navigation-24-filled" data-inline="false"></span>-->
-            <!--            </button>-->
-            <!--            <input type="hidden" class="form-control" name="currency" value="{{$asset->id}}" readonly>-->
-            <!--            <input type="hidden" class="form-control bidInput" name="bid" id="bidQuick" value="{{$asset->bid_price}}" readonly>-->
-            <!--            <input type="hidden" class="form-control askInput" name="ask" id="askQuick" value="{{$asset->ask_price}}" readonly>-->
-            <!--        </form>-->
-            <!--    </div>-->
-            <!--@endif-->
+                        <button type="button" id="openNavModal" class="btn btn-white btn-md ms-2 d-flex align-items-center justify-content-center">
+                            <span class="iconify" data-icon="fluent:navigation-24-filled" data-inline="false"></span>
+                        </button>
+                        <input type="hidden" class="form-control" name="currency" value="{{$asset->id}}" readonly>
+                        <input type="hidden" class="form-control bidInput" name="bid" id="bidQuick" value="{{$asset->bid_price}}" readonly>
+                        <input type="hidden" class="form-control askInput" name="ask" id="askQuick" value="{{$asset->ask_price}}" readonly>
+                    </form>
+                </div>
+            @endif
             
             <!-- New Navigation Info Modal -->
             <div id="navInfoModal" class="modal fade" tabindex="-1" aria-labelledby="navInfoLabel" aria-hidden="true">

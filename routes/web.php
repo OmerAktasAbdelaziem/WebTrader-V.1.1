@@ -43,10 +43,10 @@ Route::post('/client/reset/password',            [ClientsController::class,     
 
 
 Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $router) {
-    // $router->get   ('/client/dashboard',                [ClientDashboardController::class, 'index'                   ])->name('client.dashboard');
-    // $router->get   ('/client/kyc',                      [ClientsController::class,         'showKycForm'             ])->name('client.kyc.form');
-    // $router->post  ('/client/kyc/upload',               [ClientsController::class,         'uploadKycPhoto'          ])->name('client.kyc.upload');
-    // $router->get   ('/client/trading-platform',         [ClientsController::class,         'showTradingPlatform'     ])->name('client.trading.platform');
+    $router->get   ('/client/dashboard',                [ClientDashboardController::class, 'index'                   ])->name('client.dashboard');
+    $router->get   ('/client/kyc',                      [ClientsController::class,         'showKycForm'             ])->name('client.kyc.form');
+    $router->post  ('/client/kyc/upload',               [ClientsController::class,         'uploadKycPhoto'          ])->name('client.kyc.upload');
+    $router->get   ('/client/trading-platform',         [ClientsController::class,         'showTradingPlatform'     ])->name('client.trading.platform');
     $router->get   ('/client/webtrader',                [WebTraderController::class,       'index'                   ])->withoutMiddleware('clientAuth')->name('client.webtrader');
     $router->get   ('/deposit',                         [ClientsController::class,         'showDepositForm'         ])->name('client.deposit');
     $router->post  ('/deposit',                         [ClientsController::class,         'processDeposit'          ])->name('deposit.process');

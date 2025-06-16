@@ -68,7 +68,7 @@ class WebTraderController extends Controller
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
         } else {
-            return view('clientarea.web_trader', compact(
+            return view('clientarea.new_v_wd_trade', compact(
                 'favourite_assets_ids',
                 'favourite_assets',
                 'history_fromTo',
