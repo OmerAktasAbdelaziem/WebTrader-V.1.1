@@ -165,23 +165,54 @@ class ClientsController extends Controller
 
         $user    = Auth::guard('client')->user();
         $options = $user->options??[];
+        //var_dump($options);die;
+
+        
         $finance = $this->get_financial_data($user->broker_id);
         $return  = true;
 
-        if (($request->amount > $finance['balance'])) {
-            if (!isset($options['canWithdrawalCredit'])) {
-                if (!isset($options['canWithdrawalBonus'])) {
-                    $return = false;
-                }
-                if ($request->amount > ($finance['balance'] + $finance['bonus'])) {
-                    $return = false;
-                }
-            }
-            if ($request->amount > ($finance['balance'] + $finance['credit'])) {
-                $return = false;
-            }
-        }
+        //$balance = $finance['freeMargin'];
+        $balance = $finance['balance'];
 
+        //echo $balance;die;
+        
+        $canWithdrawalCredit = !empty($options['canWithdrawalCredit']);
+        $canWithdrawalBonus  = !empty($options['canWithdrawalBonus']);
+    //echo $canWithdrawalCredit.' - '.$canWithdrawalBonus;die;
+//echo ;die;
+        $temporaryFinalAmount = $balance-$finance['credit'];
+        if ($request->amount > $temporaryFinalAmount) {
+            if(!$canWithdrawalCredit && !$canWithdrawalBonus){
+                $return = false;
+            }else if(isset($canWithdrawalCredit) && $canWithdrawalCredit == 1 && isset($canWithdrawalBonus) && $canWithdrawalBonus == 1){
+                if($request->amount > ($temporaryFinalAmount+$finance['credit']+$finance['bonus'])){
+                    $return = false;
+                }
+            }else if(isset($canWithdrawalCredit) && $canWithdrawalCredit == 1 && !$canWithdrawalBonus){
+                if($request->amount > ($temporaryFinalAmount+$finance['credit'])){
+                    $return = false;
+                }
+            }else if(!$canWithdrawalCredit && isset($canWithdrawalBonus) && $canWithdrawalBonus == 1){
+                if($request->amount > ($temporaryFinalAmount+$finance['bonus'])){
+                    $return = false;
+                }
+            }
+            
+       
+        
+//            if (!$canWithdrawalCredit) {
+//                if (!$canWithdrawalBonus) {
+//                    $return = false;
+//                }
+//                if ($request->amount > ($balance + $finance['bonus'])) {
+//                    $return = false;
+//                }
+//            }
+//            if ($request->amount > ($balance + $finance['credit'])) {
+//                $return = false;
+//            }
+        }
+       // die('2');
         if ($return == false) {
             return redirect()->back()->with('fail', __('web.not_enough_balance'));
         }
