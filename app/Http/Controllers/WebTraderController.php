@@ -63,7 +63,7 @@ class WebTraderController extends Controller
         $countries     = Bank::distinct('country')->pluck('country');
         $finance       = $this->get_financial_data($client->broker_id);
         $banks         = Bank::where('is_active', 1)->latest()->get();
-
+        $assetsPrices  = Asset::select('symbol', 'name', 'bid_price', 'ask_price')->get();
 
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
