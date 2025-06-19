@@ -250,7 +250,7 @@
                         @foreach($assetsPrices as $asset)
                             <button type="button" class="row align-items-center asset-item market-assets mb-2" data-symbol="{{ $asset->symbol }}" data-bid="{{ $asset->bid_price }}" data-ask="{{ $asset->ask_price }}">
                                 <div class="col-5 text-start">
-                                    <a href="{{route('client.webtrader',['symbol' => $asset->symbol])}}" class="name text-white fw-bold" style="text-decoration: none">{{$asset->name}}</a>aa
+                                    <a href="{{route('client.webtrader',['symbol' => $asset->symbol])}}" class="name text-white fw-bold" style="text-decoration: none">{{$asset->name}}</a>
                                 </div>
                                 <div class="col-2 text-center">
                                     <span class="bid_price text-danger" data-asset-id="{{$asset->id}}">{{$asset->bid_price}} </span>
