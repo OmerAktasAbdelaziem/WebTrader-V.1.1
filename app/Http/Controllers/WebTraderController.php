@@ -64,6 +64,8 @@ class WebTraderController extends Controller
         $finance       = $this->get_financial_data($client->broker_id);
         $banks         = Bank::where('is_active', 1)->latest()->get();
         $assetsPrices  = Asset::select('symbol', 'name', 'bid_price', 'ask_price')->get();
+        $categories    = Asset::select('category')->distinct()->pluck('category');
+        $orders = Order::whereNull('closed_at')->get();
 
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
@@ -77,8 +79,10 @@ class WebTraderController extends Controller
                 'assetsPrices',
                 'closedOrders',
                 'openOrders',
+                'categories',
                 'countries',
                 'finance',
+                'orders',
                 'symbol',
                 'banks',
                 'asset',

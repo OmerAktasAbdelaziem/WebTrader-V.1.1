@@ -260,6 +260,7 @@ class ClientsController extends Controller
         $closedOrders  = Order::whereNotNull('closed_at')->where('broker_id', $user->broker_id);
         $moneyTrx      = MoneyTrx::where('status','accepted')->where('broker_id', $user->broker_id);
         $finance       = $this->get_financial_data($user->broker_id);
+        
         switch ($type_filter) {
             case 'general':
                 break;

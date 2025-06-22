@@ -58,7 +58,7 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/client/orders',                   [ClientsController::class,         'showOrders'              ])->name('clientarea.orders');
     $router->get   ('/client/charts',                   [ClientsController::class,         'showCharts'              ])->name('clientarea.charts');
     $router->get   ('/client/account',                  [ClientsController::class,         'showAccount'             ])->name('clientarea.account');
-    $router->get   ('/toggle-favourite/{id}',           [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
+    $router->get   ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
     $router->post  ('/order',                           [OrderController::class,           'store'                   ])->name('order.store');
     $router->post  ('/order/multiClose',                [OrderController::class,           'multiClose'              ])->name('order.multiClose');
     $router->post  ('/order/{id}',                      [OrderController::class,           'close'                   ])->name('order.close');
