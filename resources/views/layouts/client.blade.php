@@ -202,7 +202,7 @@
             </div>
 
             <!-- WebTrader Button -->
-            {{-- <a href="https://webtrader.elitexcrm.com/client/webtrader?id={{Auth::guard('client')->id()}}&token={{$remember_token}}" class="bg-green-500 text-white px-4 py-2 rounded">{{__('web.webtrader')}}</a> --}}
+            {{-- <a href="https://webtrader.hadathplus.com/client/webtrader?id={{Auth::guard('client')->id()}}&token={{$remember_token}}" class="bg-green-500 text-white px-4 py-2 rounded">{{__('web.webtrader')}}</a> --}}
 
             <!-- Approved Button -->
             <span class="text-white px-4 py-2 rounded" style="background-color: #b2d356;">
@@ -306,7 +306,7 @@
 
                 <!-- Buttons for mobile and tablet -->
                 <div class="lg:hidden mt-4">
-                    {{-- <a href="https://webtrader.elitexcrm.com/client/webtrader?id={{Auth::guard('client')->id()}}&token={{$remember_token}}" class="d-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mb-2 text-center w-full" >{{__('web.webtrader')}}</a> --}}
+                    {{-- <a href="https://webtrader.hadathplus.com/client/webtrader?id={{Auth::guard('client')->id()}}&token={{$remember_token}}" class="d-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mb-2 text-center w-full" >{{__('web.webtrader')}}</a> --}}
                     <div class="menu-items">
                         <ul class="space-y-2 p-0 justify-items-center">
                             <li class="pages justify-items-center">

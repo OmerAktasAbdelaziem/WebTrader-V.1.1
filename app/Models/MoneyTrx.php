@@ -16,12 +16,16 @@ class MoneyTrx extends Model
         'comment',
         'amount',
         'type',
+        'status',
+        'method',
         'usdt',
-        'receipt'
+        'receipt',
+        'crypto_details'
     ];
 
     protected $casts = [
         'bank_details' => 'array',
+        'crypto_details' => 'array',
         'usdt'         => 'array',
     ];
 

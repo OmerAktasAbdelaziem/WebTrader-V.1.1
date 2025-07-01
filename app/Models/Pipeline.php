@@ -22,7 +22,7 @@ class Pipeline extends Model
     ];
 
     protected $casts = [
-        'usdt' => 'array',
+        // 'usdt' => 'array', // Removed - usdt field contains plain string addresses
     ];
 
     public function co()

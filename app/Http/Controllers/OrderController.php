@@ -12,6 +12,12 @@ class OrderController extends Controller
 {
     public function store(Request $request)
     {
+        // Check if user is authenticated
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('fail', 'Please login first');
+        }
+
         $inputs = $request->only(
             'open_at_price',
             'currency',
@@ -22,14 +28,24 @@ class OrderController extends Controller
         );
         $tab = $request->tab ?? 'fav';
         $asset = Asset::find($request->currency);
+        
+        // Validate that the asset exists
+        if (!$asset) {
+            return redirect()->back()->with('fail', __('web.invalid_asset_selected'));
+        }
+        
         if ($asset->type != 'Crypto' && in_array(Carbon::now()->format('D'), ['Sat', 'Sun'])) {
             return redirect()->back()->with('fail', __('web.market_closed'));
         }
-        $broker_id = auth()->guard('client')->user()->broker_id;
-        $finance = (new ClientsController)->get_financial_data($broker_id);
+        
+        $broker_id = $user->broker_id;
+        $finance = (new \App\Http\Controllers\ClientsController)->get_financial_data($broker_id);
         $inputs['required_margin'] = 0;
         $inputs['ref_currency'] = $asset->currency;
-        $inputs['open_price'] = $request->type == 1 ? $request->ask : $request->bid;
+        
+        // Get current bid/ask prices from the selected asset instead of request
+        $inputs['open_price'] = $request->type == 1 ? $asset->ask_price : $asset->bid_price;
+        
         $inputs['broker_id'] = $broker_id;
         $inputs['status'] = $request->status ?? 'active';
         if (!$request->type) {
@@ -38,7 +54,7 @@ class OrderController extends Controller
         }
 
         $order = Order::create($inputs);
-        $group_id = auth()->guard('client')->user()->asset_group_id;
+        $group_id = $user->asset_group_id;
 
         if (str_starts_with($order->asset->symbol, 'USD') || (!strpos($order->asset->symbol, 'USD') && $order->asset->currency !== "USD")) {
             $reqMargin = (($request->amount * $inputs['open_price'] * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$inputs['open_price']);
@@ -66,7 +82,7 @@ class OrderController extends Controller
             while ($loop) {
                 $order = Order::find($order->id);
                 if ($order->pnl != null) {
-                    $finance = (new ClientsController)->get_financial_data($order->broker_id);
+                    $finance = (new \App\Http\Controllers\ClientsController)->get_financial_data($order->broker_id);
                     if ($finance['equity'] < 0) {
                         $order->delete();
                         return redirect()->back()->with('fail', __('web.liquidation_failed_equity_is_less_than'));

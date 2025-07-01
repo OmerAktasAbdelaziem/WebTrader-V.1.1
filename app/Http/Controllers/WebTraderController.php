@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class WebTraderController extends Controller
 {
@@ -25,7 +26,8 @@ class WebTraderController extends Controller
                 Auth::guard('client')->loginUsingId($request->id);
             } else {
                 Auth::guard('client')->loginUsingId($request->id);
-                if (Auth::guard('client')->user()->remember_token != $request->token) {
+                $currentUser = Auth::guard('client')->user();
+                if (!$currentUser || $currentUser->remember_token != $request->token) {
                     return redirect()->route('client.login');
                 }
             }
@@ -37,6 +39,19 @@ class WebTraderController extends Controller
         $client               = Auth::guard('client')->user();
         $symbol               = $request->symbol ?? 'XAUUSD';
         $asset                = Asset::where('symbol', $symbol)->first();
+        
+        // If the requested asset doesn't exist, fall back to the default asset
+        if (!$asset) {
+            $symbol = 'XAUUSD';
+            $asset = Asset::where('symbol', $symbol)->first();
+            
+            // If even the default asset doesn't exist, get the first available asset
+            if (!$asset) {
+                $asset = Asset::first();
+                $symbol = $asset ? $asset->symbol : 'XAUUSD';
+            }
+        }
+        
         $tab                  = $request->tab??'openedOrder';
 
         $userAgent = strtolower($request->header('User-Agent'));
@@ -57,6 +72,12 @@ class WebTraderController extends Controller
         }
 
         list($assetsPrices,$favourite_assets, $favourite_assets_ids, $asset_group_id) = $this->get_assets();
+        
+        // Ensure we have a valid authenticated client
+        if (!$client || !$client->broker_id) {
+            return redirect()->route('client.login')->with('error', __('web.please_login_first'));
+        }
+        
         $pendingOrders = Order::where('status', '!=', 'active')->whereNull('closed_at')->where('broker_id', $client->broker_id)->latest()->get();
         $closedOrders  = Order::whereNotNull('closed_at')->where('broker_id', $client->broker_id)->where('closed_at','>=',$from)->where('closed_at','<=',$to)->orderBy('closed_at','Desc')->paginate(6);
         $openOrders    = Order::where('status', 'active')->whereNull('closed_at')->where('broker_id', $client->broker_id)->latest()->get();
@@ -93,41 +114,67 @@ class WebTraderController extends Controller
 
     public function get_financial_data($broker_id)
     {
-        $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+        try {
+            // Get opened orders for margin and PnL calculations
+            $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+        } catch (\Exception $e) {
+            // If there's a database error, create empty collection
+            $openedOrders = collect();
+        }
+        
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
         $finance['totalWithdrawal']     = 0.00;
         $finance['totalDeposit']        = 0.00;
         $finance['ftd_amount']          = 0.00;
-        $finance['usedMargin']          = $openedOrders->sum('required_margin');
-        $finance['currentPL']           = $openedOrders->sum('pnl');
+        $finance['usedMargin']          = $openedOrders->sum('required_margin') ?? 0.00;
+        $finance['currentPL']           = $openedOrders->sum('pnl') ?? 0.00;
         $finance['balance']             = 0.00;
         $finance['credit']              = 0.00;
         $finance['bonus']               = 0.00;
-        $MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        
+        // Trading Statistics - Get all orders for this broker_id using explicit queries
+        try {
+            $allOrdersCount = Order::where('broker_id', $broker_id)->count();
+            $activeOrdersCount = Order::where('broker_id', $broker_id)->whereNull('closed_at')->count();
+            $closedOrdersCount = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->count();
+            $totalPnL = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl') ?? 0;
+        } catch (\Exception $e) {
+            $allOrdersCount = 0;
+            $activeOrdersCount = 0;
+            $closedOrdersCount = 0;
+            $totalPnL = 0;
+        }
+        
+        
+        $finance['totalOrders']         = $allOrdersCount;
+        $finance['activeOrders']        = $activeOrdersCount;
+        $finance['closedOrders']        = $closedOrdersCount;
+        $finance['totalPnL']            = (float) $totalPnL;
+        $moneyTrxs = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
 
-        foreach ($MoneyTrxs as $MoneyTrx) {
-            if ($MoneyTrx->type == 'deposit') {
+        foreach ($moneyTrxs as $moneyTrx) {
+            if ($moneyTrx->type == 'deposit') {
                 if ($finance['last_deposit_amount'] == 0.00) {
-                    $finance['last_deposit_amount'] = $MoneyTrx->amount;
+                    $finance['last_deposit_amount'] = $moneyTrx->amount;
                 }
-                $finance['totalDeposit'] += $MoneyTrx->amount;
-                $finance['ftd_amount']    = $MoneyTrx->amount;
+                $finance['totalDeposit'] += $moneyTrx->amount;
+                $finance['ftd_amount']    = $moneyTrx->amount;
             }
-            if ($MoneyTrx->type == 'withdraw') {
-                $finance['totalWithdrawal'] += $MoneyTrx->amount;
+            if ($moneyTrx->type == 'withdraw') {
+                $finance['totalWithdrawal'] += $moneyTrx->amount;
             }
-            if ($MoneyTrx->type == 'credit in') {
-                $finance['credit'] += $MoneyTrx->amount;
+            if ($moneyTrx->type == 'credit in') {
+                $finance['credit'] += $moneyTrx->amount;
             }
-            if ($MoneyTrx->type == 'credit out') {
-                $finance['credit'] -= $MoneyTrx->amount;
+            if ($moneyTrx->type == 'credit out') {
+                $finance['credit'] -= $moneyTrx->amount;
             }
-            if ($MoneyTrx->type == 'bonus in') {
-                $finance['bonus'] += $MoneyTrx->amount;
+            if ($moneyTrx->type == 'bonus in') {
+                $finance['bonus'] += $moneyTrx->amount;
             }
-            if ($MoneyTrx->type == 'bonus out') {
-                $finance['bonus'] -= $MoneyTrx->amount;
+            if ($moneyTrx->type == 'bonus out') {
+                $finance['bonus'] -= $moneyTrx->amount;
             }
         }
 
@@ -141,14 +188,24 @@ class WebTraderController extends Controller
 
     public function get_assets()
     {
-        $assets          = [];
-        $favourite_assets_ids = Auth::guard('client')->user()->favourite_assets ?? [];
-
-        $asset_group_id = Auth::guard('client')->user()->asset_group_id;
-        if ($asset_group_id) {
-            $assetGroup       = AssetGroup::find($asset_group_id);
-            $assets           = Asset::whereIn('id',$assetGroup->asset_ids)->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
-            $favourite_assets = Asset::whereIn('id', $assetGroup->asset_ids)->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
+        $assets = [];
+        $favourite_assets = [];
+        $favourite_assets_ids = [];
+        $asset_group_id = null;
+        
+        $user = Auth::guard('client')->user();
+        
+        if ($user) {
+            $favourite_assets_ids = $user->favourite_assets ?? [];
+            $asset_group_id = $user->asset_group_id;
+            
+            if ($asset_group_id) {
+                $assetGroup = AssetGroup::find($asset_group_id);
+                if ($assetGroup) {
+                    $assets = Asset::whereIn('id',$assetGroup->asset_ids)->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
+                    $favourite_assets = Asset::whereIn('id', $assetGroup->asset_ids)->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
+                }
+            }
         }
 
         return [$assets, $favourite_assets, $favourite_assets_ids, $asset_group_id];

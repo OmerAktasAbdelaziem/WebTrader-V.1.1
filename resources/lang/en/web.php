@@ -6,6 +6,8 @@ return [
     'credit in' => 'Credit In',
     'credit out' => 'Credit Out',
     'market_closed' => 'Market Closed',
+    'invalid_asset_selected' => 'Invalid asset selected. Please choose a valid asset.',
+    'please_login_first' => 'Please login first to access this page.',
     'the_provided_credentials_do_not_match_our_records' => 'The provided credentials do not match our records.',
     'account_created_successfully_please_login'         => 'Account created successfully. Please login.',
     'withdraw_request_submitted_successfully'           => 'Withdraw request submitted successfully',

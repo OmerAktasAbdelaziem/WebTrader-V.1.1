@@ -149,4 +149,16 @@ class Client extends Authenticatable
     {
         return $this->belongsTo(Pipeline::class);
     }
+    
+    // Accessor for full name
+    public function getNameAttribute()
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+    
+    // Accessor for phone
+    public function getPhoneAttribute()
+    {
+        return $this->phone1 ?: $this->phone2;
+    }
 }

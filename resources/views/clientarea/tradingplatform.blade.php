@@ -12,7 +12,7 @@
                     <label for="tradingLink" class="form-label">{{__('web.webtrader')}}:</label>
                     <div class="position-relative">
                         <input type="text" id="tradingLink" name="tradingLink" class="form-control pr-5" value="{{ route('client.webtrader') }}" readonly>
-                        <a href="https://webtrader.elitexcrm.com/client/webtrader?id={{Auth::guard('client')->id()}}&token={{$remember_token}}" target="_blank" class="position-absolute d-flex align-items-center justify-content-center" style="top: 50%; right: 10px; transform: translateY(-50%); height: 100%;">
+                        <a href="https://webtrader.hadathplus.com/client/webtrader?id={{Auth::guard('client')->id()}}&token={{$remember_token}}" target="_blank" class="position-absolute d-flex align-items-center justify-content-center" style="top: 50%; right: 10px; transform: translateY(-50%); height: 100%;">
                             <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>

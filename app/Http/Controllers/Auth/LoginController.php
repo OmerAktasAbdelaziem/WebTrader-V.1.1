@@ -33,7 +33,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        $auth = Client::find(auth()->guard('client')->user()->id);
+        $auth = Client::find($user->id);
 
         $auth->loggedAt = Carbon::now();
 

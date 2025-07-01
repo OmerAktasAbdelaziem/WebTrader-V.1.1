@@ -29,10 +29,10 @@ function startAjaxPnl() {
 	}
 	
 	console.log('Requesting PnL:', client_id, assetId);
-    console.log('URL:', 'https://new.elitexcrm.com/client/get_pnl/' + client_id + '/' + assetId + '/fromClient');
+    console.log('URL:', 'https://crm.hadathplus.com/client/get_pnl/' + client_id + '/' + assetId + '/fromClient');
 	
 	$.ajax({
-        url: 'https://new.elitexcrm.com/client/get_pnl/' + client_id + '/' + assetId + '/fromClient',
+        url: 'https://crm.hadathplus.com/client/get_pnl/' + client_id + '/' + assetId + '/fromClient',
         method: 'GET',
         dataType: 'json',
         success: function (data) {

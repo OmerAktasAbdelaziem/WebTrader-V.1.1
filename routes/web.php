@@ -58,12 +58,17 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/client/orders',                   [ClientsController::class,         'showOrders'              ])->name('clientarea.orders');
     $router->get   ('/client/charts',                   [ClientsController::class,         'showCharts'              ])->name('clientarea.charts');
     $router->get   ('/client/account',                  [ClientsController::class,         'showAccount'             ])->name('clientarea.account');
-    $router->get   ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
+    $router->put   ('/client/profile',                  [ClientsController::class,         'updateProfile'           ])->name('client.update.profile');
+    $router->post  ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
     $router->post  ('/order',                           [OrderController::class,           'store'                   ])->name('order.store');
     $router->post  ('/order/multiClose',                [OrderController::class,           'multiClose'              ])->name('order.multiClose');
     $router->post  ('/order/{id}',                      [OrderController::class,           'close'                   ])->name('order.close');
     $router->put   ('/order/{id}',                      [OrderController::class,           'update'                  ])->name('order.update');
     $router->delete('/order/{id}',                      [OrderController::class,           'delete'                  ])->name('order.delete');
+    $router->post  ('/deposit',                         [ClientsController::class,         'processDeposit'          ])->name('client.deposit');
+    $router->post  ('/withdrawal',                      [ClientsController::class,         'submitWithdrawForm'      ])->name('client.withdrawal');
+    $router->get   ('/transactions/refresh',            [ClientsController::class,         'refreshTransactions'     ])->name('client.transactions.refresh');
+    $router->get   ('/deposits/refresh',                [ClientsController::class,         'refreshDepositTransactions'])->name('client.deposits.refresh');
     $router->get   ('/chat',                            [ChatController::class,            'index'                   ])->name('chat.index');
     $router->post  ('/chat',                            [ChatController::class,            'store'                   ])->name('chat.store');
 });

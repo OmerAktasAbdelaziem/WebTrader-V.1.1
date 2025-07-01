@@ -59,7 +59,12 @@ class ClientsController extends Controller
             'new_password' => 'required|confirmed',
         ]);
 
-        $client = Client::find(Auth::guard('client')->user()->id);
+        $user = Auth::guard('client')->user();
+        if (!$user) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+        
+        $client = Client::find($user->id);
 
         $options = $client->options??[];
         if (isset($options['forceChangePassword'])) {
@@ -77,10 +82,15 @@ class ClientsController extends Controller
 
     public function showDepositForm(Request $request)
     {
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+
         $countries          = Bank::distinct('country')->pluck('country');
         $banks              = Bank::where('is_active', 1)->latest()->get();
-        $pendingDeposits    = MoneyTrx::with('bank_details')->where('broker_id',auth()->guard('client')->user()->broker_id)->where('status', 'pending')->where('type', 'deposit')->get();
-        $nonPendingDeposits = MoneyTrx::with('bank_details')->where('broker_id',auth()->guard('client')->user()->broker_id)->where('status', '!=', 'pending')->where('type', 'deposit')->get();
+        $pendingDeposits    = MoneyTrx::with('bank_details')->where('broker_id', $user->broker_id)->where('status', 'pending')->where('type', 'deposit')->get();
+        $nonPendingDeposits = MoneyTrx::with('bank_details')->where('broker_id', $user->broker_id)->where('status', '!=', 'pending')->where('type', 'deposit')->get();
         return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits'));
     }
 
@@ -112,6 +122,10 @@ class ClientsController extends Controller
 
     public function processDeposit(Request $request)
     {
+        $user = Auth::guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
 
         if ($request->hasFile('receipt')) {
             $receiptPath = $request->file('receipt')->store('public/receipts');
@@ -122,14 +136,14 @@ class ClientsController extends Controller
         $bank = Bank::find($request->input('bank'));
 
         $depositData = [
-            'broker_id'    => Auth::guard('client')->user()->broker_id,
+            'broker_id'    => $user->broker_id,
             'bank_id'      => $bank ? $bank->id : null,
             'country'      => $request->input('country'),
             'receipt'      => url(str_replace('public/', 'storage/', $receiptPath)),
             'amount'       => $request->input('amount'),
             'status'       => 'pending',
             'type'         => 'deposit',
-            'usdt'         => $bank ? null : Auth::guard('client')->user()->usdt,
+            'usdt'         => $bank ? null : $user->usdt,
             'bank_details' => null,
         ];
         MoneyTrx::create($depositData);
@@ -139,28 +153,34 @@ class ClientsController extends Controller
 
     public function showWithdrawForm()
     {
-        $pendingTransactions = MoneyTrx::where('status', 'pending')->where('broker_id',auth()->guard('client')->user()->broker_id)->where('type', 'withdraw')->get();
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
 
-        $nonPendingTransactions = MoneyTrx::where('status', '!=', 'pending')->where('broker_id',auth()->guard('client')->user()->broker_id)->where('type', 'withdraw')->get();
+        $pendingTransactions = MoneyTrx::where('status', 'pending')->where('broker_id', $user->broker_id)->where('type', 'withdraw')->get();
+
+        $nonPendingTransactions = MoneyTrx::where('status', '!=', 'pending')->where('broker_id', $user->broker_id)->where('type', 'withdraw')->get();
 
         return view('clientarea.withdraw', compact('pendingTransactions', 'nonPendingTransactions'));
     }
 
     public function submitWithdrawForm(Request $request)
     {
+        $bankTransferRule = 'nullable|string|required_if:payment_method,bank_transfer';
+        $cryptoRule = 'nullable|string|required_if:payment_method,cryptocurrency';
+        
         $request->validate([
-            'beneficiary_country' => 'nullable|string',
-            'beneficiary_address' => 'nullable|string',
-            'aba_routing_number'  => 'nullable|string',
-            'beneficiary_name'    => 'nullable|string',
-            'bank_country'        => 'nullable|string',
-            'bank_address'        => 'nullable|string',
-            'bank_name'           => 'nullable|string',
-            'currency'            => 'nullable|string',
-            'amount'              => 'nullable|numeric|min:1',
-            'swift'               => 'nullable|string',
-            'iban'                => 'nullable|string',
-            'usdt'                => 'nullable|string',
+            'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency',
+            'amount'              => 'required|numeric|min:1',
+            // Bank transfer fields
+            'account_holder'      => $bankTransferRule,
+            'bank_name'           => $bankTransferRule,
+            'account_number'      => $bankTransferRule,
+            'swift_code'          => $bankTransferRule,
+            // Cryptocurrency fields
+            'crypto_type'         => $cryptoRule,
+            'wallet_address'      => $cryptoRule,
         ]);
 
         $user    = Auth::guard('client')->user();
@@ -168,7 +188,7 @@ class ClientsController extends Controller
         $finance = $this->get_financial_data($user->broker_id);
         $return  = true;
 
-        if (($request->amount > $finance['balance'])) {
+        if ($request->amount > $finance['balance']) {
             if (!isset($options['canWithdrawalCredit'])) {
                 if (!isset($options['canWithdrawalBonus'])) {
                     $return = false;
@@ -182,34 +202,36 @@ class ClientsController extends Controller
             }
         }
 
-        if ($return == false) {
+        if (!$return) {
             return redirect()->back()->with('fail', __('web.not_enough_balance'));
         }
 
-        if ($request->usdt) {
+        // Create withdrawal transaction based on payment method
+        if ($request->payment_method === 'cryptocurrency') {
             MoneyTrx::create([
                 'broker_id'    => $user->broker_id,
-                'amount' => $request->amount,
-                'usdt'   => $request->usdt,
-                'type'   => 'withdraw',
-            ]);
-        }else{
-            MoneyTrx::create([
-                'broker_id'    => $user->broker_id,
-                'bank_details' => [
-                    'iban'                => $request->iban,
-                    'swift'               => $request->swift,
-                    'currency'            => $request->currency,
-                    'bank_name'           => $request->bank_name,
-                    'bank_country'        => $request->bank_country,
-                    'bank_address'        => $request->bank_address,
-                    'beneficiary_name'    => $request->beneficiary_name,
-                    'beneficiary_address' => $request->beneficiary_address,
-                    'aba_routing_number'  => $request->aba_routing_number,
-                    'beneficiary_country' => $request->beneficiary_country,
+                'amount'       => $request->amount,
+                'method'       => 'cryptocurrency',
+                'type'         => 'withdraw',
+                'status'       => 'pending',
+                'crypto_details' => [
+                    'crypto_type'    => $request->crypto_type,
+                    'wallet_address' => $request->wallet_address,
                 ],
-                'amount' => $request->amount,
-                'type'   => 'withdraw',
+            ]);
+        } else {
+            MoneyTrx::create([
+                'broker_id'    => $user->broker_id,
+                'amount'       => $request->amount,
+                'method'       => 'bank_transfer',
+                'type'         => 'withdraw',
+                'status'       => 'pending',
+                'bank_details' => [
+                    'account_holder'  => $request->account_holder,
+                    'bank_name'       => $request->bank_name,
+                    'account_number'  => $request->account_number,
+                    'swift_code'      => $request->swift_code,
+                ],
             ]);
         }
 
@@ -218,22 +240,31 @@ class ClientsController extends Controller
 
     public function showQuotes(Request $request)
     {
+        $user = Auth::guard('client')->user();
+        if (!$user) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+
         $tab                  = $request->tab ?? session('tab') ?? 'fav';
         $forexAssets          = [];
         $cryptoAssets         = [];
         $stocksAssets         = [];
         $indicesAssets        = [];
-        $favourite_assets_ids = Auth::guard('client')->user()->favourite_assets ?? [];
+        $commodityAssets      = [];
+        $favourite_assets     = [];
+        $favourite_assets_ids = $user->favourite_assets ?? [];
 
-        $asset_group_id = Auth::guard('client')->user()->asset_group_id;
+        $asset_group_id = $user->asset_group_id;
         if ($asset_group_id) {
             $assetGroup       = AssetGroup::find($asset_group_id);
-            $forexAssets      = Asset::where('bid_price','!=',0)->where('category', 'Forex')  ->whereIn('id',$assetGroup->asset_ids)->get();
-            $cryptoAssets     = Asset::where('bid_price','!=',0)->where('category', 'Crypto') ->whereIn('id',$assetGroup->asset_ids)->get();
-            $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->asset_ids)->get();
-            $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->asset_ids)->get();
-            $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->asset_ids)->get();
-            $favourite_assets = Asset::whereIn('id', $assetGroup->asset_ids)->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
+            if ($assetGroup) {
+                $forexAssets      = Asset::where('bid_price','!=',0)->where('category', 'Forex')  ->whereIn('id',$assetGroup->asset_ids)->get();
+                $cryptoAssets     = Asset::where('bid_price','!=',0)->where('category', 'Crypto') ->whereIn('id',$assetGroup->asset_ids)->get();
+                $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->asset_ids)->get();
+                $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->asset_ids)->get();
+                $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->asset_ids)->get();
+                $favourite_assets = Asset::whereIn('id', $assetGroup->asset_ids)->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
+            }
         }
 
         return view('clientarea.quotes', compact(
@@ -251,10 +282,14 @@ class ClientsController extends Controller
 
     public function showOrders(Request $request)
     {
+        $user = Auth::guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+        
         $type_filter   = $request->type_filter ?? 'general';
         $time_filter   = $request->time_filter ?? 'all';
         $tab           = $request->tab ?? session('tab') ?? 'active';
-        $user          = Auth::guard('client')->user();
         $pendingOrders = Order::where('broker_id', $user->broker_id)->where('status','!=','active')->whereNull('closed_at')->get();
         $activeOrders  = Order::where('broker_id', $user->broker_id)->where('status','active')->whereNull('closed_at')->get();
         $closedOrders  = Order::whereNotNull('closed_at')->where('broker_id', $user->broker_id);
@@ -315,6 +350,10 @@ class ClientsController extends Controller
     public function showAccount(Request $request)
     {
         $user = Auth::guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+        
         $finance = $this->get_financial_data($user->broker_id);
         $countries = Bank::distinct('country')->pluck('country');
         $banks = Bank::where('is_active', 1)->latest()->get();
@@ -343,6 +382,7 @@ class ClientsController extends Controller
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
         $finance['totalWithdrawal']     = 0.00;
+        $finance['pendingWithdrawal']   = 0.00;
         $finance['totalDeposit']        = 0.00;
         $finance['ftd_amount']          = 0.00;
         $finance['usedMargin']          = $openedOrders->sum('required_margin');
@@ -350,7 +390,19 @@ class ClientsController extends Controller
         $finance['balance']             = 0.00;
         $finance['credit']              = 0.00;
         $finance['bonus']               = 0.00;
+        
+        // Trading Statistics
+        $finance['totalOrders']         = Order::where('broker_id', $broker_id)->count();
+        $finance['activeOrders']        = Order::where('broker_id', $broker_id)->whereNull('closed_at')->count();
+        $finance['closedOrders']        = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->count();
+        $finance['totalPnL']            = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl');
         $MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        
+        // Calculate pending withdrawals
+        $finance['pendingWithdrawal']   = MoneyTrx::where('broker_id',$broker_id)
+                                               ->where('type','withdraw')
+                                               ->where('status','pending')
+                                               ->sum('amount');
 
         foreach ($MoneyTrxs as $MoneyTrx) {
             if ($MoneyTrx->type == 'deposit') {
@@ -382,22 +434,92 @@ class ClientsController extends Controller
         return $finance;
     }
 
-    public function toggleFavourite(Request $request,$id)
+    public function toggleFavourite(Request $request, $id = null)
     {
-        $tab = $request->tab ?? 'fav';
         $user = Auth::guard('client')->user();
+        if (!$user) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Please login first'], 401);
+            }
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+
+        // Handle both URL parameter and request body for AJAX compatibility
+        $assetId = $id ?? $request->input('asset_id');
+        $action = $request->input('action'); // 'add' or 'remove'
+        $tab = $request->input('tab') ?? $request->tab ?? 'fav';
+        
+        if (!$assetId) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Asset ID is required'], 400);
+            }
+            return redirect()->back()->with('error', 'Asset ID is required');
+        }
+
         $favourite_assets = $user->favourite_assets ?? [];
 
-        if (in_array($id, $favourite_assets)) {
-            $favourite_assets = array_diff($favourite_assets, [$id]);
+        // Handle specific action if provided (for AJAX requests)
+        if ($action === 'add') {
+            if (!in_array($assetId, $favourite_assets)) {
+                $favourite_assets[] = $assetId;
+            }
+        } elseif ($action === 'remove') {
+            $favourite_assets = array_diff($favourite_assets, [$assetId]);
         } else {
-            $favourite_assets[] = $id;
+            // Default toggle behavior (for GET requests)
+            if (in_array($assetId, $favourite_assets)) {
+                $favourite_assets = array_diff($favourite_assets, [$assetId]);
+                $action = 'remove';
+            } else {
+                $favourite_assets[] = $assetId;
+                $action = 'add';
+            }
         }
 
         $user->update([
             'favourite_assets' => array_values($favourite_assets),
         ]);
 
+        if ($request->expectsJson()) {
+            $message = $action === 'add' ? 'Asset added to favourites' : 'Asset removed from favourites';
+            return response()->json(['success' => true, 'message' => $message, 'action' => $action]);
+        }
+
         return redirect()->back()->with('tab', $tab);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::guard('client')->user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Please login first'], 401);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:clients,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:100',
+        ]);
+
+        try {
+            // Split name into first and last name
+            $nameParts = explode(' ', trim($request->name), 2);
+            $firstName = $nameParts[0];
+            $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+            
+            // Use find to get a fresh instance
+            $client = Client::find($user->id);
+            $client->first_name = $firstName;
+            $client->last_name = $lastName;
+            $client->email = $request->email;
+            $client->phone1 = $request->phone;
+            $client->country = $request->country;
+            $client->save();
+
+            return response()->json(['success' => true, 'message' => 'Profile updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error updating profile: ' . $e->getMessage()]);
+        }
     }
 }
