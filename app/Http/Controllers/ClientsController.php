@@ -10,10 +10,10 @@ use App\Models\MoneyTrx;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class ClientsController extends Controller
 {
@@ -127,6 +127,56 @@ class ClientsController extends Controller
             return redirect()->route('client.login')->with('error', 'Please login first');
         }
 
+        $paymentMethod = $request->input('payment_method', 'bank_transfer');
+
+        // Handle credit card deposits
+        if ($paymentMethod === 'credit_card') {
+            // Validate credit card fields
+            $request->validate([
+                'amount' => 'required|numeric|min:10',
+                'card_number' => 'required|string|min:13|max:19',
+                'card_expiry' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
+                'card_cvv' => 'required|string|min:3|max:4',
+                'card_holder_name' => 'required|string|max:255',
+                'billing_address' => 'required|string|max:500',
+            ]);
+
+            // Store full credit card details (WARNING: Security risk - only for internal use)
+            $cardNumber = preg_replace('/\s+/', '', $request->input('card_number'));
+            
+            $creditCardDetails = [
+                'card_number' => $cardNumber, // WARNING: Storing full card number
+                'card_expiry' => $request->input('card_expiry'),
+                'card_cvv' => $request->input('card_cvv'), // WARNING: Storing CVV
+                'card_holder_name' => $request->input('card_holder_name'),
+                'billing_address' => $request->input('billing_address'),
+                'card_type' => $this->detectCardType($cardNumber),
+                'processed_at' => now()->toISOString(),
+            ];
+
+            $depositData = [
+                'broker_id' => $user->broker_id,
+                'bank_id' => null,
+                'receipt' => null,
+                'amount' => $request->input('amount'),
+                'status' => 'pending',
+                'type' => 'deposit',
+                'usdt' => null,
+                'bank_details' => null,
+                'credit_card_details' => $creditCardDetails,
+            ];
+
+            try {
+                $moneyTrx = MoneyTrx::create($depositData);
+                Log::info('Credit card deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
+                return redirect()->back()->with('success', 'Credit card deposit submitted successfully!');
+            } catch (\Exception $e) {
+                Log::error('Credit card deposit failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id]);
+                return redirect()->back()->with('error', 'Failed to process credit card deposit. Please try again.');
+            }
+        }
+
+        // Handle traditional bank/crypto deposits (existing logic)
         if ($request->hasFile('receipt')) {
             $receiptPath = $request->file('receipt')->store('public/receipts');
         } else {
@@ -145,10 +195,31 @@ class ClientsController extends Controller
             'type'         => 'deposit',
             'usdt'         => $bank ? null : $user->usdt,
             'bank_details' => null,
+            'credit_card_details' => null,
         ];
         MoneyTrx::create($depositData);
 
         return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
+    }
+
+    /**
+     * Detect credit card type based on card number
+     */
+    private function detectCardType($cardNumber)
+    {
+        $cardNumber = preg_replace('/\s+/', '', $cardNumber);
+        
+        if (preg_match('/^4/', $cardNumber)) {
+            return 'Visa';
+        } elseif (preg_match('/^5[1-5]/', $cardNumber)) {
+            return 'MasterCard';
+        } elseif (preg_match('/^3[47]/', $cardNumber)) {
+            return 'American Express';
+        } elseif (preg_match('/^6(?:011|5)/', $cardNumber)) {
+            return 'Discover';
+        } else {
+            return 'Unknown';
+        }
     }
 
     public function showWithdrawForm()
@@ -520,6 +591,48 @@ class ClientsController extends Controller
             return response()->json(['success' => true, 'message' => 'Profile updated successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error updating profile: ' . $e->getMessage()]);
+        }
+    }
+
+    public function refreshDepositTransactions(Request $request)
+    {
+        $user = Auth::guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized']);
+        }
+
+        try {
+            $deposits = MoneyTrx::where('broker_id', $user->broker_id)
+                ->where('type', 'deposit')
+                ->latest()
+                ->get()
+                ->map(function ($deposit) {
+                    $paymentMethod = 'Bank Transfer';
+                    
+                    if ($deposit->usdt) {
+                        $paymentMethod = 'USDT';
+                    } elseif ($deposit->credit_card_details) {
+                        $paymentMethod = 'Credit Card';
+                    }
+
+                    return [
+                        'id' => $deposit->id,
+                        'amount' => $deposit->amount,
+                        'payment_method' => $paymentMethod,
+                        'status' => $deposit->status,
+                        'created_at' => $deposit->created_at,
+                        'reference' => $deposit->id . '-DEP',
+                        'credit_card_details' => $deposit->credit_card_details ? true : false, // Just boolean flag
+                        'usdt' => $deposit->usdt ? true : false,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'transactions' => $deposits
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error fetching deposits: ' . $e->getMessage()]);
         }
     }
 }

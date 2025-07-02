@@ -794,15 +794,30 @@ function updateDepositTransactionsTable(transactions) {
 
     transactions.forEach((transaction) => {
         const row = document.createElement("tr");
+
+        // Format payment method properly
+        let paymentMethod = transaction.payment_method;
+
+        if (
+            transaction.credit_card_details ||
+            (typeof transaction.credit_card_details === "string" &&
+                transaction.credit_card_details.trim() !== "")
+        ) {
+            paymentMethod = "Credit Card";
+        } else if (transaction.usdt) {
+            paymentMethod = "USDT";
+        } else if (!paymentMethod) {
+            paymentMethod = "Bank Transfer";
+        }
+
         row.innerHTML = `
             <td>${transaction.id}</td>
-            <td>${transaction.payment_method}</td>
             <td>$${parseFloat(transaction.amount).toFixed(2)}</td>
+            <td>${paymentMethod}</td>
             <td><span class="badge bg-${
                 transaction.status === "completed" ? "success" : "warning"
             }">${transaction.status}</span></td>
             <td>${new Date(transaction.created_at).toLocaleDateString()}</td>
-            <td>${transaction.reference || "-"}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -1170,10 +1185,86 @@ function submitDepositForm(event) {
         return;
     }
 
+    // Credit card specific validation
+    const paymentMethod = form.querySelector(
+        'input[name="payment_method"]'
+    )?.value;
+    if (paymentMethod === "credit_card") {
+        if (!validateCreditCardForm(form)) {
+            return;
+        }
+    }
+
     showNotification("Processing deposit request...", "info");
 
     // Submit the form normally for now
     form.submit();
+}
+
+function validateCreditCardForm(form) {
+    const cardNumber =
+        form.querySelector('input[name="card_number"]')?.value || "";
+    const cardExpiry =
+        form.querySelector('input[name="card_expiry"]')?.value || "";
+    const cardCvv = form.querySelector('input[name="card_cvv"]')?.value || "";
+    const cardHolderName =
+        form.querySelector('input[name="card_holder_name"]')?.value || "";
+    const billingAddress =
+        form.querySelector('textarea[name="billing_address"]')?.value || "";
+
+    // Validate card number (remove spaces and check if numeric)
+    const cleanCardNumber = cardNumber.replace(/\s+/g, "");
+    if (
+        !cleanCardNumber ||
+        cleanCardNumber.length < 13 ||
+        cleanCardNumber.length > 19 ||
+        !/^\d+$/.test(cleanCardNumber)
+    ) {
+        showNotification("Please enter a valid card number", "error");
+        return false;
+    }
+
+    // Validate expiry date (MM/YY format)
+    if (!cardExpiry || !/^\d{2}\/\d{2}$/.test(cardExpiry)) {
+        showNotification("Please enter expiry date in MM/YY format", "error");
+        return false;
+    }
+
+    // Check if expiry date is not in the past
+    const [month, year] = cardExpiry.split("/");
+    const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1, 1);
+    const currentDate = new Date();
+    currentDate.setDate(1); // Set to first day of current month for comparison
+
+    if (expiryDate < currentDate) {
+        showNotification("Card has expired", "error");
+        return false;
+    }
+
+    // Validate CVV
+    if (
+        !cardCvv ||
+        cardCvv.length < 3 ||
+        cardCvv.length > 4 ||
+        !/^\d+$/.test(cardCvv)
+    ) {
+        showNotification("Please enter a valid CVV", "error");
+        return false;
+    }
+
+    // Validate cardholder name
+    if (!cardHolderName.trim()) {
+        showNotification("Please enter cardholder name", "error");
+        return false;
+    }
+
+    // Validate billing address
+    if (!billingAddress.trim()) {
+        showNotification("Please enter billing address", "error");
+        return false;
+    }
+
+    return true;
 }
 
 // ============= FORM VALIDATION =============
@@ -1181,7 +1272,7 @@ function submitDepositForm(event) {
 function initializeFormValidation() {
     // Validate deposit amounts
     const amountInputs = document.querySelectorAll(
-        "#new_deposit_amount_bank, #new_deposit_amount_crypto"
+        "#new_deposit_amount_bank, #new_deposit_amount_crypto, #credit_card_deposit_amount"
     );
     amountInputs.forEach((input) => {
         input.addEventListener("input", function () {
@@ -1195,6 +1286,50 @@ function initializeFormValidation() {
             }
         });
     });
+
+    // Credit card number formatting
+    const cardNumberInput = document.querySelector("#card_number");
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener("input", function () {
+            // Remove all non-digit characters
+            let value = this.value.replace(/\D/g, "");
+
+            // Add spaces every 4 digits
+            value = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+
+            // Limit to 19 characters (16 digits + 3 spaces)
+            if (value.length > 19) {
+                value = value.substring(0, 19);
+            }
+
+            this.value = value;
+        });
+    }
+
+    // Credit card expiry formatting
+    const cardExpiryInput = document.querySelector("#card_expiry");
+    if (cardExpiryInput) {
+        cardExpiryInput.addEventListener("input", function () {
+            // Remove all non-digit characters
+            let value = this.value.replace(/\D/g, "");
+
+            // Add slash after 2 digits
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + "/" + value.substring(2, 4);
+            }
+
+            this.value = value;
+        });
+    }
+
+    // Credit card CVV validation
+    const cardCvvInput = document.querySelector("#card_cvv");
+    if (cardCvvInput) {
+        cardCvvInput.addEventListener("input", function () {
+            // Only allow digits
+            this.value = this.value.replace(/\D/g, "");
+        });
+    }
 
     // Validate withdrawal amounts
     const withdrawalAmountInputs = document.querySelectorAll(

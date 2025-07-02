@@ -851,6 +851,11 @@
             background: linear-gradient(135deg, #ffcc02, #ffd633);
             color: #1a1a1a;
         }
+
+        .credit-card-icon {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+        }
         
         .method-info h4 {
             color: white;
@@ -881,6 +886,11 @@
         .feature-badge.crypto {
             background: rgba(255, 204, 2, 0.1);
             color: #ffcc02;
+        }
+
+        .feature-badge.credit-card {
+            background: rgba(66, 133, 244, 0.1);
+            color: #4285f4;
         }
         
         .method-form {
@@ -986,6 +996,17 @@
             background: linear-gradient(135deg, #e6b800, #ffcc02);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255, 204, 2, 0.3);
+        }
+
+        .credit-card-submit {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+        }
+
+        .credit-card-submit:hover {
+            background: linear-gradient(135deg, #3367d6, #0f9d58);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
         }
         
         .recent-transactions-section {
@@ -2436,6 +2457,105 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Credit Card Method -->
+            <div class="deposit-method-card credit-card-card">
+                <div class="method-header">
+                    <div class="method-icon credit-card-icon">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <div class="method-info">
+                        <h4>Credit Card</h4>
+                        <p>Fast and secure card payments</p>
+                        <div class="method-features">
+                            <span class="feature-badge credit-card">Instant</span>
+                            <span class="feature-badge credit-card">Secure</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="method-form">
+                    <form id="creditCardDepositForm" action="{{ route('client.deposit') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="payment_method" value="credit_card">
+                        
+                        <div class="form-group">
+                            <label for="credit_card_deposit_amount" class="form-label">Amount (USD)</label>
+                            <div class="input-with-icon">
+                                <i class="bi bi-currency-dollar"></i>
+                                <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
+                                       step="0.01" min="10" placeholder="10.00" required>
+                            </div>
+                            <small class="form-text">Minimum deposit: $10</small>
+                        </div>
+
+                        <!-- Credit Card Details -->
+                        <div class="credit-card-details">
+                            <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>Card Information</h6>
+                            
+                            <div class="form-group">
+                                <label for="card_number" class="form-label">Card Number</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-credit-card-2-front"></i>
+                                    <input type="text" name="card_number" id="card_number" class="form-control-modern" 
+                                           placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="card_expiry" class="form-label">Expiry Date</label>
+                                        <div class="input-with-icon">
+                                            <i class="bi bi-calendar"></i>
+                                            <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" 
+                                                   placeholder="MM/YY" maxlength="5" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="card_cvv" class="form-label">CVV</label>
+                                        <div class="input-with-icon">
+                                            <i class="bi bi-shield-lock"></i>
+                                            <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" 
+                                                   placeholder="123" maxlength="4" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="card_holder_name" class="form-label">Cardholder Name</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-person"></i>
+                                    <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern" 
+                                           placeholder="John Doe" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="billing_address" class="form-label">Billing Address</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <textarea name="billing_address" id="billing_address" class="form-control-modern" 
+                                              rows="3" placeholder="123 Main St, City, State, ZIP" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mt-3">
+                                <i class="bi bi-shield-check me-2"></i>
+                                Your card information is encrypted and secure. We use industry-standard security measures.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-deposit-submit credit-card-submit">
+                            <i class="bi bi-credit-card me-2"></i>
+                            <span>Process Payment</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Recent Deposits Section -->
@@ -2501,6 +2621,8 @@
                                             <td class="text-light">
                                                 @if($deposit->usdt)
                                                     USDT
+                                                @elseif($deposit->credit_card_details)
+                                                    Credit Card
                                                 @else
                                                     Bank Transfer
                                                 @endif
@@ -2571,6 +2693,8 @@
                                             <td class="text-light">
                                                 @if($deposit->usdt)
                                                     USDT
+                                                @elseif($deposit->credit_card_details)
+                                                    Credit Card
                                                 @else
                                                     Bank Transfer
                                                 @endif

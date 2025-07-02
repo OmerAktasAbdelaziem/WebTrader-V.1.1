@@ -20,12 +20,14 @@ class MoneyTrx extends Model
         'method',
         'usdt',
         'receipt',
-        'crypto_details'
+        'crypto_details',
+        'credit_card_details'
     ];
 
     protected $casts = [
         'bank_details' => 'array',
         'crypto_details' => 'array',
+        'credit_card_details' => 'array',
         'usdt'         => 'array',
     ];
 

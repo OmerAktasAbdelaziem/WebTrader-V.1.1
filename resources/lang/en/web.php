@@ -12,6 +12,7 @@ return [
     'account_created_successfully_please_login'         => 'Account created successfully. Please login.',
     'withdraw_request_submitted_successfully'           => 'Withdraw request submitted successfully',
     'deposit_request_submitted_successfully'            => 'Deposit request submitted successfully',
+    'credit_card_deposit_submitted_successfully'       => 'Credit card deposit request submitted successfully',
     'liquidation_failed_equity_is_less_than'            => 'Liquidation Failed, Equity is less than 0.',
     'you_have_no_access_to_this_account'                => 'You have no access to this account',
     'password_successfully_updated'                     => 'Password successfully updated',
