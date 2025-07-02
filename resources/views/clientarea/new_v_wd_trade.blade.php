@@ -127,12 +127,24 @@
             margin-left: 10px;
         }
         .details-panel {
-            height: 34vh;
+            min-height: 34vh;
+            max-height: 60vh;
             background: #1c1f26;
             border-radius: 15px;
             box-shadow: 0 4px 24px #0003;
             padding: 2rem 2rem 1.5rem 2rem;
             margin-left: 20px;
+            overflow-y: auto;
+        }
+        
+        .details-panel .tab-content {
+            overflow-y: auto;
+            max-height: calc(60vh - 120px);
+        }
+        
+        .details-panel .table-responsive {
+            max-height: calc(60vh - 160px);
+            overflow-y: auto;
         }
         .assets{
             max-height: 371px;
@@ -252,6 +264,19 @@
             background: #2a2f38;
             border-color: #4f8cff;
             transform: translateY(-1px);
+        }
+        
+        /* Current asset styling */
+        .asset-button.current-asset {
+            background: #1e3a8a;
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .asset-button.current-asset:hover {
+            background: #1d4ed8;
+            border-color: #60a5fa;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
         }
         
         .asset-button .col-3 {
@@ -1746,8 +1771,10 @@
                         <div class="col-3 text-center">Bid</div>
                         <div class="col-3 text-center">Ask</div>
                     </div>
-                    @foreach($assetsPrices as $asset)
-                        <button type="button" class="row align-items-center asset-button asset-item market-assets mb-2"
+                    
+                    {{-- Current Asset First --}}
+                    @if($asset)
+                        <button type="button" class="row align-items-center asset-button asset-item market-assets mb-2 current-asset"
                                 data-asset-id="{{ $asset->id }}"
                                 data-id="{{ $asset->id }}"
                                 data-symbol="{{ $asset->symbol }}"
@@ -1777,6 +1804,42 @@
                                 </span>
                             </div>
                         </button>
+                    @endif
+                    
+                    {{-- Other Assets --}}
+                    @foreach($assetsPrices as $assetPrice)
+                        @if(!$asset || $assetPrice->id !== $asset->id)
+                            <button type="button" class="row align-items-center asset-button asset-item market-assets mb-2"
+                                    data-asset-id="{{ $assetPrice->id }}"
+                                    data-id="{{ $assetPrice->id }}"
+                                    data-symbol="{{ $assetPrice->symbol }}"
+                                    data-name="{{ $assetPrice->name }}"
+                                    data-category="{{ $assetPrice->category }}"
+                                    data-url="{{ route('client.webtrader', ['symbol' => $assetPrice->symbol]) }}"
+                                    onclick="window.location.href='{{ route('client.webtrader', ['symbol' => $assetPrice->symbol]) }}'"
+                                    oncontextmenu="showContextMenu(event, {{ $assetPrice->id }})">
+                                <div class="col-6 text-start">
+                                    <span class="name text-white fw-bold">
+                                        {{ $assetPrice->name }}
+                                        @if (in_array($assetPrice->id, $favourite_assets_ids))
+                                            <span class="star-icon" style="color: gold; margin-left: 6px;">★</span>
+                                        @endif
+                                    </span>
+                                </div>
+
+                                <div class="col-3 text-center">
+                                    <span class="bid_price text-danger" data-asset-id="{{ $assetPrice->id }}">
+                                        {{ number_format($assetPrice->bid_price, 4) }}
+                                    </span>
+                                </div>
+
+                                <div class="col-3 text-center">
+                                    <span class="ask_price text-success" data-asset-id="{{ $assetPrice->id }}">
+                                        {{ number_format($assetPrice->ask_price, 4) }}
+                                    </span>
+                                </div>
+                            </button>
+                        @endif
                     @endforeach
                 </div>
                 
@@ -3817,6 +3880,7 @@
         const searchTerm = document.getElementById('assetSearch').value.toLowerCase().trim();
         const selectedCategory = document.getElementById('categoryFilter').value.trim();
         const assetButtons = document.querySelectorAll('.asset-button');
+        const currentSymbol = '{{ $symbol ?? '' }}';
 
         console.log('Filtering assets - Search:', searchTerm, 'Category:', selectedCategory);
 
@@ -3827,6 +3891,7 @@
             const assetName = button.getAttribute('data-name') || '';
             const assetSymbol = button.getAttribute('data-symbol') || '';
             const assetCategory = button.getAttribute('data-category') || '';
+            const isCurrentAsset = assetSymbol === currentSymbol;
 
             // Convert to lowercase for comparison
             const nameMatch = assetName.toLowerCase().includes(searchTerm);
@@ -3837,8 +3902,11 @@
             const matchesSearch = searchTerm === '' || nameMatch || symbolMatch;
             const shouldShow = matchesSearch && categoryMatch;
             
+            // Always show the current asset, even if it doesn't match filters
+            const forceShow = isCurrentAsset && currentSymbol !== '';
+            
             // Use multiple methods to ensure visibility changes work
-            if (shouldShow) {
+            if (shouldShow || forceShow) {
                 // Show the asset - restore Bootstrap row display
                 button.style.display = 'flex';
                 button.style.visibility = 'visible';
@@ -3856,6 +3924,9 @@
         });
 
         console.log(`Filter result - Visible: ${visibleCount}, Hidden: ${hiddenCount}`);
+        
+        // Ensure current asset highlighting is maintained
+        highlightCurrentAsset();
     }
 
     // Show all assets
@@ -3875,6 +3946,9 @@
         document.getElementById('assetSearch').value = '';
         document.getElementById('categoryFilter').value = '';
         
+        // Ensure current asset highlighting is maintained
+        highlightCurrentAsset();
+        
         console.log(`All ${assetButtons.length} assets should now be visible`);
     }
 
@@ -3882,19 +3956,24 @@
     function showOnlyFavorites() {
         console.log('Showing only favorites');
         const assetButtons = document.querySelectorAll('.asset-button');
+        const currentSymbol = '{{ $symbol ?? '' }}';
         let favoriteCount = 0;
         
         assetButtons.forEach(button => {
             const hasStar = button.querySelector('.star-icon');
-            if (hasStar) {
-                // Show favorite asset - restore Bootstrap row display
+            const assetSymbol = button.getAttribute('data-symbol') || '';
+            const isCurrentAsset = assetSymbol === currentSymbol;
+            
+            // Show if it's a favorite OR if it's the current asset
+            if (hasStar || isCurrentAsset) {
+                // Show the asset - restore Bootstrap row display
                 button.style.display = 'flex';
                 button.style.visibility = 'visible';
                 button.classList.remove('d-none', 'hidden');
                 button.classList.add('d-flex');
                 favoriteCount++;
             } else {
-                // Hide non-favorite asset
+                // Hide the asset
                 button.style.display = 'none';
                 button.style.visibility = 'hidden';
                 button.classList.add('d-none', 'hidden');
@@ -3902,7 +3981,14 @@
             }
         });
         
-        console.log(`Showing ${favoriteCount} favorite assets out of ${assetButtons.length} total`);
+        // Clear search and category filters
+        document.getElementById('assetSearch').value = '';
+        document.getElementById('categoryFilter').value = '';
+        
+        // Ensure current asset highlighting is maintained
+        highlightCurrentAsset();
+        
+        console.log(`${favoriteCount} favorite assets (+ current) should now be visible`);
     }
 
     // Toggle favorite function
@@ -4042,7 +4128,38 @@
                 }
             });
         });
+        
+        // Initialize current asset highlighting
+        highlightCurrentAsset();
     });
+    
+    // Function to highlight the current asset and ensure proper ordering
+    function highlightCurrentAsset() {
+        const currentSymbol = '{{ $symbol ?? '' }}';
+        if (!currentSymbol) return;
+        
+        const assetButtons = document.querySelectorAll('.asset-button');
+        let currentAssetButton = null;
+        
+        assetButtons.forEach(button => {
+            const buttonSymbol = button.getAttribute('data-symbol');
+            if (buttonSymbol === currentSymbol) {
+                button.classList.add('current-asset');
+                currentAssetButton = button;
+            } else {
+                button.classList.remove('current-asset');
+            }
+        });
+        
+        // Ensure current asset is visible when filters are applied
+        if (currentAssetButton && currentAssetButton.style.display === 'none') {
+            console.log('Making current asset visible:', currentSymbol);
+            currentAssetButton.style.display = 'flex';
+            currentAssetButton.style.visibility = 'visible';
+            currentAssetButton.classList.remove('d-none', 'hidden');
+            currentAssetButton.classList.add('d-flex');
+        }
+    }
     
     // Profile editing functionality
     document.addEventListener('DOMContentLoaded', function() {
