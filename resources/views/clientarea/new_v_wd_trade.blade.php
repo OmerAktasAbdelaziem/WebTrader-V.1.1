@@ -109,7 +109,7 @@
             color: #ff4d4f;
         }
         .main-content {
-            padding: 2.5rem 2vw 2rem 2vw;
+            padding: 1rem 1vw 1rem 1vw;
             margin-left: 50px;
         }
         
@@ -123,17 +123,16 @@
             background: #1c1f26;
             border-radius: 15px;
             box-shadow: 0 4px 24px #0003;
-            padding: 2rem 2rem 1.5rem 2rem;
-            margin-left: 10px;
+            padding: 1rem;
+            height: 58vh;
         }
         .details-panel {
-            min-height: 34vh;
-            max-height: 60vh;
+            min-height: 40vh;
+            max-height: 65vh;
             background: #1c1f26;
             border-radius: 15px;
             box-shadow: 0 4px 24px #0003;
-            padding: 2rem 2rem 1.5rem 2rem;
-            margin-left: 20px;
+            padding: 2rem;
             overflow-y: auto;
         }
         
@@ -147,26 +146,25 @@
             overflow-y: auto;
         }
         .assets{
-            max-height: 371px;
+            max-height: 320px;
             overflow-y: auto;
         }
         .right-side-panel{
             background: #1c1f26;
             border-radius: 15px;
             box-shadow: 0 4px 24px #0003;
-            padding: 2rem 0.01rem 1rem 1rem;
-            margin-left: -20px;
-            margin-right: -35px;
+            padding: 1.5rem;
+            height: 58vh;
+            overflow-y: auto;
         }
         .order-form {
             background: #1c1f26;
             border-radius: 15px;
             box-shadow: 0 4px 24px #0003;
-            margin-left: -20px;
-            margin-right: -35px;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 1rem;
         }
         .order-form .d-flex {
             justify-content: center !important;
@@ -302,8 +300,8 @@
             justify-content: center;
         }
         .tv-widget-container {
-            height: 55vh;
-            min-height: 340px;
+            height: 53vh;
+            min-height: 400px;
         }
         .nav-tabs {
             gap: 0.5rem;
@@ -1719,11 +1717,11 @@
 
 <!-- Main Trading Interface -->
 <div id="mainContent" class="main-content">
-    <div class="row align-items-start" style="margin-top: -40px;">
+    <div class="row g-3 align-items-start">
 
         <!-- Chart & Tabs -->
         <div class="col-lg-8">
-            <div class="panel mb-2" style="margin-left: -30px;">
+            <div class="panel">
                 <!-- TradingView Widget -->
                 <div class="tv-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
@@ -1745,7 +1743,7 @@
 
         <!-- Right Side Panel -->
         <div class="col-lg-4">
-            <div class="right-side-panel mb-3" style="margin-left: -20px;">
+            <div class="right-side-panel">
                 <!-- Asset Search & Filters -->
                 <div class="mb-3 d-flex gap-2 align-items-center">
                     <div class="flex-grow-1">
@@ -1843,11 +1841,9 @@
                     @endforeach
                 </div>
                 
-                <!-- Spacing between assets and order form -->
-                <div style="margin-bottom: 2rem;"></div>
-                
                 <!-- Order Form -->
-                <form id="orderForm" action="{{ route('order.store') }}" method="POST">
+                <div class="mt-3">
+                    <form id="orderForm" action="{{ route('order.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="orderType" name="type" value="1">
                     <input type="hidden" id="selectedAssetId" name="currency" value="{{ $asset && $asset->id ? $asset->id : '' }}">
@@ -1877,12 +1873,14 @@
                             </span>
                         </button>
                     </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
         
         <!-- Tabs and Account Summary Row -->
-        <div class="details-panel">
+        <div class="col-12">
+            <div class="details-panel">
             <div class="d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-center">
                 <ul class="nav nav-tabs border-0 mb-0" id="tradeTabs" role="tablist">
                     <li class="nav-item"><a class="nav-link {{ $tab == 'openedOrder' ? 'active' : '' }}" data-bs-toggle="tab" href="#openOrders" role="tab">Orders</a></li>
