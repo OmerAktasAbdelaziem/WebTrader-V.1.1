@@ -198,6 +198,68 @@
             border: none;
             border-radius: 5px;
             font-size: 1.2rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+        
+        /* Improved input group styling */
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .input-group .amount {
+            border-radius: 0;
+            border-left: 1px solid #353b48;
+            border-right: 1px solid #353b48;
+            width: 80px;
+        }
+        
+        .input-group .btnminus {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            width: 40px;
+        }
+        
+        .input-group .btnplus {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            width: 40px;
+        }
+        
+        /* Asset button improvements */
+        .asset-button {
+            background: #23272f;
+            border: 1px solid #353b48;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            display: flex !important; /* Ensure Bootstrap row display is maintained */
+        }
+        
+        /* Hidden asset override */
+        .asset-button.d-none,
+        .asset-button.hidden,
+        .asset-button[style*="display: none"] {
+            display: none !important;
+        }
+        
+        .asset-button:hover {
+            background: #2a2f38;
+            border-color: #4f8cff;
+            transform: translateY(-1px);
+        }
+        
+        .asset-button .col-3 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
             transition: background 0.2s, color 0.2s, box-shadow 0.2s;
             text-align: center;
         }
@@ -209,7 +271,10 @@
             width: 50px;
         }
         .input-group {
-            margin-left: 35px;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .tv-widget-container {
             height: 55vh;
@@ -1632,8 +1697,8 @@
     <div class="row align-items-start" style="margin-top: -40px;">
 
         <!-- Chart & Tabs -->
-        <div class="col-lg-9">
-            <div class="panel mb-2">
+        <div class="col-lg-8">
+            <div class="panel mb-2" style="margin-left: -30px;">
                 <!-- TradingView Widget -->
                 <div class="tv-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
@@ -1654,38 +1719,44 @@
         </div>
 
         <!-- Right Side Panel -->
-        <div class="col-lg-3">
-            <div class="right-side-panel mb-3">
+        <div class="col-lg-4">
+            <div class="right-side-panel mb-3" style="margin-left: -20px;">
                 <!-- Asset Search & Filters -->
-                <div class="mb-2 d-flex gap-2 align-items-center">
-                    <input type="text" id="assetSearch" class="searchbar form-control-sm" placeholder="Search symbols...">
-                    <select id="categoryFilter" class="filtercategory form-select-sm">
-                        <option value="">All</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category }}">{{ $category }}</option>
-                        @endforeach
-                    </select>
-                    <button type="button" id="showFavouritesBtn" class="btn btn-sm" title="Show Favourites" style="background:#23272f; color:#4f8cff; border:none; padding: 0.3rem 0.6rem;">
-                        <i class="bi bi-star-fill"></i>
-                    </button>
+                <div class="mb-3 d-flex gap-2 align-items-center">
+                    <div class="flex-grow-1">
+                        <input type="text" id="assetSearch" class="searchbar form-control-sm w-100" placeholder="Search symbols..." style="background: #23272f; border: 1px solid #353b48; color: #e0e0e0; border-radius: 6px; padding: 0.5rem;">
+                    </div>
+                    <div>
+                        <select id="categoryFilter" class="filtercategory form-select-sm" style="background: #23272f; border: 1px solid #353b48; color: #e0e0e0; border-radius: 6px; padding: 0.5rem; min-width: 100px;">
+                            <option value="">All</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category }}">{{ $category }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" id="showFavouritesBtn" class="btn btn-sm" title="Show Favourites" style="background:#23272f; color:#4f8cff; border:1px solid #353b48; padding: 0.5rem 0.75rem; border-radius: 6px;">
+                            <i class="bi bi-star-fill"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="assets d-grid gap-2" id="assetGrid">
                     <div class="row fw-bold text-secondary mb-2" style="font-size: 1rem;">
-                        <div class="col-5">Market</div>
-                        <div class="bid_price col-2 text-center">Bid</div>
-                        <div class="ask_price col-2 text-center">Ask</div>
+                        <div class="col-6">Market</div>
+                        <div class="col-3 text-center">Bid</div>
+                        <div class="col-3 text-center">Ask</div>
                     </div>
                     @foreach($assetsPrices as $asset)
-                        <button type="button" class="row align-items-center asset-button asset-item market-assets mb-2" 
-                                data-asset-id="{{ $asset->id }}" 
-                                data-id="{{ $asset->id }}" 
-                                data-symbol="{{ $asset->symbol }}" 
+                        <button type="button" class="row align-items-center asset-button asset-item market-assets mb-2"
+                                data-asset-id="{{ $asset->id }}"
+                                data-id="{{ $asset->id }}"
+                                data-symbol="{{ $asset->symbol }}"
                                 data-name="{{ $asset->name }}"
                                 data-category="{{ $asset->category }}"
                                 data-url="{{ route('client.webtrader', ['symbol' => $asset->symbol]) }}"
                                 onclick="window.location.href='{{ route('client.webtrader', ['symbol' => $asset->symbol]) }}'"
                                 oncontextmenu="showContextMenu(event, {{ $asset->id }})">
-                            <div class="col-5 text-start">
+                            <div class="col-6 text-start">
                                 <span class="name text-white fw-bold">
                                     {{ $asset->name }}
                                     @if (in_array($asset->id, $favourite_assets_ids))
@@ -1694,13 +1765,13 @@
                                 </span>
                             </div>
 
-                            <div class="col-2 text-center">
+                            <div class="col-3 text-center">
                                 <span class="bid_price text-danger" data-asset-id="{{ $asset->id }}">
                                     {{ number_format($asset->bid_price, 4) }}
                                 </span>
                             </div>
 
-                            <div class="col-2 text-end">
+                            <div class="col-3 text-center">
                                 <span class="ask_price text-success" data-asset-id="{{ $asset->id }}">
                                     {{ number_format($asset->ask_price, 4) }}
                                 </span>
@@ -1724,16 +1795,16 @@
                     
 
                     <!-- Amount and Trade Buttons -->
-                    <div class="d-flex gap-1 mb-3">
+                    <div class="d-flex gap-2 mb-3 align-items-center justify-content-center">
                         <button type="button" id="sellBtn" class="btnorder btn-danger">
                             <span class="d-flex flex-column align-items-center">
                                 <strong class="sellPrice" id="displayBidPrice">{{ $asset && $asset->bid_price ? number_format($asset->bid_price, 4) : '0.0000' }}</strong>
                                 <span>{{ __('web.sell') }}</span>
                             </span>
                         </button>
-                        <div class="input-group">
+                        <div class="input-group" style="max-width: 140px;">
                             <button type="button" class="btnminus" onclick="changeAmount(-0.01)">−</button>
-                            <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="0.01" class="amount" readonly/>
+                            <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="0.01" class="amount text-center" readonly/>
                             <button type="button" class="btnplus" onclick="changeAmount(0.01)">+</button>
                         </div>
                         <button type="button" id="buyBtn" class="btnorder btn-success">
@@ -3678,11 +3749,19 @@
 
         // Asset search functionality
         document.getElementById('assetSearch').addEventListener('input', function() {
+            console.log('Search input changed:', this.value);
             filterAssets();
         });
 
         // Category filter functionality
         document.getElementById('categoryFilter').addEventListener('change', function() {
+            console.log('Category changed:', this.value);
+            filterAssets();
+        });
+
+        // Also listen for keyup events on search for better responsiveness
+        document.getElementById('assetSearch').addEventListener('keyup', function() {
+            console.log('Search keyup:', this.value);
             filterAssets();
         });
 
@@ -3735,48 +3814,95 @@
 
     // Filter assets function
     function filterAssets() {
-        const searchTerm = document.getElementById('assetSearch').value.toLowerCase();
-        const selectedCategory = document.getElementById('categoryFilter').value;
+        const searchTerm = document.getElementById('assetSearch').value.toLowerCase().trim();
+        const selectedCategory = document.getElementById('categoryFilter').value.trim();
         const assetButtons = document.querySelectorAll('.asset-button');
 
-        assetButtons.forEach(button => {
-            const assetName = button.getAttribute('data-name').toLowerCase();
-            const assetSymbol = button.getAttribute('data-symbol').toLowerCase();
-            const assetCategory = button.getAttribute('data-category');
+        console.log('Filtering assets - Search:', searchTerm, 'Category:', selectedCategory);
 
-            const matchesSearch = assetName.includes(searchTerm) || assetSymbol.includes(searchTerm);
-            const matchesCategory = !selectedCategory || assetCategory === selectedCategory;
+        let visibleCount = 0;
+        let hiddenCount = 0;
 
-            if (matchesSearch && matchesCategory) {
+        assetButtons.forEach((button, index) => {
+            const assetName = button.getAttribute('data-name') || '';
+            const assetSymbol = button.getAttribute('data-symbol') || '';
+            const assetCategory = button.getAttribute('data-category') || '';
+
+            // Convert to lowercase for comparison
+            const nameMatch = assetName.toLowerCase().includes(searchTerm);
+            const symbolMatch = assetSymbol.toLowerCase().includes(searchTerm);
+            const categoryMatch = selectedCategory === '' || assetCategory === selectedCategory;
+
+            // Search matches if search term is empty OR name/symbol contains search term
+            const matchesSearch = searchTerm === '' || nameMatch || symbolMatch;
+            const shouldShow = matchesSearch && categoryMatch;
+            
+            // Use multiple methods to ensure visibility changes work
+            if (shouldShow) {
+                // Show the asset - restore Bootstrap row display
                 button.style.display = 'flex';
+                button.style.visibility = 'visible';
+                button.classList.remove('d-none', 'hidden');
+                button.classList.add('d-flex');
+                visibleCount++;
             } else {
+                // Hide the asset
                 button.style.display = 'none';
+                button.style.visibility = 'hidden';
+                button.classList.add('d-none', 'hidden');
+                button.classList.remove('d-flex');
+                hiddenCount++;
             }
         });
+
+        console.log(`Filter result - Visible: ${visibleCount}, Hidden: ${hiddenCount}`);
     }
 
     // Show all assets
     function showAllAssets() {
+        console.log('Showing all assets');
         const assetButtons = document.querySelectorAll('.asset-button');
+        
         assetButtons.forEach(button => {
+            // Use multiple methods to ensure visibility - restore Bootstrap row display
             button.style.display = 'flex';
+            button.style.visibility = 'visible';
+            button.classList.remove('d-none', 'hidden');
+            button.classList.add('d-flex');
         });
+        
         // Reset filters
         document.getElementById('assetSearch').value = '';
         document.getElementById('categoryFilter').value = '';
+        
+        console.log(`All ${assetButtons.length} assets should now be visible`);
     }
 
     // Show only favorite assets
     function showOnlyFavorites() {
+        console.log('Showing only favorites');
         const assetButtons = document.querySelectorAll('.asset-button');
+        let favoriteCount = 0;
+        
         assetButtons.forEach(button => {
             const hasStar = button.querySelector('.star-icon');
             if (hasStar) {
+                // Show favorite asset - restore Bootstrap row display
                 button.style.display = 'flex';
+                button.style.visibility = 'visible';
+                button.classList.remove('d-none', 'hidden');
+                button.classList.add('d-flex');
+                favoriteCount++;
             } else {
+                // Hide non-favorite asset
                 button.style.display = 'none';
+                button.style.visibility = 'hidden';
+                button.classList.add('d-none', 'hidden');
+                button.classList.remove('d-flex');
             }
         });
+        
+        console.log(`Showing ${favoriteCount} favorite assets out of ${assetButtons.length} total`);
     }
 
     // Toggle favorite function
