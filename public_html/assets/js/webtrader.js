@@ -913,6 +913,8 @@ function handleWithdrawalSubmission(event) {
             "X-CSRF-TOKEN": document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content"),
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
         },
     })
         .then((response) => response.json())

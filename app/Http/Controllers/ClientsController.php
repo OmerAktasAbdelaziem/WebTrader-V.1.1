@@ -241,18 +241,29 @@ class ClientsController extends Controller
         $bankTransferRule = 'nullable|string|required_if:payment_method,bank_transfer';
         $cryptoRule = 'nullable|string|required_if:payment_method,cryptocurrency';
         
-        $request->validate([
-            'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency',
-            'amount'              => 'required|numeric|min:1',
-            // Bank transfer fields
-            'account_holder'      => $bankTransferRule,
-            'bank_name'           => $bankTransferRule,
-            'account_number'      => $bankTransferRule,
-            'swift_code'          => $bankTransferRule,
-            // Cryptocurrency fields
-            'crypto_type'         => $cryptoRule,
-            'wallet_address'      => $cryptoRule,
-        ]);
+        try {
+            $request->validate([
+                'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency',
+                'amount'              => 'required|numeric|min:1',
+                // Bank transfer fields
+                'account_holder'      => $bankTransferRule,
+                'bank_name'           => $bankTransferRule,
+                'account_number'      => $bankTransferRule,
+                'swift_code'          => $bankTransferRule,
+                // Cryptocurrency fields
+                'crypto_type'         => $cryptoRule,
+                'wallet_address'      => $cryptoRule,
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e; // Re-throw for normal form handling
+        }
 
         $user    = Auth::guard('client')->user();
         $options = $user->options??[];
@@ -274,39 +285,55 @@ class ClientsController extends Controller
         }
 
         if (!$return) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
+            }
             return redirect()->back()->with('fail', __('web.not_enough_balance'));
         }
 
         // Create withdrawal transaction based on payment method
-        if ($request->payment_method === 'cryptocurrency') {
-            MoneyTrx::create([
-                'broker_id'    => $user->broker_id,
-                'amount'       => $request->amount,
-                'method'       => 'cryptocurrency',
-                'type'         => 'withdraw',
-                'status'       => 'pending',
-                'crypto_details' => [
-                    'crypto_type'    => $request->crypto_type,
-                    'wallet_address' => $request->wallet_address,
-                ],
-            ]);
-        } else {
-            MoneyTrx::create([
-                'broker_id'    => $user->broker_id,
-                'amount'       => $request->amount,
-                'method'       => 'bank_transfer',
-                'type'         => 'withdraw',
-                'status'       => 'pending',
-                'bank_details' => [
-                    'account_holder'  => $request->account_holder,
-                    'bank_name'       => $request->bank_name,
-                    'account_number'  => $request->account_number,
-                    'swift_code'      => $request->swift_code,
-                ],
-            ]);
-        }
+        try {
+            if ($request->payment_method === 'cryptocurrency') {
+                MoneyTrx::create([
+                    'broker_id'    => $user->broker_id,
+                    'amount'       => $request->amount,
+                    'method'       => 'cryptocurrency',
+                    'type'         => 'withdraw',
+                    'status'       => 'pending',
+                    'crypto_details' => [
+                        'crypto_type'    => $request->crypto_type,
+                        'wallet_address' => $request->wallet_address,
+                    ],
+                ]);
+            } else {
+                MoneyTrx::create([
+                    'broker_id'    => $user->broker_id,
+                    'amount'       => $request->amount,
+                    'method'       => 'bank_transfer',
+                    'type'         => 'withdraw',
+                    'status'       => 'pending',
+                    'bank_details' => [
+                        'account_holder'  => $request->account_holder,
+                        'bank_name'       => $request->bank_name,
+                        'account_number'  => $request->account_number,
+                        'swift_code'      => $request->swift_code,
+                    ],
+                ]);
+            }
 
-        return redirect()->back()->with('success', __('web.withdraw_request_submitted_successfully'));
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true, 
+                    'message' => __('web.withdraw_request_submitted_successfully')
+                ], 200, ['Content-Type' => 'application/json']);
+            }
+            return redirect()->back()->with('success', __('web.withdraw_request_submitted_successfully'));
+        } catch (\Exception $e) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'An error occurred while submitting the withdrawal request: ' . $e->getMessage()]);
+            }
+            return redirect()->back()->with('fail', 'An error occurred while submitting the withdrawal request: ' . $e->getMessage());
+        }
     }
 
     public function showQuotes(Request $request)
@@ -467,6 +494,11 @@ class ClientsController extends Controller
         $finance['activeOrders']        = Order::where('broker_id', $broker_id)->whereNull('closed_at')->count();
         $finance['closedOrders']        = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->count();
         $finance['totalPnL']            = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl');
+        
+        // Win/Lose Statistics for closed orders
+        $finance['winOrders']           = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->where('pnl', '>', 0)->count();
+        $finance['loseOrders']          = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->where('pnl', '<', 0)->count();
+        
         $MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
         
         // Calculate pending withdrawals

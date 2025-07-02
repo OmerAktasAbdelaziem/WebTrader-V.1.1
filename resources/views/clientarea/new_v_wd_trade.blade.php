@@ -668,6 +668,16 @@
             min-height: 200px;
         }
         
+        .stats-grid-3x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 1.5rem;
+            justify-items: center;
+            align-items: center;
+            min-height: 200px;
+        }
+        
         .badge-premium {
             background: linear-gradient(135deg, #4f8cff, #6ba3ff);
             color: white;
@@ -736,6 +746,16 @@
         
         .stat-circle.loss {
             background: linear-gradient(135deg, #ff4757, #ff6b7a);
+            color: white;
+        }
+        
+        .stat-circle.win-orders {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .stat-circle.lose-orders {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
             color: white;
         }
         
@@ -2065,7 +2085,7 @@
                     <h3><i class="bi bi-graph-up-arrow"></i> Trading Statistics</h3>
                 </div>
                 <div class="card-content">
-                    <div class="stats-grid-2x2">
+                    <div class="stats-grid-3x2">
                         <div class="stat-item">
                             <div class="stat-circle total-orders">
                                 <span>{{ number_format($finance['totalOrders'] ?? 0, 0) }}</span>
@@ -2083,6 +2103,18 @@
                                 <span>{{ number_format($finance['closedOrders'] ?? 0, 0) }}</span>
                             </div>
                             <p>Closed Orders</p>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-circle win-orders">
+                                <span>{{ number_format($finance['winOrders'] ?? 0, 0) }}</span>
+                            </div>
+                            <p>Win Orders</p>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-circle lose-orders">
+                                <span>{{ number_format($finance['loseOrders'] ?? 0, 0) }}</span>
+                            </div>
+                            <p>Lose Orders</p>
                         </div>
                         <div class="stat-item">
                             <div class="stat-circle total-pnl {{ ($finance['totalPnL'] ?? 0) >= 0 ? 'profit' : 'loss' }}">
@@ -3240,7 +3272,7 @@
                                         <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">Amount (USD)</label>
                                         <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
                                                min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-muted" style="font-size: 0.95rem;">Minimum: $1.00 | Maximum: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">Minimum: $1.00 | Maximum: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -3292,7 +3324,7 @@
                                         <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">Amount (USD)</label>
                                         <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
                                                min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-muted" style="font-size: 0.95rem;">Minimum: $1.00 | Maximum: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">Minimum: $1.00 | Maximum: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -3312,7 +3344,7 @@
                             <div class="mb-3">
                                 <label for="wallet_address" class="form-label text-white" style="font-size: 1.05rem;">Wallet Address</label>
                                 <input type="text" name="wallet_address" id="wallet_address" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
-                                <small class="text-muted" style="font-size: 0.95rem;">Enter your cryptocurrency wallet address. Double-check this address as transactions cannot be reversed.</small>
+                                <small class="text-white" style="font-size: 0.95rem;">Enter your cryptocurrency wallet address. Double-check this address as transactions cannot be reversed.</small>
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
