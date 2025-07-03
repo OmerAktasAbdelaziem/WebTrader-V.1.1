@@ -1806,7 +1806,7 @@ body {
 
 #withdrawalHistoryTable td {
     border: none !important;
-    padding: 15px !important;
+padding: 15px !important;
     vertical-align: middle !important;
     background: rgba(26, 31, 46, 0.3) !important;
 }

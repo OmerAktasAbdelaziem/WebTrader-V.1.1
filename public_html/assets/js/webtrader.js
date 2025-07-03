@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initializeWebTrader() {
-    initializeNavigation();
+    // initializeNavigation(); // Disabled - navigation handled by webtrader2.js
     initializeContextMenu();
     initializeOrderForm();
     initializeAssetButtons();

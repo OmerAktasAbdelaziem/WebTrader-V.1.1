@@ -32,15 +32,6 @@ function startAjaxPnl() {
         assetId = $("#asset-select").val();
     }
 
-    console.log("Requesting PnL:", client_id, assetId);
-    console.log(
-        "URL:",
-        "https://crm.hadathplus.com/client/get_pnl/" +
-            client_id +
-            "/" +
-            assetId +
-            "/fromClient"
-    );
 
     $.ajax({
         url:
@@ -52,7 +43,6 @@ function startAjaxPnl() {
         method: "GET",
         dataType: "json",
         success: function (data) {
-            console.log("PnL AJAX Response:", data);
 
             if (!data || typeof data !== "object") {
                 console.error(
