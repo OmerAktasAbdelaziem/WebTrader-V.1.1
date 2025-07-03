@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Asset;
 use App\Models\AssetGroup;
 use App\Models\Bank;
+use App\Models\Chat_ah;
 use App\Models\MoneyTrx;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
@@ -87,6 +89,12 @@ class WebTraderController extends Controller
         $assetsPrices  = Asset::select('id', 'symbol', 'name', 'bid_price', 'ask_price', 'category')->get();
         $categories    = Asset::select('category')->distinct()->pluck('category');
         $orders = Order::whereNull('closed_at')->get();
+        
+        // Get chat messages for the current user
+        $chat = Chat_ah::where('client_id', $client->id)->orderBy('created_at', 'asc')->get();
+        
+        // Get notifications for the current user
+        $notifications = Notification::where('client_id', $client->id)->latest()->take(10)->get();
 
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
@@ -107,7 +115,9 @@ class WebTraderController extends Controller
                 'symbol',
                 'banks',
                 'asset',
-                'tab'
+                'tab',
+                'chat',
+                'notifications'
             ));
         }
     }
@@ -209,5 +219,39 @@ class WebTraderController extends Controller
         }
 
         return [$assets, $favourite_assets, $favourite_assets_ids, $asset_group_id];
+    }
+    
+    /**
+     * Mark a notification as read (delete it)
+     */
+    public function markNotificationAsRead(Request $request)
+    {
+        $client = Auth::guard('client')->user();
+        
+        if (!$client) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        
+        $notificationId = $request->input('notification_id');
+        
+        // Find and delete the notification
+        $notification = Notification::where('id', $notificationId)
+                                   ->where('client_id', $client->id)
+                                   ->first();
+        
+        if (!$notification) {
+            return response()->json(['success' => false, 'message' => 'Notification not found'], 404);
+        }
+        
+        $notification->delete();
+        
+        // Get the updated count of remaining notifications
+        $remainingCount = Notification::where('client_id', $client->id)->count();
+        
+        return response()->json([
+            'success' => true, 
+            'message' => 'Notification marked as read',
+            'remaining_count' => $remainingCount
+        ]);
     }
 }

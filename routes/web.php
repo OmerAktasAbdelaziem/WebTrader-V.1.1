@@ -71,4 +71,6 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/deposits/refresh',                [ClientsController::class,         'refreshDepositTransactions'])->name('client.deposits.refresh');
     $router->get   ('/chat',                            [ChatController::class,            'index'                   ])->name('chat.index');
     $router->post  ('/chat',                            [ChatController::class,            'store'                   ])->name('chat.store');
+    $router->post  ('/notification/read',               [WebTraderController::class,       'markNotificationAsRead'  ])->name('notification.read');
+    $router->get   ('/notification/test',               [WebTraderController::class,       'createTestNotifications' ])->name('notification.test');
 });

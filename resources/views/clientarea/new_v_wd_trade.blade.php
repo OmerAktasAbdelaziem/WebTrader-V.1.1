@@ -15,6 +15,15 @@
 
 <!-- Sidebar Navigation -->
 <div class="sidebar">
+    <i class="bi bi-bell nav-icon notification-icon" title="Notifications" style="font-size:1.2rem; padding:0.3rem; position: relative;">
+        @if(!empty($notifications) && count($notifications) > 0)
+            <span class="notification-badge">{{ count($notifications) }}</span>
+        @endif
+    </i>
+    <i class="bi bi-chat-dots nav-icon chat-icon" title="Live Chat" style="font-size:1.2rem; padding:0.3rem;"></i>
+
+    <div style="height: 20px; border-bottom: 2px solid #4f8cff; margin: 0 10px 20px 10px; opacity: 0.7;"></div>
+
     <i class="bi bi-bar-chart nav-icon markets-icon active" title="Markets" style="font-size:1.2rem; padding:0.3rem;"></i>
     <i class="bi bi-person nav-icon account-icon" title="Account" style="font-size:1.2rem; padding:0.3rem;"></i>
     <i class="bi bi-arrow-up-circle nav-icon deposit-icon" title="Deposit" style="font-size:1.2rem; padding:0.3rem;"></i>
@@ -1866,13 +1875,252 @@
     @csrf
 </form>
 
+<!-- Chat Interface -->
+<div id="chatInterface" class="main-content" style="display: none;">
+    <div class="modern-interface-container">
+        <!-- Header Section -->
+        <div class="interface-header">
+            <div class="header-left">
+                <div class="interface-icon">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Live Chat Support</h1>
+                    <p>Get instant help from our support team</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-modern btn-secondary back-to-trading-btn">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back to Trading</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                @foreach ($chat ?? [] as $message)
+                    @if ($message->user_id)
+                        <!-- Support Message -->
+                        <div class="message support-message">
+                            <div class="message-avatar">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-sender">Support Team</span>
+                                    <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
+                                </div>
+                                <div class="message-text">{{ $message->message }}</div>
+                            </div>
+                        </div>
+                    @else
+                        <!-- User Message -->
+                        <div class="message user-message">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-sender">You</span>
+                                    <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
+                                </div>
+                                <div class="message-text">{{ $message->message }}</div>
+                            </div>
+                            <div class="message-avatar">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+                
+                @if(empty($chat) || count($chat) == 0)
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <i class="bi bi-chat-heart"></i>
+                        </div>
+                        <h3>Welcome to Live Chat Support!</h3>
+                        <p>Our support team is here to help you with any questions or issues you may have.</p>
+                        <p>Send us a message and we'll get back to you as soon as possible.</p>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <form id="chatForm" action="{{ route('chat.store') }}" method="POST">
+                    @csrf
+                    <div class="chat-input-wrapper">
+                        <div class="input-with-icon">
+                            <textarea name="message" id="chatMessage" class="chat-input" 
+                                      placeholder="Type your message here..." 
+                                      rows="1" required></textarea>
+                            <button type="submit" class="send-button">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Quick Actions -->
+                <div class="chat-quick-actions">
+                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('I need help with my account')">
+                        <i class="bi bi-person-gear"></i>
+                        <span>Account Help</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('I have a question about trading')">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Trading Question</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('I need help with deposits/withdrawals')">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Payment Help</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Live Chat Overlay -->
+<div id="liveChatOverlay" class="chat-overlay" style="display: none;">
+    <div class="chat-overlay-content">
+        <!-- Chat Header -->
+        <div class="chat-overlay-header">
+            <div class="chat-overlay-title">
+                <i class="bi bi-chat-dots"></i>
+                <span>Live Chat Support</span>
+            </div>
+            <button class="chat-close-btn" onclick="toggleChatOverlay()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Chat Input (Moved Higher) -->
+        <div class="chat-input-container">
+            <form id="chatOverlayForm" action="{{ route('chat.store') }}" method="POST">
+                @csrf
+                <div class="chat-input-wrapper">
+                    <div class="input-with-icon">
+                        <textarea name="message" id="chatOverlayMessage" class="chat-input" 
+                                  placeholder="Type your message here..." 
+                                  rows="1" required></textarea>
+                        <button type="submit" class="send-button">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Quick Actions -->
+            <div class="chat-quick-actions">
+                <button type="button" class="quick-action-btn" onclick="insertQuickMessageOverlay('I need help with my account')">
+                    <i class="bi bi-person-gear"></i>
+                    <span>Account Help</span>
+                </button>
+                <button type="button" class="quick-action-btn" onclick="insertQuickMessageOverlay('I have a question about trading')">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Trading Question</span>
+                </button>
+                <button type="button" class="quick-action-btn" onclick="insertQuickMessageOverlay('I need help with deposits/withdrawals')">
+                    <i class="bi bi-credit-card"></i>
+                    <span>Payment Help</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-overlay-messages" id="chatOverlayMessages">
+            @foreach ($chat ?? [] as $message)
+                @if ($message->user_id)
+                    <!-- Support Message -->
+                    <div class="message support-message">
+                        <div class="message-avatar">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">Support Team</span>
+                                <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
+                            </div>
+                            <div class="message-text">{{ $message->message }}</div>
+                        </div>
+                    </div>
+                @else
+                    <!-- User Message -->
+                    <div class="message user-message">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">You</span>
+                                <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
+                            </div>
+                            <div class="message-text">{{ $message->message }}</div>
+                        </div>
+                        <div class="message-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+            
+            @if(empty($chat) || count($chat) == 0)
+                <div class="welcome-message">
+                    <div class="welcome-icon">
+                        <i class="bi bi-chat-heart"></i>
+                    </div>
+                    <h3>Welcome to Live Chat Support!</h3>
+                    <p>Our support team is here to help you with any questions or issues you may have.</p>
+                    <p>Send us a message and we'll get back to you as soon as possible.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
+<!-- Notification Popup -->
+<div id="notificationPopup" class="notification-popup" style="display: none;">
+    <div class="notification-popup-content">
+        <div class="notification-popup-header">
+            <div class="notification-popup-title">
+                <i class="bi bi-bell me-2"></i>
+                <span>Notifications</span>
+            </div>
+            <button class="notification-popup-close" onclick="closeNotificationPopup()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="notification-popup-messages" id="notificationPopupMessages">
+            @if(empty($notifications) || count($notifications) == 0)
+                <div class="no-notifications-message">
+                    <div class="no-notifications-icon">
+                        <i class="bi bi-bell-slash"></i>
+                    </div>
+                    <h4>No Notifications</h4>
+                    <p>You don't have any notifications at this time.</p>
+                </div>
+            @else
+                @foreach($notifications as $notification)
+                    <div class="notification-item" data-id="{{ $notification->id }}">
+                        <div class="notification-content">
+                            <div class="notification-text">{{ __('web.'.$notification->text) }}</div>
+                            <div class="notification-time">{{ date('d/m H:i', strtotime($notification->created_at)) }}</div>
+                        </div>
+                        <div class="notification-icon">
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('assets/plugins/material-date-range-picker/dist/duDatepicker.min.js?v1.599') }}"></script>
 <script src="{{ url('assets/js/form-date-time-pickers.min.js?v1.599') }}"></script>
 <script src="{{ url('assets/js/main_tp.js?v1.600') }}"></script>
-<script src="{{ url('assets/js/webtrader2.js') }}"></script>
+<script src="{{ url('assets/js/webtrader2.js?v2.0') }}"></script>
 
 <!-- Add CSRF token and routes for JavaScript -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -1890,6 +2138,9 @@
     // Banks data for filtering
     window.banksData = @json($banks ?? []);
     
+    // Notifications data
+    window.notificationsData = @json($notifications ?? []);
+    
     // Crypto wallets (example data - you should get this from your configuration)
     window.cryptoWallets = {
         'BTC': '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
@@ -1900,40 +2151,6 @@
     
     // Add route for toggling favourites
     document.body.setAttribute('data-toggle-favourite-route', '{{ route("toggle.favourite") }}');
-
-    // Initialize the interface when the page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize interface based on URL parameter
-        initializeInterface();
-
-        // Sidebar navigation
-        document.querySelector('.markets-icon').addEventListener('click', showMainContent);
-        document.querySelector('.account-icon').addEventListener('click', showAccountInterface);
-        document.querySelector('.deposit-icon').addEventListener('click', showDepositInterface);
-        document.querySelector('.withdrawal-icon').addEventListener('click', showWithdrawalInterface);
-
-        // Logout functionality
-        document.querySelector('.logout-icon').addEventListener('click', function() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Create and submit logout form
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '{{ route("client.logout") }}';
-                const token = document.createElement('input');
-                token.type = 'hidden';
-                token.name = '_token';
-                token.value = '{{ csrf_token() }}';
-                form.appendChild(token);
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
-
-        // Back to trading buttons
-        document.querySelectorAll('.back-to-trading-btn').forEach(btn => {
-            btn.addEventListener('click', showMainContent);
-        });
-    });
 </script>
 
 
