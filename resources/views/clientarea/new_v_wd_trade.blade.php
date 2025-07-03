@@ -1900,6 +1900,40 @@
     
     // Add route for toggling favourites
     document.body.setAttribute('data-toggle-favourite-route', '{{ route("toggle.favourite") }}');
+
+    // Initialize the interface when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize interface based on URL parameter
+        initializeInterface();
+
+        // Sidebar navigation
+        document.querySelector('.markets-icon').addEventListener('click', showMainContent);
+        document.querySelector('.account-icon').addEventListener('click', showAccountInterface);
+        document.querySelector('.deposit-icon').addEventListener('click', showDepositInterface);
+        document.querySelector('.withdrawal-icon').addEventListener('click', showWithdrawalInterface);
+
+        // Logout functionality
+        document.querySelector('.logout-icon').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Create and submit logout form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route("client.logout") }}';
+                const token = document.createElement('input');
+                token.type = 'hidden';
+                token.name = '_token';
+                token.value = '{{ csrf_token() }}';
+                form.appendChild(token);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        // Back to trading buttons
+        document.querySelectorAll('.back-to-trading-btn').forEach(btn => {
+            btn.addEventListener('click', showMainContent);
+        });
+    });
 </script>
 
 
