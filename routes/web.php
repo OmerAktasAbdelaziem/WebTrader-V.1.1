@@ -73,4 +73,10 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->post  ('/chat',                            [ChatController::class,            'store'                   ])->name('chat.store');
     $router->post  ('/notification/read',               [WebTraderController::class,       'markNotificationAsRead'  ])->name('notification.read');
     $router->get   ('/notification/test',               [WebTraderController::class,       'createTestNotifications' ])->name('notification.test');
+    
+    // Upload Document Routes
+    $router->post  ('/client/upload-documents',         [ClientsController::class,         'uploadDocuments'         ])->name('client.upload.documents');
+    $router->get   ('/client/get-documents',            [ClientsController::class,         'getDocuments'            ])->name('client.get.documents');
+    $router->get   ('/client/download-document/{id}',   [ClientsController::class,         'downloadDocument'        ])->name('client.download.document');
+    $router->post  ('/client/delete-document',          [ClientsController::class,         'deleteDocument'          ])->name('client.delete.document');
 });

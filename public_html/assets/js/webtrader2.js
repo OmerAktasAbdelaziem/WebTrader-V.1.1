@@ -148,7 +148,7 @@ function autoFixAssetCategories() {
 
     // Only log if categories were actually fixed
     if (fixedCount > 0) {
-        console.log(`Auto-fixed ${fixedCount} asset categories on page load`);
+        // Auto-fixed category information available if needed
     }
 }
 
@@ -298,6 +298,9 @@ function getAllInterfaces() {
         depositInterface: document.getElementById("depositInterface"),
         withdrawalInterface: document.getElementById("withdrawalInterface"),
         chatInterface: document.getElementById("chatInterface"),
+        uploadDocumentInterface: document.getElementById(
+            "uploadDocumentInterface"
+        ),
     };
 }
 
@@ -319,26 +322,14 @@ function hideAllInterfaces() {
 }
 
 function showMainContent() {
-    console.log("showMainContent() called");
-
     // Hide all interfaces first
     hideAllInterfaces();
 
     const interfaces = getAllInterfaces();
 
     if (!interfaces.mainContent) {
-        console.error("Main content element not found");
         return;
     }
-
-    // Show main content with forceful styling to override any CSS conflicts
-    console.log("Main content element:", interfaces.mainContent);
-    console.log(
-        "Before styling - display:",
-        interfaces.mainContent.style.display,
-        "visibility:",
-        interfaces.mainContent.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.mainContent.style.setProperty("display", "block", "important");
@@ -361,31 +352,12 @@ function showMainContent() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.mainContent.style.display,
-        "visibility:",
-        interfaces.mainContent.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "trading");
     updateSidebarActive(".markets-icon");
-
-    // Initialize notification popup for this interface
-    initializeNotificationPopup();
-    setTimeout(() => {
-        initializeNotificationPopup();
-    }, 250);
-
-    console.log(
-        "showMainContent() completed - main content should be visible now"
-    );
 }
 
 function showAccountInterface() {
-    console.log("showAccountInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -395,18 +367,8 @@ function showAccountInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.accountInterface) {
-        console.error("Account interface element not found");
         return;
     }
-
-    // Show account interface with forceful styling to override any CSS conflicts
-    console.log("Account interface element:", interfaces.accountInterface);
-    console.log(
-        "Before styling - display:",
-        interfaces.accountInterface.style.display,
-        "visibility:",
-        interfaces.accountInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.accountInterface.style.setProperty(
@@ -444,34 +406,15 @@ function showAccountInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.accountInterface.style.display,
-        "visibility:",
-        interfaces.accountInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "account");
     updateSidebarActive(".account-icon");
-
-    // Initialize notification popup for this interface
-    initializeNotificationPopup();
-    setTimeout(() => {
-        initializeNotificationPopup();
-    }, 250);
-
-    console.log(
-        "showAccountInterface() completed - account interface should be visible now"
-    );
 
     // Debug visibility
     debugInterfaceVisibility("accountInterface");
 }
 
 function showDepositInterface() {
-    console.log("showDepositInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -481,18 +424,8 @@ function showDepositInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.depositInterface) {
-        console.error("Deposit interface element not found");
         return;
     }
-
-    // Show deposit interface with forceful styling to override any CSS conflicts
-    console.log("Deposit interface element:", interfaces.depositInterface);
-    console.log(
-        "Before styling - display:",
-        interfaces.depositInterface.style.display,
-        "visibility:",
-        interfaces.depositInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.depositInterface.style.setProperty(
@@ -530,34 +463,15 @@ function showDepositInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.depositInterface.style.display,
-        "visibility:",
-        interfaces.depositInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "deposit");
     updateSidebarActive(".deposit-icon");
-
-    // Initialize notification popup for this interface
-    initializeNotificationPopup();
-    setTimeout(() => {
-        initializeNotificationPopup();
-    }, 250);
-
-    console.log(
-        "showDepositInterface() completed - deposit interface should be visible now"
-    );
 
     // Debug visibility
     debugInterfaceVisibility("depositInterface");
 }
 
 function showWithdrawalInterface() {
-    console.log("showWithdrawalInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -567,21 +481,8 @@ function showWithdrawalInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.withdrawalInterface) {
-        console.error("Withdrawal interface element not found");
         return;
     }
-
-    // Show withdrawal interface with forceful styling to override any CSS conflicts
-    console.log(
-        "Withdrawal interface element:",
-        interfaces.withdrawalInterface
-    );
-    console.log(
-        "Before styling - display:",
-        interfaces.withdrawalInterface.style.display,
-        "visibility:",
-        interfaces.withdrawalInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.withdrawalInterface.style.setProperty(
@@ -627,31 +528,12 @@ function showWithdrawalInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.withdrawalInterface.style.display,
-        "visibility:",
-        interfaces.withdrawalInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "withdrawal");
     updateSidebarActive(".withdrawal-icon");
-
-    // Initialize notification popup for this interface
-    initializeNotificationPopup();
-    setTimeout(() => {
-        initializeNotificationPopup();
-    }, 250);
-
-    console.log(
-        "showWithdrawalInterface() completed - withdrawal interface should be visible now"
-    );
 }
 
 function showChatInterface() {
-    console.log("showChatInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -661,18 +543,8 @@ function showChatInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.chatInterface) {
-        console.error("Chat interface element not found");
         return;
     }
-
-    // Show chat interface with forceful styling to override any CSS conflicts
-    console.log("Chat interface element:", interfaces.chatInterface);
-    console.log(
-        "Before styling - display:",
-        interfaces.chatInterface.style.display,
-        "visibility:",
-        interfaces.chatInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.chatInterface.style.setProperty("display", "block", "important");
@@ -698,26 +570,9 @@ function showChatInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.chatInterface.style.display,
-        "visibility:",
-        interfaces.chatInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "chat");
     updateSidebarActive(".chat-icon");
-
-    // Initialize notification popup for this interface
-    initializeNotificationPopup();
-    setTimeout(() => {
-        initializeNotificationPopup();
-    }, 250);
-
-    console.log(
-        "showChatInterface() completed - chat interface should be visible now"
-    );
 
     // Scroll to bottom of chat messages
     scrollToBottomOfChat();
@@ -726,59 +581,510 @@ function showChatInterface() {
     debugInterfaceVisibility("chatInterface");
 }
 
-// Chat-specific utility functions
-function scrollToBottomOfChat() {
-    const chatMessages = document.getElementById("chatMessages");
-    if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+function showUploadDocumentInterface() {
+    // Fix DOM structure first
+    fixInterfaceStructure();
+
+    // Hide all interfaces first
+    hideAllInterfaces();
+
+    const interfaces = getAllInterfaces();
+
+    if (!interfaces.uploadDocumentInterface) {
+        return;
+    }
+
+    // Use setProperty with !important to override any CSS rules
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "display",
+        "block",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "visibility",
+        "visible",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "opacity",
+        "1",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "z-index",
+        "9999",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "position",
+        "fixed",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "top",
+        "0",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "left",
+        "0",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "width",
+        "100%",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "height",
+        "100vh",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "background",
+        "linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%)",
+        "important"
+    );
+
+    // Update URL parameter and sidebar
+    updateURLParameter("interface", "upload");
+    updateSidebarActive(".upload-document-icon");
+
+    // Initialize drag and drop functionality
+    initializeDragAndDrop();
+
+    // Debug visibility
+    debugInterfaceVisibility("uploadDocumentInterface");
+}
+
+// Upload Document Interface Functions
+function initializeDragAndDrop() {
+    // KYC Dropzone
+    const kycDropzone = document.getElementById("kycDropzone");
+    const kycFileInput = document.getElementById("kycFileInput");
+
+    if (kycDropzone && kycFileInput) {
+        setupDropzone(kycDropzone, kycFileInput, handleKycFiles);
+    }
+
+    // Other Documents Dropzone
+    const otherDocsDropzone = document.getElementById("otherDocsDropzone");
+    const otherDocsFileInput = document.getElementById("otherDocsFileInput");
+
+    if (otherDocsDropzone && otherDocsFileInput) {
+        setupDropzone(
+            otherDocsDropzone,
+            otherDocsFileInput,
+            handleOtherDocsFiles
+        );
     }
 }
 
-function insertQuickMessage(message) {
-    const chatInput = document.getElementById("chatMessage");
-    if (chatInput) {
-        chatInput.value = message;
-        chatInput.focus();
-        // Auto-resize textarea
-        autoResizeTextarea(chatInput);
-    }
-}
-
-function autoResizeTextarea(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
-}
-
-// Function to update URL parameters without page reload
-function updateURLParameter(key, value) {
-    const url = new URL(window.location.href);
-    url.searchParams.set(key, value);
-    window.history.pushState({}, "", url);
-}
-
-// Function to get URL parameter
-function getURLParameter(key) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(key);
-}
-
-// Update sidebar active states
-function updateSidebarActive(activeClass) {
-    console.log("updateSidebarActive() called with class:", activeClass);
-
-    // Remove active class from all nav icons
-    document.querySelectorAll(".nav-icon").forEach((icon) => {
-        icon.classList.remove("active");
+function setupDropzone(dropzone, fileInput, handleFiles) {
+    // Drag and drop events
+    dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("dragover");
     });
 
-    // Add active class to the specified icon
-    const activeIcon = document.querySelector(activeClass);
-    if (activeIcon) {
-        activeIcon.classList.add("active");
-        console.log("Active class added to:", activeClass);
-    } else {
-        console.error("Active icon not found for class:", activeClass);
+    dropzone.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+    });
+
+    // Click to select files
+    dropzone.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    // File input change
+    fileInput.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+    });
+}
+
+function triggerKycFileInput() {
+    const kycFileInput = document.getElementById("kycFileInput");
+    if (kycFileInput) {
+        kycFileInput.click();
     }
+}
+
+function triggerOtherDocsFileInput() {
+    const otherDocsFileInput = document.getElementById("otherDocsFileInput");
+    if (otherDocsFileInput) {
+        otherDocsFileInput.click();
+    }
+}
+
+function handleKycFiles(files) {
+    const maxFiles = 5; // Limit KYC files
+    const maxSize = 10 * 1024 * 1024; // 10MB per file
+    const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "application/pdf",
+    ];
+
+    if (files.length > maxFiles) {
+        showUploadMessage(
+            "error",
+            `You can only upload up to ${maxFiles} KYC documents.`
+        );
+        return;
+    }
+
+    const validFiles = [];
+    const invalidFiles = [];
+
+    files.forEach((file) => {
+        if (!allowedTypes.includes(file.type)) {
+            invalidFiles.push(`${file.name} - Invalid file type`);
+        } else if (file.size > maxSize) {
+            invalidFiles.push(`${file.name} - File too large (max 10MB)`);
+        } else {
+            validFiles.push(file);
+        }
+    });
+
+    if (invalidFiles.length > 0) {
+        showUploadMessage(
+            "error",
+            "Some files were rejected: " + invalidFiles.join(", ")
+        );
+    }
+
+    if (validFiles.length > 0) {
+        uploadFiles(validFiles, "kyc");
+    }
+}
+
+function handleOtherDocsFiles(files) {
+    const maxSize = 10 * 1024 * 1024; // 10MB per file
+    const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    const validFiles = [];
+    const invalidFiles = [];
+
+    files.forEach((file) => {
+        if (!allowedTypes.includes(file.type)) {
+            invalidFiles.push(`${file.name} - Invalid file type`);
+        } else if (file.size > maxSize) {
+            invalidFiles.push(`${file.name} - File too large (max 10MB)`);
+        } else {
+            validFiles.push(file);
+        }
+    });
+
+    if (invalidFiles.length > 0) {
+        showUploadMessage(
+            "error",
+            "Some files were rejected: " + invalidFiles.join(", ")
+        );
+    }
+
+    if (validFiles.length > 0) {
+        uploadFiles(validFiles, "other");
+    }
+}
+
+function uploadFiles(files, type) {
+    const formData = new FormData();
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const uploadProgress = document.getElementById("uploadProgress");
+
+    // Show progress bar
+    if (uploadProgress) {
+        uploadProgress.style.display = "block";
+    }
+
+    // Add files to form data
+    files.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+    });
+    formData.append("type", type);
+    formData.append(
+        "_token",
+        document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content")
+    );
+
+    // Create XMLHttpRequest to track upload progress
+    const xhr = new XMLHttpRequest();
+
+    // Upload progress tracking
+    xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            if (progressBar) {
+                progressBar.style.width = percentComplete + "%";
+            }
+            if (progressText) {
+                progressText.textContent = Math.round(percentComplete) + "%";
+            }
+        }
+    });
+
+    // Upload complete
+    xhr.addEventListener("load", () => {
+        if (uploadProgress) {
+            uploadProgress.style.display = "none";
+        }
+
+        try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                showUploadMessage(
+                    "success",
+                    response.message || "Files uploaded successfully!"
+                );
+                displayUploadedFiles(response.files, type);
+
+                // Clear file inputs
+                const kycFileInput = document.getElementById("kycFileInput");
+                const otherDocsFileInput =
+                    document.getElementById("otherDocsFileInput");
+                if (kycFileInput) kycFileInput.value = "";
+                if (otherDocsFileInput) otherDocsFileInput.value = "";
+            } else {
+                showUploadMessage(
+                    "error",
+                    response.message || "Upload failed. Please try again."
+                );
+            }
+        } catch (error) {
+            showUploadMessage("error", "Upload failed. Please try again.");
+        }
+    });
+
+    // Upload error
+    xhr.addEventListener("error", () => {
+        if (uploadProgress) {
+            uploadProgress.style.display = "none";
+        }
+        showUploadMessage(
+            "error",
+            "Upload failed. Please check your connection and try again."
+        );
+    });
+
+    // Send the request
+    xhr.open("POST", "/client/upload-documents", true);
+    xhr.send(formData);
+}
+
+function displayUploadedFiles(files, type) {
+    const containerId =
+        type === "kyc" ? "kycFilesContainer" : "otherDocsFilesContainer";
+    const listId = type === "kyc" ? "kycFilesList" : "otherDocsFilesList";
+
+    const container = document.getElementById(containerId);
+    const list = document.getElementById(listId);
+
+    if (!container || !list) return;
+
+    // Show the files list
+    list.style.display = "block";
+
+    // Clear existing files
+    container.innerHTML = "";
+
+    // Add each file
+    files.forEach((file) => {
+        const fileItem = createFileItem(file, type);
+        container.appendChild(fileItem);
+    });
+}
+
+function createFileItem(file, type) {
+    const fileItem = document.createElement("div");
+    fileItem.className = "file-item";
+    fileItem.innerHTML = `
+        <div class="file-info">
+            <div class="file-icon">
+                <i class="bi bi-${getFileIcon(file.type)}"></i>
+            </div>
+            <div class="file-details">
+                <h6>${file.name}</h6>
+                <p>${formatFileSize(file.size)} • ${getFileType(
+        file.type
+    )} • ${formatDate(file.uploaded_at)}</p>
+            </div>
+        </div>
+        <div class="file-actions">
+            <button class="btn btn-outline-primary btn-sm" onclick="downloadFile('${
+                file.id
+            }')">
+                <i class="bi bi-download"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="deleteFile('${
+                file.id
+            }', '${type}')">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+    return fileItem;
+}
+
+function getFileIcon(type) {
+    const iconMap = {
+        "application/pdf": "file-pdf",
+        "image/jpeg": "file-image",
+        "image/jpg": "file-image",
+        "image/png": "file-image",
+        "application/msword": "file-word",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            "file-word",
+    };
+    return iconMap[type] || "file-earmark";
+}
+
+function getFileType(type) {
+    const typeMap = {
+        "application/pdf": "PDF",
+        "image/jpeg": "JPEG",
+        "image/jpg": "JPG",
+        "image/png": "PNG",
+        "application/msword": "DOC",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            "DOCX",
+    };
+    return typeMap[type] || "Unknown";
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
+function downloadFile(fileId) {
+    window.open(`/client/download-document/${fileId}`, "_blank");
+}
+
+function deleteFile(fileId, type) {
+    if (!confirm("Are you sure you want to delete this file?")) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file_id", fileId);
+    formData.append(
+        "_token",
+        document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content")
+    );
+
+    fetch("/client/delete-document", {
+        method: "POST",
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                showUploadMessage("success", "File deleted successfully!");
+                // Refresh the files list
+                loadExistingFiles();
+            } else {
+                showUploadMessage(
+                    "error",
+                    data.message || "Failed to delete file."
+                );
+            }
+        })
+        .catch((error) => {
+            showUploadMessage(
+                "error",
+                "Failed to delete file. Please try again."
+            );
+        });
+}
+
+function showUploadMessage(type, message) {
+    const messagesContainer = document.getElementById("uploadMessages");
+    if (!messagesContainer) return;
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `upload-message ${type}`;
+    messageDiv.innerHTML = `
+        <i class="bi bi-${
+            type === "success"
+                ? "check-circle"
+                : type === "error"
+                ? "exclamation-circle"
+                : "info-circle"
+        }"></i>
+        <span>${message}</span>
+    `;
+
+    messagesContainer.appendChild(messageDiv);
+
+    // Auto-remove message after 5 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+        }
+    }, 5000);
+}
+
+function loadExistingFiles() {
+    fetch("/client/get-documents", {
+        method: "GET",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                if (data.kyc_files && data.kyc_files.length > 0) {
+                    displayUploadedFiles(data.kyc_files, "kyc");
+                }
+                if (data.other_files && data.other_files.length > 0) {
+                    displayUploadedFiles(data.other_files, "other");
+                }
+            }
+        })
+        .catch((error) => {
+            // Silently fail - files will be loaded on next page refresh
+        });
 }
 
 // Single consolidated DOM initialization
@@ -1262,6 +1568,10 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("URL parameter indicates chat interface");
             showChatInterface();
             break;
+        case "upload":
+            console.log("URL parameter indicates upload document interface");
+            showUploadDocumentInterface();
+            break;
         case "trading":
         default:
             console.log(
@@ -1441,6 +1751,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize notification popup functionality
     initializeNotificationPopup();
+
+    // Initialize upload document interface on page load
+    if (document.getElementById("uploadDocumentInterface")) {
+        loadExistingFiles();
+    }
 });
 
 // Function to add a message to the chat UI
@@ -1999,156 +2314,12 @@ window.debugDOMStructure = debugDOMStructure;
 
 // ============= NOTIFICATION POPUP FUNCTIONALITY =============
 
-// Comprehensive debug function for notification popup
-function debugNotificationPopup() {
-    console.log("=== NOTIFICATION POPUP DEBUG ===");
-
-    // Find popup element
-    const popup = document.getElementById("notificationPopup");
-    const popupByClass = document.querySelector(".notification-popup");
-    const notificationIcon = document.querySelector(".notification-icon");
-
-    console.log("Elements found:");
-    console.log("- By ID (#notificationPopup):", !!popup, popup);
-    console.log(
-        "- By class (.notification-popup):",
-        !!popupByClass,
-        popupByClass
-    );
-    console.log(
-        "- Notification icon (.notification-icon):",
-        !!notificationIcon,
-        notificationIcon
-    );
-
-    if (popup) {
-        const computedStyle = window.getComputedStyle(popup);
-        console.log("Popup element details:");
-        console.log("- innerHTML length:", popup.innerHTML.length);
-        console.log("- Current style.display:", popup.style.display);
-        console.log("- Computed display:", computedStyle.display);
-        console.log("- Computed visibility:", computedStyle.visibility);
-        console.log("- Computed opacity:", computedStyle.opacity);
-        console.log("- Computed z-index:", computedStyle.zIndex);
-        console.log("- Computed position:", computedStyle.position);
-        console.log("- Computed transform:", computedStyle.transform);
-        console.log("- getBoundingClientRect:", popup.getBoundingClientRect());
-        console.log("- classList:", popup.classList.toString());
-
-        // Check if popup is actually in viewport
-        const rect = popup.getBoundingClientRect();
-        const inViewport =
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= window.innerHeight &&
-            rect.right <= window.innerWidth;
-        console.log("- In viewport:", inViewport);
-
-        // Check for overlapping elements
-        const elementsAtCenter = document.elementsFromPoint(
-            rect.left + rect.width / 2,
-            rect.top + rect.height / 2
-        );
-        console.log(
-            "- Elements at popup center:",
-            elementsAtCenter.map(
-                (el) =>
-                    `${el.tagName}${el.id ? "#" + el.id : ""}${
-                        el.className
-                            ? "." + el.className.split(" ").join(".")
-                            : ""
-                    }`
-            )
-        );
-    }
-
-    if (notificationIcon) {
-        console.log("Notification icon details:");
-        console.log(
-            "- Initialized:",
-            notificationIcon.hasAttribute("data-initialized")
-        );
-        console.log(
-            "- getBoundingClientRect:",
-            notificationIcon.getBoundingClientRect()
-        );
-        console.log(
-            "- Event listeners count:",
-            getEventListeners
-                ? getEventListeners(notificationIcon)
-                : "getEventListeners not available"
-        );
-    }
-
-    console.log("=== END DEBUG ===");
-
-    return {
-        popup,
-        popupByClass,
-        notificationIcon,
-        popupRect: popup ? popup.getBoundingClientRect() : null,
-        iconRect: notificationIcon
-            ? notificationIcon.getBoundingClientRect()
-            : null,
-    };
-}
-
-// Force show notification popup for testing
-function forceShowNotificationPopup() {
-    console.log("=== FORCE SHOWING NOTIFICATION POPUP ===");
-    const popup = document.getElementById("notificationPopup");
-    if (!popup) {
-        console.error("Popup not found!");
-        return;
-    }
-
-    // Reset all styles and force visibility
-    popup.style.cssText = `
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        z-index: 999999 !important;
-        top: 100px !important;
-        left: 100px !important;
-        width: 350px !important;
-        background: red !important;
-        border: 5px solid yellow !important;
-        transform: none !important;
-        transition: none !important;
-    `;
-
-    popup.classList.add("show");
-    popup.innerHTML =
-        "<div style='padding: 20px; color: white; font-size: 20px;'>TEST POPUP VISIBLE!</div>";
-
-    console.log("Forced popup to show with test content and red background");
-    return popup;
-}
-
 // Toggle notification popup
 function toggleNotificationPopup() {
-    console.log("toggleNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
     if (!popup) {
-        console.error("Notification popup element not found!");
-        console.log(
-            "Available elements with 'notification' in ID:",
-            Array.from(document.querySelectorAll('[id*="notification"]')).map(
-                (el) => el.id
-            )
-        );
-        debugNotificationPopup(); // Run debug if popup not found
         return;
     }
-
-    console.log("Notification popup element found:", popup);
-    console.log("Current popup display:", popup.style.display);
-    console.log("Current popup class list:", popup.classList.toString());
-    console.log(
-        "Current popup computed display:",
-        window.getComputedStyle(popup).display
-    );
 
     // Check if popup is currently visible (either by style or class)
     const computedStyle = window.getComputedStyle(popup);
@@ -2160,30 +2331,20 @@ function toggleNotificationPopup() {
             computedStyle.visibility === "visible");
 
     if (!isCurrentlyVisible) {
-        console.log("Showing notification popup");
         showNotificationPopup();
     } else {
-        console.log("Closing notification popup");
         closeNotificationPopup();
     }
 }
 
 // Show notification popup
 function showNotificationPopup() {
-    console.log("showNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
     if (!popup || !notificationIcon) {
-        console.error("Popup or notification icon not found!", {
-            popup: !!popup,
-            notificationIcon: !!notificationIcon,
-        });
-        if (!popup) debugNotificationPopup();
         return;
     }
-
-    console.log("Positioning and showing popup");
 
     // First, ensure popup is reset to initial state
     popup.classList.remove("show");
@@ -2196,9 +2357,6 @@ function showNotificationPopup() {
     const popupWidth = 350; // Width from CSS
     const popupHeight = 500; // Max height from CSS
 
-    console.log("Icon position:", iconRect);
-    console.log("Viewport size:", window.innerWidth, "x", window.innerHeight);
-
     // Calculate initial position to the right of the icon
     let left = iconRect.right + 10;
     let top = iconRect.top;
@@ -2210,34 +2368,28 @@ function showNotificationPopup() {
     // Adjust horizontal position if popup would go off screen
     if (left + popupWidth > viewportWidth) {
         left = iconRect.left - popupWidth - 10;
-        console.log("Adjusted left position to avoid going off screen:", left);
     }
 
     // Ensure left position is not negative
     if (left < 10) {
         left = 10;
-        console.log("Adjusted left position to avoid negative position:", left);
     }
 
     // Adjust vertical position if popup would go off screen
     if (top + popupHeight > viewportHeight) {
         top = viewportHeight - popupHeight - 20;
-        console.log("Adjusted top position to avoid going off screen:", top);
     }
 
     // Ensure top position is not negative
     if (top < 10) {
         top = 10;
-        console.log("Adjusted top position to avoid negative position:", top);
     }
 
     // Set position
     popup.style.left = left + "px";
     popup.style.top = top + "px";
 
-    console.log("Final position:", left, top);
-
-    // Force styling with !important to override any conflicting CSS
+    // Show popup with proper styling
     popup.style.setProperty("display", "block", "important");
     popup.style.setProperty("visibility", "visible", "important");
     popup.style.setProperty("opacity", "1", "important");
@@ -2245,191 +2397,33 @@ function showNotificationPopup() {
     popup.style.setProperty("position", "fixed", "important");
     popup.style.setProperty("transform", "translateY(0) scale(1)", "important");
     popup.style.setProperty("pointer-events", "auto", "important");
-    // Debug: add a visible border and force dimensions
-    popup.style.setProperty("border", "3px solid red", "important");
-    popup.style.setProperty("width", "350px", "important");
-    popup.style.setProperty("height", "auto", "important");
-    popup.style.setProperty("min-width", "350px", "important");
-    popup.style.setProperty("min-height", "200px", "important");
-    popup.style.setProperty("max-height", "500px", "important");
-    popup.style.setProperty("overflow", "visible", "important");
-    popup.style.setProperty(
-        "background",
-        "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-        "important"
-    );
-
-    // Also force all child elements to be visible
-    const allChildren = popup.querySelectorAll("*");
-    allChildren.forEach((child) => {
-        child.style.setProperty("display", "block", "important");
-        child.style.setProperty("visibility", "visible", "important");
-        child.style.setProperty("opacity", "1", "important");
-    });
-
-    // Fix specific flex containers that might be collapsing
-    const popupContent = popup.querySelector(".notification-popup-content");
-    if (popupContent) {
-        popupContent.style.setProperty("display", "flex", "important");
-        popupContent.style.setProperty("flex-direction", "column", "important");
-        popupContent.style.setProperty("height", "auto", "important");
-        popupContent.style.setProperty("min-height", "200px", "important");
-        popupContent.style.setProperty("width", "100%", "important");
-    }
-
-    const popupHeader = popup.querySelector(".notification-popup-header");
-    if (popupHeader) {
-        popupHeader.style.setProperty("display", "flex", "important");
-        popupHeader.style.setProperty("padding", "15px 20px", "important");
-        popupHeader.style.setProperty("min-height", "50px", "important");
-    }
-
-    const popupMessages = popup.querySelector(".notification-popup-messages");
-    if (popupMessages) {
-        popupMessages.style.setProperty("display", "block", "important");
-        popupMessages.style.setProperty("padding", "10px", "important");
-        popupMessages.style.setProperty("min-height", "100px", "important");
-        popupMessages.style.setProperty("flex", "1", "important");
-    }
-
-    // Log the content for debugging
-    console.log("Popup innerHTML length:", popup.innerHTML.length);
-    console.log(
-        "Popup content preview:",
-        popup.innerHTML.substring(0, 200) + "..."
-    );
-    console.log("Full popup innerHTML:", popup.innerHTML);
-
-    // ULTRA-AGGRESSIVE FIX: Replace all content with a simple visible div
-    popup.innerHTML = `
-        <div style="
-            width: 340px !important;
-            height: 180px !important;
-            padding: 20px !important;
-            color: white !important;
-            background: #1a1a1a !important;
-            border: 2px solid #4f8cff !important;
-            border-radius: 8px !important;
-            font-family: Arial, sans-serif !important;
-            font-size: 14px !important;
-            line-height: 1.4 !important;
-            box-sizing: border-box !important;
-            display: block !important;
-            position: relative !important;
-        ">
-            <div style="
-                display: flex !important;
-                align-items: center !important;
-                margin-bottom: 15px !important;
-                color: #4f8cff !important;
-                font-weight: bold !important;
-                font-size: 16px !important;
-            ">
-                <i class="bi bi-bell" style="margin-right: 8px !important;"></i>
-                Notifications
-                <button onclick="closeNotificationPopup()" style="
-                    margin-left: auto !important;
-                    background: transparent !important;
-                    border: none !important;
-                    color: #888 !important;
-                    font-size: 18px !important;
-                    cursor: pointer !important;
-                    padding: 4px !important;
-                ">×</button>
-            </div>
-            <div style="
-                color: #ccc !important;
-                text-align: center !important;
-                margin-top: 20px !important;
-            ">
-                <div style="font-size: 40px !important; margin-bottom: 10px !important;">🔔</div>
-                <h4 style="margin: 10px 0 !important; color: #fff !important;">No Notifications</h4>
-                <p style="margin: 0 !important; font-size: 13px !important;">You don't have any notifications at this time.</p>
-            </div>
-        </div>
-    `;
-
-    console.log("Replaced popup content with ultra-simple structure");
-
-    console.log(
-        "Popup display set to block with forced styling, adding show class"
-    );
 
     // Add show class
     popup.classList.add("show");
-
-    // Double-check after a small delay
-    setTimeout(() => {
-        popup.classList.add("show");
-        popup.style.setProperty("opacity", "1", "important");
-        popup.style.setProperty(
-            "transform",
-            "translateY(0) scale(1)",
-            "important"
-        );
-        console.log("Show class added with delayed styling confirmation");
-
-        // Final verification
-        const computedStyle = window.getComputedStyle(popup);
-        const rect = popup.getBoundingClientRect();
-        console.log("Final popup verification:", {
-            display: computedStyle.display,
-            visibility: computedStyle.visibility,
-            opacity: computedStyle.opacity,
-            zIndex: computedStyle.zIndex,
-            position: computedStyle.position,
-            transform: computedStyle.transform,
-            left: popup.style.left,
-            top: popup.style.top,
-            rect: rect,
-            inViewport: rect.width > 0 && rect.height > 0,
-        });
-
-        // If still not visible, run debug
-        if (
-            rect.width === 0 ||
-            rect.height === 0 ||
-            computedStyle.display === "none"
-        ) {
-            console.warn(
-                "Popup appears to still not be visible after setup. Running debug..."
-            );
-            debugNotificationPopup();
-        }
-    }, 50);
 }
 
 // Close notification popup
 function closeNotificationPopup() {
-    console.log("closeNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
     if (!popup) {
-        console.error("Notification popup not found for closing");
         return;
     }
 
-    console.log("Removing show class and hiding popup");
     popup.classList.remove("show");
     setTimeout(() => {
         popup.style.setProperty("display", "none", "important");
         popup.style.setProperty("visibility", "hidden", "important");
         popup.style.setProperty("opacity", "0", "important");
-        console.log("Popup hidden");
     }, 300); // Match the transition duration
 }
 
 // Initialize notification popup functionality
 function initializeNotificationPopup() {
-    console.log("Initializing notification popup...");
-
     // Find notification icon
     const notificationIcon = document.querySelector(".notification-icon");
     if (!notificationIcon) {
-        console.error("Notification icon not found!");
         return;
     }
-
-    console.log("Notification icon found:", notificationIcon);
 
     // Only initialize if not already done
     if (!notificationIcon.hasAttribute("data-initialized")) {
@@ -2437,14 +2431,10 @@ function initializeNotificationPopup() {
         notificationIcon.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log("Notification icon clicked");
             toggleNotificationPopup();
         });
 
         notificationIcon.setAttribute("data-initialized", "true");
-        console.log("Notification icon event listener added");
-    } else {
-        console.log("Notification icon already initialized");
     }
 
     // Ensure the close-on-outside-click is only added once globally
@@ -2469,7 +2459,6 @@ function initializeNotificationPopup() {
             "data-notification-outside-click-initialized",
             "true"
         );
-        console.log("Outside click listener added");
     }
 
     // Handle notification item clicks
@@ -2483,8 +2472,6 @@ function initializeNotificationPopup() {
             item.setAttribute("data-click-initialized", "true");
         }
     });
-
-    console.log("Notification popup initialization completed");
 }
 
 // Mark notification as read
@@ -2543,7 +2530,6 @@ function markNotificationAsRead(notificationId) {
             }
         })
         .catch((error) => {
-            console.error("Error:", error);
             showNotification("Error marking notification as read", "error");
         });
 }
@@ -2571,357 +2557,9 @@ function updateNotificationBadge(count) {
     }
 }
 
-// Debug function to check notification popup visibility
-function debugNotificationPopup() {
-    const popup = document.getElementById("notificationPopup");
-    if (!popup) {
-        console.error("Notification popup not found!");
-        return;
-    }
-
-    const rect = popup.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(popup);
-
-    console.log("=== NOTIFICATION POPUP DEBUG ===");
-    console.log("Element:", popup);
-    console.log("BoundingClientRect:", rect);
-    console.log("Computed styles:", {
-        display: computedStyle.display,
-        visibility: computedStyle.visibility,
-        opacity: computedStyle.opacity,
-        zIndex: computedStyle.zIndex,
-        position: computedStyle.position,
-        transform: computedStyle.transform,
-        background: computedStyle.background,
-        border: computedStyle.border,
-        width: computedStyle.width,
-        height: computedStyle.height,
-        minWidth: computedStyle.minWidth,
-        minHeight: computedStyle.minHeight,
-        maxWidth: computedStyle.maxWidth,
-        maxHeight: computedStyle.maxHeight,
-        overflow: computedStyle.overflow,
-        fontSize: computedStyle.fontSize,
-        lineHeight: computedStyle.lineHeight,
-    });
-    console.log("Inline styles:", popup.style.cssText);
-    console.log("Classes:", popup.className);
-    console.log("Is visible:", rect.width > 0 && rect.height > 0);
-
-    // Check parent elements
-    console.log("=== PARENT ELEMENTS CHECK ===");
-    let parent = popup.parentElement;
-    let level = 0;
-    while (parent && level < 10) {
-        const parentRect = parent.getBoundingClientRect();
-        const parentStyle = window.getComputedStyle(parent);
-        console.log(`Parent ${level}:`, {
-            element: parent,
-            tagName: parent.tagName,
-            id: parent.id,
-            className: parent.className,
-            display: parentStyle.display,
-            visibility: parentStyle.visibility,
-            opacity: parentStyle.opacity,
-            overflow: parentStyle.overflow,
-            rect: parentRect,
-            isVisible: parentRect.width > 0 && parentRect.height > 0,
-        });
-        parent = parent.parentElement;
-        level++;
-    }
-
-    // Check if the element is actually connected to the DOM
-    console.log("Is connected to DOM:", popup.isConnected);
-    console.log("=== END DEBUG ===");
-}
-
-// Export debug function globally
-window.debugNotificationPopup = debugNotificationPopup;
-
-// Make debug functions available globally for console testing
-window.forceShowNotificationPopup = forceShowNotificationPopup;
+// Make functions available globally
 window.toggleNotificationPopup = toggleNotificationPopup;
 window.showNotificationPopup = showNotificationPopup;
 window.closeNotificationPopup = closeNotificationPopup;
 
-console.log("Notification popup debug functions available globally:");
-console.log("- debugNotificationPopup() - comprehensive debug info");
-console.log("- forceShowNotificationPopup() - force show with test styling");
-console.log("- toggleNotificationPopup() - normal toggle function");
-console.log("- showNotificationPopup() - normal show function");
-console.log("- closeNotificationPopup() - normal close function");
-
 // ============= INTERFACE SWITCHING AND CHAT FUNCTIONALITY =============
-
-// Function to force popup visibility by neutralizing all possible CSS hiding rules
-function forcePopupVisibilityAggressively() {
-    const popup = document.getElementById("notificationPopup");
-    if (!popup) {
-        console.error("Notification popup not found!");
-        return;
-    }
-
-    // Remove all classes that might hide the element
-    const hidingClasses = [
-        "d-none",
-        "hidden",
-        "hide",
-        "invisible",
-        "sr-only",
-        "visually-hidden",
-        "collapse",
-        "collapsed",
-    ];
-    hidingClasses.forEach((cls) => {
-        popup.classList.remove(cls);
-        // Also remove from all child elements
-        popup.querySelectorAll("*").forEach((child) => {
-            child.classList.remove(cls);
-        });
-    });
-
-    // Remove hidden attribute if present
-    popup.removeAttribute("hidden");
-    popup.querySelectorAll("*").forEach((child) => {
-        child.removeAttribute("hidden");
-    });
-
-    // Create and inject critical CSS to override any aggressive hiding rules
-    const criticalStyles = `
-        #notificationPopup {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            z-index: 999999 !important;
-            width: 400px !important;
-            min-width: 400px !important;
-            height: auto !important;
-            min-height: 200px !important;
-            max-height: 80vh !important;
-            background: white !important;
-            border: 3px solid red !important;
-            box-shadow: 0 0 20px rgba(79, 140, 255, 0.5) !important;
-            pointer-events: auto !important;
-            overflow: visible !important;
-            font-size: 14px !important;
-            line-height: 1.4 !important;
-            color: black !important;
-            padding: 20px !important;
-            box-sizing: border-box !important;
-        }
-        
-        #notificationPopup * {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            position: relative !important;
-            color: inherit !important;
-            background: transparent !important;
-            border: none !important;
-            margin: 0 !important;
-            padding: 5px !important;
-            font-size: inherit !important;
-            line-height: inherit !important;
-            overflow: visible !important;
-            pointer-events: auto !important;
-        }
-        
-        #notificationPopup .notification-popup-content {
-            display: block !important;
-            width: 100% !important;
-            height: auto !important;
-            min-height: 150px !important;
-        }
-        
-        #notificationPopup .notification-popup-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-bottom: 10px !important;
-            background: #f0f0f0 !important;
-            padding: 10px !important;
-        }
-        
-        #notificationPopup .notification-popup-close {
-            display: inline-block !important;
-            cursor: pointer !important;
-            background: red !important;
-            color: white !important;
-            padding: 5px 10px !important;
-            border: none !important;
-        }
-    `;
-
-    // Remove any existing critical styles and add new ones
-    let existingCriticalStyle = document.getElementById(
-        "notificationPopupCriticalStyles"
-    );
-    if (existingCriticalStyle) {
-        existingCriticalStyle.remove();
-    }
-
-    const styleElement = document.createElement("style");
-    styleElement.id = "notificationPopupCriticalStyles";
-    styleElement.textContent = criticalStyles;
-    document.head.appendChild(styleElement);
-
-    // Force a reflow
-    popup.offsetHeight;
-
-    console.log("Applied aggressive visibility styles to notification popup");
-
-    // Debug after applying styles
-    setTimeout(() => {
-        debugNotificationPopup();
-    }, 100);
-}
-
-// Last resort function to create a completely new notification popup
-function createFallbackNotificationPopup() {
-    console.log("Creating fallback notification popup as last resort");
-
-    // Remove the old popup if it exists
-    const oldPopup = document.getElementById("notificationPopup");
-    if (oldPopup) {
-        oldPopup.remove();
-    }
-
-    // Create a completely new popup element
-    const newPopup = document.createElement("div");
-    newPopup.id = "notificationPopup";
-    newPopup.className = "notification-popup show";
-
-    // Set inline styles with maximum specificity
-    newPopup.style.cssText = `
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        z-index: 2147483647 !important;
-        width: 400px !important;
-        min-width: 400px !important;
-        height: auto !important;
-        min-height: 300px !important;
-        max-height: 80vh !important;
-        background: #1a1a1a !important;
-        border: 3px solid #4f8cff !important;
-        border-radius: 12px !important;
-        box-shadow: 0 20px 40px rgba(79, 140, 255, 0.5) !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-        pointer-events: auto !important;
-        overflow: visible !important;
-        font-family: Arial, sans-serif !important;
-        font-size: 14px !important;
-        line-height: 1.4 !important;
-        color: #ffffff !important;
-    `;
-
-    // Set the content
-    newPopup.innerHTML = `
-        <div class="notification-popup-content" style="
-            display: block !important;
-            width: 100% !important;
-            height: auto !important;
-            min-height: 250px !important;
-            padding: 20px !important;
-            background: transparent !important;
-        ">
-            <div class="notification-popup-header" style="
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                margin-bottom: 15px !important;
-                padding: 15px !important;
-                background: rgba(45, 45, 45, 0.8) !important;
-                border-radius: 8px !important;
-                border: 1px solid #333 !important;
-            ">
-                <div class="notification-popup-title" style="
-                    display: flex !important;
-                    align-items: center !important;
-                    color: #4f8cff !important;
-                    font-weight: bold !important;
-                    font-size: 16px !important;
-                ">
-                    <i class="bi bi-bell" style="margin-right: 8px !important;"></i>
-                    <span>Notifications</span>
-                </div>
-                <button class="notification-popup-close" onclick="closeNotificationPopup()" style="
-                    display: inline-block !important;
-                    cursor: pointer !important;
-                    background: #dc3545 !important;
-                    color: white !important;
-                    padding: 8px 12px !important;
-                    border: none !important;
-                    border-radius: 4px !important;
-                    font-size: 14px !important;
-                ">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </div>
-            
-            <div class="notification-popup-messages" id="notificationPopupMessages" style="
-                display: block !important;
-                width: 100% !important;
-                height: auto !important;
-                min-height: 150px !important;
-                padding: 15px !important;
-                background: rgba(30, 30, 30, 0.6) !important;
-                border-radius: 8px !important;
-                overflow-y: auto !important;
-                max-height: 300px !important;
-            ">
-                <div class="no-notifications-message" style="
-                    text-align: center !important;
-                    padding: 20px !important;
-                    color: #ccc !important;
-                ">
-                    <div class="no-notifications-icon" style="
-                        font-size: 40px !important;
-                        margin-bottom: 10px !important;
-                        color: #666 !important;
-                    ">
-                        <i class="bi bi-bell-slash"></i>
-                    </div>
-                    <h4 style="margin: 10px 0 !important; color: #fff !important;">No Notifications</h4>
-                    <p style="margin: 0 !important; color: #ccc !important;">You don't have any notifications at this time.</p>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Append to body
-    document.body.appendChild(newPopup);
-
-    console.log("Fallback notification popup created and added to DOM");
-
-    // Verify the new popup
-    setTimeout(() => {
-        const rect = newPopup.getBoundingClientRect();
-        console.log("Fallback popup verification:", {
-            rect: rect,
-            isVisible: rect.width > 0 && rect.height > 0,
-        });
-
-        if (rect.width > 0 && rect.height > 0) {
-            console.log("SUCCESS! Fallback popup is visible!");
-        } else {
-            console.error(
-                "CRITICAL FAILURE: Even the fallback popup is not visible. This indicates a serious DOM or browser issue."
-            );
-        }
-    }, 100);
-}
-
-// Export globally
-window.createFallbackNotificationPopup = createFallbackNotificationPopup;

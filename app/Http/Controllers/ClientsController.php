@@ -667,4 +667,181 @@ class ClientsController extends Controller
             return response()->json(['success' => false, 'message' => 'Error fetching deposits: ' . $e->getMessage()]);
         }
     }
+
+    public function uploadDocuments(Request $request)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $request->validate([
+                'files.*' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240', // 10MB max per file
+                'type' => 'required|in:kyc,other'
+            ]);
+
+            $type = $request->get('type');
+            $files = $request->file('files');
+            $uploadedFiles = [];
+
+            // If it's KYC type, check if already uploaded
+            if ($type === 'kyc') {
+                $existingKyc = \App\Models\ClientDocument::where('client_id', $client->id)
+                    ->where('type', 'kyc')
+                    ->count();
+                
+                if ($existingKyc > 0) {
+                    return response()->json(['success' => false, 'message' => 'KYC documents already uploaded. You can only upload once.']);
+                }
+            }
+
+            foreach ($files as $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . uniqid() . '.' . $extension;
+                
+                // Store file
+                $path = $file->storeAs('documents/' . $type, $filename, 'public');
+                
+                // Save to database
+                $document = new \App\Models\ClientDocument();
+                $document->client_id = $client->id;
+                $document->type = $type;
+                $document->original_name = $originalName;
+                $document->file_path = $path;
+                $document->file_size = $file->getSize();
+                $document->mime_type = $file->getMimeType();
+                $document->uploaded_at = now();
+                $document->save();
+
+                $uploadedFiles[] = [
+                    'id' => $document->id,
+                    'name' => $originalName,
+                    'size' => $file->getSize(),
+                    'type' => $file->getMimeType(),
+                    'uploaded_at' => $document->uploaded_at->toISOString()
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Documents uploaded successfully!',
+                'files' => $uploadedFiles
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Upload failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function getDocuments(Request $request)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $kycFiles = \App\Models\ClientDocument::where('client_id', $client->id)
+                ->where('type', 'kyc')
+                ->get()
+                ->map(function ($doc) {
+                    return [
+                        'id' => $doc->id,
+                        'name' => $doc->original_name,
+                        'size' => $doc->file_size,
+                        'type' => $doc->mime_type,
+                        'uploaded_at' => $doc->uploaded_at->toISOString()
+                    ];
+                });
+
+            $otherFiles = \App\Models\ClientDocument::where('client_id', $client->id)
+                ->where('type', 'other')
+                ->get()
+                ->map(function ($doc) {
+                    return [
+                        'id' => $doc->id,
+                        'name' => $doc->original_name,
+                        'size' => $doc->file_size,
+                        'type' => $doc->mime_type,
+                        'uploaded_at' => $doc->uploaded_at->toISOString()
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'kyc_files' => $kycFiles,
+                'other_files' => $otherFiles
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error fetching documents: ' . $e->getMessage()]);
+        }
+    }
+
+    public function downloadDocument($id)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $document = \App\Models\ClientDocument::where('id', $id)
+                ->where('client_id', $client->id)
+                ->first();
+
+            if (!$document) {
+                return response()->json(['success' => false, 'message' => 'Document not found']);
+            }
+
+            $filePath = storage_path('app/public/' . $document->file_path);
+            
+            if (!file_exists($filePath)) {
+                return response()->json(['success' => false, 'message' => 'File not found']);
+            }
+
+            return response()->download($filePath, $document->original_name);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Download failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function deleteDocument(Request $request)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $request->validate([
+                'file_id' => 'required|integer'
+            ]);
+
+            $document = \App\Models\ClientDocument::where('id', $request->file_id)
+                ->where('client_id', $client->id)
+                ->first();
+
+            if (!$document) {
+                return response()->json(['success' => false, 'message' => 'Document not found']);
+            }
+
+            // Delete file from storage
+            $filePath = storage_path('app/public/' . $document->file_path);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Delete from database
+            $document->delete();
+
+            return response()->json(['success' => true, 'message' => 'Document deleted successfully']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Delete failed: ' . $e->getMessage()]);
+        }
+    }
 }
