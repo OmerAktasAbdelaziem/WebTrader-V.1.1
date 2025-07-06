@@ -310,6 +310,12 @@ function hideAllInterfaces() {
             element.style.opacity = "0";
         }
     });
+
+    // Only close notification popup if it's currently open (don't force hide it)
+    const notificationPopup = document.getElementById("notificationPopup");
+    if (notificationPopup && notificationPopup.classList.contains("show")) {
+        closeNotificationPopup();
+    }
 }
 
 function showMainContent() {
@@ -365,6 +371,12 @@ function showMainContent() {
     // Update URL parameter and sidebar
     updateURLParameter("interface", "trading");
     updateSidebarActive(".markets-icon");
+
+    // Initialize notification popup for this interface
+    initializeNotificationPopup();
+    setTimeout(() => {
+        initializeNotificationPopup();
+    }, 250);
 
     console.log(
         "showMainContent() completed - main content should be visible now"
@@ -442,6 +454,12 @@ function showAccountInterface() {
     // Update URL parameter and sidebar
     updateURLParameter("interface", "account");
     updateSidebarActive(".account-icon");
+
+    // Initialize notification popup for this interface
+    initializeNotificationPopup();
+    setTimeout(() => {
+        initializeNotificationPopup();
+    }, 250);
 
     console.log(
         "showAccountInterface() completed - account interface should be visible now"
@@ -522,6 +540,12 @@ function showDepositInterface() {
     // Update URL parameter and sidebar
     updateURLParameter("interface", "deposit");
     updateSidebarActive(".deposit-icon");
+
+    // Initialize notification popup for this interface
+    initializeNotificationPopup();
+    setTimeout(() => {
+        initializeNotificationPopup();
+    }, 250);
 
     console.log(
         "showDepositInterface() completed - deposit interface should be visible now"
@@ -614,6 +638,12 @@ function showWithdrawalInterface() {
     updateURLParameter("interface", "withdrawal");
     updateSidebarActive(".withdrawal-icon");
 
+    // Initialize notification popup for this interface
+    initializeNotificationPopup();
+    setTimeout(() => {
+        initializeNotificationPopup();
+    }, 250);
+
     console.log(
         "showWithdrawalInterface() completed - withdrawal interface should be visible now"
     );
@@ -678,6 +708,12 @@ function showChatInterface() {
     // Update URL parameter and sidebar
     updateURLParameter("interface", "chat");
     updateSidebarActive(".chat-icon");
+
+    // Initialize notification popup for this interface
+    initializeNotificationPopup();
+    setTimeout(() => {
+        initializeNotificationPopup();
+    }, 250);
 
     console.log(
         "showChatInterface() completed - chat interface should be visible now"
@@ -1006,7 +1042,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const accountIcon = document.querySelector(".account-icon");
     const depositIcon = document.querySelector(".deposit-icon");
     const withdrawalIcon = document.querySelector(".withdrawal-icon");
-    const chatIcon = document.querySelector(".chat-icon");
     const logoutIcon = document.querySelector(".logout-icon");
 
     if (marketsIcon) {
@@ -1037,6 +1072,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Chat icon navigation - now goes directly to chat interface (no overlay)
+    const chatIcon = document.querySelector(".chat-icon");
     if (chatIcon) {
         chatIcon.addEventListener("click", function (e) {
             e.preventDefault();
@@ -1401,9 +1438,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-
-    // Initialize chat overlay functionality
-    initializeChatOverlay();
 
     // Initialize notification popup functionality
     initializeNotificationPopup();
@@ -1963,320 +1997,494 @@ window.scrollToBottomOfChat = scrollToBottomOfChat;
 window.addMessageToChat = addMessageToChat;
 window.debugDOMStructure = debugDOMStructure;
 
-// ============= CHAT OVERLAY FUNCTIONS =============
-// Toggle chat overlay visibility
-function toggleChatOverlay() {
-    const overlay = document.getElementById("liveChatOverlay");
-    if (overlay) {
-        if (overlay.style.display === "none" || overlay.style.display === "") {
-            overlay.style.display = "flex";
-            scrollToBottomOfChatOverlay();
-        } else {
-            overlay.style.display = "none";
-        }
-    }
-}
-
-// Insert quick message into overlay chat input
-function insertQuickMessageOverlay(message) {
-    const chatInput = document.getElementById("chatOverlayMessage");
-    if (chatInput) {
-        chatInput.value = message;
-        chatInput.focus();
-        autoResizeTextarea(chatInput);
-    }
-}
-
-// Scroll to bottom of chat overlay messages
-function scrollToBottomOfChatOverlay() {
-    const messagesContainer = document.getElementById("chatOverlayMessages");
-    if (messagesContainer) {
-        setTimeout(() => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 100);
-    }
-}
-
-// Add message to chat overlay
-function addMessageToChatOverlay(message, isUser = true) {
-    const messagesContainer = document.getElementById("chatOverlayMessages");
-    if (!messagesContainer) return;
-
-    // Remove welcome message if it exists
-    const welcomeMessage = messagesContainer.querySelector(".welcome-message");
-    if (welcomeMessage) {
-        welcomeMessage.remove();
-    }
-
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `message ${
-        isUser ? "user-message" : "support-message"
-    }`;
-
-    const currentTime = new Date().toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-
-    if (isUser) {
-        messageDiv.innerHTML = `
-            <div class="message-content">
-                <div class="message-header">
-                    <span class="message-sender">You</span>
-                    <span class="message-time">${currentTime}</span>
-                </div>
-                <div class="message-text">${message}</div>
-            </div>
-            <div class="message-avatar">
-                <i class="bi bi-person-circle"></i>
-            </div>
-        `;
-    } else {
-        messageDiv.innerHTML = `
-            <div class="message-avatar">
-                <i class="bi bi-headset"></i>
-            </div>
-            <div class="message-content">
-                <div class="message-header">
-                    <span class="message-sender">Support Team</span>
-                    <span class="message-time">${currentTime}</span>
-                </div>
-                <div class="message-text">${message}</div>
-            </div>
-        `;
-    }
-
-    messagesContainer.appendChild(messageDiv);
-    scrollToBottomOfChatOverlay();
-}
-
-// Auto-resize textarea for chat overlay
-function autoResizeTextarea(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
-}
-
-// Initialize chat overlay functionality
-function initializeChatOverlay() {
-    // Handle chat icon click
-    const chatIcon = document.querySelector(".chat-icon");
-    if (chatIcon) {
-        chatIcon.addEventListener("click", toggleChatOverlay);
-    }
-
-    // Handle overlay form submission
-    const chatOverlayForm = document.getElementById("chatOverlayForm");
-    if (chatOverlayForm) {
-        chatOverlayForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const messageInput = document.getElementById("chatOverlayMessage");
-            const message = messageInput.value.trim();
-
-            if (!message) {
-                showNotification("Please enter a message", "warning");
-                return;
-            }
-
-            // Add user message to chat immediately
-            addMessageToChatOverlay(message, true);
-
-            // Clear input
-            messageInput.value = "";
-            autoResizeTextarea(messageInput);
-
-            // Submit via AJAX
-            try {
-                const formData = new FormData(chatOverlayForm);
-                const response = await fetch(chatOverlayForm.action, {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "X-CSRF-TOKEN": document
-                            .querySelector('meta[name="csrf-token"]')
-                            .getAttribute("content"),
-                    },
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showNotification("Message sent successfully!", "success");
-                    // Auto-response simulation (you can customize this)
-                    setTimeout(() => {
-                        addMessageToChatOverlay(
-                            "Thank you for your message. Our support team will respond shortly.",
-                            false
-                        );
-                    }, 1000);
-                } else {
-                    showNotification(
-                        result.message || "Failed to send message",
-                        "error"
-                    );
-                    // Remove the message that was added optimistically
-                    const messages = document.querySelectorAll(
-                        "#chatOverlayMessages .message"
-                    );
-                    if (messages.length > 0) {
-                        messages[messages.length - 1].remove();
-                    }
-                }
-            } catch (error) {
-                console.error("Chat submission error:", error);
-                showNotification("Network error. Please try again.", "error");
-                // Remove the message that was added optimistically
-                const messages = document.querySelectorAll(
-                    "#chatOverlayMessages .message"
-                );
-                if (messages.length > 0) {
-                    messages[messages.length - 1].remove();
-                }
-            }
-        });
-    }
-
-    // Handle textarea auto-resize in overlay
-    const chatOverlayMessage = document.getElementById("chatOverlayMessage");
-    if (chatOverlayMessage) {
-        chatOverlayMessage.addEventListener("input", function () {
-            autoResizeTextarea(this);
-        });
-
-        // Handle Enter key (Shift+Enter for new line)
-        chatOverlayMessage.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                chatOverlayForm.dispatchEvent(new Event("submit"));
-            }
-        });
-    }
-
-    // Close overlay when clicking outside
-    const overlay = document.getElementById("liveChatOverlay");
-    if (overlay) {
-        overlay.addEventListener("click", function (e) {
-            if (e.target === overlay) {
-                toggleChatOverlay();
-            }
-        });
-    }
-
-    // Handle escape key to close overlay
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") {
-            const overlay = document.getElementById("liveChatOverlay");
-            if (overlay && overlay.style.display === "flex") {
-                toggleChatOverlay();
-            }
-        }
-    });
-}
-
-// Export chat overlay functions globally
-window.toggleChatOverlay = toggleChatOverlay;
-window.insertQuickMessageOverlay = insertQuickMessageOverlay;
-window.scrollToBottomOfChatOverlay = scrollToBottomOfChatOverlay;
-window.addMessageToChatOverlay = addMessageToChatOverlay;
-window.initializeChatOverlay = initializeChatOverlay;
-
 // ============= NOTIFICATION POPUP FUNCTIONALITY =============
+
+// Comprehensive debug function for notification popup
+function debugNotificationPopup() {
+    console.log("=== NOTIFICATION POPUP DEBUG ===");
+
+    // Find popup element
+    const popup = document.getElementById("notificationPopup");
+    const popupByClass = document.querySelector(".notification-popup");
+    const notificationIcon = document.querySelector(".notification-icon");
+
+    console.log("Elements found:");
+    console.log("- By ID (#notificationPopup):", !!popup, popup);
+    console.log(
+        "- By class (.notification-popup):",
+        !!popupByClass,
+        popupByClass
+    );
+    console.log(
+        "- Notification icon (.notification-icon):",
+        !!notificationIcon,
+        notificationIcon
+    );
+
+    if (popup) {
+        const computedStyle = window.getComputedStyle(popup);
+        console.log("Popup element details:");
+        console.log("- innerHTML length:", popup.innerHTML.length);
+        console.log("- Current style.display:", popup.style.display);
+        console.log("- Computed display:", computedStyle.display);
+        console.log("- Computed visibility:", computedStyle.visibility);
+        console.log("- Computed opacity:", computedStyle.opacity);
+        console.log("- Computed z-index:", computedStyle.zIndex);
+        console.log("- Computed position:", computedStyle.position);
+        console.log("- Computed transform:", computedStyle.transform);
+        console.log("- getBoundingClientRect:", popup.getBoundingClientRect());
+        console.log("- classList:", popup.classList.toString());
+
+        // Check if popup is actually in viewport
+        const rect = popup.getBoundingClientRect();
+        const inViewport =
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= window.innerHeight &&
+            rect.right <= window.innerWidth;
+        console.log("- In viewport:", inViewport);
+
+        // Check for overlapping elements
+        const elementsAtCenter = document.elementsFromPoint(
+            rect.left + rect.width / 2,
+            rect.top + rect.height / 2
+        );
+        console.log(
+            "- Elements at popup center:",
+            elementsAtCenter.map(
+                (el) =>
+                    `${el.tagName}${el.id ? "#" + el.id : ""}${
+                        el.className
+                            ? "." + el.className.split(" ").join(".")
+                            : ""
+                    }`
+            )
+        );
+    }
+
+    if (notificationIcon) {
+        console.log("Notification icon details:");
+        console.log(
+            "- Initialized:",
+            notificationIcon.hasAttribute("data-initialized")
+        );
+        console.log(
+            "- getBoundingClientRect:",
+            notificationIcon.getBoundingClientRect()
+        );
+        console.log(
+            "- Event listeners count:",
+            getEventListeners
+                ? getEventListeners(notificationIcon)
+                : "getEventListeners not available"
+        );
+    }
+
+    console.log("=== END DEBUG ===");
+
+    return {
+        popup,
+        popupByClass,
+        notificationIcon,
+        popupRect: popup ? popup.getBoundingClientRect() : null,
+        iconRect: notificationIcon
+            ? notificationIcon.getBoundingClientRect()
+            : null,
+    };
+}
+
+// Force show notification popup for testing
+function forceShowNotificationPopup() {
+    console.log("=== FORCE SHOWING NOTIFICATION POPUP ===");
+    const popup = document.getElementById("notificationPopup");
+    if (!popup) {
+        console.error("Popup not found!");
+        return;
+    }
+
+    // Reset all styles and force visibility
+    popup.style.cssText = `
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        z-index: 999999 !important;
+        top: 100px !important;
+        left: 100px !important;
+        width: 350px !important;
+        background: red !important;
+        border: 5px solid yellow !important;
+        transform: none !important;
+        transition: none !important;
+    `;
+
+    popup.classList.add("show");
+    popup.innerHTML =
+        "<div style='padding: 20px; color: white; font-size: 20px;'>TEST POPUP VISIBLE!</div>";
+
+    console.log("Forced popup to show with test content and red background");
+    return popup;
+}
 
 // Toggle notification popup
 function toggleNotificationPopup() {
+    console.log("toggleNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
-    if (!popup) return;
+    if (!popup) {
+        console.error("Notification popup element not found!");
+        console.log(
+            "Available elements with 'notification' in ID:",
+            Array.from(document.querySelectorAll('[id*="notification"]')).map(
+                (el) => el.id
+            )
+        );
+        debugNotificationPopup(); // Run debug if popup not found
+        return;
+    }
 
-    if (popup.style.display === "none" || !popup.style.display) {
+    console.log("Notification popup element found:", popup);
+    console.log("Current popup display:", popup.style.display);
+    console.log("Current popup class list:", popup.classList.toString());
+    console.log(
+        "Current popup computed display:",
+        window.getComputedStyle(popup).display
+    );
+
+    // Check if popup is currently visible (either by style or class)
+    const computedStyle = window.getComputedStyle(popup);
+    const isCurrentlyVisible =
+        (popup.style.display !== "none" &&
+            computedStyle.display !== "none" &&
+            popup.classList.contains("show")) ||
+        (computedStyle.opacity === "1" &&
+            computedStyle.visibility === "visible");
+
+    if (!isCurrentlyVisible) {
+        console.log("Showing notification popup");
         showNotificationPopup();
     } else {
+        console.log("Closing notification popup");
         closeNotificationPopup();
     }
 }
 
 // Show notification popup
 function showNotificationPopup() {
+    console.log("showNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
-    if (!popup || !notificationIcon) return;
+    if (!popup || !notificationIcon) {
+        console.error("Popup or notification icon not found!", {
+            popup: !!popup,
+            notificationIcon: !!notificationIcon,
+        });
+        if (!popup) debugNotificationPopup();
+        return;
+    }
+
+    console.log("Positioning and showing popup");
+
+    // First, ensure popup is reset to initial state
+    popup.classList.remove("show");
+    popup.style.removeProperty("display");
+    popup.style.removeProperty("visibility");
+    popup.style.removeProperty("opacity");
 
     // Position the popup near the notification icon
     const iconRect = notificationIcon.getBoundingClientRect();
     const popupWidth = 350; // Width from CSS
+    const popupHeight = 500; // Max height from CSS
 
-    // Position to the right of the icon with some spacing
-    popup.style.left = iconRect.right + 10 + "px";
-    popup.style.top = iconRect.top + "px";
+    console.log("Icon position:", iconRect);
+    console.log("Viewport size:", window.innerWidth, "x", window.innerHeight);
+
+    // Calculate initial position to the right of the icon
+    let left = iconRect.right + 10;
+    let top = iconRect.top;
 
     // Ensure popup doesn't go off screen
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
     // Adjust horizontal position if popup would go off screen
-    if (iconRect.right + popupWidth + 10 > viewportWidth) {
-        popup.style.left = iconRect.left - popupWidth - 10 + "px";
+    if (left + popupWidth > viewportWidth) {
+        left = iconRect.left - popupWidth - 10;
+        console.log("Adjusted left position to avoid going off screen:", left);
+    }
+
+    // Ensure left position is not negative
+    if (left < 10) {
+        left = 10;
+        console.log("Adjusted left position to avoid negative position:", left);
     }
 
     // Adjust vertical position if popup would go off screen
-    if (iconRect.top + 500 > viewportHeight) {
-        // 500 is max-height from CSS
-        popup.style.top = viewportHeight - 500 - 20 + "px";
+    if (top + popupHeight > viewportHeight) {
+        top = viewportHeight - popupHeight - 20;
+        console.log("Adjusted top position to avoid going off screen:", top);
     }
 
-    popup.style.display = "block";
-    // Small delay to allow display change to take effect before animation
+    // Ensure top position is not negative
+    if (top < 10) {
+        top = 10;
+        console.log("Adjusted top position to avoid negative position:", top);
+    }
+
+    // Set position
+    popup.style.left = left + "px";
+    popup.style.top = top + "px";
+
+    console.log("Final position:", left, top);
+
+    // Force styling with !important to override any conflicting CSS
+    popup.style.setProperty("display", "block", "important");
+    popup.style.setProperty("visibility", "visible", "important");
+    popup.style.setProperty("opacity", "1", "important");
+    popup.style.setProperty("z-index", "999999", "important");
+    popup.style.setProperty("position", "fixed", "important");
+    popup.style.setProperty("transform", "translateY(0) scale(1)", "important");
+    popup.style.setProperty("pointer-events", "auto", "important");
+    // Debug: add a visible border and force dimensions
+    popup.style.setProperty("border", "3px solid red", "important");
+    popup.style.setProperty("width", "350px", "important");
+    popup.style.setProperty("height", "auto", "important");
+    popup.style.setProperty("min-width", "350px", "important");
+    popup.style.setProperty("min-height", "200px", "important");
+    popup.style.setProperty("max-height", "500px", "important");
+    popup.style.setProperty("overflow", "visible", "important");
+    popup.style.setProperty(
+        "background",
+        "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+        "important"
+    );
+
+    // Also force all child elements to be visible
+    const allChildren = popup.querySelectorAll("*");
+    allChildren.forEach((child) => {
+        child.style.setProperty("display", "block", "important");
+        child.style.setProperty("visibility", "visible", "important");
+        child.style.setProperty("opacity", "1", "important");
+    });
+
+    // Fix specific flex containers that might be collapsing
+    const popupContent = popup.querySelector(".notification-popup-content");
+    if (popupContent) {
+        popupContent.style.setProperty("display", "flex", "important");
+        popupContent.style.setProperty("flex-direction", "column", "important");
+        popupContent.style.setProperty("height", "auto", "important");
+        popupContent.style.setProperty("min-height", "200px", "important");
+        popupContent.style.setProperty("width", "100%", "important");
+    }
+
+    const popupHeader = popup.querySelector(".notification-popup-header");
+    if (popupHeader) {
+        popupHeader.style.setProperty("display", "flex", "important");
+        popupHeader.style.setProperty("padding", "15px 20px", "important");
+        popupHeader.style.setProperty("min-height", "50px", "important");
+    }
+
+    const popupMessages = popup.querySelector(".notification-popup-messages");
+    if (popupMessages) {
+        popupMessages.style.setProperty("display", "block", "important");
+        popupMessages.style.setProperty("padding", "10px", "important");
+        popupMessages.style.setProperty("min-height", "100px", "important");
+        popupMessages.style.setProperty("flex", "1", "important");
+    }
+
+    // Log the content for debugging
+    console.log("Popup innerHTML length:", popup.innerHTML.length);
+    console.log(
+        "Popup content preview:",
+        popup.innerHTML.substring(0, 200) + "..."
+    );
+    console.log("Full popup innerHTML:", popup.innerHTML);
+
+    // ULTRA-AGGRESSIVE FIX: Replace all content with a simple visible div
+    popup.innerHTML = `
+        <div style="
+            width: 340px !important;
+            height: 180px !important;
+            padding: 20px !important;
+            color: white !important;
+            background: #1a1a1a !important;
+            border: 2px solid #4f8cff !important;
+            border-radius: 8px !important;
+            font-family: Arial, sans-serif !important;
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+            box-sizing: border-box !important;
+            display: block !important;
+            position: relative !important;
+        ">
+            <div style="
+                display: flex !important;
+                align-items: center !important;
+                margin-bottom: 15px !important;
+                color: #4f8cff !important;
+                font-weight: bold !important;
+                font-size: 16px !important;
+            ">
+                <i class="bi bi-bell" style="margin-right: 8px !important;"></i>
+                Notifications
+                <button onclick="closeNotificationPopup()" style="
+                    margin-left: auto !important;
+                    background: transparent !important;
+                    border: none !important;
+                    color: #888 !important;
+                    font-size: 18px !important;
+                    cursor: pointer !important;
+                    padding: 4px !important;
+                ">×</button>
+            </div>
+            <div style="
+                color: #ccc !important;
+                text-align: center !important;
+                margin-top: 20px !important;
+            ">
+                <div style="font-size: 40px !important; margin-bottom: 10px !important;">🔔</div>
+                <h4 style="margin: 10px 0 !important; color: #fff !important;">No Notifications</h4>
+                <p style="margin: 0 !important; font-size: 13px !important;">You don't have any notifications at this time.</p>
+            </div>
+        </div>
+    `;
+
+    console.log("Replaced popup content with ultra-simple structure");
+
+    console.log(
+        "Popup display set to block with forced styling, adding show class"
+    );
+
+    // Add show class
+    popup.classList.add("show");
+
+    // Double-check after a small delay
     setTimeout(() => {
         popup.classList.add("show");
-    }, 10);
+        popup.style.setProperty("opacity", "1", "important");
+        popup.style.setProperty(
+            "transform",
+            "translateY(0) scale(1)",
+            "important"
+        );
+        console.log("Show class added with delayed styling confirmation");
+
+        // Final verification
+        const computedStyle = window.getComputedStyle(popup);
+        const rect = popup.getBoundingClientRect();
+        console.log("Final popup verification:", {
+            display: computedStyle.display,
+            visibility: computedStyle.visibility,
+            opacity: computedStyle.opacity,
+            zIndex: computedStyle.zIndex,
+            position: computedStyle.position,
+            transform: computedStyle.transform,
+            left: popup.style.left,
+            top: popup.style.top,
+            rect: rect,
+            inViewport: rect.width > 0 && rect.height > 0,
+        });
+
+        // If still not visible, run debug
+        if (
+            rect.width === 0 ||
+            rect.height === 0 ||
+            computedStyle.display === "none"
+        ) {
+            console.warn(
+                "Popup appears to still not be visible after setup. Running debug..."
+            );
+            debugNotificationPopup();
+        }
+    }, 50);
 }
 
 // Close notification popup
 function closeNotificationPopup() {
+    console.log("closeNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
-    if (!popup) return;
+    if (!popup) {
+        console.error("Notification popup not found for closing");
+        return;
+    }
 
+    console.log("Removing show class and hiding popup");
     popup.classList.remove("show");
     setTimeout(() => {
-        popup.style.display = "none";
+        popup.style.setProperty("display", "none", "important");
+        popup.style.setProperty("visibility", "hidden", "important");
+        popup.style.setProperty("opacity", "0", "important");
+        console.log("Popup hidden");
     }, 300); // Match the transition duration
 }
 
 // Initialize notification popup functionality
 function initializeNotificationPopup() {
-    // Add click event to notification icon
+    console.log("Initializing notification popup...");
+
+    // Find notification icon
     const notificationIcon = document.querySelector(".notification-icon");
-    if (notificationIcon) {
-        notificationIcon.addEventListener("click", toggleNotificationPopup);
+    if (!notificationIcon) {
+        console.error("Notification icon not found!");
+        return;
     }
 
-    // Close popup when clicking outside
-    document.addEventListener("click", function (event) {
-        const popup = document.getElementById("notificationPopup");
-        const notificationIcon = document.querySelector(".notification-icon");
+    console.log("Notification icon found:", notificationIcon);
 
-        if (
-            popup &&
-            popup.style.display === "block" &&
-            !popup.contains(event.target) &&
-            !notificationIcon.contains(event.target)
-        ) {
-            closeNotificationPopup();
-        }
-    });
+    // Only initialize if not already done
+    if (!notificationIcon.hasAttribute("data-initialized")) {
+        // Add event listener directly without cloning
+        notificationIcon.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("Notification icon clicked");
+            toggleNotificationPopup();
+        });
+
+        notificationIcon.setAttribute("data-initialized", "true");
+        console.log("Notification icon event listener added");
+    } else {
+        console.log("Notification icon already initialized");
+    }
+
+    // Ensure the close-on-outside-click is only added once globally
+    if (!document.hasAttribute("data-notification-outside-click-initialized")) {
+        document.addEventListener("click", function (event) {
+            const popup = document.getElementById("notificationPopup");
+            const notificationIcon =
+                document.querySelector(".notification-icon");
+
+            if (
+                popup &&
+                (popup.style.display === "block" ||
+                    popup.classList.contains("show")) &&
+                !popup.contains(event.target) &&
+                notificationIcon &&
+                !notificationIcon.contains(event.target)
+            ) {
+                closeNotificationPopup();
+            }
+        });
+        document.setAttribute(
+            "data-notification-outside-click-initialized",
+            "true"
+        );
+        console.log("Outside click listener added");
+    }
 
     // Handle notification item clicks
     const notificationItems = document.querySelectorAll(".notification-item");
     notificationItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            const notificationId = this.dataset.id;
-            markNotificationAsRead(notificationId);
-        });
+        if (!item.hasAttribute("data-click-initialized")) {
+            item.addEventListener("click", function () {
+                const notificationId = this.dataset.id;
+                markNotificationAsRead(notificationId);
+            });
+            item.setAttribute("data-click-initialized", "true");
+        }
     });
+
+    console.log("Notification popup initialization completed");
 }
 
 // Mark notification as read
@@ -2363,10 +2571,357 @@ function updateNotificationBadge(count) {
     }
 }
 
-// Export notification functions globally
+// Debug function to check notification popup visibility
+function debugNotificationPopup() {
+    const popup = document.getElementById("notificationPopup");
+    if (!popup) {
+        console.error("Notification popup not found!");
+        return;
+    }
+
+    const rect = popup.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(popup);
+
+    console.log("=== NOTIFICATION POPUP DEBUG ===");
+    console.log("Element:", popup);
+    console.log("BoundingClientRect:", rect);
+    console.log("Computed styles:", {
+        display: computedStyle.display,
+        visibility: computedStyle.visibility,
+        opacity: computedStyle.opacity,
+        zIndex: computedStyle.zIndex,
+        position: computedStyle.position,
+        transform: computedStyle.transform,
+        background: computedStyle.background,
+        border: computedStyle.border,
+        width: computedStyle.width,
+        height: computedStyle.height,
+        minWidth: computedStyle.minWidth,
+        minHeight: computedStyle.minHeight,
+        maxWidth: computedStyle.maxWidth,
+        maxHeight: computedStyle.maxHeight,
+        overflow: computedStyle.overflow,
+        fontSize: computedStyle.fontSize,
+        lineHeight: computedStyle.lineHeight,
+    });
+    console.log("Inline styles:", popup.style.cssText);
+    console.log("Classes:", popup.className);
+    console.log("Is visible:", rect.width > 0 && rect.height > 0);
+
+    // Check parent elements
+    console.log("=== PARENT ELEMENTS CHECK ===");
+    let parent = popup.parentElement;
+    let level = 0;
+    while (parent && level < 10) {
+        const parentRect = parent.getBoundingClientRect();
+        const parentStyle = window.getComputedStyle(parent);
+        console.log(`Parent ${level}:`, {
+            element: parent,
+            tagName: parent.tagName,
+            id: parent.id,
+            className: parent.className,
+            display: parentStyle.display,
+            visibility: parentStyle.visibility,
+            opacity: parentStyle.opacity,
+            overflow: parentStyle.overflow,
+            rect: parentRect,
+            isVisible: parentRect.width > 0 && parentRect.height > 0,
+        });
+        parent = parent.parentElement;
+        level++;
+    }
+
+    // Check if the element is actually connected to the DOM
+    console.log("Is connected to DOM:", popup.isConnected);
+    console.log("=== END DEBUG ===");
+}
+
+// Export debug function globally
+window.debugNotificationPopup = debugNotificationPopup;
+
+// Make debug functions available globally for console testing
+window.forceShowNotificationPopup = forceShowNotificationPopup;
 window.toggleNotificationPopup = toggleNotificationPopup;
 window.showNotificationPopup = showNotificationPopup;
 window.closeNotificationPopup = closeNotificationPopup;
-window.initializeNotificationPopup = initializeNotificationPopup;
-window.markNotificationAsRead = markNotificationAsRead;
-window.updateNotificationBadge = updateNotificationBadge;
+
+console.log("Notification popup debug functions available globally:");
+console.log("- debugNotificationPopup() - comprehensive debug info");
+console.log("- forceShowNotificationPopup() - force show with test styling");
+console.log("- toggleNotificationPopup() - normal toggle function");
+console.log("- showNotificationPopup() - normal show function");
+console.log("- closeNotificationPopup() - normal close function");
+
+// ============= INTERFACE SWITCHING AND CHAT FUNCTIONALITY =============
+
+// Function to force popup visibility by neutralizing all possible CSS hiding rules
+function forcePopupVisibilityAggressively() {
+    const popup = document.getElementById("notificationPopup");
+    if (!popup) {
+        console.error("Notification popup not found!");
+        return;
+    }
+
+    // Remove all classes that might hide the element
+    const hidingClasses = [
+        "d-none",
+        "hidden",
+        "hide",
+        "invisible",
+        "sr-only",
+        "visually-hidden",
+        "collapse",
+        "collapsed",
+    ];
+    hidingClasses.forEach((cls) => {
+        popup.classList.remove(cls);
+        // Also remove from all child elements
+        popup.querySelectorAll("*").forEach((child) => {
+            child.classList.remove(cls);
+        });
+    });
+
+    // Remove hidden attribute if present
+    popup.removeAttribute("hidden");
+    popup.querySelectorAll("*").forEach((child) => {
+        child.removeAttribute("hidden");
+    });
+
+    // Create and inject critical CSS to override any aggressive hiding rules
+    const criticalStyles = `
+        #notificationPopup {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 999999 !important;
+            width: 400px !important;
+            min-width: 400px !important;
+            height: auto !important;
+            min-height: 200px !important;
+            max-height: 80vh !important;
+            background: white !important;
+            border: 3px solid red !important;
+            box-shadow: 0 0 20px rgba(79, 140, 255, 0.5) !important;
+            pointer-events: auto !important;
+            overflow: visible !important;
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+            color: black !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+        }
+        
+        #notificationPopup * {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            color: inherit !important;
+            background: transparent !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 5px !important;
+            font-size: inherit !important;
+            line-height: inherit !important;
+            overflow: visible !important;
+            pointer-events: auto !important;
+        }
+        
+        #notificationPopup .notification-popup-content {
+            display: block !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 150px !important;
+        }
+        
+        #notificationPopup .notification-popup-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-bottom: 10px !important;
+            background: #f0f0f0 !important;
+            padding: 10px !important;
+        }
+        
+        #notificationPopup .notification-popup-close {
+            display: inline-block !important;
+            cursor: pointer !important;
+            background: red !important;
+            color: white !important;
+            padding: 5px 10px !important;
+            border: none !important;
+        }
+    `;
+
+    // Remove any existing critical styles and add new ones
+    let existingCriticalStyle = document.getElementById(
+        "notificationPopupCriticalStyles"
+    );
+    if (existingCriticalStyle) {
+        existingCriticalStyle.remove();
+    }
+
+    const styleElement = document.createElement("style");
+    styleElement.id = "notificationPopupCriticalStyles";
+    styleElement.textContent = criticalStyles;
+    document.head.appendChild(styleElement);
+
+    // Force a reflow
+    popup.offsetHeight;
+
+    console.log("Applied aggressive visibility styles to notification popup");
+
+    // Debug after applying styles
+    setTimeout(() => {
+        debugNotificationPopup();
+    }, 100);
+}
+
+// Last resort function to create a completely new notification popup
+function createFallbackNotificationPopup() {
+    console.log("Creating fallback notification popup as last resort");
+
+    // Remove the old popup if it exists
+    const oldPopup = document.getElementById("notificationPopup");
+    if (oldPopup) {
+        oldPopup.remove();
+    }
+
+    // Create a completely new popup element
+    const newPopup = document.createElement("div");
+    newPopup.id = "notificationPopup";
+    newPopup.className = "notification-popup show";
+
+    // Set inline styles with maximum specificity
+    newPopup.style.cssText = `
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 2147483647 !important;
+        width: 400px !important;
+        min-width: 400px !important;
+        height: auto !important;
+        min-height: 300px !important;
+        max-height: 80vh !important;
+        background: #1a1a1a !important;
+        border: 3px solid #4f8cff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 40px rgba(79, 140, 255, 0.5) !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        color: #ffffff !important;
+    `;
+
+    // Set the content
+    newPopup.innerHTML = `
+        <div class="notification-popup-content" style="
+            display: block !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 250px !important;
+            padding: 20px !important;
+            background: transparent !important;
+        ">
+            <div class="notification-popup-header" style="
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                margin-bottom: 15px !important;
+                padding: 15px !important;
+                background: rgba(45, 45, 45, 0.8) !important;
+                border-radius: 8px !important;
+                border: 1px solid #333 !important;
+            ">
+                <div class="notification-popup-title" style="
+                    display: flex !important;
+                    align-items: center !important;
+                    color: #4f8cff !important;
+                    font-weight: bold !important;
+                    font-size: 16px !important;
+                ">
+                    <i class="bi bi-bell" style="margin-right: 8px !important;"></i>
+                    <span>Notifications</span>
+                </div>
+                <button class="notification-popup-close" onclick="closeNotificationPopup()" style="
+                    display: inline-block !important;
+                    cursor: pointer !important;
+                    background: #dc3545 !important;
+                    color: white !important;
+                    padding: 8px 12px !important;
+                    border: none !important;
+                    border-radius: 4px !important;
+                    font-size: 14px !important;
+                ">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            
+            <div class="notification-popup-messages" id="notificationPopupMessages" style="
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 150px !important;
+                padding: 15px !important;
+                background: rgba(30, 30, 30, 0.6) !important;
+                border-radius: 8px !important;
+                overflow-y: auto !important;
+                max-height: 300px !important;
+            ">
+                <div class="no-notifications-message" style="
+                    text-align: center !important;
+                    padding: 20px !important;
+                    color: #ccc !important;
+                ">
+                    <div class="no-notifications-icon" style="
+                        font-size: 40px !important;
+                        margin-bottom: 10px !important;
+                        color: #666 !important;
+                    ">
+                        <i class="bi bi-bell-slash"></i>
+                    </div>
+                    <h4 style="margin: 10px 0 !important; color: #fff !important;">No Notifications</h4>
+                    <p style="margin: 0 !important; color: #ccc !important;">You don't have any notifications at this time.</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Append to body
+    document.body.appendChild(newPopup);
+
+    console.log("Fallback notification popup created and added to DOM");
+
+    // Verify the new popup
+    setTimeout(() => {
+        const rect = newPopup.getBoundingClientRect();
+        console.log("Fallback popup verification:", {
+            rect: rect,
+            isVisible: rect.width > 0 && rect.height > 0,
+        });
+
+        if (rect.width > 0 && rect.height > 0) {
+            console.log("SUCCESS! Fallback popup is visible!");
+        } else {
+            console.error(
+                "CRITICAL FAILURE: Even the fallback popup is not visible. This indicates a serious DOM or browser issue."
+            );
+        }
+    }, 100);
+}
+
+// Export globally
+window.createFallbackNotificationPopup = createFallbackNotificationPopup;
