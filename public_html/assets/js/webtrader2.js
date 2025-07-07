@@ -2677,14 +2677,14 @@ function updateURLParameter(key, value) {
 
 // Function to update sidebar active state
 function updateSidebarActive(selector) {
-    // Remove active class from all sidebar items
-    document
-        .querySelectorAll(".sidebar .nav-link, .sidebar-icon")
-        .forEach((item) => {
-            item.classList.remove("active");
-        });
+    // شيل الـ active class من كل العناصر الأساسية في الـ sidebar
+    document.querySelectorAll(".sidebar .nav-link").forEach((item) => {
+        item.classList.remove("active");
+        item.style.removeProperty("background-color");
+        item.style.removeProperty("color");
+    });
 
-    // Add active class to the selected item
+    // اختار العنصر الجديد وفعّله
     const targetElement = document.querySelector(selector);
     if (targetElement) {
         targetElement.classList.add("active");
