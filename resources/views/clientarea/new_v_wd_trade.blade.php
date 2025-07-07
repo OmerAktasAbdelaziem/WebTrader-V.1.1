@@ -15,7 +15,7 @@
 
 <!-- Sidebar Navigation -->
 <div class="sidebar">
-    <i class="bi bi-bell nav-icon notification-icon" title="Notifications" style="font-size:1.2rem; padding:0.3rem; position: relative;">
+    <i class="bi bi-bell nav-icon notification-icon" title="Notifications" style="font-size:1.2rem; padding:0.3rem; position: relative; cursor: pointer; z-index: 1000;">
         @if(!empty($notifications) && count($notifications) > 0)
             <span class="notification-badge">{{ count($notifications) }}</span>
         @endif
@@ -187,25 +187,45 @@
                     <input type="hidden" id="currentChartSymbol" value="{{ $symbol ?? '' }}">
                     
 
-                    <!-- Amount and Trade Buttons -->
-                    <div class="d-flex gap-2 mb-3 align-items-center justify-content-center">
-                        <button type="button" id="sellBtn" class="btnorder btn-danger">
-                            <span class="d-flex flex-column align-items-center">
-                                <strong class="sellPrice" id="displayBidPrice">{{ $asset && $asset->bid_price ? number_format($asset->bid_price, 4) : '0.0000' }}</strong>
-                                <span>{{ __('web.sell') }}</span>
-                            </span>
-                        </button>
-                        <div class="input-group" style="max-width: 140px;">
-                            <button type="button" class="btnminus" onclick="changeAmount(-0.01)">−</button>
-                            <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="0.01" class="amount text-center" readonly/>
-                            <button type="button" class="btnplus" onclick="changeAmount(0.01)">+</button>
+                    <!-- Trading Controls -->
+                    <div class="trading-controls mb-3">
+                        <!-- Quick Amount Buttons -->
+                        <div class="quick-amounts-row mb-2">
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(0.01)">Min</button>
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(0.10)">0.10</button>
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(1.00)">1.00</button>
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(10.00)">10.00</button>
                         </div>
-                        <button type="button" id="buyBtn" class="btnorder btn-success">
-                            <span class="d-flex flex-column align-items-center">
-                                <strong class="buyPrice" id="displayAskPrice">{{ $asset && $asset->ask_price ? number_format($asset->ask_price, 4) : '0.0000' }}</strong>
-                                <span>{{ __('web.buy') }}</span>
-                            </span>
-                        </button>
+
+                        <!-- Trade Buttons with Amount in Center -->
+                        <div class="trade-buttons-with-amount">
+                            <button type="button" id="sellBtn" class="trade-btn sell-btn">
+                                <div class="trade-btn-content">
+                                    <span class="trade-action">SELL</span>
+                                    <span class="trade-price" id="displayBidPrice">{{ $asset && $asset->bid_price ? number_format($asset->bid_price, 4) : '0.0000' }}</span>
+                                </div>
+                            </button>
+
+                            <div class="amount-control-center">
+                                <label for="amount" class="amount-label">Amount</label>
+                                <div class="amount-input-group">
+                                    <button type="button" class="amount-btn minus-btn" onclick="changeAmount(-0.01)">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="0.01" class="amount-input" readonly/>
+                                    <button type="button" class="amount-btn plus-btn" onclick="changeAmount(0.01)">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="buyBtn" class="trade-btn buy-btn">
+                                <div class="trade-btn-content">
+                                    <span class="trade-action">BUY</span>
+                                    <span class="trade-price" id="displayAskPrice">{{ $asset && $asset->ask_price ? number_format($asset->ask_price, 4) : '0.0000' }}</span>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                     </form>
                 </div>
@@ -1986,201 +2006,102 @@
 
 <!-- Upload Document Interface -->
 <div id="uploadDocumentInterface" class="main-content" style="display: none;">
-    <div class="document-interface-container">
-        <!-- Animated Header Section -->
-        <div class="document-header">
-            <div class="header-content">
-                <div class="header-icon-wrapper">
-                    <div class="animated-icon">
-                        <i class="bi bi-shield-lock"></i>
-                        <div class="icon-glow"></div>
-                    </div>
+    <div class="modern-interface-container">
+        <!-- Header Section -->
+        <div class="interface-header">
+            <div class="header-left">
+                <div class="interface-icon">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
                 </div>
                 <div class="header-text">
-                    <h1 class="gradient-text">Document Center</h1>
-                    <p class="header-subtitle">Secure document upload with advanced verification</p>
-                    <div class="security-badges">
-                        <span class="security-badge">
-                            <i class="bi bi-shield-check"></i>
-                            SSL Encrypted
-                        </span>
-                        <span class="security-badge">
-                            <i class="bi bi-eye-slash"></i>
-                            Private & Secure
-                        </span>
-                    </div>
+                    <h1>Upload Documents</h1>
+                    <p>Upload your KYC documents and other required files</p>
                 </div>
             </div>
-            <button class="modern-back-btn back-to-trading-btn">
-                <i class="bi bi-arrow-left"></i>
-                <span>Back</span>
-            </button>
+            <div class="header-actions">
+                <button class="btn btn-modern btn-secondary back-to-trading-btn">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back to Trading</span>
+                </button>
+            </div>
         </div>
 
-        <!-- Progress Indicator -->
-        <div class="upload-progress-indicator">
-            <div class="step-indicator">
-                <div class="step active" data-step="1">
-                    <div class="step-circle">
+        <!-- Upload Sections -->
+        <div class="upload-sections">
+            <!-- KYC Documents Section -->
+            <div class="upload-section kyc-section">
+                <div class="section-header">
+                    <div class="section-icon">
                         <i class="bi bi-shield-check"></i>
                     </div>
-                    <span>KYC Documents</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step" data-step="2">
-                    <div class="step-circle">
-                        <i class="bi bi-files"></i>
-                    </div>
-                    <span>Other Documents</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step" data-step="3">
-                    <div class="step-circle">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <span>Complete</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Upload Cards Grid -->
-        <div class="upload-cards-grid">
-            <!-- KYC Upload Card -->
-            <div class="upload-card kyc-card" data-card="kyc">
-                <div class="card-header">
-                    <div class="card-icon kyc-icon">
-                        <i class="bi bi-person-badge"></i>
-                        <div class="icon-pulse"></div>
-                    </div>
-                    <div class="card-title">
-                        <h3>Identity Verification</h3>
-                        <p>Upload your KYC documents for account verification</p>
-                        <div class="requirement-badge one-time">
-                            <i class="bi bi-exclamation-circle"></i>
-                            One-time upload only
-                        </div>
+                    <div class="section-title">
+                        <h3>KYC Documents</h3>
+                        <p>Upload your identity verification documents (one-time upload)</p>
                     </div>
                 </div>
-
-                <div class="upload-zone" id="kycUploadZone">
-                    <div class="dropzone-area" id="kycDropzone">
-                        <div class="dropzone-visual">
-                            <div class="upload-animation">
-                                <div class="cloud-icon">
-                                    <i class="bi bi-cloud-arrow-up"></i>
-                                </div>
-                                <div class="upload-particles">
-                                    <div class="particle"></div>
-                                    <div class="particle"></div>
-                                    <div class="particle"></div>
-                                </div>
-                            </div>
-                            <div class="dropzone-text">
-                                <h4>Drop files here or click to browse</h4>
-                                <p>Supported: PDF, JPG, PNG • Max size: 10MB per file</p>
-                                <div class="file-types">
-                                    <span class="file-type">
-                                        <i class="bi bi-file-pdf"></i>
-                                        PDF
-                                    </span>
-                                    <span class="file-type">
-                                        <i class="bi bi-file-image"></i>
-                                        Images
-                                    </span>
-                                </div>
-                            </div>
-                            <button type="button" class="modern-upload-btn" onclick="triggerKycFileInput()">
-                                <i class="bi bi-plus-circle"></i>
-                                <span>Choose Files</span>
-                                <div class="btn-shine"></div>
+                
+                <div class="upload-area" id="kycUploadArea">
+                    <div class="upload-dropzone" id="kycDropzone">
+                        <div class="dropzone-content">
+                            <i class="bi bi-cloud-arrow-up display-4 text-primary mb-3"></i>
+                            <h4>Upload KYC Documents</h4>
+                            <p class="text-muted">Drag and drop files here or click to browse</p>
+                            <p class="text-muted small">Supported formats: PDF, JPG, PNG (Max 10MB)</p>
+                            <button type="button" class="btn btn-outline-primary" onclick="triggerKycFileInput()">
+                                <i class="bi bi-folder-plus me-2"></i>
+                                Choose Files
                             </button>
                             <input type="file" id="kycFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                         </div>
                     </div>
-
-                    <!-- Files Preview Area -->
-                    <div class="files-preview" id="kycFilesPreview" style="display: none;">
-                        <div class="preview-header">
-                            <h5>
-                                <i class="bi bi-files"></i>
-                                KYC Documents
-                            </h5>
-                            <span class="files-count" id="kycFilesCount">0 files</span>
-                        </div>
-                        <div class="files-grid" id="kycFilesContainer">
+                    
+                    <!-- KYC Files List -->
+                    <div class="uploaded-files" id="kycFilesList" style="display: none;">
+                        <h5 class="mb-3">
+                            <i class="bi bi-files me-2"></i>
+                            Uploaded KYC Documents
+                        </h5>
+                        <div class="files-container" id="kycFilesContainer">
                             <!-- Files will be populated here -->
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Other Documents Upload Card -->
-            <div class="upload-card other-docs-card" data-card="other">
-                <div class="card-header">
-                    <div class="card-icon other-docs-icon">
-                        <i class="bi bi-folder-plus"></i>
-                        <div class="icon-pulse"></div>
+            <!-- Other Documents Section -->
+            <div class="upload-section other-docs-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="bi bi-file-earmark-text"></i>
                     </div>
-                    <div class="card-title">
-                        <h3>Additional Documents</h3>
-                        <p>Upload supporting documents and files</p>
-                        <div class="requirement-badge multiple">
-                            <i class="bi bi-arrow-repeat"></i>
-                            Multiple uploads allowed
-                        </div>
+                    <div class="section-title">
+                        <h3>Other Documents</h3>
+                        <p>Upload additional documents (multiple uploads allowed)</p>
                     </div>
                 </div>
-
-                <div class="upload-zone" id="otherDocsUploadZone">
-                    <div class="dropzone-area" id="otherDocsDropzone">
-                        <div class="dropzone-visual">
-                            <div class="upload-animation">
-                                <div class="cloud-icon">
-                                    <i class="bi bi-cloud-arrow-up"></i>
-                                </div>
-                                <div class="upload-particles">
-                                    <div class="particle"></div>
-                                    <div class="particle"></div>
-                                    <div class="particle"></div>
-                                </div>
-                            </div>
-                            <div class="dropzone-text">
-                                <h4>Drop files here or click to browse</h4>
-                                <p>Supported: PDF, JPG, PNG, DOC, DOCX • Max size: 10MB per file</p>
-                                <div class="file-types">
-                                    <span class="file-type">
-                                        <i class="bi bi-file-pdf"></i>
-                                        PDF
-                                    </span>
-                                    <span class="file-type">
-                                        <i class="bi bi-file-image"></i>
-                                        Images
-                                    </span>
-                                    <span class="file-type">
-                                        <i class="bi bi-file-word"></i>
-                                        Documents
-                                    </span>
-                                </div>
-                            </div>
-                            <button type="button" class="modern-upload-btn" onclick="triggerOtherDocsFileInput()">
-                                <i class="bi bi-plus-circle"></i>
-                                <span>Choose Files</span>
-                                <div class="btn-shine"></div>
+                
+                <div class="upload-area" id="otherDocsUploadArea">
+                    <div class="upload-dropzone" id="otherDocsDropzone">
+                        <div class="dropzone-content">
+                            <i class="bi bi-cloud-arrow-up display-4 text-success mb-3"></i>
+                            <h4>Upload Other Documents</h4>
+                            <p class="text-muted">Drag and drop files here or click to browse</p>
+                            <p class="text-muted small">Supported formats: PDF, JPG, PNG, DOC, DOCX (Max 10MB each)</p>
+                            <button type="button" class="btn btn-outline-success" onclick="triggerOtherDocsFileInput()">
+                                <i class="bi bi-folder-plus me-2"></i>
+                                Choose Files
                             </button>
                             <input type="file" id="otherDocsFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;">
                         </div>
                     </div>
-
-                    <!-- Files Preview Area -->
-                    <div class="files-preview" id="otherDocsFilesPreview" style="display: none;">
-                        <div class="preview-header">
-                            <h5>
-                                <i class="bi bi-files"></i>
-                                Other Documents
-                            </h5>
-                            <span class="files-count" id="otherDocsFilesCount">0 files</span>
-                        </div>
-                        <div class="files-grid" id="otherDocsFilesContainer">
+                    
+                    <!-- Other Documents Files List -->
+                    <div class="uploaded-files" id="otherDocsFilesList" style="display: none;">
+                        <h5 class="mb-3">
+                            <i class="bi bi-files me-2"></i>
+                            Uploaded Other Documents
+                        </h5>
+                        <div class="files-container" id="otherDocsFilesContainer">
                             <!-- Files will be populated here -->
                         </div>
                     </div>
@@ -2188,32 +2109,24 @@
             </div>
         </div>
 
-        <!-- Upload Progress Modal -->
-        <div class="upload-progress-modal" id="uploadProgressModal" style="display: none;">
-            <div class="progress-modal-content">
-                <div class="progress-animation">
-                    <div class="upload-spinner">
-                        <div class="spinner-ring"></div>
-                        <div class="spinner-ring"></div>
-                        <div class="spinner-ring"></div>
-                    </div>
-                </div>
-                <div class="progress-info">
-                    <h4>Uploading Documents...</h4>
-                    <p id="progressDetails">Preparing files...</p>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <span class="progress-percentage" id="progressText">0%</span>
-                    </div>
-                </div>
+        <!-- Upload Progress -->
+        <div class="upload-progress" id="uploadProgress" style="display: none;">
+            <div class="progress-header">
+                <h5>
+                    <i class="bi bi-cloud-arrow-up me-2"></i>
+                    Uploading Documents...
+                </h5>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                     id="progressBar" role="progressbar" style="width: 0%"></div>
             </div>
         </div>
 
-        <!-- Status Messages -->
-        <div class="status-messages" id="statusMessages">
-            <!-- Messages will appear here -->
+        <!-- Upload Status Messages -->
+        <div class="upload-messages" id="uploadMessages">
+            <!-- Success/Error messages will appear here -->
         </div>
     </div>
 </div>

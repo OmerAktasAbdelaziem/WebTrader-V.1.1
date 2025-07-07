@@ -1,9 +1,36 @@
+// WebTrader 2.0 JavaScript Functions
+// Fixed missing function definitions and added defensive programming
+// All referenced functions are now properly defined
+
+// Get URL parameter function
+function getURLParameter(key) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(key);
+}
+
+// Insert quick message function for chat
+function insertQuickMessage(message) {
+    const chatInput = document.getElementById("chatMessage");
+    if (chatInput) {
+        chatInput.value = message;
+        chatInput.focus();
+        // Optionally trigger input event to notify any listeners
+        chatInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+}
+
 // Amount change function
 function changeAmount(amount) {
     const input = document.getElementById("amount");
     let current = parseFloat(input.value) || 0;
     current = Math.max(0.01, (current + amount).toFixed(2));
     input.value = current;
+}
+
+// Set amount function for quick amount buttons
+function setAmount(amount) {
+    const input = document.getElementById("amount");
+    input.value = amount.toFixed(2);
 }
 
 // Copy to clipboard function
@@ -1423,7 +1450,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const askPrice = askPriceSpan.textContent.trim();
 
                 // Update prices immediately for better UX
-                updateAssetPrices(assetId, assetSymbol, bidPrice, askPrice);
+                if (typeof updateAssetPrices === "function") {
+                    updateAssetPrices(assetId, assetSymbol, bidPrice, askPrice);
+                }
             }
         });
     });
@@ -1582,80 +1611,109 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Initialize current asset highlighting
-    highlightCurrentAsset();
+    if (typeof highlightCurrentAsset === "function") {
+        highlightCurrentAsset();
+    }
 
     // Asset search functionality
-    document
-        .getElementById("assetSearch")
-        .addEventListener("input", function () {
-            filterAssets();
+    const assetSearchElement = document.getElementById("assetSearch");
+    if (assetSearchElement) {
+        assetSearchElement.addEventListener("input", function () {
+            if (typeof filterAssets === "function") {
+                filterAssets();
+            }
         });
+    }
 
     // Category filter functionality
-    document
-        .getElementById("categoryFilter")
-        .addEventListener("change", function () {
-            filterAssets();
+    const categoryFilterElement = document.getElementById("categoryFilter");
+    if (categoryFilterElement) {
+        categoryFilterElement.addEventListener("change", function () {
+            if (typeof filterAssets === "function") {
+                filterAssets();
+            }
         });
+    }
 
     // Also listen for keyup events on search for better responsiveness
-    document
-        .getElementById("assetSearch")
-        .addEventListener("keyup", function () {
-            filterAssets();
+    if (assetSearchElement) {
+        assetSearchElement.addEventListener("keyup", function () {
+            if (typeof filterAssets === "function") {
+                filterAssets();
+            }
         });
+    }
 
     // Favorites functionality
-    document
-        .getElementById("showFavouritesBtn")
-        .addEventListener("click", function () {
+    const showFavouritesBtn = document.getElementById("showFavouritesBtn");
+    if (showFavouritesBtn) {
+        showFavouritesBtn.addEventListener("click", function () {
             const btn = this;
             if (btn.classList.contains("active")) {
                 btn.classList.remove("active");
                 btn.style.backgroundColor = "#23272f";
-                showAllAssets();
+                if (typeof showAllAssets === "function") {
+                    showAllAssets();
+                }
             } else {
                 btn.classList.add("active");
                 btn.style.backgroundColor = "#4f8cff";
-                showOnlyFavorites();
+                if (typeof showOnlyFavorites === "function") {
+                    showOnlyFavorites();
+                }
             }
         });
+    }
 
     // Context menu for favorites
-    document
-        .getElementById("addToFavouriteBtn")
-        .addEventListener("click", function () {
+    const addToFavouriteBtn = document.getElementById("addToFavouriteBtn");
+    if (addToFavouriteBtn) {
+        addToFavouriteBtn.addEventListener("click", function () {
             const assetId = this.getAttribute("data-asset-id");
-            toggleFavorite(assetId, "add");
+            if (typeof toggleFavorite === "function") {
+                toggleFavorite(assetId, "add");
+            }
         });
+    }
 
-    document
-        .getElementById("removeFromFavouriteBtn")
-        .addEventListener("click", function () {
+    const removeFromFavouriteBtn = document.getElementById(
+        "removeFromFavouriteBtn"
+    );
+    if (removeFromFavouriteBtn) {
+        removeFromFavouriteBtn.addEventListener("click", function () {
             const assetId = this.getAttribute("data-asset-id");
-            toggleFavorite(assetId, "remove");
+            if (typeof toggleFavorite === "function") {
+                toggleFavorite(assetId, "remove");
+            }
         });
+    }
 
     // Buy and Sell button functionality
-    document.getElementById("buyBtn").addEventListener("click", function () {
-        const assetId = document.getElementById("selectedAssetId").value;
-        if (!assetId || assetId === "null" || assetId === "") {
-            showNotification("Please select a valid asset first", "error");
-            return;
-        }
-        document.getElementById("orderType").value = "1"; // 1 = buy
-        document.getElementById("orderForm").submit();
-    });
+    const buyBtn = document.getElementById("buyBtn");
+    if (buyBtn) {
+        buyBtn.addEventListener("click", function () {
+            const assetId = document.getElementById("selectedAssetId").value;
+            if (!assetId || assetId === "null" || assetId === "") {
+                showNotification("Please select a valid asset first", "error");
+                return;
+            }
+            document.getElementById("orderType").value = "1"; // 1 = buy
+            document.getElementById("orderForm").submit();
+        });
+    }
 
-    document.getElementById("sellBtn").addEventListener("click", function () {
-        const assetId = document.getElementById("selectedAssetId").value;
-        if (!assetId || assetId === "null" || assetId === "") {
-            showNotification("Please select a valid asset first", "error");
-            return;
-        }
-        document.getElementById("orderType").value = "2"; // 2 = sell
-        document.getElementById("orderForm").submit();
-    });
+    const sellBtn = document.getElementById("sellBtn");
+    if (sellBtn) {
+        sellBtn.addEventListener("click", function () {
+            const assetId = document.getElementById("selectedAssetId").value;
+            if (!assetId || assetId === "null" || assetId === "") {
+                showNotification("Please select a valid asset first", "error");
+                return;
+            }
+            document.getElementById("orderType").value = "2"; // 2 = sell
+            document.getElementById("orderForm").submit();
+        });
+    }
 
     // Chat functionality
     const chatForm = document.getElementById("chatForm");
@@ -1682,7 +1740,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Clear input immediately for better UX
             chatInput.value = "";
-            autoResizeTextarea(chatInput);
+            if (typeof autoResizeTextarea === "function") {
+                autoResizeTextarea(chatInput);
+            }
 
             // Prepare form data
             const formData = new FormData(this);
@@ -1713,7 +1773,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             "Message sent successfully",
                             "success"
                         );
-                        scrollToBottomOfChat();
+                        if (typeof scrollToBottomOfChat === "function") {
+                            scrollToBottomOfChat();
+                        }
                     } else {
                         showNotification(
                             data.error || "Failed to send message",
@@ -1737,7 +1799,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (chatInput) {
         // Auto-resize textarea as user types
         chatInput.addEventListener("input", function () {
-            autoResizeTextarea(this);
+            if (typeof autoResizeTextarea === "function") {
+                autoResizeTextarea(this);
+            }
         });
 
         // Submit on Enter (without Shift)
@@ -2308,6 +2372,7 @@ window.debugInterfaceVisibility = debugInterfaceVisibility;
 window.debugDOMStructure = debugDOMStructure;
 window.fixInterfaceStructure = fixInterfaceStructure;
 window.insertQuickMessage = insertQuickMessage;
+window.getURLParameter = getURLParameter;
 window.scrollToBottomOfChat = scrollToBottomOfChat;
 window.addMessageToChat = addMessageToChat;
 window.debugDOMStructure = debugDOMStructure;
@@ -2316,35 +2381,50 @@ window.debugDOMStructure = debugDOMStructure;
 
 // Toggle notification popup
 function toggleNotificationPopup() {
+    console.log("toggleNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
     if (!popup) {
+        console.log("Notification popup element not found");
         return;
     }
 
-    // Check if popup is currently visible (either by style or class)
-    const computedStyle = window.getComputedStyle(popup);
-    const isCurrentlyVisible =
-        (popup.style.display !== "none" &&
-            computedStyle.display !== "none" &&
-            popup.classList.contains("show")) ||
-        (computedStyle.opacity === "1" &&
-            computedStyle.visibility === "visible");
+    console.log(
+        "Popup found, current state:",
+        popup.style.display,
+        popup.classList.contains("show")
+    );
+
+    // Simplified visibility check - just check if it has the 'show' class
+    const isCurrentlyVisible = popup.classList.contains("show");
+
+    console.log("Popup is currently visible:", isCurrentlyVisible);
 
     if (!isCurrentlyVisible) {
+        console.log("Showing popup");
         showNotificationPopup();
     } else {
+        console.log("Closing popup");
         closeNotificationPopup();
     }
 }
 
 // Show notification popup
 function showNotificationPopup() {
+    console.log("showNotificationPopup called");
     const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
     if (!popup || !notificationIcon) {
+        console.log(
+            "Missing elements - popup:",
+            !!popup,
+            "icon:",
+            !!notificationIcon
+        );
         return;
     }
+
+    console.log("Elements found, showing popup...");
 
     // First, ensure popup is reset to initial state
     popup.classList.remove("show");
@@ -2356,6 +2436,8 @@ function showNotificationPopup() {
     const iconRect = notificationIcon.getBoundingClientRect();
     const popupWidth = 350; // Width from CSS
     const popupHeight = 500; // Max height from CSS
+
+    console.log("Icon position:", iconRect);
 
     // Calculate initial position to the right of the icon
     let left = iconRect.right + 10;
@@ -2385,6 +2467,8 @@ function showNotificationPopup() {
         top = 10;
     }
 
+    console.log("Final popup position:", left, top);
+
     // Set position
     popup.style.left = left + "px";
     popup.style.top = top + "px";
@@ -2400,6 +2484,8 @@ function showNotificationPopup() {
 
     // Add show class
     popup.classList.add("show");
+
+    console.log("Popup should now be visible");
 }
 
 // Close notification popup
@@ -2420,10 +2506,14 @@ function closeNotificationPopup() {
 // Initialize notification popup functionality
 function initializeNotificationPopup() {
     // Find notification icon
+
     const notificationIcon = document.querySelector(".notification-icon");
     if (!notificationIcon) {
+        console.log("Notification icon not found");
         return;
     }
+
+    console.log("Notification icon found, initializing...");
 
     // Only initialize if not already done
     if (!notificationIcon.hasAttribute("data-initialized")) {
@@ -2431,10 +2521,12 @@ function initializeNotificationPopup() {
         notificationIcon.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
+            console.log("Notification icon clicked!");
             toggleNotificationPopup();
         });
 
         notificationIcon.setAttribute("data-initialized", "true");
+        console.log("Notification icon initialized successfully");
     }
 
     // Ensure the close-on-outside-click is only added once globally
@@ -2562,4 +2654,229 @@ window.toggleNotificationPopup = toggleNotificationPopup;
 window.showNotificationPopup = showNotificationPopup;
 window.closeNotificationPopup = closeNotificationPopup;
 
-// ============= INTERFACE SWITCHING AND CHAT FUNCTIONALITY =============
+// ============= MISSING FUNCTIONS =============
+
+// Function to scroll to bottom of chat messages
+function scrollToBottomOfChat() {
+    const chatMessages = document.getElementById("chatMessages");
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+// Function to update URL parameter
+function updateURLParameter(key, value) {
+    const url = new URL(window.location);
+    if (value) {
+        url.searchParams.set(key, value);
+    } else {
+        url.searchParams.delete(key);
+    }
+    window.history.replaceState({}, "", url);
+}
+
+// Function to update sidebar active state
+function updateSidebarActive(selector) {
+    // Remove active class from all sidebar items
+    document
+        .querySelectorAll(".sidebar .nav-link, .sidebar-icon")
+        .forEach((item) => {
+            item.classList.remove("active");
+        });
+
+    // Add active class to the selected item
+    const targetElement = document.querySelector(selector);
+    if (targetElement) {
+        targetElement.classList.add("active");
+    }
+}
+
+// Function to debug interface visibility
+function debugInterfaceVisibility(interfaceName) {
+    const element = document.getElementById(interfaceName);
+    if (element) {
+        console.log(`${interfaceName} debug:`, {
+            display: element.style.display,
+            visibility: element.style.visibility,
+            opacity: element.style.opacity,
+            zIndex: element.style.zIndex,
+            position: element.style.position,
+        });
+    }
+}
+
+// Function to update asset prices in the order form
+function updateAssetPrices(assetId, symbol, bidPrice, askPrice) {
+    // Store current symbol globally
+    window.currentSymbol = symbol;
+
+    // Update the selected asset ID in the form
+    const selectedAssetIdInput = document.getElementById("selectedAssetId");
+    if (selectedAssetIdInput) {
+        selectedAssetIdInput.value = assetId;
+    }
+
+    // Update the symbol display in the order form
+    const symbolDisplays = document.querySelectorAll(
+        ".current-symbol, .selected-symbol"
+    );
+    symbolDisplays.forEach((display) => {
+        display.textContent = symbol;
+    });
+
+    // Update bid/ask prices in the order form
+    const bidPriceDisplays = document.querySelectorAll(
+        ".current-bid, .bid-price-display"
+    );
+    const askPriceDisplays = document.querySelectorAll(
+        ".current-ask, .ask-price-display"
+    );
+
+    bidPriceDisplays.forEach((display) => {
+        display.textContent = bidPrice;
+    });
+
+    askPriceDisplays.forEach((display) => {
+        display.textContent = askPrice;
+    });
+
+    console.log(
+        `Updated prices for ${symbol}: Bid=${bidPrice}, Ask=${askPrice}`
+    );
+}
+
+// Function to highlight current asset
+function highlightCurrentAsset() {
+    const currentSymbol = window.currentSymbol;
+    if (!currentSymbol) return;
+
+    // Remove highlighting from all assets
+    document.querySelectorAll(".asset-button").forEach((button) => {
+        button.classList.remove("active", "selected");
+    });
+
+    // Highlight the current asset
+    const currentAssetButton = document.querySelector(
+        `[data-symbol="${currentSymbol}"]`
+    );
+    if (currentAssetButton) {
+        currentAssetButton.classList.add("active", "selected");
+    }
+}
+
+// Function to show only favorites
+function showOnlyFavorites() {
+    const assetButtons = document.querySelectorAll(".asset-button");
+    const favoriteAssets = window.favouriteAssetIds || [];
+
+    assetButtons.forEach((button) => {
+        const assetId = button.getAttribute("data-asset-id");
+        const isFavorite = favoriteAssets.includes(parseInt(assetId));
+
+        if (isFavorite) {
+            button.style.display = "flex";
+            button.style.visibility = "visible";
+            button.classList.remove("d-none", "hidden");
+            button.classList.add("d-flex");
+        } else {
+            button.style.display = "none";
+            button.style.visibility = "hidden";
+            button.classList.add("d-none", "hidden");
+            button.classList.remove("d-flex");
+        }
+    });
+}
+
+// Function to show all assets
+function showAllAssets() {
+    const assetButtons = document.querySelectorAll(".asset-button");
+
+    assetButtons.forEach((button) => {
+        button.style.display = "flex";
+        button.style.visibility = "visible";
+        button.classList.remove("d-none", "hidden");
+        button.classList.add("d-flex");
+    });
+}
+
+// Function to toggle favorite status
+function toggleFavorite(assetId, action) {
+    const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+    fetch("/toggle-favourite", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({
+            asset_id: assetId,
+            action: action,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Update the global favorites list
+                window.favouriteAssetIds = data.favourites || [];
+
+                // Update the star icon for this asset
+                const assetButton = document.querySelector(
+                    `[data-asset-id="${assetId}"]`
+                );
+                const starIcon = assetButton
+                    ? assetButton.querySelector(".favorite-star")
+                    : null;
+
+                if (starIcon) {
+                    if (action === "add") {
+                        starIcon.classList.remove("bi-star");
+                        starIcon.classList.add("bi-star-fill");
+                        starIcon.style.color = "#ffc107";
+                    } else {
+                        starIcon.classList.remove("bi-star-fill");
+                        starIcon.classList.add("bi-star");
+                        starIcon.style.color = "#6c757d";
+                    }
+                }
+
+                showNotification(
+                    action === "add"
+                        ? "Added to favorites!"
+                        : "Removed from favorites!",
+                    "success"
+                );
+            } else {
+                showNotification(
+                    data.message || "Error updating favorites",
+                    "error"
+                );
+            }
+        })
+        .catch((error) => {
+            showNotification("Error updating favorites", "error");
+        });
+}
+
+// Function to auto-resize textarea
+function autoResizeTextarea(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
+}
+
+// Note: initializeNotificationPopup function is already defined earlier in the file
+
+// Make additional functions globally available
+window.scrollToBottomOfChat = scrollToBottomOfChat;
+window.updateURLParameter = updateURLParameter;
+window.updateSidebarActive = updateSidebarActive;
+window.debugInterfaceVisibility = debugInterfaceVisibility;
+window.updateAssetPrices = updateAssetPrices;
+window.highlightCurrentAsset = highlightCurrentAsset;
+window.showOnlyFavorites = showOnlyFavorites;
+window.showAllAssets = showAllAssets;
+window.toggleFavorite = toggleFavorite;
+window.autoResizeTextarea = autoResizeTextarea;
