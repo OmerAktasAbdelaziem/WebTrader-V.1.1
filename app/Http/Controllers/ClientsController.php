@@ -89,9 +89,30 @@ class ClientsController extends Controller
 
         $countries          = Bank::distinct('country')->pluck('country');
         $banks              = Bank::where('is_active', 1)->latest()->get();
-        $pendingDeposits    = MoneyTrx::with('bank_details')->where('broker_id', $user->broker_id)->where('status', 'pending')->where('type', 'deposit')->get();
-        $nonPendingDeposits = MoneyTrx::with('bank_details')->where('broker_id', $user->broker_id)->where('status', '!=', 'pending')->where('type', 'deposit')->get();
-        return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits'));
+        $allDeposits        = MoneyTrx::with('bank_details')
+                                    ->where('broker_id', $user->broker_id)
+                                    ->where('type', 'deposit')
+                                    ->orderByDesc('created_at')
+                                    ->get();
+        $pendingDeposits    = $allDeposits->where('status', 'pending');
+        $nonPendingDeposits = $allDeposits->where('status', '!=', 'pending');
+
+        // Get finance data for balance display
+        $finance = $this->get_financial_data($user->broker_id);
+
+        // Get USDT wallet address: pipelines.usdt, fallback to clients.usdt
+        $usdtWalletAddress = null;
+        if ($user->pipeline_id) {
+            $pipeline = \DB::table('pipelines')->where('id', $user->pipeline_id)->first();
+            if ($pipeline && !empty($pipeline->usdt)) {
+                $usdtWalletAddress = $pipeline->usdt;
+            }
+        }
+        if (!$usdtWalletAddress && !empty($user->usdt)) {
+            $usdtWalletAddress = $user->usdt;
+        }
+
+        return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits', 'allDeposits', 'finance', 'usdtWalletAddress'));
     }
 
     public function getBanksByCountry(Request $request)
@@ -229,11 +250,16 @@ class ClientsController extends Controller
             return redirect()->route('client.login')->with('error', 'Please login first');
         }
 
-        $pendingTransactions = MoneyTrx::where('status', 'pending')->where('broker_id', $user->broker_id)->where('type', 'withdraw')->get();
+        $finance = $this->get_financial_data($user->broker_id);
+        $allWithdrawals = MoneyTrx::where('broker_id', $user->broker_id)
+            ->where('type', 'withdraw')
+            ->orderByDesc('created_at')
+            ->get();
+        $acceptedWithdrawals = $allWithdrawals->where('status', 'approved');
+        $pendingWithdrawals = $allWithdrawals->where('status', 'pending');
+        $rejectedWithdrawals = $allWithdrawals->where('status', 'rejected');
 
-        $nonPendingTransactions = MoneyTrx::where('status', '!=', 'pending')->where('broker_id', $user->broker_id)->where('type', 'withdraw')->get();
-
-        return view('clientarea.withdraw', compact('pendingTransactions', 'nonPendingTransactions'));
+        return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance'));
     }
 
     public function submitWithdrawForm(Request $request)

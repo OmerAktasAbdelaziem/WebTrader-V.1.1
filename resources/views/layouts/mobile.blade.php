@@ -1,8 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'WebTrader Mobile')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,6 +23,7 @@
     <link href="{{ url('assets/plugins/metismenu/css/metisMenu.min.css?v1.0') }}" rel="stylesheet" />
     <link href="{{ url('assets/plugins/perfect-scrollbar/css/perfect-scrollbar.min.css?v1.0') }}" rel="stylesheet" />
     <link href="{{ url('assets/css/app.min.css?v1.0') }}" rel="stylesheet">
+    <link href="{{ url('css/mobile-style.css?v1.0') }}" rel="stylesheet">
     <script src="{{ url('assets/js/new.min.js?v1.599') }}"></script>
     <script src="{{ url('assets/plugins/metismenu/js/metisMenu.min.js?v1.599') }}"></script>
     <script src="{{ url('assets/plugins/perfect-scrollbar/js/perfect-scrollbar.min.js?v1.599') }}"></script>
@@ -28,16 +31,8 @@
     <script src="{{ url('assets/plugins/select2/js/select2.min.js?v1.599') }}"></script>
     <script src="{{ url('assets/js/form-select2.min.js?v1.599') }}"></script>
 <style>
-    #resetPasswordBtn {
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-    }
     .btn {
         font-size: 12px;
-    }
-    #resetPasswordBtn .iconify {
-        margin-right: 5px;
     }
     .bottom-nav {
         position: fixed;
@@ -57,6 +52,95 @@
     .iconify {
         font-size: 17px;
     }
+    
+    /* Sidebar Navigation Styles */
+    .sidebar-nav {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        backdrop-filter: blur(20px);
+        transition: left 0.3s ease;
+        z-index: 2000;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    }
+    
+    .sidebar-nav.active {
+        left: 0;
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1999;
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .sidebar-header {
+        padding: 20px;
+        background: rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        color: white;
+    }
+    
+    .sidebar-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        float: right;
+        cursor: pointer;
+    }
+    
+    .sidebar-menu {
+        padding: 20px 0;
+    }
+    
+    .sidebar-menu-item {
+        display: block;
+        padding: 15px 20px;
+        color: white;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1)  ;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-menu-item:hover {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .sidebar-menu-item .iconify {
+        margin-right: 10px;
+        font-size: 20px;
+    }
+    
+    .hamburger-btn {
+        background: none;
+        border: none;
+        color: #000;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .main-container {
+        padding-bottom: 80px !important;
+    }
 </style>
 
 </head>
@@ -64,9 +148,8 @@
 <div class="container-fluid topbar p-0">
     <div class="row align-items-center justify-content-between" style="background-color: #F2F2F2; color: #000; padding: 10px;">
         <div class="col p-0" style="width: fit-content;margin-left: 0.4rem;">
-            <button class="btn btn-outline-dark btn-xs me-2" id="resetPasswordBtn" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
-                <span class="iconify" data-icon="solar:key-broken" data-inline="false"></span>
-                {{__('web.reset_password')}}
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation menu">
+                <span class="iconify" data-icon="material-symbols:menu" data-inline="false"></span>
             </button>
         </div>
         <div class="col p-0" style="width: fit-content">
@@ -155,7 +238,49 @@
     @yield('content')
 </div>
 
-<nav class="bottom-nav navbar navbar-expand navbar-light bg-light">
+<!-- Sidebar Navigation -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar-nav" id="sidebarNav" aria-label="Main navigation menu">
+    <div class="sidebar-header position-relative" style="padding-top: 8px;">
+        <button class="sidebar-close position-absolute" id="sidebarClose" aria-label="Close navigation menu" style="top: 4px; right: 8px; z-index: 10;">
+            <span class="iconify" data-icon="material-symbols:close" data-inline="false"></span>
+        </button>
+        <h5 style="color: #fff; margin: 0; padding-top: 8px;">{{ __('web.menu') }}</h5>
+    </div>
+    <div class="sidebar-menu">
+        <a href="#" class="sidebar-menu-item" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
+            <span class="iconify" data-icon="solar:key-broken" data-inline="false"></span>
+            {{__('web.reset_password')}}
+        </a>
+        <a href="{{route('clientarea.account')}}" class="sidebar-menu-item">
+            <span class="iconify" data-icon="material-symbols:account-circle" data-inline="false"></span>
+            {{__('web.account')}}
+        </a>
+        <a href="{{route('client.deposit')}}" class="sidebar-menu-item">
+            <span class="iconify" data-icon="material-symbols:arrow-upward" data-inline="false"></span>
+            {{__('web.deposit')}}
+        </a>
+        <a href="{{route('client.withdraw')}}" class="sidebar-menu-item">
+            <span class="iconify" data-icon="material-symbols:arrow-downward" data-inline="false"></span>
+            {{__('web.withdraw')}}
+        </a>
+        <a href="{{route('clientarea.orders')}}" class="sidebar-menu-item">
+            <span class="iconify" data-icon="material-symbols:receipt-long" data-inline="false"></span>
+            {{__('web.orders')}}
+        </a>
+        <a href="{{route('client.logout')}}" class="sidebar-menu-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <span class="iconify" data-icon="material-symbols:logout" data-inline="false"></span>
+            {{__('web.logout')}}
+        </a>
+    </div>
+</nav>
+
+<!-- Hidden logout form -->
+<form id="logout-form" action="{{ route('client.logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<nav class="bottom-nav navbar navbar-expand navbar-light bg-light" aria-label="Bottom navigation">
     <ul class="navbar-nav nav-justified w-100">
         <li class="nav-item">
             <a class="nav-link @if (request()->routeIs('clientarea.quotes')) active @endif" href="{{ route('clientarea.quotes') }}">
@@ -173,12 +298,6 @@
             <a class="nav-link @if (request()->routeIs('clientarea.orders')) active @endif" href="{{ route('clientarea.orders') }}">
                 <span class="iconify  @if (request()->routeIs('clientarea.orders')) text-primary @endif" data-icon="material-symbols:add-box" data-inline="false"></span>
                 <span class="d-block">{{__('web.orders')}}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @if (request()->routeIs('clientarea.account')) active @endif" href="{{ route('clientarea.account') }}">
-                <span class="iconify" data-icon="bxs:user" data-inline="false"></span>
-                <span class="d-block">{{__('web.account')}}</span>
             </a>
         </li>
     </ul>
@@ -307,8 +426,8 @@
     $('#asset-select').on('change', function() {
         const selectedOption = $(this).find(':selected');
         
-        const bidPrice = selectedOption.data('bid'); 
-        const askPrice = selectedOption.data('ask'); 
+        const bidPrice = selectedOption.data('bid');
+        const askPrice = selectedOption.data('ask');
         
         $('#bid').val(bidPrice);
         $('#ask').val(askPrice);
@@ -329,7 +448,39 @@
             el.classList.add('d-none');
         });
     }, 3000);
+    
+    // Sidebar Navigation JavaScript
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebarNav = document.getElementById('sidebarNav');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarClose = document.getElementById('sidebarClose');
+    
+    function openSidebar() {
+        sidebarNav.classList.add('active');
+        sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeSidebar() {
+        sidebarNav.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    hamburgerBtn.addEventListener('click', openSidebar);
+    sidebarClose.addEventListener('click', closeSidebar);
+    sidebarOverlay.addEventListener('click', closeSidebar);
+    
+    // Close sidebar when clicking on menu items (except reset password)
+    document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (!this.hasAttribute('data-bs-toggle')) {
+                closeSidebar();
+            }
+        });
+    });
 </script>
 
 <script src="{{ url('assets/js/main_tp.min.js?v1.599') }}"></script>
+<script src="{{ url('js/mobile-style.js?v1.0') }}"></script>
 </html>
