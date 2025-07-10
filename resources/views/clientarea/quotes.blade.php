@@ -133,55 +133,6 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card balance-card @if ($locale == 'ar') rtl @endif" style="position: fixed;">
-                <div class="card-body" style="background: rgba(0, 0, 0, 0.05)">
-                    <div class="row g-3">
-                        <div class="col-12 text-center m-0 collabse_balance m-2">
-                            <strong> {{__('web.balance')}} : $ {{number_format($finance['balance'],'2','.',',')}} ▼ </strong>
-                        </div>
-                        <div class="col-6" @if ($locale == 'ar') style="border-left: 1px solid black!important" @else style="border-right: 1px solid black!important" @endif >
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.balance')}} :
-                                    <div class="border-radius">$ {{number_format($finance['balance'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.profitloss')}} :
-                                    <div class="border-radius currentPL">$ {{number_format($finance['currentPL'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.free')}} :
-                                    <div class="border-radius">$ {{number_format($finance['freeMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.id')}} :
-                                    <div class="border-radius">{{auth()->guard('client')->user()->id}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.equity')}} :
-                                    <div class="border-radius equity">$ {{number_format($finance['equity'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.margin')}} :
-                                    <div class="border-radius">$ {{number_format($finance['usedMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.bonus')}} :
-                                    <div class="border-radius">$ {{number_format($finance['bonus'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.credit')}} :
-                                    <div class="border-radius">$ {{number_format($finance['credit'],'2','.',',')}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
         </div>
         <div class="tab-pane fade @if(($tab == 'forex' && !session('tab')) || session('tab') == 'forex') show active @endif" id="forex" role="tabpanel" aria-labelledby="forex-tab">
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_forex_assets')}}">
@@ -248,55 +199,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card balance-card @if ($locale == 'ar') rtl @endif" style="position: fixed;">
-                <div class="card-body" style="background: rgba(0, 0, 0, 0.05)">
-                    <div class="row g-3">
-                        <div class="col-12 text-center m-0 collabse_balance m-2">
-                            <strong> {{__('web.balance')}} : $ {{number_format($finance['balance'],'2','.',',')}} ▼ </strong>
-                        </div>
-                        <div class="col-6" style="border-right: 1px solid black!important">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.balance')}} :
-                                    <div class="border-radius">$ {{number_format($finance['balance'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.profitloss')}} :
-                                    <div class="border-radius currentPL">$ {{number_format($finance['currentPL'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.free')}} :
-                                    <div class="border-radius">$ {{number_format($finance['freeMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.id')}} :
-                                    <div class="border-radius">{{auth()->guard('client')->user()->id}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.equity')}} :
-                                    <div class="border-radius equity">$ {{number_format($finance['equity'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.margin')}} :
-                                    <div class="border-radius">$ {{number_format($finance['usedMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.bonus')}} :
-                                    <div class="border-radius">$ {{number_format($finance['bonus'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.credit')}} :
-                                    <div class="border-radius">$ {{number_format($finance['credit'],'2','.',',')}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="tab-pane fade @if(($tab == 'crypto' && !session('tab')) || session('tab') == 'crypto') show active @endif" id="crypto" role="tabpanel" aria-labelledby="crypto-tab">
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_crypto_assets')}}">
@@ -363,55 +266,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card balance-card @if ($locale == 'ar') rtl @endif" style="position: fixed;">
-                <div class="card-body" style="background: rgba(0, 0, 0, 0.05)">
-                    <div class="row g-3">
-                        <div class="col-12 text-center m-0 collabse_balance m-2">
-                            <strong> {{__('web.balance')}} : $ {{number_format($finance['balance'],'2','.',',')}} ▼ </strong>
-                        </div>
-                        <div class="col-6" style="border-right: 1px solid black!important">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.balance')}} :
-                                    <div class="border-radius">$ {{number_format($finance['balance'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.profitloss')}} :
-                                    <div class="border-radius currentPL">$ {{number_format($finance['currentPL'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.free')}} :
-                                    <div class="border-radius">$ {{number_format($finance['freeMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.id')}} :
-                                    <div class="border-radius">{{auth()->guard('client')->user()->id}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.equity')}} :
-                                    <div class="border-radius equity">$ {{number_format($finance['equity'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.margin')}} :
-                                    <div class="border-radius">$ {{number_format($finance['usedMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.bonus')}} :
-                                    <div class="border-radius">$ {{number_format($finance['bonus'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.credit')}} :
-                                    <div class="border-radius">$ {{number_format($finance['credit'],'2','.',',')}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="tab-pane fade @if(($tab == 'stocks' && !session('tab')) || session('tab') == 'stocks') show active @endif" id="stocks" role="tabpanel" aria-labelledby="stocks-tab">
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_stocks_assets')}}">
@@ -478,55 +333,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card balance-card @if ($locale == 'ar') rtl @endif" style="position: fixed;">
-                <div class="card-body" style="background: rgba(0, 0, 0, 0.05)">
-                    <div class="row g-3">
-                        <div class="col-12 text-center m-0 collabse_balance m-2">
-                            <strong> {{__('web.balance')}} : $ {{number_format($finance['balance'],'2','.',',')}} ▼ </strong>
-                        </div>
-                        <div class="col-6" style="border-right: 1px solid black!important">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.balance')}} :
-                                    <div class="border-radius">$ {{number_format($finance['balance'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.profitloss')}} :
-                                    <div class="border-radius currentPL">$ {{number_format($finance['currentPL'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.free')}} :
-                                    <div class="border-radius">$ {{number_format($finance['freeMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.id')}} :
-                                    <div class="border-radius">{{auth()->guard('client')->user()->id}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.equity')}} :
-                                    <div class="border-radius equity">$ {{number_format($finance['equity'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.margin')}} :
-                                    <div class="border-radius">$ {{number_format($finance['usedMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.bonus')}} :
-                                    <div class="border-radius">$ {{number_format($finance['bonus'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.credit')}} :
-                                    <div class="border-radius">$ {{number_format($finance['credit'],'2','.',',')}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="tab-pane fade @if(($tab == 'indices' && !session('tab')) || session('tab') == 'indices') show active @endif" id="indices" role="tabpanel" aria-labelledby="indices-tab">
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_indices_assets')}}">
@@ -593,55 +400,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card balance-card @if ($locale == 'ar') rtl @endif" style="position: fixed;">
-                <div class="card-body" style="background: rgba(0, 0, 0, 0.05)">
-                    <div class="row g-3">
-                        <div class="col-12 text-center m-0 collabse_balance m-2">
-                            <strong> {{__('web.balance')}} : $ {{number_format($finance['balance'],'2','.',',')}} ▼ </strong>
-                        </div>
-                        <div class="col-6" style="border-right: 1px solid black!important">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.balance')}} :
-                                    <div class="border-radius">$ {{number_format($finance['balance'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.profitloss')}} :
-                                    <div class="border-radius currentPL">$ {{number_format($finance['currentPL'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.free')}} :
-                                    <div class="border-radius">$ {{number_format($finance['freeMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.id')}} :
-                                    <div class="border-radius">{{auth()->guard('client')->user()->id}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.equity')}} :
-                                    <div class="border-radius equity">$ {{number_format($finance['equity'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.margin')}} :
-                                    <div class="border-radius">$ {{number_format($finance['usedMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.bonus')}} :
-                                    <div class="border-radius">$ {{number_format($finance['bonus'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.credit')}} :
-                                    <div class="border-radius">$ {{number_format($finance['credit'],'2','.',',')}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="tab-pane fade @if(($tab == 'commodity' && !session('tab')) || session('tab') == 'commodity') show active @endif" id="commodity" role="tabpanel" aria-labelledby="commodity-tab">
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_commodity_assets')}}">
@@ -708,55 +467,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card balance-card @if ($locale == 'ar') rtl @endif" style="position: fixed;">
-                <div class="card-body" style="background: rgba(0, 0, 0, 0.05)">
-                    <div class="row g-3">
-                        <div class="col-12 text-center m-0 collabse_balance m-2">
-                            <strong> {{__('web.balance')}} : $ {{number_format($finance['balance'],'2','.',',')}} ▼ </strong>
-                        </div>
-                        <div class="col-6" style="border-right: 1px solid black!important">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.balance')}} :
-                                    <div class="border-radius">$ {{number_format($finance['balance'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.profitloss')}} :
-                                    <div class="border-radius currentPL">$ {{number_format($finance['currentPL'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.free')}} :
-                                    <div class="border-radius">$ {{number_format($finance['freeMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.id')}} :
-                                    <div class="border-radius">{{auth()->guard('client')->user()->id}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row g-3">
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.equity')}} :
-                                    <div class="border-radius equity">$ {{number_format($finance['equity'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.margin')}} :
-                                    <div class="border-radius">$ {{number_format($finance['usedMargin'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.bonus')}} :
-                                    <div class="border-radius">$ {{number_format($finance['bonus'],'2','.',',')}}</div>
-                                </div>
-                                <div class="col-12 d-flex text-start border-radius border-dark">
-                                    {{__('web.credit')}} :
-                                    <div class="border-radius">$ {{number_format($finance['credit'],'2','.',',')}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>

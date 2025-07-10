@@ -141,8 +141,31 @@
     .main-container {
         padding-bottom: 80px !important;
     }
-</style>
 
+    /* Balance Dropdown Content Production Styles */
+    .balance-dropdown-content {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        /* bottom is controlled by JS, do NOT force it here! */
+        z-index: 1101 !important;
+        background: #fff !important;
+        border-radius: 16px 16px 0 0 !important;
+        transition: bottom 0.12s cubic-bezier(.4,0,.2,1), opacity 0.12s cubic-bezier(.4,0,.2,1), visibility 0.12s cubic-bezier(.4,0,.2,1) !important;
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.12) !important;
+        padding: 0 0 16px 0 !important;
+        max-width: 100vw !important;
+        min-height: 120px !important;
+        opacity: 0;
+        visibility: hidden;
+    }
+    .balance-dropdown-content .p-3 {
+        /* No debug outline */
+    }
+    #balanceDropdownBar {
+        /* No debug outline */
+    }
+</style>
 </head>
 
 <div class="container-fluid topbar p-0">
@@ -234,6 +257,35 @@
     </div>
 </div>
 
+
+
+<!-- Balance Dropdown (Simple, Modern, Responsive) -->
+<div id="balanceDropdownBar" class="d-flex align-items-center justify-content-between px-3 py-2 shadow-sm"
+    style="position:fixed;left:0;right:0;bottom:56px;z-index:1100;background:linear-gradient(90deg,#667eea 0%,#764ba2 100%);color:#fff;cursor:pointer;border-radius:16px 16px 0 0;min-height:54px;">
+    <div class="d-flex align-items-center gap-2">
+       <span class="fw-bold" style="font-size:1.1rem;">
+          <span class="iconify me-2" data-icon="mdi:wallet-outline" style="font-size:1.5rem;"></span>
+          {{ __('web.balance') }}
+       </span>
+       <span class="badge bg-light text-dark ms-2" style="font-size:1rem;padding:0.5em 1em;border-radius:12px;">
+          $ {{ number_format($finance['balance'], 2, '.', ',') }}
+       </span>
+    </div>
+    <span id="balanceDropdownChevron" class="ms-2" style="font-size:1.5rem;transition:transform 0.2s;">
+       <i class="fas fa-chevron-up"></i>
+    </span>
+</div>
+<div id="balanceDropdownContent" class="balance-dropdown-content shadow-lg"
+    style="padding-top: 12px; padding-bottom: 24px;">
+    <div class="container">
+       <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8">
+             @include('clientarea.balance-card', ['finance' => $finance, 'locale' => $locale])
+          </div>
+       </div>
+    </div>
+</div>
+
 <div class="container p-0 main-container">
     @yield('content')
 </div>
@@ -280,7 +332,7 @@
     @csrf
 </form>
 
-<nav class="bottom-nav navbar navbar-expand navbar-light bg-light" aria-label="Bottom navigation">
+<nav class="bottom-nav navbar navbar-expand navbar-light bg-light" aria-label="Bottom navigation" style="z-index:1050;">
     <ul class="navbar-nav nav-justified w-100">
         <li class="nav-item">
             <a class="nav-link @if (request()->routeIs('clientarea.quotes')) active @endif" href="{{ route('clientarea.quotes') }}">
@@ -483,4 +535,50 @@
 
 <script src="{{ url('assets/js/main_tp.min.js?v1.599') }}"></script>
 <script src="{{ url('js/mobile-style.js?v1.0') }}"></script>
+
+<script>
+    // Balance Dropdown Slide Up/Down (toggle on bar click)
+    $(function() {
+        var $balanceBar = $('#balanceDropdownBar');
+        var $balanceContent = $('#balanceDropdownContent');
+        var $chevron = $('#balanceDropdownChevron');
+        var balanceOpen = false;
+
+        function openBalanceDropdown() {
+            $balanceContent[0].style.setProperty('bottom', '56px', 'important');
+            $balanceContent[0].style.setProperty('visibility', 'visible', 'important');
+            $balanceContent[0].style.setProperty('opacity', '1', 'important');
+            $chevron.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            balanceOpen = true;
+        }
+        function closeBalanceDropdown() {
+            $balanceContent[0].style.setProperty('bottom', '-400px', 'important');
+            $balanceContent[0].style.setProperty('visibility', 'hidden', 'important');
+            $balanceContent[0].style.setProperty('opacity', '0', 'important');
+            $chevron.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            balanceOpen = false;
+        }
+
+        // Always reset dropdown on resize/orientationchange
+        $(window).on('resize orientationchange', function() {
+            closeBalanceDropdown();
+        });
+
+        $balanceBar.on('click', function(e) {
+            e.stopPropagation();
+            if (balanceOpen) {
+                closeBalanceDropdown();
+            } else {
+                openBalanceDropdown();
+            }
+        });
+
+        // Close dropdown if user taps outside
+        $(document).on('click', function(e) {
+            if (balanceOpen && !$(e.target).closest('#balanceDropdownBar, #balanceDropdownContent').length) {
+                closeBalanceDropdown();
+            }
+        });
+    });
+</script>
 </html>
