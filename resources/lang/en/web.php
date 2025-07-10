@@ -1,4 +1,3 @@
-
 <?php
 
 // Cleaned up: Only one PHP open tag, one return, no duplicate keys, all translations inside the array.
@@ -9,7 +8,7 @@ return [
     // Trading/Platform UI keys
     'quotes' => 'Quotes',
     'charts' => 'Charts',
-    'favorites' => 'Favourites',
+    'favorites' => 'Fav',
     'forex' => 'Forex',
     'stocks' => 'Stocks',
     'indices' => 'Indices',
@@ -417,6 +416,11 @@ return [
         'zw' => 'Zimbabwe',
     ],
     'submit_deposit' => 'Submit Deposit',
+    'search_crypto_assets' => 'Search Crypto Assets...',
+    'withdraw_rejected_notification' => 'Withdrawal request was rejected',
+    'deposit_rejected_notification' => 'Deposit request was rejected',
+    'deposit_accepted_notification' => 'Deposit request was accepted',
+    'notifications' => 'Notifications',
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

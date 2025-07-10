@@ -344,4 +344,5 @@ return [
     'YE'                          => 'Yemen',
     'ZM'                          => 'Zambiya',
     'ZW'                          => 'Zimbabve',
+    'withdraw_rejected_notification' => 'Para çekme talebiniz reddedildi',
 ];
