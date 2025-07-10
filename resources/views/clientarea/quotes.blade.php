@@ -181,7 +181,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
         <div class="tab-pane fade @if(($tab == 'forex' && !session('tab')) || session('tab') == 'forex') show active @endif" id="forex" role="tabpanel" aria-labelledby="forex-tab">
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_forex_assets')}}">

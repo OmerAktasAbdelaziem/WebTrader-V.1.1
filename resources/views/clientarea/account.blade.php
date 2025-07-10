@@ -125,7 +125,9 @@
         <div class="account-title">{{ $user->first_name }} {{ $user->last_name }}</div>
         <div class="account-id">ID: {{ $user->id }}</div>
         <div class="account-type">{{__('web.'.$user->account_type??'Demo')}}</div>
-        <div class="account-date">{{__('web.registration_date')}}: {{ $user->reg_date->format('m/d/Y') }}</div>
+        <div class="account-balance" style="font-size:1.1rem;color:#1EBC74;font-weight:600;margin-bottom:0.5rem;">
+            $ {{ number_format($finance['balance'] ?? 0, 2, '.', ',') }} USD
+        </div>
     </div>
 
     <div class="section-title"><span class="iconify" data-icon="mdi:information-outline"></span> {{__('web.personal_information')}}</div>
