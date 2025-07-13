@@ -6,6 +6,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientLoginController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WebTraderController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,7 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/client/quotes',                   [ClientsController::class,         'showQuotes'              ])->name('clientarea.quotes');
     $router->get   ('/client/orders',                   [ClientsController::class,         'showOrders'              ])->name('clientarea.orders');
     $router->get   ('/client/charts',                   [ClientsController::class,         'showCharts'              ])->name('clientarea.charts');
+    $router->get   ('/api/price-data',                  [ClientsController::class,         'getPriceData'            ])->name('api.price.data');
     $router->get   ('/client/account',                  [ClientsController::class,         'showAccount'             ])->name('clientarea.account');
     $router->put   ('/client/profile',                  [ClientsController::class,         'updateProfile'           ])->name('client.update.profile');
     $router->post  ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
@@ -72,6 +74,10 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->post  ('/chat',                            [ChatController::class,            'store'                   ])->name('chat.store');
     $router->post  ('/notification/read',               [WebTraderController::class,       'markNotificationAsRead'  ])->name('notification.read');
     $router->get   ('/notification/test',               [WebTraderController::class,       'createTestNotifications' ])->name('notification.test');
+    
+    // New notification routes
+    $router->post  ('/notifications/{id}/read',         [NotificationController::class,    'markAsRead'              ])->name('notifications.mark-as-read');
+    $router->post  ('/notifications/mark-all-read',     [NotificationController::class,    'markAllAsRead'           ])->name('notifications.mark-all-read');
     
     // Upload Document Routes
     $router->post  ('/client/upload-documents',         [ClientsController::class,         'uploadDocuments'         ])->name('client.upload.documents');

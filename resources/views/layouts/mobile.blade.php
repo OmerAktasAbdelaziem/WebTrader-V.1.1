@@ -32,25 +32,236 @@
     <script src="{{ url('assets/js/form-select2.min.js?v1.599') }}"></script>
 <style>
     .btn {
-        font-size: 12px;
+        font-size: 11px;
+        padding: 6px 10px;
     }
+    
+    /* Compact Header Styles */
+    .topbar {
+        background-color: #FAFAFA !important;
+        border-bottom: 1px solid #E5E5E5;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 8px 12px !important;
+        min-height: 50px;
+    }
+    
+    .topbar .btn {
+        padding: 4px 8px;
+        border-radius: 8px;
+        background: transparent;
+        border: none;
+        transition: background 0.2s;
+        color: #424242;
+    }
+    
+    .topbar .btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .hamburger-btn {
+        background: none;
+        border: none;
+        color: #424242;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+    
+    .hamburger-btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: #212121;
+    }
+    
+    .topbar .iconify {
+        font-size: 20px;
+    }
+    
+    .topbar .dropdown-menu {
+        border-radius: 12px;
+        border: 1px solid #E5E5E5;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        padding: 8px;
+        background-color: #FFFFFF;
+    }
+    
+    .topbar .dropdown-item {
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        transition: background 0.2s;
+        color: #424242;
+    }
+    
+    .topbar .dropdown-item:hover {
+        background: #F5F5F5;
+    }
+    
+    /* Notification dropdown specific styles */
+    .dropdown-menu .dropdown-item:hover {
+        background: #F8F9FA !important;
+        border-color: #E5E5E5 !important;
+    }
+    
+    /* Center notification dropdown */
+    #notificationDropdown + .dropdown-menu {
+        left: -70% !important;
+        transform: translateX(-50%) translateY(10px) !important;
+        right: auto !important;
+        top: 100% !important;
+        margin-top: 8px !important;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-thumb {
+        background: rgba(66, 66, 66, 0.3);
+        border-radius: 2px;
+    }
+    
+    .dropdown-menu::-webkit-scrollbar-thumb:hover {
+        background: rgba(66, 66, 66, 0.5);
+    }
+    
+    .topbar .badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        background-color: #424242;
+        color: #FFFFFF;
+    }
+    
+    /* Compact Bottom Navigation */
     .bottom-nav {
         position: fixed;
         bottom: 0;
         width: 100%;
-        background-color: #CCCCCC;
-        border-top: 1px solid #dee2e6;
+        background: #FFFFFF !important;
+        border-top: 1px solid #E5E5E5 !important;
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+        padding: 8px 0 max(8px, env(safe-area-inset-bottom));
         z-index: 1000;
-        font-size: 12px;
+        height: 60px;
     }
+    
     .bottom-nav .nav-link {
-        color: #495057;
+        color: #757575 !important;
+        font-size: 11px;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        background: transparent;
+        position: relative;
+        min-width: 0;
+        outline: none;
+        padding: 6px 8px;
+        margin: 0 2px;
     }
-    .bottom-nav .nav-link.active {
-        color: #007bff;
+    
+    .bottom-nav .nav-link.active,
+    .bottom-nav .nav-link:active,
+    .bottom-nav .nav-link:focus {
+        background: #212121 !important;
+        color: #FFFFFF !important;
+        font-weight: 600;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
+    
+    .bottom-nav .iconify {
+        font-size: 18px;
+        color: inherit;
+        transition: all 0.2s;
+        margin-bottom: 2px;
+    }
+    
+    .bottom-nav .nav-label {
+        font-size: 10px;
+        color: inherit;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        line-height: 1;
+    }
+    
+    .bottom-nav .nav-link::after {
+        display: none;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .topbar {
+            padding: 6px 10px !important;
+            min-height: 46px;
+        }
+        
+        .topbar .iconify {
+            font-size: 18px;
+        }
+        
+        .hamburger-btn {
+            font-size: 18px;
+            padding: 4px;
+        }
+        
+        .bottom-nav {
+            height: 56px;
+            padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+        }
+        
+        .bottom-nav .nav-link {
+            font-size: 10px;
+            padding: 4px 6px;
+            margin: 0 1px;
+        }
+        
+        .bottom-nav .iconify {
+            font-size: 16px;
+        }
+        
+        .bottom-nav .nav-label {
+            font-size: 9px;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .topbar {
+            padding: 4px 8px !important;
+            min-height: 44px;
+        }
+        
+        .bottom-nav .nav-label {
+            font-size: 8px;
+        }
+    }
+    
+    /* Main container adjustments */
+    .main-container {
+        padding-bottom: 70px !important;
+        padding-top: 60px !important;
+    }
+    
+    @media (max-width: 576px) {
+        .main-container {
+            padding-bottom: 66px !important;
+            padding-top: 56px !important;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .main-container {
+            padding-bottom: 64px !important;
+            padding-top: 54px !important;
+        }
+    }
+    
     .iconify {
-        font-size: 17px;
+        font-size: 16px;
     }
     
     /* Sidebar Navigation Styles */
@@ -60,7 +271,7 @@
         left: -300px;
         width: 300px;
         height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #424242;
         backdrop-filter: blur(20px);
         transition: left 0.3s ease;
         z-index: 2000;
@@ -91,8 +302,8 @@
     
     .sidebar-header {
         padding: 20px;
-        background: rgba(255,255,255,0.1);
-        border-bottom: 1px solid rgba(255,255,255,0.2);
+        background: #616161;
+        border-bottom: 1px solid #757575;
         color: white;
     }
     
@@ -114,12 +325,12 @@
         padding: 15px 20px;
         color: white;
         text-decoration: none;
-        border-bottom: 1px solid rgba(255,255,255,0.1)  ;
+        border-bottom: 1px solid #616161;
         transition: all 0.3s ease;
     }
     
     .sidebar-menu-item:hover {
-        background: rgba(255,255,255,0.1);
+        background: #616161;
         color: white;
         text-decoration: none;
     }
@@ -127,19 +338,6 @@
     .sidebar-menu-item .iconify {
         margin-right: 10px;
         font-size: 20px;
-    }
-    
-    .hamburger-btn {
-        background: none;
-        border: none;
-        color: #000;
-        font-size: 24px;
-        cursor: pointer;
-        padding: 5px;
-    }
-    
-    .main-container {
-        padding-bottom: 80px !important;
     }
 
     /* Balance Dropdown Content Production Styles */
@@ -149,7 +347,7 @@
         right: 0 !important;
         /* bottom is controlled by JS, do NOT force it here! */
         z-index: 1041 !important;
-        background: #fff !important;
+        background: #FAFAFA !important;
         border-radius: 16px 16px 0 0 !important;
         transition: bottom 0.12s cubic-bezier(.4,0,.2,1), opacity 0.12s cubic-bezier(.4,0,.2,1), visibility 0.12s cubic-bezier(.4,0,.2,1) !important;
         box-shadow: 0 -4px 24px rgba(0,0,0,0.12) !important;
@@ -158,6 +356,7 @@
         min-height: 120px !important;
         opacity: 0;
         visibility: hidden;
+        border-top: 1px solid #E5E5E5;
     }
     .balance-dropdown-content .p-3 {
         /* No debug outline */
@@ -165,189 +364,153 @@
     #balanceDropdownBar {
         /* No debug outline */
     }
-        .bottom-nav {
-        background: #f7f7f7 !important;
-        border-top: 1px solid #e0e0e0 !important;
-        box-shadow: 0 -2px 16px rgba(0,0,0,0.04);
-        padding-bottom: env(safe-area-inset-bottom, 0);
-        transition: background 0.2s;
-    }
-    .bottom-nav .nav-link {
-        color: #222 !important;
-        font-size: 14px;
-        border-radius: 12px 12px 0 0;
-        transition: background 0.18s, color 0.18s, font-weight 0.18s;
-        background: transparent;
-        position: relative;
-        min-width: 0;
-        outline: none;
-    }
-    .bottom-nav .nav-link.active,
-    .bottom-nav .nav-link:active,
-    .bottom-nav .nav-link:focus {
-        background: #f2f2f2 !important;
-        color: #111 !important;
-        font-weight: 700;
-        box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
-    }
-    .bottom-nav .iconify {
-        font-size: 1.7rem;
-        color: #888;
-        transition: color 0.18s;
-    }
-    .bottom-nav .nav-link.active .iconify,
-    .bottom-nav .nav-link:active .iconify,
-    .bottom-nav .nav-link:focus .iconify {
-        color: #111;
-    }
-    .bottom-nav .nav-label {
-        font-size: 12px;
-        color: #444;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        margin-top: 0.1rem;
-        transition: color 0.18s;
-    }
-    .bottom-nav .nav-link.active .nav-label,
-    .bottom-nav .nav-link:active .nav-label,
-    .bottom-nav .nav-link:focus .nav-label {
-        color: #111;
-    }
-    .bottom-nav .nav-link::after {
-        content: '';
-        display: block;
-        margin: 0 auto;
-        width: 0%;
-        height: 2px;
-        background: #111;
-        border-radius: 2px;
-        transition: width 0.18s;
-    }
-    .bottom-nav .nav-link.active::after {
-        width: 40%;
-    }
-    @media (max-width: 576px) {
-        .bottom-nav .nav-link {
-            font-size: 12px;
-            padding: 0.4rem 0.1rem;
-        }
-        .bottom-nav .iconify {
-            font-size: 1.3rem !important;
-        }
-    }
-    @media (max-width: 400px) {
-        .bottom-nav .nav-label {
-            font-size: 11px;
-        }
-    }
 </style>
 
 </head>
 
 <div class="container-fluid topbar p-0">
-    <div class="row align-items-center justify-content-between" style="background-color: #F2F2F2; color: #000; padding: 10px;">
-        <div class="col p-0" style="width: fit-content;margin-left: 0.4rem;">
+    <div class="row align-items-center justify-content-between mx-0">
+        <div class="col-auto">
             <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation menu">
                 <span class="iconify" data-icon="material-symbols:menu" data-inline="false"></span>
             </button>
         </div>
-        <div class="col p-0" style="width: fit-content">
-            <div class="ms-auto d-flex align-items-center justify-content-end">
-                <button class="btn me-2" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="iconify" data-icon="line-md:bell-loop" data-inline="false" style="font-size: 24px;"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end p-3 fw-bold" aria-labelledby="notificationDropdown" style="min-width: 300px;background-color: #cccccc;">
-                    @if ($notifications->count() == 0)
-                        <li>
-                            <h6 class="dropdown-header px-0 fw-bold">{{__('web.notifications')}}</h6>
-                            <p class="text-center text-muted mb-2 px-0 fw-bold">{{__('web.no_notification')}}</p>
-                        </li>
-                    @else
-                        <li>
-                            <h6 class="dropdown-header px-0 fw-bold">{{__('web.notifications')}}</h6>
-                        </li>
-                        @foreach ($notifications as $notification)
-                            <li>
-                                <div class="row">
-                                    <div class="col-12">
-                                        {{__('web.'.$notification->text)}}
-                                    </div>
-                                    <div class="col-12 text-end">
-                                        {{date('d/m H:i', strtotime($notification->created_at))}}
+        
+        <div class="col-auto">
+            <div class="d-flex align-items-center gap-1">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="iconify" data-icon="line-md:bell-loop" data-inline="false"></span>
+                        @if ($notifications->count() > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color:#424242;color:#FFFFFF;font-size:9px;padding:2px 6px;">
+                                @if ($notifications->count() > 9) 9+ @else {{$notifications->count()}} @endif
+                            </span>
+                        @endif
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="notificationDropdown" style="min-width: 280px;max-width:85vw;border-radius:10px;border:1px solid #E5E5E5;box-shadow:0 3px 15px rgba(0,0,0,0.08);background-color:#FAFAFA;">
+                        @if ($notifications->count() == 0)
+                            <li class="dropdown-header" style="background-color:#424242;color:#FFFFFF;padding:8px 12px;margin:-8px -8px 6px -8px;border-radius:10px 10px 0 0;font-weight:600;font-size:0.85rem;">
+                                <span class="iconify me-1" data-icon="material-symbols:notifications" style="font-size:1rem;"></span>
+                                {{__('web.notifications')}}
+                            </li>
+                            <li style="padding:16px 12px;text-align:center;">
+                                <div style="color:#9E9E9E;margin-bottom:6px;">
+                                    <span class="iconify" data-icon="material-symbols:notifications-off" style="font-size:1.5rem;opacity:0.5;"></span>
+                                </div>
+                                <div style="color:#757575;font-size:0.85rem;font-weight:500;">{{__('web.no_notification')}}</div>
+                                <div style="color:#9E9E9E;font-size:0.75rem;margin-top:3px;">Check back later for updates</div>
+                            </li>
+                        @else
+                            <li class="dropdown-header" style="background-color:#424242;color:#FFFFFF;padding:8px 12px;margin:-8px -8px 6px -8px;border-radius:10px 10px 0 0;font-weight:600;font-size:0.85rem;display:flex;align-items:center;justify-content:space-between;">
+                                <span>
+                                    <span class="iconify me-1" data-icon="material-symbols:notifications" style="font-size:1rem;"></span>
+                                    {{__('web.notifications')}}
+                                </span>
+                                <span id="notificationCounter" style="background-color:rgba(255,255,255,0.2);color:#FFFFFF;font-size:0.7rem;padding:2px 6px;border-radius:8px;font-weight:500;">
+                                    {{$notifications->count()}}
+                                </span>
+                            </li>
+                            <div style="max-height:200px;overflow-y:auto;">
+                                @foreach ($notifications as $notification)
+                                    <li style="margin:0 6px;">
+                                        <div class="dropdown-item notification-item" data-notification-id="{{$notification->id}}" style="border-radius:6px;padding:8px 10px;margin-bottom:3px;background-color:#FFFFFF;border:1px solid #F0F0F0;transition:all 0.2s;position:relative;cursor:pointer;">
+                                            <div style="display:flex;align-items:flex-start;gap:8px;">
+                                                <div class="notification-dot" style="flex-shrink:0;width:6px;height:6px;background-color:#424242;border-radius:50%;margin-top:4px;"></div>
+                                                <div style="flex:1;">
+                                                    <div style="font-weight:600;color:#212121;font-size:0.8rem;margin-bottom:3px;line-height:1.2;">
+                                                        {{__('web.'.$notification->text)}}
+                                                    </div>
+                                                    <div style="color:#757575;font-size:0.7rem;display:flex;align-items:center;gap:3px;">
+                                                        <span class="iconify" data-icon="material-symbols:schedule" style="font-size:0.8rem;"></span>
+                                                        {{date('d/m H:i', strtotime($notification->created_at))}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </div>
+                            <li style="margin:6px 6px 0 6px;">
+                                <div style="border-top:1px solid #F0F0F0;padding:6px 0;">
+                                    <div style="text-align:center;padding:4px;">
+                                        <span id="notificationTotal" style="color:#757575;font-size:0.75rem;">{{$notifications->count()}} notification(s) total</span>
                                     </div>
                                 </div>
                             </li>
-                            <hr class="p-0 m-0">
-                        @endforeach
-                    @endif
-                </ul>
+                        @endif
+                    </ul>
+                </div>
 
-                <!-- Language -->
-                <div class="nav-item dropdown">
-                    <div class="d-flex justify-content-center align-items-center nav-link dropdown-toggle-nocaret cursor-pointer text-dark me-2 p-0" data-bs-toggle="dropdown">
-                        <img class="mx-2" src="{{ config('app.flagIconUrlForLocale.' . app()->getLocale()) }}" width="25" alt="flag icon">
-                    </div>
+                <!-- Language Selector -->
+                <div class="dropdown">
+                    <button class="btn d-flex align-items-center" data-bs-toggle="dropdown" aria-label="Language selector">
+                        <img src="{{ config('app.flagIconUrlForLocale.' . app()->getLocale()) }}" width="18" height="12" alt="flag icon" class="rounded">
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         @foreach(['en'=>'English','ar'=>'العربية'] as $language => $name)
                             <li>
-                                <a class="dropdown-item my-2" href="{{ switchUrlLocaleTo($language) }}">
-                                    <img src="{{ config('app.flagIconUrlForLocale.' . $language) }}" width="20" alt="flag icon">
-                                    <span class="ms-2">{{ $name }}</span>
+                                <a class="dropdown-item" href="{{ switchUrlLocaleTo($language) }}">
+                                    <img src="{{ config('app.flagIconUrlForLocale.' . $language) }}" width="16" height="11" alt="flag icon" class="me-2 rounded">
+                                    <span>{{ $name }}</span>
                                 </a>
                             </li>
                         @endforeach
                     </ul>
                 </div>
-                <a href="{{route('chat.index')}}" class="btn me-2" style="position: relative;">
-                    <span class="iconify" data-icon="mynaui:message" data-inline="false" style="font-size: 24px;"></span>
+
+                <!-- Chat -->
+                <a href="{{route('chat.index')}}" class="btn position-relative" aria-label="Chat">
+                    <span class="iconify" data-icon="mynaui:message" data-inline="false"></span>
                     @if ($totalChat > 0)
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@if ($totalChat > 99) +99 @else {{$totalChat}} @endif
-                            <span class="visually-hidden">unread messages</span></span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                            @if ($totalChat > 99) +99 @else {{$totalChat}} @endif
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
                     @endif
                 </a>
+
+                <!-- New Order -->
                 @if (!request()->routeIs('clientarea.quotes') && !isset(auth()->guard('client')->user()->options['cantOpen']))
-                    <a data-bs-toggle="modal" data-bs-target="#newOrderModal" class="btn me-2">
-                        <span class="iconify" data-icon="gridicons:add-outline" data-inline="false" style="font-size: 24px;"></span>
-                    </a>
+                    <button class="btn" data-bs-toggle="modal" data-bs-target="#newOrderModal" aria-label="New order">
+                        <span class="iconify" data-icon="gridicons:add-outline" data-inline="false"></span>
+                    </button>
                 @endif
             </div>
-        </div>
-
-            <!-- Notification -->
         </div>
     </div>
 </div>
 
-<div class="row mx-0" style="padding-top: 4rem;">
-    <div class="col">
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('fail'))
-            <div class="alert alert-danger">
-                {{ session('fail') }}
-            </div>
-        @endif
-    </div>
+<div class="container-fluid px-3 py-2">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show py-2 mb-2" role="alert">
+            <small>{{ session('success') }}</small>
+            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('fail'))
+        <div class="alert alert-danger alert-dismissible fade show py-2 mb-2" role="alert">
+            <small>{{ session('fail') }}</small>
+            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 </div>
 
 @if (request()->routeIs('clientarea.quotes'))
 <!-- Balance Dropdown (Simple, Modern, Responsive) -->
 <div id="balanceDropdownBar" class="d-flex align-items-center justify-content-between px-3 py-2 shadow-sm"
-    style="position:fixed;left:0;right:0;bottom:56px;z-index:1040;background:#f8f9fa;color:#222;cursor:pointer;border-radius:18px 18px 0 0;min-height:56px;box-shadow:0 -2px 12px rgba(0,0,0,0.07);">
+    style="position:fixed;left:0;right:0;bottom:60px;z-index:1040;background:#FAFAFA;color:#212121;cursor:pointer;border-radius:18px 18px 0 0;min-height:48px;box-shadow:0 -2px 12px rgba(0,0,0,0.07);border-top:1px solid #E5E5E5;">
     <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span class="fw-semibold d-flex align-items-center" style="font-size:1.08rem;color:#222;">
-            <span class="iconify me-2" data-icon="mdi:wallet-outline" style="font-size:1.6rem;color:#222;"></span>
+        <span class="fw-semibold d-flex align-items-center" style="font-size:1rem;color:#212121;">
+            <span class="iconify me-2" data-icon="mdi:wallet-outline" style="font-size:1.4rem;color:#424242;"></span>
             {{ __('web.balance') }}
         </span>
-        <span class="badge ms-2" style="background:#e9ecef;color:#222;font-size:1.04rem;padding:0.45em 1.1em;border-radius:14px;font-weight:500;">
+        <span class="badge ms-2" style="background:#424242;color:#FFFFFF;font-size:0.9rem;padding:0.35em 0.9em;border-radius:12px;font-weight:500;">
             $ {{ number_format($finance['balance'], 2, '.', ',') }}
         </span>
     </div>
     <span id="balanceDropdownChevron" class="ms-2 d-flex align-items-center justify-content-center"
-        style="font-size:1.5rem;transition:transform 0.2s;color:#888;">
+        style="font-size:1.3rem;transition:transform 0.2s;color:#757575;">
         <i class="fas fa-chevron-down"></i>
     </span>
 </div>
@@ -445,32 +608,32 @@
 <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-lg shadow-lg border-0">
-            <div class="modal-header bg-blue-600 text-white rounded-t-lg">
+            <div class="modal-header" style="background-color:#424242;color:#FFFFFF;border-bottom:1px solid #616161;">
                 <h5 class="modal-title font-semibold" id="resetPasswordModalLabel">{{__('web.reset_password')}}</h5>
-                <button type="button" class="text-white bg-transparent border-0" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="text-white bg-transparent border-0" data-dismiss="modal" aria-label="Close" style="color:#FFFFFF;">
                     <span aria-hidden="true" class="text-2xl">&times;</span>
                 </button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-4" style="background-color:#FAFAFA;">
                 <form action="{{ route('client.reset.password') }}" method="POST">
                     @csrf
                     <div class="mb-4">
-                        <label for="current_password" class="block text-gray-700 font-medium mb-2">{{__('web.current_password')}}</label>
+                        <label for="current_password" class="block text-gray-700 font-medium mb-2" style="color:#424242;">{{__('web.current_password')}}</label>
                         <input type="password" name="current_password" id="current_password"
-                            class="form-control rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500" required>
+                            class="form-control rounded-md" style="border:1px solid #E5E5E5;background-color:#FFFFFF;" required>
                     </div>
                     <div class="mb-4">
-                        <label for="new_password" class="block text-gray-700 font-medium mb-2">{{__('web.new_password')}}</label>
+                        <label for="new_password" class="block text-gray-700 font-medium mb-2" style="color:#424242;">{{__('web.new_password')}}</label>
                         <input type="password" name="new_password" id="new_password"
-                            class="form-control rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500" required>
+                            class="form-control rounded-md" style="border:1px solid #E5E5E5;background-color:#FFFFFF;" required>
                     </div>
                     <div class="mb-4">
-                        <label for="new_password_confirmation" class="block text-gray-700 font-medium mb-2">{{__('web.confirm_new_password')}}</label>
+                        <label for="new_password_confirmation" class="block text-gray-700 font-medium mb-2" style="color:#424242;">{{__('web.confirm_new_password')}}</label>
                         <input type="password" name="new_password_confirmation" id="new_password_confirmation"
-                            class="form-control rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500" required>
+                            class="form-control rounded-md" style="border:1px solid #E5E5E5;background-color:#FFFFFF;" required>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="submit" class="btn-outline-dark btn-xs me-2">{{__('web.reset_password')}}</button>
+                        <button type="submit" class="btn-outline-dark btn-xs me-2" style="background-color:#424242;color:#FFFFFF;border:1px solid #424242;">{{__('web.reset_password')}}</button>
                     </div>
                 </form>
             </div>
@@ -481,7 +644,7 @@
     <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-body" style="background-color:#FAFAFA;">
                 <!-- New Market Order Tab -->
                     <div class="tab-content mt-3" id="orderTabsContent">
                         <!-- New Market Order -->
@@ -491,8 +654,8 @@
                                 <input type="hidden" name="tab" id="newTab">
                                 <div class="row g-3">
                                     <div class="col-6">
-                                        <label for="asset-select" class="form-label">{{__('web.item')}}</label>
-                                        <select class="single-select form-select inside-modal me-2" id="asset-select" name="currency">
+                                        <label for="asset-select" class="form-label" style="color:#424242;">{{__('web.item')}}</label>
+                                        <select class="single-select form-select inside-modal me-2" id="asset-select" name="currency" style="border:1px solid #E5E5E5;background-color:#FFFFFF;">
                                             @foreach ($forexAssets as $item)
                                                 <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
                                             @endforeach
@@ -511,16 +674,16 @@
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label for="newAmount" class="form-label">{{__('web.amount')}}</label>
-                                        <input type="number" class="form-control" id="newAmount" name="amount" min="0.01" step="any" value="0.01">
+                                        <label for="newAmount" class="form-label" style="color:#424242;">{{__('web.amount')}}</label>
+                                        <input type="number" class="form-control" id="newAmount" name="amount" min="0.01" step="any" value="0.01" style="border:1px solid #E5E5E5;background-color:#FFFFFF;">
                                     </div>
                                     <div class="col-6">
                                         <div class="form-check form-switch d-flex align-items-center">
                                             <input class="form-check-input me-2" type="checkbox" id="stopLossSwitch">
-                                            <label class="form-check-label" for="stopLossSwitch">{{__('web.set_stop_loss')}}</label>
+                                            <label class="form-check-label" for="stopLossSwitch" style="color:#424242;">{{__('web.set_stop_loss')}}</label>
                                         </div>
                                         <div id="stopLossContainer" class="mt-2" style="display: none;">
-                                            <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l">
+                                            <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l" style="border:1px solid #E5E5E5;background-color:#FFFFFF;">
                                         </div>
                                     </div>
                                 
@@ -528,18 +691,18 @@
                                     <div class="col-6">
                                         <div class="form-check form-switch d-flex align-items-center">
                                             <input class="form-check-input me-2" type="checkbox" id="takeProfitSwitch">
-                                            <label class="form-check-label" for="takeProfitSwitch">{{__('web.set_take_profit')}}</label>
+                                            <label class="form-check-label" for="takeProfitSwitch" style="color:#424242;">{{__('web.set_take_profit')}}</label>
                                         </div>
                                         <div id="takeProfitContainer" class="mt-2" style="display: none;">
-                                            <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p">
+                                            <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p" style="border:1px solid #E5E5E5;background-color:#FFFFFF;">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between mt-3">
-                                    <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">
+                                    <button type="submit" class="btn btn-md me-2" formaction="{{route('order.store',['type' => 2])}}" style="background-color:#757575;color:#FFFFFF;border:1px solid #757575;">
                                         <span>{{__('web.sell')}} <strong id="sell-price"> 0</strong></span>
                                     </button>
-                                    <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">
+                                    <button type="submit" class="btn btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}" style="background-color:#424242;color:#FFFFFF;border:1px solid #424242;">
                                         <span>{{__('web.buy')}} <strong id="buy-price">0 </strong></span>
                                     </button>
                                 </div>
@@ -617,6 +780,76 @@
             }
         });
     });
+
+    // Notification click handler to mark as read
+    document.addEventListener('click', function(e) {
+        const notificationItem = e.target.closest('.notification-item');
+        if (notificationItem) {
+            const notificationId = notificationItem.getAttribute('data-notification-id');
+            markNotificationAsRead(notificationId, notificationItem);
+        }
+    });
+
+    function markNotificationAsRead(notificationId, notificationElement) {
+        // Mark notification as read visually
+        notificationElement.style.opacity = '0.6';
+        notificationElement.style.backgroundColor = '#F8F9FA';
+        const dot = notificationElement.querySelector('.notification-dot');
+        if (dot) {
+            dot.style.backgroundColor = '#E0E0E0';
+        }
+
+        // Update counters
+        updateNotificationCount();
+
+        // Send AJAX request to mark as read on server
+        fetch('/notifications/' + notificationId + '/read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                notification_id: notificationId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Notification marked as read');
+            }
+        })
+        .catch(error => {
+            console.error('Error marking notification as read:', error);
+        });
+    }
+
+    function updateNotificationCount() {
+        const unreadNotifications = document.querySelectorAll('.notification-item:not([style*="opacity: 0.6"])');
+        const count = unreadNotifications.length;
+        
+        // Update badge count
+        const badge = document.querySelector('#notificationDropdown .badge');
+        const counterInDropdown = document.getElementById('notificationCounter');
+        const totalCounter = document.getElementById('notificationTotal');
+        
+        if (count === 0) {
+            if (badge) badge.style.display = 'none';
+        } else {
+            if (badge) {
+                badge.style.display = 'block';
+                badge.textContent = count > 9 ? '9+' : count;
+            }
+        }
+        
+        if (counterInDropdown) {
+            counterInDropdown.textContent = count;
+        }
+        
+        if (totalCounter) {
+            totalCounter.textContent = count + ' notification(s) total';
+        }
+    }
 </script>
 
 <script src="{{ url('assets/js/main_tp.min.js?v1.599') }}"></script>
@@ -634,7 +867,7 @@
         $chevron.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
 
         function openBalanceDropdown() {
-            $balanceContent[0].style.setProperty('bottom', '56px', 'important');
+            $balanceContent[0].style.setProperty('bottom', '60px', 'important');
             $balanceContent[0].style.setProperty('visibility', 'visible', 'important');
             $balanceContent[0].style.setProperty('opacity', '1', 'important');
             $chevron.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');

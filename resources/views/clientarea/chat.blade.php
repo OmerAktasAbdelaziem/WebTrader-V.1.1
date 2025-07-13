@@ -4,56 +4,49 @@
 <style>
     html, body {
         height: 100%;
-        background: #f8f9fa;
+        background: #F5F5F0;
     }
     
     .main-container {
-        height: calc(100vh - 120px);
-        padding: 0 !important;
+        height: calc(100vh - 130px);
+        padding: 8px !important;
     }
     
     .chat-container {
         height: 100%;
         display: flex;
         flex-direction: column;
-        background: #fff;
-        border-radius: 12px 12px 0 0;
-        box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+        background: #FAFAFA;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
         overflow: hidden;
-    }
-    
-    .chat-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .chat-header h5 {
-        margin: 0;
-        font-weight: 600;
-        font-size: 1.2rem;
-    }
-    
-    .chat-header .subtitle {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        margin-top: 4px;
+        border: 1px solid #E5E5E5;
     }
     
     .chat-content {
         flex: 1;
-        padding: 20px 16px;
+        padding: 20px 12px 12px 12px;
         overflow-y: auto;
-        background: #f8f9fa;
+        background: #F5F5F0;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
+        min-height: 0;
+        position: relative;
+    }
+    
+    .chat-input-area {
+        position: sticky;
+        bottom: 0;
+        background: #FAFAFA;
+        padding: 12px;
+        border-top: 1px solid #E5E5E5;
+        box-shadow: 0 -1px 4px rgba(0,0,0,0.05);
+        margin: 0 -12px -12px -12px;
     }
     
     .message-bubble {
-        max-width: 75%;
+        max-width: 70%;
         word-wrap: break-word;
         animation: slideIn 0.3s ease-out;
     }
@@ -78,72 +71,81 @@
     }
     
     .message-content {
-        padding: 12px 16px;
-        border-radius: 18px;
+        padding: 10px 14px;
+        border-radius: 16px;
         position: relative;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
     
     .message-left .message-content {
-        background: #fff;
-        border-bottom-left-radius: 6px;
-        border: 1px solid #e9ecef;
+        background: #FFFFFF;
+        border-bottom-left-radius: 4px;
+        border: 1px solid #E5E5E5;
+        color: #212121;
     }
     
     .message-right .message-content {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-bottom-right-radius: 6px;
+        background: #D2B48C;
+        color: #212121;
+        border-bottom-right-radius: 4px;
+        border: 1px solid #C19A6B;
     }
     
     .message-time {
-        font-size: 0.75rem;
-        opacity: 0.7;
-        margin-bottom: 4px;
-        font-weight: 500;
+        font-size: 0.7rem;
+        opacity: 0.6;
+        margin-bottom: 3px;
+        font-weight: 400;
     }
     
     .message-text {
         margin: 0;
-        line-height: 1.4;
-        font-size: 0.95rem;
+        line-height: 1.3;
+        font-size: 0.9rem;
     }
     
     .message-sender {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         margin-bottom: 2px;
-        opacity: 0.8;
+        opacity: 0.7;
+        color: #424242;
     }
     
-    .chat-footer {
-        background: #fff;
-        padding: 16px;
-        border-top: 1px solid #e9ecef;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    .messages-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 12px;
+        min-height: 0;
+        overflow-y: auto;
+        margin-top: 26px;
     }
     
     .input-group {
-        border-radius: 25px;
+        border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        border: 1px solid #e9ecef;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        border: 1px solid #E5E5E5;
+        background: #FFFFFF;
     }
     
     .input-group-text {
-        background: #fff;
+        background: #FFFFFF;
         border: none;
-        color: #667eea;
-        padding: 12px 16px;
+        color: #424242;
+        padding: 10px 12px;
     }
     
     .form-control {
         border: none;
-        padding: 12px 16px;
-        font-size: 0.95rem;
+        padding: 10px 12px;
+        font-size: 0.9rem;
         resize: none;
-        max-height: 100px;
-        background: #fff;
+        max-height: 80px;
+        background: #FFFFFF;
+        color: #212121;
     }
     
     .form-control:focus {
@@ -152,18 +154,22 @@
         outline: none;
     }
     
+    .form-control::placeholder {
+        color: #757575;
+    }
+    
     .send-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #424242;
         border: none;
         color: white;
-        padding: 12px 16px;
+        padding: 10px 12px;
         border-radius: 0;
         transition: all 0.3s ease;
         cursor: pointer;
     }
     
     .send-btn:hover {
-        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        background: #616161;
         transform: translateY(-1px);
     }
     
@@ -173,37 +179,49 @@
     
     .empty-chat {
         text-align: center;
-        padding: 40px 20px;
-        color: #6c757d;
+        padding: 30px 20px;
+        color: #757575;
     }
     
     .empty-chat i {
-        font-size: 3rem;
-        margin-bottom: 16px;
+        font-size: 2.5rem;
+        margin-bottom: 12px;
         opacity: 0.5;
+        color: #9E9E9E;
+    }
+    
+    .empty-chat h6 {
+        color: #424242;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+    
+    .empty-chat p {
+        font-size: 0.85rem;
+        color: #757575;
     }
     
     .typing-indicator {
         display: none;
         align-self: flex-start;
-        max-width: 75%;
+        max-width: 70%;
     }
     
     .typing-dots {
-        background: #fff;
-        border: 1px solid #e9ecef;
-        border-radius: 18px;
-        border-bottom-left-radius: 6px;
-        padding: 12px 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: #FFFFFF;
+        border: 1px solid #E5E5E5;
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        padding: 10px 14px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
     
     .typing-dots span {
         display: inline-block;
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background: #667eea;
+        background: #424242;
         margin: 0 2px;
         animation: typing 1.5s infinite;
     }
@@ -222,90 +240,126 @@
             opacity: 0.3;
         }
         30% {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             opacity: 1;
         }
     }
     
     /* Custom scrollbar */
-    .chat-content::-webkit-scrollbar {
-        width: 4px;
+    .messages-area::-webkit-scrollbar {
+        width: 3px;
     }
     
-    .chat-content::-webkit-scrollbar-track {
+    .messages-area::-webkit-scrollbar-track {
         background: transparent;
     }
     
-    .chat-content::-webkit-scrollbar-thumb {
-        background: rgba(102, 126, 234, 0.3);
+    .messages-area::-webkit-scrollbar-thumb {
+        background: rgba(66, 66, 66, 0.3);
         border-radius: 2px;
     }
     
-    .chat-content::-webkit-scrollbar-thumb:hover {
-        background: rgba(102, 126, 234, 0.5);
+    .messages-area::-webkit-scrollbar-thumb:hover {
+        background: rgba(66, 66, 66, 0.5);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .main-container {
+            height: calc(100vh - 125px);
+            padding: 4px !important;
+        }
+        
+        .chat-content {
+            padding: 16px 10px 10px 10px;
+        }
+        
+        .messages-area {
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-top: 50px;
+        }
+        
+        .message-content {
+            padding: 8px 12px;
+        }
+        
+        .message-text {
+            font-size: 0.85rem;
+        }
+        
+        .chat-input-area {
+            padding: 10px;
+            margin: 0 -10px -10px -10px;
+        }
+        
+        .input-group-text,
+        .send-btn {
+            padding: 8px 10px;
+        }
+        
+        .form-control {
+            padding: 8px 10px;
+            font-size: 0.85rem;
+        }
     }
 </style>
 
 <div class="chat-container">
-    <!-- Chat Header -->
-    <div class="chat-header">
-        <h5>{{__('web.support')}} {{__('web.chat')}}</h5>
-        <div class="subtitle">{{__('web.online_support')}}</div>
-    </div>
-    
     <!-- Chat Content -->
     <div class="chat-content" id="chatContent">
-        @forelse ($chat as $message)
-            <div class="message-bubble {{ $message->user_id ? 'message-left' : 'message-right' }}">
-                <div class="message-content">
-                    @if ($message->user_id)
-                        <div class="message-sender">{{__('web.support')}}</div>
-                    @endif
-                    <div class="message-time">
-                        {{ date('d/m/Y H:i', strtotime($message->created_at)) }}
+        <div class="messages-area" id="messagesArea">
+            @forelse ($chat as $message)
+                <div class="message-bubble {{ $message->user_id ? 'message-left' : 'message-right' }}">
+                    <div class="message-content">
+                        @if ($message->user_id)
+                            <div class="message-sender">{{__('web.support')}}</div>
+                        @endif
+                        <div class="message-time">
+                            {{ date('d/m/Y H:i', strtotime($message->created_at)) }}
+                        </div>
+                        <p class="message-text">{{$message->message}}</p>
                     </div>
-                    <p class="message-text">{{$message->message}}</p>
+                </div>
+            @empty
+                <div class="empty-chat">
+                    <i class="fas fa-comments"></i>
+                    <h6>{{__('web.no_messages_yet')}}</h6>
+                    <p>{{__('web.start_conversation')}}</p>
+                </div>
+            @endforelse
+            
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
-        @empty
-            <div class="empty-chat">
-                <i class="fas fa-comments"></i>
-                <h6>{{__('web.no_messages_yet')}}</h6>
-                <p>{{__('web.start_conversation')}}</p>
-            </div>
-        @endforelse
-        
-        <!-- Typing Indicator -->
-        <div class="typing-indicator" id="typingIndicator">
-            <div class="typing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
-    </div>
-    
-    <!-- Chat Footer -->
-    <div class="chat-footer">
-        <form action="{{ route('chat.store') }}" id="chatForm" method="POST">
-            @csrf
-            <div class="input-group">
-                <span class="input-group-text">
-                    <i class="fas fa-comment-dots"></i>
-                </span>
-                <textarea
-                    id="messageInput"
-                    name="message"
-                    rows="1"
-                    class="form-control"
-                    placeholder="{{__('web.type_message')}}"
-                    maxlength="1000"
-                    required></textarea>
-                <button type="submit" class="send-btn input-group-text">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </form>
+        
+        <!-- Chat Input Area -->
+        <div class="chat-input-area">
+            <form action="{{ route('chat.store') }}" id="chatForm" method="POST">
+                @csrf
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-comment-dots"></i>
+                    </span>
+                    <textarea
+                        id="messageInput"
+                        name="message"
+                        rows="1"
+                        class="form-control"
+                        placeholder="{{__('web.type_message')}}"
+                        maxlength="1000"></textarea>
+                    <button type="submit" class="send-btn input-group-text">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -318,16 +372,17 @@ $(document).ready(function() {
     
     // Auto-scroll to bottom
     function scrollToBottom() {
-        chatContent.scrollTop = chatContent.scrollHeight;
+        const messagesArea = document.getElementById('messagesArea');
+        messagesArea.scrollTop = messagesArea.scrollHeight;
     }
     
     // Initial scroll to bottom
     scrollToBottom();
     
-    // Auto-resize textarea
+    // Auto-resize textarea with smaller max height
     messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        this.style.height = Math.min(this.scrollHeight, 60) + 'px';
     });
     
     // Handle Enter key (send message)

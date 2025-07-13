@@ -468,7 +468,48 @@ class ClientsController extends Controller
     public function showCharts(Request $request)
     {
         $symbol = $request->symbol ?? 'XAUUSD';
-        return view('clientarea.charts', compact('symbol'));
+        $interval = $request->interval ?? '60';
+        $style = $request->style ?? '1';
+        
+        return view('clientarea.charts', compact('symbol', 'interval', 'style'));
+    }
+
+    public function getPriceData(Request $request)
+    {
+        $symbol = $request->symbol ?? 'XAUUSD';
+        
+        // Here you can integrate with your existing price feed
+        // For now, return realistic mock data
+        $priceConfigs = [
+            'XAUUSD' => ['base' => 1950, 'variance' => 30, 'decimals' => 2, 'currency' => '$'],
+            'EURUSD' => ['base' => 1.0800, 'variance' => 0.005, 'decimals' => 5, 'currency' => ''],
+            'GBPUSD' => ['base' => 1.2500, 'variance' => 0.008, 'decimals' => 5, 'currency' => ''],
+            'USDJPY' => ['base' => 148.50, 'variance' => 0.5, 'decimals' => 3, 'currency' => ''],
+            'BTCUSD' => ['base' => 42000, 'variance' => 1000, 'decimals' => 2, 'currency' => '$'],
+            'ETHUSD' => ['base' => 2500, 'variance' => 100, 'decimals' => 2, 'currency' => '$']
+        ];
+        
+        $config = $priceConfigs[$symbol] ?? $priceConfigs['XAUUSD'];
+        
+        $trend = (rand(-50, 50) / 100) * 0.1;
+        $currentPrice = $config['base'] + (rand(-100, 100) / 100) * $config['variance'] + $trend;
+        $previousClose = $config['base'] + (rand(-50, 50) / 100) * $config['variance'] * 0.5;
+        $change = $currentPrice - $previousClose;
+        
+        $dailyRange = $config['variance'] * 0.3;
+        $dayHigh = $currentPrice + (rand(0, 50) / 100) * $dailyRange * 0.5;
+        $dayLow = $currentPrice - (rand(0, 50) / 100) * $dailyRange * 0.5;
+        
+        return response()->json([
+            'symbol' => $symbol,
+            'price' => round($currentPrice, $config['decimals']),
+            'change' => round($change, $config['decimals']),
+            'high' => round($dayHigh, $config['decimals']),
+            'low' => round($dayLow, $config['decimals']),
+            'currency' => $config['currency'],
+            'decimals' => $config['decimals'],
+            'timestamp' => time()
+        ]);
     }
 
     public function showAccount(Request $request)
