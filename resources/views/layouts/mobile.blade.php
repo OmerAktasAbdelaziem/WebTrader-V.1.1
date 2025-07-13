@@ -609,7 +609,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-lg shadow-lg border-0">
             <div class="modal-header" style="background-color:#424242;color:#FFFFFF;border-bottom:1px solid #616161;">
-                <h5 class="modal-title font-semibold" id="resetPasswordModalLabel">{{__('web.reset_password')}}</h5>
+                <h5 class="modal-title font-semibold text-white" id="resetPasswordModalLabel">{{__('web.reset_password')}}</h5>
                 <button type="button" class="text-white bg-transparent border-0" data-dismiss="modal" aria-label="Close" style="color:#FFFFFF;">
                     <span aria-hidden="true" class="text-2xl">&times;</span>
                 </button>

@@ -6,6 +6,7 @@ return [
     'credit in' => 'اضافة قرض',
     'credit out' => 'سحب قرض',
     'market_closed' => 'السوق مغلق',
+    'market_live' => 'السوق مفتوح',
     'the_provided_credentials_do_not_match_our_records' => 'بيانات الاعتماد المقدمة لا تتطابق مع سجلاتنا.',
     'account_created_successfully_please_login'         => 'تم إنشاء الحساب بنجاح. يرجى تسجيل الدخول.',
     'withdraw_request_submitted_successfully'           => 'تم تقديم طلب السحب بنجاح.',

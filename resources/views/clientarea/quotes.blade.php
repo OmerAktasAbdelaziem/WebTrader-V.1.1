@@ -69,7 +69,19 @@
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .status-indicator.live {
+        background: #10b981;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+    }
+
+    .status-indicator.closed {
+        background: #ef4444;
+        animation: none;
+        box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
     }
 
     .market-time {
@@ -79,6 +91,19 @@
         font-size: 14px;
         color: var(--text-secondary);
         font-weight: 400;
+    }
+
+    /* Pulse animation for live status */
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+        }
+        50% {
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+        }
+        100% {
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+        }
     }
 
     /* Navigation Tabs */
@@ -1041,6 +1066,14 @@
             flex-direction: column;
             gap: 8px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .market-status-bar[style*="display: none"] {
+            margin: 0;
+            padding: 0;
+            height: 0;
+            overflow: hidden;
         }
 
         .dropdown-btn {
@@ -1115,6 +1148,14 @@
 
         .market-status-bar {
             padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .market-status-bar[style*="display: none"] {
+            margin: 0;
+            padding: 0;
+            height: 0;
+            overflow: hidden;
         }
 
         .market-status {
@@ -1256,11 +1297,11 @@
 
 @section('content')
 <div class="container p-0">
-    <!-- Market Status Indicator -->
-    <div class="market-status-bar">
+    <!-- Market Status Indicator (Hidden for favorites tab, visible for others) -->
+    <div class="market-status-bar" id="marketStatusBar" style="display: none;">
         <div class="market-status">
-            <div class="status-indicator live"></div>
-            <span>{{__('web.market_live')}}</span>
+            <div class="status-indicator live" id="statusIndicator"></div>
+            <span id="statusText">{{__('web.market_live')}}</span>
         </div>
         <div class="market-time" id="marketTime">
             <i class="fas fa-clock"></i>
@@ -2719,19 +2760,148 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Update current time
-    function updateCurrentTime() {
+    // Market status and time management system
+    function updateMarketStatusAndTime() {
         const now = new Date();
         const timeString = now.toLocaleTimeString();
         const currentTimeElement = document.getElementById('currentTime');
+        
         if (currentTimeElement) {
             currentTimeElement.textContent = timeString;
         }
+
+        // Get active tab
+        const activeTab = document.querySelector('.nav-tabs .nav-link.active');
+        const activeTabId = activeTab ? activeTab.getAttribute('aria-controls') : 'fav';
+        
+        // Update market status based on active tab
+        updateMarketStatus(activeTabId, now);
     }
 
-    // Update time every second
-    updateCurrentTime();
-    setInterval(updateCurrentTime, 1000);
+    function updateMarketStatus(tabId, now) {
+        const statusBar = document.getElementById('marketStatusBar');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        
+        if (!statusBar || !statusIndicator || !statusText) return;
+
+        // Hide status bar for favorites tab
+        if (tabId === 'fav') {
+            statusBar.style.display = 'none';
+            return;
+        }
+
+        // Show status bar for other tabs
+        statusBar.style.display = 'flex';
+
+        // Determine market status based on tab type
+        const isMarketOpen = isMarketOpenForTab(tabId, now);
+        const marketInfo = getMarketInfo(tabId);
+
+        // Update status indicator and text
+        if (isMarketOpen) {
+            statusIndicator.className = 'status-indicator live';
+            statusText.textContent = marketInfo.openText;
+        } else {
+            statusIndicator.className = 'status-indicator closed';
+            statusText.textContent = marketInfo.closedText;
+        }
+    }
+
+    function isMarketOpenForTab(tabId, now) {
+        const day = now.getDay(); // 0 = Sunday, 6 = Saturday
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const timeInMinutes = hour * 60 + minute;
+
+        switch (tabId) {
+            case 'forex':
+                // Forex: 24/5 - Closed Saturday 22:00 to Sunday 22:00 (GMT)
+                if (day === 6 && hour >= 22) return false; // Saturday 22:00+
+                if (day === 0 && hour < 22) return false;  // Sunday before 22:00
+                return true;
+
+            case 'crypto':
+                // Crypto: 24/7
+                return true;
+
+            case 'stocks':
+                // US Stocks: Monday-Friday 9:30-16:00 EST
+                if (day === 0 || day === 6) return false; // Weekend
+                // Simplified: 9:30-16:00 (930 minutes to 960 minutes from midnight)
+                return timeInMinutes >= 570 && timeInMinutes < 960; // 9:30 AM to 4:00 PM
+
+            case 'indices':
+                // Indices follow stock market hours generally
+                if (day === 0 || day === 6) return false; // Weekend
+                return timeInMinutes >= 570 && timeInMinutes < 960; // 9:30 AM to 4:00 PM
+
+            case 'commodity':
+                // Commodities: Similar to forex but with some variations
+                if (day === 0 || day === 6) return false; // Weekend for simplicity
+                return timeInMinutes >= 360 && timeInMinutes < 1200; // 6:00 AM to 8:00 PM
+
+            default:
+                return false;
+        }
+    }
+
+    function getMarketInfo(tabId) {
+        const marketTexts = {
+            forex: {
+                openText: '{{__("web.market_live")}} - Forex 24/5',
+                closedText: '{{__("web.market_closed")}} - Forex'
+            },
+            crypto: {
+                openText: '{{__("web.market_live")}} - Crypto 24/7',
+                closedText: '{{__("web.market_live")}} - Crypto 24/7' // Crypto never closes
+            },
+            stocks: {
+                openText: '{{__("web.market_live")}} - Stocks',
+                closedText: '{{__("web.market_closed")}} - Stocks'
+            },
+            indices: {
+                openText: '{{__("web.market_live")}} - Indices',
+                closedText: '{{__("web.market_closed")}} - Indices'
+            },
+            commodity: {
+                openText: '{{__("web.market_live")}} - Commodities',
+                closedText: '{{__("web.market_closed")}} - Commodities'
+            }
+        };
+
+        return marketTexts[tabId] || {
+            openText: '{{__("web.market_live")}}',
+            closedText: '{{__("web.market_closed")}}'
+        };
+    }
+
+    // Tab change event listeners
+    const tabButtons = document.querySelectorAll('.nav-tabs .nav-link');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Small delay to ensure tab switch completes
+            setTimeout(() => {
+                updateMarketStatusAndTime();
+            }, 100);
+        });
+    });
+
+    // Initialize market status on page load
+    // Check for default active tab
+    setTimeout(() => {
+        updateMarketStatusAndTime();
+    }, 500);
+
+    // Update every second
+    setInterval(updateMarketStatusAndTime, 1000);
+
+    // Also update when page becomes visible (in case user switched tabs in browser)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            updateMarketStatusAndTime();
+        }
+    });
 });
 </script>
 

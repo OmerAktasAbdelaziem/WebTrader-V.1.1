@@ -57,6 +57,9 @@ return [
     // Login/Register keys
     'username_or_email' => 'Username or Email',
     'password' => 'Password',
+    'current_password' => 'Current Password',
+    'new_password' => 'New Password',
+    'confirm_new_password' => 'Confirm New Password',
     'login' => 'Login',
     'client_login' => 'Client Login',
     'create_new_account' => 'Create New Account',
