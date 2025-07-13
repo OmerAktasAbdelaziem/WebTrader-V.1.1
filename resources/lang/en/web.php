@@ -438,6 +438,7 @@ return [
     'sunday' => 'Sunday',
     // Market status
     'closed' => 'Closed',
+    'multi_close' => 'Multi Close',
     // Market types
     'american_market' => 'American Market',
     'british_market' => 'British Market',
@@ -454,6 +455,32 @@ return [
     'start_conversation' => 'Start a conversation with our support team',
     'type_message' => 'Type your message...',
     'you' => 'You',
+    
+    // Orders page keys
+    'no_pending_orders' => 'No Pending Orders',
+    'created_at' => 'Created At',
+    'open_price' => 'Open Price',
+    'close_price' => 'Close Price',
+    'tp' => 'Take Profit',
+    'sl' => 'Stop Loss',
+    'required_margin' => 'Required Margin',
+    'edit_order' => 'Edit Order',
+    'close' => 'Close',
+    'delete' => 'Delete',
+    'update_order' => 'Update Order',
+    'confirm_close' => 'Confirm Close',
+    'confirm_close_order' => 'Are you sure you want to close this order?',
+    'general_report' => 'General Report',
+    'old_trader' => 'Old Trader',
+    'money_trx' => 'Money Transactions',
+    'today' => 'Today',
+    'current_week' => 'Current Week',
+    'current_month' => 'Current Month',
+    'last_3_month' => 'Last 3 Months',
+    'bonus_in' => 'Bonus In',
+    'bonus_out' => 'Bonus Out',
+    'pnl' => 'P&L',
+    
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

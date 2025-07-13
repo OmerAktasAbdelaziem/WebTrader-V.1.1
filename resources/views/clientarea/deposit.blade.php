@@ -98,8 +98,8 @@
                                 </div>
                             </div>
 
-                            <!-- Receipt Upload (always required) -->
-                            <div class="col-12">
+                            <!-- Receipt Upload (required for bank and crypto, not for credit card) -->
+                            <div class="col-12" id="receiptUpload">
                                 <label for="receipt" class="form-label">{{__('web.upload_receipt')}}</label>
                                 <input type="file" class="form-control" id="receipt" name="receipt" accept="image/*,.pdf" required>
                                 <small class="form-text text-muted">Upload payment receipt (Image or PDF)</small>
@@ -424,12 +424,17 @@
             $('#cryptoFields').hide();
             $('#creditCardFields').hide();
             $('#bankDetails').hide();
+            $('#receiptUpload').show();
+            $('#receipt').prop('required', true);
+            
             if (method === 'bank') {
                 $('#bankFields').show();
             } else if (method === 'crypto') {
                 $('#cryptoFields').show();
             } else if (method === 'credit_card') {
                 $('#creditCardFields').show();
+                $('#receiptUpload').hide();
+                $('#receipt').prop('required', false);
             }
         });
 
