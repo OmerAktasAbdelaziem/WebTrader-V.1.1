@@ -47,6 +47,7 @@ return [
     'sell_limit' => 'Sell Limit',
     'trade_hours' => 'Trade Hours',
     'market_closed' => 'Market Closed',
+    'market_live' => 'Market Live',
     'day_of_week' => 'Day of Week',
     'open_time' => 'Open Time',
     'close_time' => 'Close Time',
@@ -427,6 +428,25 @@ return [
     'deposit_rejected_notification' => 'Deposit request was rejected',
     'deposit_accepted_notification' => 'Deposit request was accepted',
     'notifications' => 'Notifications',
+    // Days of the week
+    'monday' => 'Monday',
+    'tuesday' => 'Tuesday',
+    'wednesday' => 'Wednesday',
+    'thursday' => 'Thursday',
+    'friday' => 'Friday',
+    'saturday' => 'Saturday',
+    'sunday' => 'Sunday',
+    // Market status
+    'closed' => 'Closed',
+    // Market types
+    'american_market' => 'American Market',
+    'british_market' => 'British Market',
+    'german_market' => 'German Market',
+    'japanese_market' => 'Japanese Market',
+    // Placeholders
+    'target_price' => 'Target Price',
+    'stop_loss_price' => 'Stop Loss Price',
+    'take_profit_price' => 'Take Profit Price',
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

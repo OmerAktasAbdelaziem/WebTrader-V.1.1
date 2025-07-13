@@ -432,68 +432,260 @@
         color: var(--bg-card);
     }
 
-    /* Enhanced Form Controls */
-    .form-control, .form-select {
-        border-radius: 6px;
-        border: 1px solid var(--border-medium);
-        background: var(--bg-card);
-        font-size: 14px;
-        font-weight: 400;
-        padding: 12px 16px;
-        transition: all 0.3s ease;
-        color: var(--text-primary);
+    /* Remove Bootstrap default dropdown arrow to prevent duplicates */
+    .form-select {
+        background-image: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
     }
 
-    .form-control:focus, .form-select:focus {
+    /* Enhanced Form Controls for Modals */
+    .modal .form-control, 
+    .modal .form-select {
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
+        background: var(--bg-secondary);
+        font-size: 15px;
+        font-weight: 500;
+        padding: 16px 20px;
+        transition: all 0.3s ease;
+        color: var(--text-primary);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .modal .form-control:focus, 
+    .modal .form-select:focus {
         border-color: var(--text-primary);
-        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
         background: var(--bg-card);
+        transform: translateY(-1px);
+    }
+
+    .modal .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .modal .form-label::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: var(--text-primary);
+        border-radius: 50%;
+        opacity: 0.6;
+    }
+
+    /* Enhanced Button Styling for Modals */
+    .modal .btn {
+        border-radius: 12px !important;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 16px 24px;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        position: relative;
+        overflow: hidden;
+        min-width: 120px;
+    }
+
+    .modal .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .modal .btn:hover::before {
+        left: 100%;
+    }
+
+    .modal .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal .btn-success:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    .modal .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .modal .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        color: white;
+    }
+
+    .modal .btn-primary {
+        background: linear-gradient(135deg, var(--text-secondary) 0%, var(--text-primary) 100%);
+        color: var(--bg-card);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal .btn-primary:hover {
+        background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-dark) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        color: var(--bg-card);
+    }
+
+    /* Modern Toggle Switches */
+    .modal .form-check {
+        margin-bottom: 16px;
+    }
+
+    .modal .form-check-input {
+        width: 56px;
+        height: 28px;
+        border-radius: 14px;
+        background: var(--border-medium);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .modal .form-check-input:checked {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal .form-check-input:focus {
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    .modal .form-check-input::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal .form-check-input:checked::before {
+        transform: translateX(28px);
+    }
+
+    .modal .form-check-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        font-size: 15px;
+        margin-left: 12px;
+        cursor: pointer;
     }
 
     /* Modern Modal Design */
     .modal {
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.5);
     }
 
     .modal-dialog {
-        margin: 2rem auto;
-        max-width: 90%;
+        margin: 1rem auto;
+        max-width: 95vw;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 2rem);
     }
 
     .modal-content {
-        border-radius: 8px;
-        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        border: none;
         background: var(--bg-card);
-        box-shadow: var(--hover-shadow);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        animation: modalSlideUp 0.3s ease-out;
+    }
+
+    @keyframes modalSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     .modal-header {
         border-bottom: 1px solid var(--border-light);
-        padding: 20px 24px 16px;
-        background: var(--bg-secondary);
+        padding: 24px 28px 20px;
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-accent) 100%);
+        position: relative;
     }
 
     .modal-title {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text-primary);
-        font-size: 18px;
+        font-size: 20px;
+        margin: 0;
+        letter-spacing: -0.02em;
     }
 
     .modal-body {
-        padding: 24px;
+        padding: 28px;
+        background: var(--bg-card);
     }
 
     .btn-close {
-        background: none;
-        border: none;
-        font-size: 20px;
-        opacity: 0.6;
-        transition: opacity 0.3s ease;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        opacity: 0.8;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
     }
 
     .btn-close:hover {
         opacity: 1;
+        background: var(--bg-secondary);
+        border-color: var(--border-medium);
+        color: var(--text-primary);
+        transform: scale(1.05);
+    }
+
+    .btn-close:focus {
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
 
     /* Enhanced Form Labels */
@@ -525,40 +717,246 @@
 
     /* Table in Modals */
     .modal table {
-        border-radius: 6px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         border: 1px solid var(--border-light);
+        margin-bottom: 0;
+        background: var(--bg-card);
     }
 
     .modal table th {
-        background: var(--bg-secondary);
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-accent) 100%);
         color: var(--text-primary);
-        font-weight: 600;
+        font-weight: 700;
         text-align: center;
-        padding: 16px;
+        padding: 20px 16px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
     }
 
     .modal table td {
-        padding: 12px 16px;
+        padding: 16px;
         border-bottom: 1px solid var(--border-light);
         text-align: center;
+        font-weight: 500;
+        color: var(--text-primary);
+        background: var(--bg-card);
+        transition: all 0.2s ease;
     }
 
-    .modal table tbody tr:hover {
-        background: var(--bg-primary);
+    .modal table tbody tr:hover td {
+        background: var(--bg-secondary);
+        transform: scale(1.01);
     }
 
-    /* Enhanced Select Dropdown */
-    .form-select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23111827' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        background-size: 16px 12px;
+    .modal table tbody tr:last-child td {
+        border-bottom: none;
     }
 
-    .form-select:focus {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23111827' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    /* Modal Action Button Groups */
+    .modal .btn-group-modern {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        flex-wrap: wrap;
+    }
+
+    .modal .btn-group-modern .btn {
+        flex: 1;
+        min-width: 140px;
+    }
+
+    /* Modal Form Grid */
+    .modal-form-grid {
+        display: grid;
+        gap: 20px;
+    }
+
+    .modal-form-grid .row {
+        margin: 0;
+    }
+
+    .modal-form-grid .col-6,
+    .modal-form-grid .col-12 {
+        padding: 0;
+    }
+
+    /* Responsive Modal Design */
+    @media (max-width: 768px) {
+        .modal-dialog {
+            margin: 0.5rem;
+            min-height: calc(100vh - 1rem);
+        }
+        
+        .modal-content {
+            border-radius: 20px 20px 0 0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px 24px 16px;
+        }
+        
+        .modal-body {
+            padding: 24px 20px;
+        }
+        
+        .modal .btn-group-modern {
+            flex-direction: column;
+        }
+        
+        .modal .btn-group-modern .btn {
+            min-width: 100%;
+        }
+        
+        .modal table th,
+        .modal table td {
+            padding: 12px 8px;
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .modal-dialog {
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .modal-content {
+            border-radius: 0;
+            height: 100vh;
+            max-height: none;
+        }
+        
+        .modal-header {
+            padding: 16px 20px;
+        }
+        
+        .modal-body {
+            padding: 20px 16px;
+        }
+        
+        .modal .form-control,
+        .modal .form-select {
+            padding: 14px 16px;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+        
+        .modal .btn {
+            padding: 14px 20px;
+            font-size: 16px;
+        }
+    }
+
+    /* Modal Loading State */
+    .modal-loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .modal-loading .modal-content {
+        position: relative;
+    }
+
+    .modal-loading .modal-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Enhanced Select Dropdown for Modals */
+    .modal .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 16px center !important;
+        background-size: 16px 12px !important;
+        padding-right: 48px;
+    }
+
+    .modal .form-select:focus {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23111827' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    }
+
+    /* Form Controls for non-modal elements */
+    .form-control:not(.modal .form-control), 
+    .form-select:not(.modal .form-select) {
+        border-radius: 6px;
+        border: 1px solid var(--border-medium);
+        background: var(--bg-card);
+        font-size: 14px;
+        font-weight: 400;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        color: var(--text-primary);
+    }
+
+    .form-control:not(.modal .form-control):focus, 
+    .form-select:not(.modal .form-select):focus {
+        border-color: var(--text-primary);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        background: var(--bg-card);
+    }
+
+    /* Enhanced Select Dropdown for non-modal */
+    .form-select:not(.modal .form-select) {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23111827' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 12px center !important;
+        background-size: 16px 12px !important;
+    }
+
+    .form-select:not(.modal .form-select):focus {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23111827' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    }
+
+    /* Enhanced Alert Styling */
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 16px 20px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+        color: #1e40af;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fef3c7 0%, #fefce8 100%);
+        color: #92400e;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+        color: #065f46;
+    }
+
+    /* Text color utilities for icons */
+    .text-success {
+        color: #10b981 !important;
+    }
+
+    .text-warning {
+        color: #f59e0b !important;
+    }
+
+    .text-danger {
+        color: #ef4444 !important;
     }
 
     /* Scrollbar Styling */
@@ -922,53 +1320,36 @@
                                         <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'fav'])}}" style="text-decoration: none;">
                                             <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                         </a>
-                                        <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}">
+                                        <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetailsFav{{ $asset->id }}">
                                             {{ $asset->name }}
                                         </span>
                                     </td>
-                                    <td class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                    <td class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                    <td class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsFav{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                    <td class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsFav{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                                 </tr>
-                                <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                                <tr id="assetDetailsFav{{ $asset->id }}" class="collapse asset-details">
                                     <td colspan="3">
-                                        <div class="card card-body">
-                                            <div class="asset-info-grid">
-                                                <div class="info-item">
-                                                    <span class="label">{{__('web.symbol')}}</span>
-                                                    <span class="value">{{ $asset->name }}</span>
-                                                </div>
-                                                <div class="info-item">
-                                                    <span class="label">{{__('web.type')}}</span>
-                                                    <span class="value">{{ $asset->type }}</span>
-                                                </div>
-                                                <div class="info-item">
-                                                    <span class="label">{{__('web.contract_size')}}</span>
-                                                    <span class="value">{{ $asset->size[$asset_group_id] }}</span>
-                                                </div>
-                                                <div class="info-item">
-                                                    <span class="label">{{__('web.leverage')}}</span>
-                                                    <span class="value">{{ $asset->leverage[$asset_group_id] }}</span>
-                                                </div>
+                                        <div class="asset-dropdown">
+                                            <div class="asset-dropdown-buttons">
+                                                <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="dropdown-btn">
+                                                    <i class="fas fa-chart-line"></i>
+                                                    {{__('web.new_chart')}}
+                                                </a>
+                                                @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                                                    <button type="button" class="dropdown-btn" onclick="openNewOrderModal({{ $asset->id }}, 'fav')">
+                                                        <i class="fas fa-plus"></i>
+                                                        {{__('web.new_order')}}
+                                                    </button>
+                                                    <button type="button" class="dropdown-btn" onclick="openPendingOrderModal({{ $asset->id }}, 'fav')">
+                                                        <i class="fas fa-clock"></i>
+                                                        {{__('web.new_pending_order')}}
+                                                    </button>
+                                                @endif
+                                                <button type="button" class="dropdown-btn" onclick="showFavDetails('{{ $asset->symbol }}', {{ $asset->id }})">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    {{__('web.trade_hours')}}
+                                                </button>
                                             </div>
-                                            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
-                                                <div class="action-buttons">
-                                                    <button class="btn btn-success new_order" data-asset="{{$asset->id}}" data-tab="fav" data-bs-toggle="modal" data-bs-target="#newOrderModal">
-                                                        <i class="fas fa-plus"></i>{{__('web.new_order')}}
-                                                    </button>
-                                                    <button class="btn btn-danger pending_order" data-asset="{{$asset->id}}" data-tab="fav" data-bs-toggle="modal" data-bs-target="#newPendingOrderModal">
-                                                        <i class="fas fa-clock"></i>{{__('web.new_pending_order')}}
-                                                    </button>
-                                                    <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-primary">
-                                                        <i class="fas fa-chart-area"></i>{{__('web.new_chart')}}
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="action-buttons">
-                                                    <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-primary">
-                                                        <i class="fas fa-chart-area"></i>{{__('web.new_chart')}}
-                                                    </a>
-                                                </div>
-                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -996,14 +1377,14 @@
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'forex'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'forex')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name">
+                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetailsForex{{ $asset->id }}">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsForex{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsForex{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
+                            <tr id="assetDetailsForex{{ $asset->id }}" class="collapse asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <div class="asset-dropdown">
                                         <div class="asset-dropdown-buttons">
@@ -1053,14 +1434,14 @@
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'crypto'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'crypto')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name">
+                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetailsCrypto{{ $asset->id }}">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsCrypto{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsCrypto{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
+                            <tr id="assetDetailsCrypto{{ $asset->id }}" class="collapse asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <div class="asset-dropdown">
                                         <div class="asset-dropdown-buttons">
@@ -1110,14 +1491,14 @@
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'stocks'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'stocks')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name">
+                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetailsStocks{{ $asset->id }}">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsStocks{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsStocks{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
+                            <tr id="assetDetailsStocks{{ $asset->id }}" class="collapse asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <div class="asset-dropdown">
                                         <div class="asset-dropdown-buttons">
@@ -1167,14 +1548,14 @@
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'indices'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'indices')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name">
+                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetailsIndices{{ $asset->id }}">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsIndices{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsIndices{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                            <tr id="assetDetailsIndices{{ $asset->id }}" class="collapse asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <div class="asset-dropdown">
                                         <div class="asset-dropdown-buttons">
@@ -1224,14 +1605,14 @@
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'commodity'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'commodity')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name">
+                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetailsCommodity{{ $asset->id }}">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsCommodity{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetailsCommodity{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                            <tr id="assetDetailsCommodity{{ $asset->id }}" class="collapse asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <div class="asset-dropdown">
                                         <div class="asset-dropdown-buttons">
@@ -1270,72 +1651,95 @@
     <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newOrderModalLabel">
+                        <i class="fas fa-chart-line me-2"></i>
+                        {{__('web.new_order')}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
                 <div class="modal-body">
-                <!-- New Market Order Tab -->
-                    <div class="tab-content mt-3" id="orderTabsContent">
-                        <!-- New Market Order -->
-                        <div class="tab-pane fade show active" id="marketOrder" role="tabpanel">
-                            <form action="{{ route('order.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="tab" id="newTab">
-                                <div class="row g-3">
-                                    <div class="col-6">
-                                        <label for="asset-select" class="form-label">{{__('web.item')}}</label>
-                                        <select class="single-select form-select inside-modal me-2" id="asset-select" name="currency">
-                                            @foreach ($forexAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($cryptoAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($stocksAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($indicesAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($commodityAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="newAmount" class="form-label">{{__('web.amount')}}</label>
-                                        <input type="number" class="form-control" id="newAmount" name="amount" min="0.01" step="any" value="0.01">
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-switch d-flex align-items-center">
-                                            <input class="form-check-input me-2" type="checkbox" id="stopLossSwitch">
-                                            <label class="form-check-label" for="stopLossSwitch">{{__('web.set_stop_loss')}}</label>
-                                        </div>
-                                        <div id="stopLossContainer" class="mt-2" style="display: none;">
-                                            <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l">
-                                        </div>
-                                    </div>
+                    <div class="modal-form-grid">
+                        <form action="{{ route('order.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="tab" id="newTab">
+                            
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <label for="asset-select" class="form-label">
+                                        <i class="fas fa-coins me-1"></i>
+                                        {{__('web.item')}}
+                                    </label>
+                                    <select class="form-select" id="asset-select" name="currency">
+                                        @foreach ($forexAssets as $item)
+                                            <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                        @endforeach
+                                        @foreach ($cryptoAssets as $item)
+                                            <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                        @endforeach
+                                        @foreach ($stocksAssets as $item)
+                                            <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                        @endforeach
+                                        @foreach ($indicesAssets as $item)
+                                            <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                        @endforeach
+                                        @foreach ($commodityAssets as $item)
+                                            <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 
-                                    <!-- Set Take Profit -->
-                                    <div class="col-6">
-                                        <div class="form-check form-switch d-flex align-items-center">
-                                            <input class="form-check-input me-2" type="checkbox" id="takeProfitSwitch">
-                                            <label class="form-check-label" for="takeProfitSwitch">{{__('web.set_take_profit')}}</label>
-                                        </div>
-                                        <div id="takeProfitContainer" class="mt-2" style="display: none;">
-                                            <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p">
-                                        </div>
+                                <div class="col-12">
+                                    <label for="newAmount" class="form-label">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        {{__('web.amount')}}
+                                    </label>
+                                    <input type="number" class="form-control" id="newAmount" name="amount" min="0.01" step="any" value="0.01" placeholder="0.01">
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input me-3" type="checkbox" id="stopLossSwitch">
+                                        <label class="form-check-label" for="stopLossSwitch">
+                                            <i class="fas fa-shield-alt me-2"></i>
+                                            {{__('web.set_stop_loss')}}
+                                        </label>
+                                    </div>
+                                    <div id="stopLossContainer" class="mt-3" style="display: none;">
+                                        <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l" placeholder="{{__('web.stop_loss_price')}}">
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-3">
-                                    <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">
-                                        <span>{{__('web.sell')}} <strong id="sell-price"> 0</strong></span>
-                                    </button>
-                                    <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">
-                                        <span>{{__('web.buy')}} <strong id="buy-price">0 </strong></span>
-                                    </button>
+                                
+                                <div class="col-12">
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input me-3" type="checkbox" id="takeProfitSwitch">
+                                        <label class="form-check-label" for="takeProfitSwitch">
+                                            <i class="fas fa-target me-2"></i>
+                                            {{__('web.set_take_profit')}}
+                                        </label>
+                                    </div>
+                                    <div id="takeProfitContainer" class="mt-3" style="display: none;">
+                                        <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p" placeholder="{{__('web.take_profit_price')}}">
+                                    </div>
                                 </div>
-                                <input type="hidden" class="form-control" name="bid" id="bid" value="0" readonly>
-                                <input type="hidden" class="form-control" name="ask" id="ask" value="0" readonly>
-                            </form>
-                        </div>
+                            </div>
+                            
+                            <div class="btn-group-modern">
+                                <button type="submit" class="btn btn-danger" formaction="{{route('order.store',['type' => 2])}}">
+                                    <i class="fas fa-arrow-down me-2"></i>
+                                    {{__('web.sell')}} <strong id="sell-price">0</strong>
+                                </button>
+                                <button type="submit" class="btn btn-success" formaction="{{route('order.store',['type' => 1])}}">
+                                    <i class="fas fa-arrow-up me-2"></i>
+                                    {{__('web.buy')}} <strong id="buy-price">0</strong>
+                                </button>
+                            </div>
+                            
+                            <input type="hidden" class="form-control" name="bid" id="bid" value="0" readonly>
+                            <input type="hidden" class="form-control" name="ask" id="ask" value="0" readonly>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -1347,56 +1751,91 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="newPendingOrderModalLabel">{{__('web.new_pending_order')}}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="newPendingOrderModalLabel">
+                        <i class="fas fa-clock me-2"></i>
+                        {{__('web.new_pending_order')}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Add your form or content here -->
-                    <form action="{{ route('order.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="currency" id="currency">
-                        <input type="hidden" name="tab" id="pendingTab">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label for="orderType" class="form-label">{{__('web.order_type')}}</label>
-                                <select class="form-select" id="orderType" name="status">
-                                    <option value="buy_limit"> {{__('web.buy_limit') }} </option>
-                                    <option value="sell_limit">{{__('web.sell_limit') }}</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label for="orderOpenAt" class="form-label">{{__('web.value')}}</label>
-                                <input type="number" class="form-control" id="orderOpenAt" step="any" name="open_at_price">
-                            </div>
-                            <div class="col-12">
-                                <label for="orderAmount" class="form-label">{{__('web.amount')}}</label>
-                                <input type="number" class="form-control" id="orderAmount" min="0.01" name="amount" step="any" value="0.01">
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check form-switch d-flex align-items-center">
-                                    <input class="form-check-input me-2" type="checkbox" id="stopLossSwitchPending">
-                                    <label class="form-check-label" for="stopLossSwitchPending"Pending>{{__('web.set_stop_loss')}}</label>
+                    <div class="modal-form-grid">
+                        <form action="{{ route('order.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="currency" id="currency">
+                            <input type="hidden" name="tab" id="pendingTab">
+                            
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <label for="orderType" class="form-label">
+                                        <i class="fas fa-list-alt me-1"></i>
+                                        {{__('web.order_type')}}
+                                    </label>
+                                    <select class="form-select" id="orderType" name="status">
+                                        <option value="buy_limit">
+                                            🟢 {{__('web.buy_limit')}}
+                                        </option>
+                                        <option value="sell_limit">
+                                            🔴 {{__('web.sell_limit')}}
+                                        </option>
+                                    </select>
                                 </div>
-                                <div id="stopLossContainerPending" class="mt-2" style="display: none;">
-                                    <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l">
+                                
+                                <div class="col-12">
+                                    <label for="orderOpenAt" class="form-label">
+                                        <i class="fas fa-tag me-1"></i>
+                                        {{__('web.value')}}
+                                    </label>
+                                    <input type="number" class="form-control" id="orderOpenAt" step="any" name="open_at_price" placeholder="{{__('web.target_price')}}">
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="orderAmount" class="form-label">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        {{__('web.amount')}}
+                                    </label>
+                                    <input type="number" class="form-control" id="orderAmount" min="0.01" name="amount" step="any" value="0.01" placeholder="0.01">
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input me-3" type="checkbox" id="stopLossSwitchPending">
+                                        <label class="form-check-label" for="stopLossSwitchPending">
+                                            <i class="fas fa-shield-alt me-2"></i>
+                                            {{__('web.set_stop_loss')}}
+                                        </label>
+                                    </div>
+                                    <div id="stopLossContainerPending" class="mt-3" style="display: none;">
+                                        <input type="number" class="form-control" step="any" name="s_l" placeholder="{{__('web.stop_loss_price')}}">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input me-3" type="checkbox" id="takeProfitSwitchPending">
+                                        <label class="form-check-label" for="takeProfitSwitchPending">
+                                            <i class="fas fa-target me-2"></i>
+                                            {{__('web.set_take_profit')}}
+                                        </label>
+                                    </div>
+                                    <div id="takeProfitContainerPending" class="mt-3" style="display: none;">
+                                        <input type="number" class="form-control" step="any" name="s_p" placeholder="{{__('web.take_profit_price')}}">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        {{ __('web.place_pending_order') }}
+                                    </button>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="form-check form-switch d-flex align-items-center">
-                                    <input class="form-check-input me-2" type="checkbox" id="takeProfitSwitchPending">
-                                    <label class="form-check-label" for="takeProfitSwitchPending">{{__('web.set_take_profit')}}</label>
-                                </div>
-                                <div id="takeProfitContainerPending" class="mt-2" style="display: none;">
-                                    <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary">{{ __('web.place_pending_order') }}</button>
-                            </div>
-                        </div>
-                        <input type="hidden" class="form-control" name="bid" value="0" readonly>
-                        <input type="hidden" class="form-control" name="ask" value="0" readonly>
-                    </form>
+                            
+                            <input type="hidden" class="form-control" name="bid" value="0" readonly>
+                            <input type="hidden" class="form-control" name="ask" value="0" readonly>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1405,27 +1844,144 @@
 
 <!-- Trade Hours Modal Forex -->
 <div class="modal fade" id="tradeHoursModal" tabindex="-1" aria-labelledby="tradeHoursModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tradeHoursModalLabel">{{__('web.trade_hours')}}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="tradeHoursModalLabel">
+                    <i class="fas fa-exchange-alt me-2"></i>
+                    {{__('web.trade_hours')}} - Forex
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
-                <table>
-                    <tr>
-                        <th class="text-center">{{__('web.day_of_week')}}</th>
-                        <th class="text-center">{{__('web.open_time')}}</th>
-                        <th class="text-center">{{__('web.close_time')}}</th>
-                    </tr>
-                    <tr><td>{{__('web.monday')}}</td><td>12:00 AM</td><td>11:59 PM</td></tr>
-                    <tr><td>{{__('web.tuesday')}}</td><td>12:00 AM</td><td>11:59 PM</td></tr>
-                    <tr><td>{{__('web.wednesday')}}</td><td>12:00 AM</td><td>11:59 PM</td></tr>
-                    <tr><td>{{__('web.thursday')}}</td><td>12:00 AM</td><td>11:59 PM</td></tr>
-                    <tr><td>{{__('web.friday')}}</td><td>12:00 AM</td><td>11:59 PM</td></tr>
-                    <tr><td>{{__('web.saturday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                    <tr><td>{{__('web.sunday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                </table>
+                <!-- Market Status Card -->
+                <div class="alert alert-success mb-4" style="background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: none; border-radius: 16px; padding: 20px;">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="fas fa-clock text-white fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-success">24/5 Trading Available</h6>
+                            <p class="mb-0 text-success">Forex markets are open 24 hours a day, 5 days a week</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Schedule -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <h6 class="card-title mb-0 fw-bold">
+                                    <i class="fas fa-calendar-week me-2 text-success"></i>
+                                    Weekdays (Active)
+                                </h6>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="trading-day mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-success me-2" style="font-size: 8px;"></i>{{__('web.monday')}}</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">00:00 - 23:59</small>
+                                    </div>
+                                </div>
+                                <div class="trading-day mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-success me-2" style="font-size: 8px;"></i>{{__('web.tuesday')}}</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">00:00 - 23:59</small>
+                                    </div>
+                                </div>
+                                <div class="trading-day mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-success me-2" style="font-size: 8px;"></i>{{__('web.wednesday')}}</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">00:00 - 23:59</small>
+                                    </div>
+                                </div>
+                                <div class="trading-day mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-success me-2" style="font-size: 8px;"></i>{{__('web.thursday')}}</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">00:00 - 23:59</small>
+                                    </div>
+                                </div>
+                                <div class="trading-day">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-success me-2" style="font-size: 8px;"></i>{{__('web.friday')}}</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">00:00 - 23:59</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <h6 class="card-title mb-0 fw-bold">
+                                    <i class="fas fa-calendar-times me-2 text-danger"></i>
+                                    Weekend (Closed)
+                                </h6>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="trading-day mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-danger me-2" style="font-size: 8px;"></i>{{__('web.saturday')}}</span>
+                                        <span class="badge bg-danger">{{__('web.closed')}}</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">Market Closed</small>
+                                    </div>
+                                </div>
+                                <div class="trading-day">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-medium"><i class="fas fa-circle text-danger me-2" style="font-size: 8px;"></i>{{__('web.sunday')}}</span>
+                                        <span class="badge bg-danger">{{__('web.closed')}}</span>
+                                    </div>
+                                    <div class="time-range">
+                                        <small class="text-muted">Market Closed</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Additional Info -->
+                                <div class="mt-4 p-3" style="background: var(--bg-secondary); border-radius: 8px;">
+                                    <h6 class="mb-2 fw-bold text-primary">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Trading Tips
+                                    </h6>
+                                    <ul class="mb-0 small text-muted">
+                                        <li>Best trading hours: London-NY overlap</li>
+                                        <li>High volatility: Major news releases</li>
+                                        <li>Lower spreads during peak hours</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timezone Info -->
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-globe me-1"></i>
+                        All times shown are in your local timezone (GMT+0)
+                    </small>
+                </div>
             </div>
         </div>
     </div>
@@ -1433,27 +1989,161 @@
 
 <!-- Trade Hours Modal Crypto -->
 <div class="modal fade" id="CryptoHoursModal" tabindex="-1" aria-labelledby="tradeHoursModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tradeHoursModalLabel">{{__('web.trade_hours')}}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="tradeHoursModalLabel">
+                    <i class="fab fa-bitcoin me-2"></i>
+                    {{__('web.trade_hours')}} - Cryptocurrency
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
-                <table>
-                    <tr>
-                        <th class="text-center">{{__('web.day_of_week')}}</th>
-                        <th class="text-center">{{__('web.open_time')}}</th>
-                        <th class="text-center">{{__('web.close_time')}}</th>
-                    </tr>
-                    <tr><td>{{__('web.monday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                    <tr><td>{{__('web.tuesday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                    <tr><td>{{__('web.wednesday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                    <tr><td>{{__('web.thursday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                    <tr><td>{{__('web.friday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                    <tr><td>{{__('web.saturday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                    <tr><td>{{__('web.sunday')}}</td><td>03:00 AM</td><td>02:59 AM</td></tr>
-                </table>
+                <!-- Market Status Card -->
+                <div class="alert alert-warning mb-4" style="background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); border: none; border-radius: 16px; padding: 20px;">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="fab fa-bitcoin text-white fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-warning">24/7 Trading Available</h6>
+                            <p class="mb-0 text-warning">Cryptocurrency markets never close - trade anytime, anywhere</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 24/7 Visual Indicator -->
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning" style="width: 120px; height: 120px;">
+                        <div class="text-center text-white">
+                            <div class="fs-1 fw-bold">24/7</div>
+                            <small class="text-uppercase">Always Open</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Schedule -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <h6 class="card-title mb-0 fw-bold">
+                                    <i class="fas fa-calendar-week me-2 text-warning"></i>
+                                    Every Day Active
+                                </h6>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="trading-day mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.monday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                                <div class="trading-day mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.tuesday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                                <div class="trading-day mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.wednesday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                                <div class="trading-day">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.thursday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <h6 class="card-title mb-0 fw-bold">
+                                    <i class="fas fa-calendar-week me-2 text-warning"></i>
+                                    Weekend Too!
+                                </h6>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="trading-day mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.friday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                                <div class="trading-day mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.saturday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                                <div class="trading-day">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium"><i class="fas fa-circle text-warning me-2" style="font-size: 8px;"></i>{{__('web.sunday')}}</span>
+                                        <span class="badge bg-warning">24h</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Crypto Trading Features -->
+                                <div class="mt-4 p-3" style="background: var(--bg-secondary); border-radius: 8px;">
+                                    <h6 class="mb-2 fw-bold text-warning">
+                                        <i class="fas fa-rocket me-2"></i>
+                                        Crypto Advantages
+                                    </h6>
+                                    <ul class="mb-0 small text-muted">
+                                        <li>No market closing hours</li>
+                                        <li>High volatility opportunities</li>
+                                        <li>Global decentralized trading</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Trading Times -->
+                <div class="mt-4 p-3" style="background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); border-radius: 12px;">
+                    <h6 class="mb-3 fw-bold text-warning">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Popular Trading Times (High Volume)
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <div class="fw-bold">08:00 - 12:00</div>
+                                <small class="text-muted">Asian Session</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <div class="fw-bold">14:00 - 18:00</div>
+                                <small class="text-muted">European Session</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <div class="fw-bold">20:00 - 24:00</div>
+                                <small class="text-muted">American Session</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timezone Info -->
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-globe me-1"></i>
+                        Times shown are in your local timezone - Crypto markets never sleep!
+                    </small>
+                </div>
             </div>
         </div>
     </div>
@@ -1461,92 +2151,314 @@
 
 <!-- Trade Hours Modal Stocks -->
 <div class="modal fade" id="StocksHoursModal" tabindex="-1" aria-labelledby="tradeHoursModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tradeHoursModalLabel">{{__('web.trade_hours')}}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="tradeHoursModalLabel">
+                    <i class="fas fa-chart-line me-2"></i>
+                    {{__('web.trade_hours')}} - Stock Markets
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
-                <h6 class="text-center">{{__('web.american_market')}}</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="text-center">{{__('web.day_of_week')}}</th>
-                            <th class="text-center">{{__('web.open_time')}}</th>
-                            <th class="text-center">{{__('web.close_time')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>{{__('web.monday')}}</td><td>1:30 PM</td><td>8:00 PM</td></tr>
-                        <tr><td>{{__('web.tuesday')}}</td><td>1:30 PM</td><td>8:00 PM</td></tr>
-                        <tr><td>{{__('web.wednesday')}}</td><td>1:30 PM</td><td>8:00 PM</td></tr>
-                        <tr><td>{{__('web.thursday')}}</td><td>1:30 PM</td><td>8:00 PM</td></tr>
-                        <tr><td>{{__('web.friday')}}</td><td>1:30 PM</td><td>8:00 PM</td></tr>
-                        <tr><td>{{__('web.saturday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                        <tr><td>{{__('web.sunday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                    </tbody>
-                </table>
+                <!-- Market Overview -->
+                <div class="alert alert-info mb-4" style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border: none; border-radius: 16px; padding: 20px;">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="fas fa-globe text-white fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-primary">Global Stock Markets</h6>
+                            <p class="mb-0 text-primary">Trading hours vary by region - choose your market wisely</p>
+                        </div>
+                    </div>
+                </div>
 
-                <h6 class="text-center">{{__('web.british_market')}}</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="text-center">{{__('web.day_of_week')}}</th>
-                            <th class="text-center">{{__('web.open_time')}}</th>
-                            <th class="text-center">{{__('web.close_time')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>{{__('web.monday')}}</td><td>11:00 AM</td><td>7:30 PM</td></tr>
-                        <tr><td>{{__('web.tuesday')}}</td><td>11:00 AM</td><td>7:30 PM</td></tr>
-                        <tr><td>{{__('web.wednesday')}}</td><td>11:00 AM</td><td>7:30 PM</td></tr>
-                        <tr><td>{{__('web.thursday')}}</td><td>11:00 AM</td><td>7:30 PM</td></tr>
-                        <tr><td>{{__('web.friday')}}</td><td>11:00 AM</td><td>7:30 PM</td></tr>
-                        <tr><td>{{__('web.saturday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                        <tr><td>{{__('web.sunday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                    </tbody>
-                </table>
+                <!-- Markets Grid -->
+                <div class="row g-4">
+                    <!-- American Market -->
+                    <div class="col-lg-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="text-white fw-bold">🇺🇸</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="card-title mb-0 fw-bold">{{__('web.american_market')}}</h6>
+                                        <small class="text-muted">NYSE, NASDAQ</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="row g-2">
+                                    <div class="col-4"><small class="text-muted fw-bold">Day</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Open</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Close</small></div>
+                                </div>
+                                <hr class="my-2">
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.monday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.tuesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.wednesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.thursday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.friday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.saturday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.sunday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <h6 class="text-center">{{__('web.german_market')}}</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="text-center">{{__('web.day_of_week')}}</th>
-                            <th class="text-center">{{__('web.open_time')}}</th>
-                            <th class="text-center">{{__('web.close_time')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>{{__('web.monday')}}</td><td>10:00 AM</td><td>6:30 PM</td></tr>
-                        <tr><td>{{__('web.tuesday')}}</td><td>10:00 AM</td><td>6:30 PM</td></tr>
-                        <tr><td>{{__('web.wednesday')}}</td><td>10:00 AM</td><td>6:30 PM</td></tr>
-                        <tr><td>{{__('web.thursday')}}</td><td>10:00 AM</td><td>6:30 PM</td></tr>
-                        <tr><td>{{__('web.friday')}}</td><td>10:00 AM</td><td>6:30 PM</td></tr>
-                        <tr><td>{{__('web.saturday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                        <tr><td>{{__('web.sunday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                    </tbody>
-                </table>
+                    <!-- British Market -->
+                    <div class="col-lg-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="text-white fw-bold">🇬🇧</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="card-title mb-0 fw-bold">{{__('web.british_market')}}</h6>
+                                        <small class="text-muted">LSE</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="row g-2">
+                                    <div class="col-4"><small class="text-muted fw-bold">Day</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Open</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Close</small></div>
+                                </div>
+                                <hr class="my-2">
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.monday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.tuesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.wednesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.thursday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.friday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.saturday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.sunday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <h6 class="text-center">{{__('web.japanese_market')}}</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="text-center">{{__('web.day_of_week')}}</th>
-                            <th class="text-center">{{__('web.open_time')}}</th>
-                            <th class="text-center">{{__('web.close_time')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>{{__('web.monday')}}</td><td>3:00 AM</td><td>9:00 AM</td></tr>
-                        <tr><td>{{__('web.tuesday')}}</td><td>3:00 AM</td><td>9:00 AM</td></tr>
-                        <tr><td>{{__('web.wednesday')}}</td><td>3:00 AM</td><td>9:00 AM</td></tr>
-                        <tr><td>{{__('web.thursday')}}</td><td>3:00 AM</td><td>9:00 AM</td></tr>
-                        <tr><td>{{__('web.friday')}}</td><td>3:00 AM</td><td>9:00 AM</td></tr>
-                        <tr><td>{{__('web.saturday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                        <tr><td>{{__('web.sunday')}}</td><td>{{__('web.closed')}}</td><td>{{__('web.closed')}}</td></tr>
-                    </tbody>
-                </table>
+                    <!-- German Market -->
+                    <div class="col-lg-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="text-white fw-bold">🇩🇪</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="card-title mb-0 fw-bold">{{__('web.german_market')}}</h6>
+                                        <small class="text-muted">XETRA, Frankfurt</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="row g-2">
+                                    <div class="col-4"><small class="text-muted fw-bold">Day</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Open</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Close</small></div>
+                                </div>
+                                <hr class="my-2">
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.monday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">10:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">6:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.tuesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">10:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">6:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.wednesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">10:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">6:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.thursday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">10:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">6:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.friday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">10:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">6:30 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.saturday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.sunday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Japanese Market -->
+                    <div class="col-lg-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="text-white fw-bold">🇯🇵</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="card-title mb-0 fw-bold">{{__('web.japanese_market')}}</h6>
+                                        <small class="text-muted">TSE, Nikkei</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="row g-2">
+                                    <div class="col-4"><small class="text-muted fw-bold">Day</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Open</small></div>
+                                    <div class="col-4"><small class="text-muted fw-bold">Close</small></div>
+                                </div>
+                                <hr class="my-2">
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.monday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">3:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">9:00 AM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.tuesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">3:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">9:00 AM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.wednesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">3:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">9:00 AM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.thursday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">3:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">9:00 AM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.friday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">3:00 AM</small></div>
+                                    <div class="col-4"><small class="fw-medium">9:00 AM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.saturday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.sunday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Tips -->
+                <div class="mt-4 p-3" style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius: 12px;">
+                    <h6 class="mb-3 fw-bold text-primary">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Stock Trading Tips
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="mb-2">🌅</div>
+                                <div class="fw-bold small">Market Opening</div>
+                                <small class="text-muted">Higher volatility at open</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="mb-2">📊</div>
+                                <div class="fw-bold small">Earnings Season</div>
+                                <small class="text-muted">Increased price movements</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="mb-2">🌙</div>
+                                <div class="fw-bold small">Market Closing</div>
+                                <small class="text-muted">Last minute trades</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timezone Info -->
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-globe me-1"></i>
+                        All times shown are in your local timezone
+                    </small>
+                </div>
             </div>
         </div>
     </div>
@@ -1644,3 +2556,183 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to open new order modal
+    window.openNewOrderModal = function(assetId, tab) {
+        // Set the tab value
+        document.getElementById('newTab').value = tab;
+        
+        // Set the selected asset in the dropdown
+        const assetSelect = document.getElementById('asset-select');
+        assetSelect.value = assetId;
+        
+        // Update prices based on selected asset
+        updatePrices();
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('newOrderModal'));
+        modal.show();
+    };
+
+    // Function to open pending order modal
+    window.openPendingOrderModal = function(assetId, tab) {
+        // Set the tab value
+        document.getElementById('pendingTab').value = tab;
+        
+        // Set the currency (asset ID)
+        document.getElementById('currency').value = assetId;
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('newPendingOrderModal'));
+        modal.show();
+    };
+
+    // Function to show Forex trade hours
+    window.showForexDetails = function(symbol, assetId) {
+        const modal = new bootstrap.Modal(document.getElementById('tradeHoursModal'));
+        modal.show();
+    };
+
+    // Function to show Crypto trade hours
+    window.showCryptoDetails = function(symbol, assetId) {
+        const modal = new bootstrap.Modal(document.getElementById('CryptoHoursModal'));
+        modal.show();
+    };
+
+    // Function to show Stocks trade hours
+    window.showStocksDetails = function(symbol, assetId) {
+        const modal = new bootstrap.Modal(document.getElementById('StocksHoursModal'));
+        modal.show();
+    };
+
+    // Function to show Indices trade hours
+    window.showIndicesDetails = function(symbol, assetId) {
+        const modal = new bootstrap.Modal(document.getElementById('IndicesHoursModal'));
+        modal.show();
+    };
+
+    // Function to show Commodity trade hours (uses Forex modal for now)
+    window.showCommodityDetails = function(symbol, assetId) {
+        const modal = new bootstrap.Modal(document.getElementById('tradeHoursModal'));
+        modal.show();
+    };
+
+    // Function to show Favorites trade hours (determines modal based on asset type)
+    window.showFavDetails = function(symbol, assetId) {
+        // For favorites, we'll use the general Forex modal
+        // You can enhance this to detect asset type and show appropriate modal
+        const modal = new bootstrap.Modal(document.getElementById('tradeHoursModal'));
+        modal.show();
+    };
+
+    // Function to update prices in the new order modal
+    function updatePrices() {
+        const assetSelect = document.getElementById('asset-select');
+        const selectedOption = assetSelect.options[assetSelect.selectedIndex];
+        
+        if (selectedOption) {
+            const bidPrice = selectedOption.getAttribute('data-bid');
+            const askPrice = selectedOption.getAttribute('data-ask');
+            
+            // Update display prices
+            document.getElementById('sell-price').textContent = bidPrice;
+            document.getElementById('buy-price').textContent = askPrice;
+            
+            // Update hidden inputs
+            document.getElementById('bid').value = bidPrice;
+            document.getElementById('ask').value = askPrice;
+        }
+    }
+
+    // Update prices when asset selection changes
+    const assetSelect = document.getElementById('asset-select');
+    if (assetSelect) {
+        assetSelect.addEventListener('change', updatePrices);
+        // Initialize prices on page load
+        updatePrices();
+    }
+
+    // Handle stop loss and take profit toggles for new order modal
+    const stopLossSwitch = document.getElementById('stopLossSwitch');
+    const stopLossContainer = document.getElementById('stopLossContainer');
+    const takeProfitSwitch = document.getElementById('takeProfitSwitch');
+    const takeProfitContainer = document.getElementById('takeProfitContainer');
+
+    if (stopLossSwitch) {
+        stopLossSwitch.addEventListener('change', function() {
+            stopLossContainer.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    if (takeProfitSwitch) {
+        takeProfitSwitch.addEventListener('change', function() {
+            takeProfitContainer.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    // Handle stop loss and take profit toggles for pending order modal
+    const stopLossSwitchPending = document.getElementById('stopLossSwitchPending');
+    const stopLossContainerPending = document.getElementById('stopLossContainerPending');
+    const takeProfitSwitchPending = document.getElementById('takeProfitSwitchPending');
+    const takeProfitContainerPending = document.getElementById('takeProfitContainerPending');
+
+    if (stopLossSwitchPending) {
+        stopLossSwitchPending.addEventListener('change', function() {
+            stopLossContainerPending.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    if (takeProfitSwitchPending) {
+        takeProfitSwitchPending.addEventListener('change', function() {
+            takeProfitContainerPending.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    // Function to toggle favorite (if needed)
+    window.toggleFavorite = function(event, assetId, tab) {
+        event.preventDefault();
+        // This function is called by some star buttons - you can customize behavior here
+        window.location.href = event.currentTarget.href;
+    };
+
+    // Search functionality for asset tables
+    const searchInputs = document.querySelectorAll('.search input');
+    searchInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const table = this.closest('.tab-pane').querySelector('table tbody');
+            const rows = table.querySelectorAll('tr.asset-row');
+            
+            rows.forEach(row => {
+                const assetName = row.querySelector('.name').textContent.toLowerCase();
+                const shouldShow = assetName.includes(searchTerm);
+                
+                // Toggle both the asset row and its details row
+                row.style.display = shouldShow ? '' : 'none';
+                const detailsRow = row.nextElementSibling;
+                if (detailsRow && detailsRow.classList.contains('asset-details')) {
+                    detailsRow.style.display = shouldShow ? '' : 'none';
+                }
+            });
+        });
+    });
+
+    // Update current time
+    function updateCurrentTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString();
+        const currentTimeElement = document.getElementById('currentTime');
+        if (currentTimeElement) {
+            currentTimeElement.textContent = timeString;
+        }
+    }
+
+    // Update time every second
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 1000);
+});
+</script>
+
+@endsection

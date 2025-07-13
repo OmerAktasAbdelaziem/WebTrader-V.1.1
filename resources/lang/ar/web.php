@@ -426,5 +426,24 @@ return [
     'YE'                          => 'اليمن',
     'ZM'                          => 'زامبيا',
     'ZW'                          => 'زيمبابوي',
+    // Days of the week
+    'monday'                      => 'الاثنين',
+    'tuesday'                     => 'الثلاثاء',
+    'wednesday'                   => 'الأربعاء',
+    'thursday'                    => 'الخميس',
+    'friday'                      => 'الجمعة',
+    'saturday'                    => 'السبت',
+    'sunday'                      => 'الأحد',
+    // Market status
+    'closed'                      => 'مغلق',
+    // Market types
+    'american_market'             => 'السوق الأمريكي',
+    'british_market'              => 'السوق البريطاني',
+    'german_market'               => 'السوق الألماني',
+    'japanese_market'             => 'السوق الياباني',
+    // Placeholders
+    'target_price'                => 'السعر المستهدف',
+    'stop_loss_price'             => 'سعر وقف الخسارة',
+    'take_profit_price'           => 'سعر جني الربح',
 
 ];
