@@ -383,7 +383,7 @@
     /* Asset Row Dropdown */
     .asset-dropdown {
         display: none;
-        background: var(--bg-secondary);
+        background: var(--secondary-bg);
         border: 1px solid var(--border-color);
         border-top: none;
         padding: 12px;
@@ -392,7 +392,16 @@
         animation: slideDown var(--animation-speed) ease;
     }
 
-    .asset-dropdown.show {
+    .asset-details {
+        display: none;
+    }
+
+    .asset-details.show {
+        display: table-row !important;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .asset-details.show .asset-dropdown {
         display: block;
     }
 
@@ -405,7 +414,7 @@
     }
 
     .dropdown-btn {
-        background: var(--bg-primary);
+        background: var(--card-bg);
         border: 1px solid var(--border-color);
         color: var(--text-primary);
         padding: 6px 12px;
@@ -422,10 +431,12 @@
     }
 
     .dropdown-btn:hover {
-        background: var(--bg-secondary);
+        background: var(--hover-bg);
         border-color: var(--text-muted);
         transform: translateY(-1px);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: var(--text-primary);
+        text-decoration: none;
     }
 
     .dropdown-btn i {
@@ -666,50 +677,40 @@
                     </thead>
                     <tbody id="forexAssets">
                         @foreach($forexAssets as $index => $asset)
-                            <tr class="asset-row">
+                            <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'forex'])}}" style="text-decoration: none;">
+                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'forex'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'forex')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name"  data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">
+                                    <span class="name">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}"  data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}"  data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <div class="card card-body text-center" style="font-size: 10px;">
-                                        <div class="row g-3" style="font-size: 12px">
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.symbol')}} :</strong> {{ $asset->name }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.type')}} :</strong> {{ $asset->type }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.contract_size')}} :</strong> {{ $asset->size[$asset_group_id] }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.leverage')}} :</strong> {{ $asset->leverage[$asset_group_id] }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <button class="btn btn-success btn-sm w-100 new_order" data-asset="{{$asset->id}}" data-tab="forex" data-bs-toggle="modal" data-bs-target="#newOrderModal">{{__('web.new_order')}}</button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-danger btn-sm w-100 pending_order" data-asset="{{$asset->id}}" data-tab="forex" style="font-size: 11.6px;" data-bs-toggle="modal" data-bs-target="#newPendingOrderModal">{{__('web.new_pending_order')}}</button>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-success btn-sm w-100">{{__('web.new_chart')}}</a>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#tradeHoursModal">{{__('web.trade_hours')}}</button>
-                                            </div>
+                                    <div class="asset-dropdown">
+                                        <div class="asset-dropdown-buttons">
+                                            <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="dropdown-btn">
+                                                <i class="fas fa-chart-line"></i>
+                                                {{__('web.new_chart')}}
+                                            </a>
+                                            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                                                <button type="button" class="dropdown-btn" onclick="openNewOrderModal({{ $asset->id }}, 'forex')">
+                                                    <i class="fas fa-plus"></i>
+                                                    {{__('web.new_order')}}
+                                                </button>
+                                                <button type="button" class="dropdown-btn" onclick="openPendingOrderModal({{ $asset->id }}, 'forex')">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{__('web.new_pending_order')}}
+                                                </button>
+                                            @endif
+                                            <button type="button" class="dropdown-btn" onclick="showForexDetails('{{ $asset->symbol }}', {{ $asset->id }})">
+                                                <i class="fas fa-info-circle"></i>
+                                                {{__('web.trade_hours')}}
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -733,50 +734,40 @@
                     </thead>
                     <tbody id="cryptoAssets">
                         @foreach($cryptoAssets as $index => $asset)
-                        <tr class="asset-row" >
+                            <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'crypto'])}}" style="text-decoration: none;">
+                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'crypto'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'crypto')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">
+                                    <span class="name">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <div class="card card-body text-center" style="font-size: 10px;">
-                                        <div class="row g-3" style="font-size: 12px">
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.symbol')}} :</strong> {{ $asset->name }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.type')}} :</strong> {{ $asset->type }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.contract_size')}} :</strong> {{ $asset->size[$asset_group_id] }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.leverage')}} :</strong> {{ $asset->leverage[$asset_group_id] }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <button class="btn btn-success btn-sm w-100 new_order" data-asset="{{$asset->id}}" data-tab="crypto" data-bs-toggle="modal" data-bs-target="#newOrderModal">{{__('web.new_order')}}</button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-danger btn-sm w-100 pending_order" data-asset="{{$asset->id}}" data-tab="crypto" style="font-size: 11.6px;" data-bs-toggle="modal" data-bs-target="#newPendingOrderModal">{{__('web.new_pending_order')}}</button>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-success btn-sm w-100">{{__('web.new_chart')}}</a>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#CryptoHoursModal">{{__('web.trade_hours')}}</button>
-                                            </div>
+                                    <div class="asset-dropdown">
+                                        <div class="asset-dropdown-buttons">
+                                            <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="dropdown-btn">
+                                                <i class="fas fa-chart-line"></i>
+                                                {{__('web.new_chart')}}
+                                            </a>
+                                            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                                                <button type="button" class="dropdown-btn" onclick="openNewOrderModal({{ $asset->id }}, 'crypto')">
+                                                    <i class="fas fa-plus"></i>
+                                                    {{__('web.new_order')}}
+                                                </button>
+                                                <button type="button" class="dropdown-btn" onclick="openPendingOrderModal({{ $asset->id }}, 'crypto')">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{__('web.new_pending_order')}}
+                                                </button>
+                                            @endif
+                                            <button type="button" class="dropdown-btn" onclick="showCryptoDetails('{{ $asset->symbol }}', {{ $asset->id }})">
+                                                <i class="fas fa-info-circle"></i>
+                                                {{__('web.trade_hours')}}
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -800,54 +791,44 @@
                     </thead>
                     <tbody id="stocksAssets">
                         @foreach($stocksAssets as $index => $asset)
-                        <tr class="asset-row">
-                            <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'stocks'])}}" style="text-decoration: none;">
-                                    <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
-                                </a>
-                                <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">
-                                    {{ $asset->name }}
-                                </span>
-                            </td>
-                            <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                            <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
-                        </tr>
-                        <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
-                            <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                <div class="card card-body text-center" style="font-size: 10px;">
-                                    <div class="row g-3" style="font-size: 12px">
-                                        <div class="col-6">
-                                            <p><strong>{{__('web.symbol')}} :</strong> {{ $asset->name }}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p><strong>{{__('web.type')}} :</strong> {{ $asset->type }}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p><strong>{{__('web.contract_size')}} :</strong> {{ $asset->size[$asset_group_id] }}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p><strong>{{__('web.leverage')}} :</strong> {{ $asset->leverage[$asset_group_id] }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-6">
-                                            <button class="btn btn-success btn-sm w-100 new_order" data-asset="{{$asset->id}}" data-tab="stocks" data-bs-toggle="modal" data-bs-target="#newOrderModal">{{__('web.new_order')}}</button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button class="btn btn-danger btn-sm w-100 pending_order" data-asset="{{$asset->id}}" data-tab="stocks" style="font-size: 11.6px;" data-bs-toggle="modal" data-bs-target="#newPendingOrderModal">{{__('web.new_pending_order')}}</button>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-6">
-                                            <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-success btn-sm w-100">{{__('web.new_chart')}}</a>
-                                        </div>
-                                        <div class="col-6">
-                                            <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#StocksHoursModal">{{__('web.trade_hours')}}</button>
+                            <tr class="asset-row" data-asset-id="{{ $asset->id }}">
+                                <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
+                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'stocks'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'stocks')">
+                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                    </a>
+                                    <span class="name">
+                                        {{ $asset->name }}
+                                    </span>
+                                </td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                            </tr>
+                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
+                                <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
+                                    <div class="asset-dropdown">
+                                        <div class="asset-dropdown-buttons">
+                                            <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="dropdown-btn">
+                                                <i class="fas fa-chart-line"></i>
+                                                {{__('web.new_chart')}}
+                                            </a>
+                                            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                                                <button type="button" class="dropdown-btn" onclick="openNewOrderModal({{ $asset->id }}, 'stocks')">
+                                                    <i class="fas fa-plus"></i>
+                                                    {{__('web.new_order')}}
+                                                </button>
+                                                <button type="button" class="dropdown-btn" onclick="openPendingOrderModal({{ $asset->id }}, 'stocks')">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{__('web.new_pending_order')}}
+                                                </button>
+                                            @endif
+                                            <button type="button" class="dropdown-btn" onclick="showStocksDetails('{{ $asset->symbol }}', {{ $asset->id }})">
+                                                <i class="fas fa-info-circle"></i>
+                                                {{__('web.trade_hours')}}
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -867,50 +848,40 @@
                     </thead>
                     <tbody id="indicesAssets">
                         @foreach($indicesAssets as $index => $asset)
-                            <tr class="asset-row">
+                            <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'indices'])}}" style="text-decoration: none;">
+                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'indices'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'indices')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">
+                                    <span class="name">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <div class="card card-body text-center" style="font-size: 10px;">
-                                        <div class="row g-3" style="font-size: 12px">
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.symbol')}} :</strong> {{ $asset->name }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.type')}} :</strong> {{ $asset->type }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.contract_size')}} :</strong> {{ $asset->size[$asset_group_id] }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.leverage')}} :</strong> {{ $asset->leverage[$asset_group_id] }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <button class="btn btn-success btn-sm w-100 new_order" data-asset="{{$asset->id}}" data-tab="indices" data-bs-toggle="modal" data-bs-target="#newOrderModal">{{__('web.new_order')}}</button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-danger btn-sm w-100 pending_order" data-asset="{{$asset->id}}" data-tab="indices" style="font-size: 11.6px;" data-bs-toggle="modal" data-bs-target="#newPendingOrderModal">{{__('web.new_pending_order')}}</button>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-success btn-sm w-100">{{__('web.new_chart')}}</a>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#IndicesHoursModal">{{__('web.trade_hours')}}</button>
-                                            </div>
+                                    <div class="asset-dropdown">
+                                        <div class="asset-dropdown-buttons">
+                                            <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="dropdown-btn">
+                                                <i class="fas fa-chart-line"></i>
+                                                {{__('web.new_chart')}}
+                                            </a>
+                                            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                                                <button type="button" class="dropdown-btn" onclick="openNewOrderModal({{ $asset->id }}, 'indices')">
+                                                    <i class="fas fa-plus"></i>
+                                                    {{__('web.new_order')}}
+                                                </button>
+                                                <button type="button" class="dropdown-btn" onclick="openPendingOrderModal({{ $asset->id }}, 'indices')">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{__('web.new_pending_order')}}
+                                                </button>
+                                            @endif
+                                            <button type="button" class="dropdown-btn" onclick="showIndicesDetails('{{ $asset->symbol }}', {{ $asset->id }})">
+                                                <i class="fas fa-info-circle"></i>
+                                                {{__('web.trade_hours')}}
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -934,50 +905,40 @@
                     </thead>
                     <tbody id="commodityAssets">
                         @foreach($commodityAssets as $index => $asset)
-                            <tr class="asset-row">
+                            <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'commodity'])}}" style="text-decoration: none;">
+                                    <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'commodity'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'commodity')">
                                         <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
                                     </a>
-                                    <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">
+                                    <span class="name">
                                         {{ $asset->name }}
                                     </span>
                                 </td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
-                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}" aria-expanded="false" aria-controls="assetDetails{{ $asset->id }}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="bid_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->bid_price), '0'), '.') }}</td>
+                                <td @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif class="ask_price" data-asset-id="{{$asset->id}}">{{ rtrim(rtrim(sprintf('%f', $asset->ask_price), '0'), '.') }}</td>
                             </tr>
-                            <tr id="assetDetails{{ $asset->id }}" class="collapse asset-details">
+                            <tr id="assetDetails{{ $asset->id }}" class="asset-details">
                                 <td colspan="3" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
-                                    <div class="card card-body text-center" style="font-size: 10px;">
-                                        <div class="row g-3" style="font-size: 12px">
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.symbol')}} :</strong> {{ $asset->name }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.type')}} :</strong> {{ $asset->type }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.contract_size')}} :</strong> {{ $asset->size[$asset_group_id] }}</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>{{__('web.leverage')}} :</strong> {{ $asset->leverage[$asset_group_id] }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <button class="btn btn-success btn-sm w-100 new_order" data-asset="{{$asset->id}}" data-tab="commodity" data-bs-toggle="modal" data-bs-target="#newOrderModal">{{__('web.new_order')}}</button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-danger btn-sm w-100 pending_order" data-asset="{{$asset->id}}" data-tab="commodity" style="font-size: 11.6px;" data-bs-toggle="modal" data-bs-target="#newPendingOrderModal">{{__('web.new_pending_order')}}</button>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-6">
-                                                <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="btn btn-success btn-sm w-100">{{__('web.new_chart')}}</a>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#CommodityHoursModal">{{__('web.trade_hours')}}</button>
-                                            </div>
+                                    <div class="asset-dropdown">
+                                        <div class="asset-dropdown-buttons">
+                                            <a href="{{route('clientarea.charts',['symbol' => $asset->symbol])}}" class="dropdown-btn">
+                                                <i class="fas fa-chart-line"></i>
+                                                {{__('web.new_chart')}}
+                                            </a>
+                                            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                                                <button type="button" class="dropdown-btn" onclick="openNewOrderModal({{ $asset->id }}, 'commodity')">
+                                                    <i class="fas fa-plus"></i>
+                                                    {{__('web.new_order')}}
+                                                </button>
+                                                <button type="button" class="dropdown-btn" onclick="openPendingOrderModal({{ $asset->id }}, 'commodity')">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{__('web.new_pending_order')}}
+                                                </button>
+                                            @endif
+                                            <button type="button" class="dropdown-btn" onclick="showCommodityDetails('{{ $asset->symbol }}', {{ $asset->id }})">
+                                                <i class="fas fa-info-circle"></i>
+                                                {{__('web.trade_hours')}}
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -1449,31 +1410,8 @@
             }
         );
 
-        // Click ripple effect for asset rows
-        $('.asset-row').on('click', function(e) {
-            const ripple = $('<div class="ripple"></div>');
-            const rect = this.getBoundingClientRect();
-            const size = 50;
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.css({
-                width: size,
-                height: size,
-                left: x,
-                top: y,
-                position: 'absolute',
-                background: 'rgba(255,255,255,0.3)',
-                borderRadius: '50%',
-                transform: 'scale(0)',
-                animation: 'ripple 0.6s linear',
-                pointerEvents: 'none'
-            });
-            
-            $(this).css('position', 'relative').append(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        });
+        // Initialize asset row dropdown functionality
+        initializeAssetRowClicks();
 
         // Enhanced price change animations with sound effect simulation
         function animatePriceChange(element, isIncrease) {
@@ -1758,6 +1696,11 @@
 
     // Asset row dropdown functionality
     function initializeAssetRowClicks() {
+        // Remove any existing event listeners
+        document.querySelectorAll('.asset-row').forEach(row => {
+            row.replaceWith(row.cloneNode(true));
+        });
+
         document.querySelectorAll('.asset-row').forEach(row => {
             row.addEventListener('click', function(e) {
                 // Don't trigger if clicking on star icon or other interactive elements
@@ -1768,45 +1711,39 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Get asset ID from various sources
-                const assetId = this.dataset.assetId ||
-                               this.querySelector('[data-bs-target]')?.getAttribute('data-bs-target')?.replace('#assetDetails', '') ||
-                               this.querySelector('[data-asset-id]')?.dataset.assetId;
+                // Get asset ID from data attribute
+                const assetId = this.dataset.assetId;
                 
                 if (!assetId) return;
                 
                 // Close any other open dropdowns/details
-                document.querySelectorAll('.asset-dropdown.show, .asset-details.show').forEach(dropdown => {
-                    if (dropdown.id !== `dropdown-${assetId}` && dropdown.id !== `assetDetails${assetId}`) {
+                document.querySelectorAll('.asset-details').forEach(dropdown => {
+                    if (dropdown.id !== `assetDetails${assetId}`) {
                         dropdown.classList.remove('show');
-                        dropdown.closest('tr')?.previousElementSibling?.classList.remove('active');
-                        // For Bootstrap collapse
-                        if (dropdown.classList.contains('collapse')) {
-                            $(dropdown).collapse('hide');
+                        dropdown.style.display = 'none';
+                        
+                        // Remove active class from corresponding row
+                        const correspondingRow = dropdown.previousElementSibling;
+                        if (correspondingRow && correspondingRow.classList.contains('asset-row')) {
+                            correspondingRow.classList.remove('active');
                         }
                     }
                 });
                 
-                // Toggle current dropdown/details
-                let dropdown = document.getElementById(`dropdown-${assetId}`) ||
-                              document.getElementById(`assetDetails${assetId}`);
+                // Find and toggle current dropdown
+                let dropdown = document.getElementById(`assetDetails${assetId}`);
                 
                 if (dropdown) {
-                    const isVisible = dropdown.classList.contains('show') ||
-                                    dropdown.classList.contains('collapse') && $(dropdown).hasClass('show');
+                    const isVisible = dropdown.classList.contains('show');
                     
                     if (isVisible) {
                         dropdown.classList.remove('show');
+                        dropdown.style.display = 'none';
                         this.classList.remove('active');
-                        if (dropdown.classList.contains('collapse')) {
-                            $(dropdown).collapse('hide');
-                        }
                     } else {
                         dropdown.classList.add('show');
+                        dropdown.style.display = 'table-row';
                         this.classList.add('active');
-                        if (dropdown.classList.contains('collapse')) {
-                            $(dropdown).collapse('show');
-                        }
                     }
                 }
             });
@@ -1818,14 +1755,14 @@
         event.stopPropagation(); // Prevent row click
         
         const starIcon = event.target;
-        const originalClasses = starIcon.className;
         
-        // Add loading state
-        starIcon.classList.add('fa-spinner', 'fa-spin');
-        starIcon.classList.remove('fa-star');
+        // Add loading state animation
+        starIcon.classList.add('fa-spin');
         
         // Navigate to toggle route
-        window.location.href = `/toggle-favourite/${assetId}?tab=${tab}`;
+        setTimeout(() => {
+            window.location.href = `/toggle-favourite/${assetId}?tab=${tab}`;
+        }, 300);
     }
 
     // Open new order modal
@@ -1868,18 +1805,72 @@
         }
     }
 
-    // Show asset details function
+    // Show trading hours function
+    function showTradingHours(symbol) {
+        // Determine which modal to show based on symbol type
+        let modalId = 'tradeHoursModal'; // Default to forex
+        
+        if (symbol.includes('BTC') || symbol.includes('ETH') || symbol.includes('LTC')) {
+            modalId = 'CryptoHoursModal';
+        } else if (symbol.includes('USD') || symbol.includes('EUR') || symbol.includes('GBP')) {
+            modalId = 'tradeHoursModal';
+        } else if (symbol.includes('AAPL') || symbol.includes('GOOGL') || symbol.includes('MSFT')) {
+            modalId = 'StocksHoursModal';
+        } else if (symbol.includes('DOW') || symbol.includes('NASDAQ') || symbol.includes('SP500')) {
+            modalId = 'IndicesHoursModal';
+        } else if (symbol.includes('GOLD') || symbol.includes('OIL') || symbol.includes('SILVER')) {
+            modalId = 'CommodityHoursModal';
+        }
+        
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            $(modal).modal('show');
+        }
+    }
+
+    // Show asset details function for favorites
     function showAssetDetails(symbol, assetId) {
-        // Find asset data
-        const assetRow = document.querySelector(`[data-asset-id="${assetId}"]`);
-        if (!assetRow) return;
-        
-        // Create a simple alert for now - you can replace this with a modal
-        const assetName = assetRow.closest('tr').querySelector('.name')?.textContent?.trim();
-        alert(`Asset Details:\nSymbol: ${symbol}\nName: ${assetName}\nID: ${assetId}`);
-        
-        // Alternatively, you could show a modal with detailed information
-        // showAssetDetailsModal(symbol, assetId);
+        showTradingHours(symbol);
+    }
+
+    // Show forex trading hours
+    function showForexDetails(symbol, assetId) {
+        const modal = document.getElementById('tradeHoursModal');
+        if (modal) {
+            $(modal).modal('show');
+        }
+    }
+
+    // Show crypto trading hours
+    function showCryptoDetails(symbol, assetId) {
+        const modal = document.getElementById('CryptoHoursModal');
+        if (modal) {
+            $(modal).modal('show');
+        }
+    }
+
+    // Show stocks trading hours
+    function showStocksDetails(symbol, assetId) {
+        const modal = document.getElementById('StocksHoursModal');
+        if (modal) {
+            $(modal).modal('show');
+        }
+    }
+
+    // Show indices trading hours
+    function showIndicesDetails(symbol, assetId) {
+        const modal = document.getElementById('IndicesHoursModal');
+        if (modal) {
+            $(modal).modal('show');
+        }
+    }
+
+    // Show commodity trading hours
+    function showCommodityDetails(symbol, assetId) {
+        const modal = document.getElementById('CommodityHoursModal');
+        if (modal) {
+            $(modal).modal('show');
+        }
     }
 
     // Initialize on page load
