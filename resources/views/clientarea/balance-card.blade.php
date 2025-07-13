@@ -1,11 +1,17 @@
 
+@if (request()->routeIs('clientarea.quotes'))
 <div class="card border-0 shadow-sm @if ($locale == 'ar') rtl @endif" style="border-radius: 14px; background: #fff; color: #222;">
     <div class="card-body p-3">
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
             <div class="fw-bold" style="font-size: 1.1rem;">
                 <i class="fas fa-wallet me-2 text-primary"></i>{{ __('web.balance') }}
             </div>
-            <div class="fw-semibold" style="font-size: 1.2rem;">$ {{ number_format($finance['balance'], 2, '.', ',') }}</div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="fw-semibold" style="font-size: 1.2rem;">$ {{ number_format($finance['balance'], 2, '.', ',') }}</div>
+                <button id="closeBalanceDropdown" class="btn btn-sm p-1" style="border: none; background: transparent; color: #888; font-size: 1.2rem;" aria-label="Close balance details">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
         <div class="row g-2 text-center">
             <div class="col-6 col-md-4 mb-2">
@@ -47,3 +53,4 @@
         </div>
     </div>
 </div>
+@endif

@@ -148,7 +148,7 @@
         left: 0 !important;
         right: 0 !important;
         /* bottom is controlled by JS, do NOT force it here! */
-        z-index: 1101 !important;
+        z-index: 1041 !important;
         background: #fff !important;
         border-radius: 16px 16px 0 0 !important;
         transition: bottom 0.12s cubic-bezier(.4,0,.2,1), opacity 0.12s cubic-bezier(.4,0,.2,1), visibility 0.12s cubic-bezier(.4,0,.2,1) !important;
@@ -165,7 +165,83 @@
     #balanceDropdownBar {
         /* No debug outline */
     }
+        .bottom-nav {
+        background: #f7f7f7 !important;
+        border-top: 1px solid #e0e0e0 !important;
+        box-shadow: 0 -2px 16px rgba(0,0,0,0.04);
+        padding-bottom: env(safe-area-inset-bottom, 0);
+        transition: background 0.2s;
+    }
+    .bottom-nav .nav-link {
+        color: #222 !important;
+        font-size: 14px;
+        border-radius: 12px 12px 0 0;
+        transition: background 0.18s, color 0.18s, font-weight 0.18s;
+        background: transparent;
+        position: relative;
+        min-width: 0;
+        outline: none;
+    }
+    .bottom-nav .nav-link.active,
+    .bottom-nav .nav-link:active,
+    .bottom-nav .nav-link:focus {
+        background: #f2f2f2 !important;
+        color: #111 !important;
+        font-weight: 700;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
+    }
+    .bottom-nav .iconify {
+        font-size: 1.7rem;
+        color: #888;
+        transition: color 0.18s;
+    }
+    .bottom-nav .nav-link.active .iconify,
+    .bottom-nav .nav-link:active .iconify,
+    .bottom-nav .nav-link:focus .iconify {
+        color: #111;
+    }
+    .bottom-nav .nav-label {
+        font-size: 12px;
+        color: #444;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        margin-top: 0.1rem;
+        transition: color 0.18s;
+    }
+    .bottom-nav .nav-link.active .nav-label,
+    .bottom-nav .nav-link:active .nav-label,
+    .bottom-nav .nav-link:focus .nav-label {
+        color: #111;
+    }
+    .bottom-nav .nav-link::after {
+        content: '';
+        display: block;
+        margin: 0 auto;
+        width: 0%;
+        height: 2px;
+        background: #111;
+        border-radius: 2px;
+        transition: width 0.18s;
+    }
+    .bottom-nav .nav-link.active::after {
+        width: 40%;
+    }
+    @media (max-width: 576px) {
+        .bottom-nav .nav-link {
+            font-size: 12px;
+            padding: 0.4rem 0.1rem;
+        }
+        .bottom-nav .iconify {
+            font-size: 1.3rem !important;
+        }
+    }
+    @media (max-width: 400px) {
+        .bottom-nav .nav-label {
+            font-size: 11px;
+        }
+    }
 </style>
+
 </head>
 
 <div class="container-fluid topbar p-0">
@@ -257,11 +333,10 @@
     </div>
 </div>
 
-
-
+@if (request()->routeIs('clientarea.quotes'))
 <!-- Balance Dropdown (Simple, Modern, Responsive) -->
 <div id="balanceDropdownBar" class="d-flex align-items-center justify-content-between px-3 py-2 shadow-sm"
-    style="position:fixed;left:0;right:0;bottom:56px;z-index:1100;background:#f8f9fa;color:#222;cursor:pointer;border-radius:18px 18px 0 0;min-height:56px;box-shadow:0 -2px 12px rgba(0,0,0,0.07);">
+    style="position:fixed;left:0;right:0;bottom:56px;z-index:1040;background:#f8f9fa;color:#222;cursor:pointer;border-radius:18px 18px 0 0;min-height:56px;box-shadow:0 -2px 12px rgba(0,0,0,0.07);">
     <div class="d-flex align-items-center gap-2 flex-wrap">
         <span class="fw-semibold d-flex align-items-center" style="font-size:1.08rem;color:#222;">
             <span class="iconify me-2" data-icon="mdi:wallet-outline" style="font-size:1.6rem;color:#222;"></span>
@@ -273,7 +348,7 @@
     </div>
     <span id="balanceDropdownChevron" class="ms-2 d-flex align-items-center justify-content-center"
         style="font-size:1.5rem;transition:transform 0.2s;color:#888;">
-        <i class="fas fa-chevron-up"></i>
+        <i class="fas fa-chevron-down"></i>
     </span>
 </div>
 <div id="balanceDropdownContent" class="balance-dropdown-content shadow-lg"
@@ -286,6 +361,7 @@
        </div>
     </div>
 </div>
+@endif
 
 <div class="container p-0 main-container">
     @yield('content')
@@ -364,102 +440,6 @@
         </li>
     </ul>
 </nav>
-<style>
-    .bottom-nav {
-        background: #f7f7f7 !important;
-        border-top: 1px solid #e0e0e0 !important;
-        box-shadow: 0 -2px 16px rgba(0,0,0,0.04);
-        padding-bottom: env(safe-area-inset-bottom, 0);
-        transition: background 0.2s;
-    }
-    .bottom-nav .nav-link {
-        color: #222 !important;
-        font-size: 14px;
-        border-radius: 12px 12px 0 0;
-        transition: background 0.18s, color 0.18s, font-weight 0.18s;
-        background: transparent;
-        position: relative;
-        min-width: 0;
-        outline: none;
-    }
-    .bottom-nav .nav-link.active,
-    .bottom-nav .nav-link:active,
-    .bottom-nav .nav-link:focus {
-        background: #f2f2f2 !important;
-        color: #111 !important;
-        font-weight: 700;
-        box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
-    }
-    .bottom-nav .iconify {
-        font-size: 1.7rem;
-        color: #888;
-        transition: color 0.18s;
-    }
-    .bottom-nav .nav-link.active .iconify,
-    .bottom-nav .nav-link:active .iconify,
-    .bottom-nav .nav-link:focus .iconify {
-        color: #111;
-    }
-    .bottom-nav .nav-label {
-        font-size: 12px;
-        color: #444;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        margin-top: 0.1rem;
-        transition: color 0.18s;
-    }
-    .bottom-nav .nav-link.active .nav-label,
-    .bottom-nav .nav-link:active .nav-label,
-    .bottom-nav .nav-link:focus .nav-label {
-        color: #111;
-    }
-    .bottom-nav .nav-link::after {
-        content: '';
-        display: block;
-        margin: 0 auto;
-        width: 0%;
-        height: 2px;
-        background: #111;
-        border-radius: 2px;
-        transition: width 0.18s;
-    }
-    .bottom-nav .nav-link.active::after {
-        width: 40%;
-    }
-    @media (max-width: 576px) {
-        .bottom-nav .nav-link {
-            font-size: 12px;
-            padding: 0.4rem 0.1rem;
-        }
-        .bottom-nav .iconify {
-            font-size: 1.3rem !important;
-        }
-    }
-    @media (max-width: 400px) {
-        .bottom-nav .nav-label {
-            font-size: 11px;
-        }
-    }
-</style>
-<script>
-    // Interactive hover/focus effect for nav bar (mobile-friendly)
-    document.querySelectorAll('.bottom-nav .nav-link').forEach(link => {
-        link.addEventListener('touchstart', function() {
-            this.classList.add('active');
-        });
-        link.addEventListener('touchend', function() {
-            if (!this.href.endsWith(window.location.pathname)) {
-                this.classList.remove('active');
-            }
-        });
-        link.addEventListener('mouseenter', function() {
-            this.classList.add('hovered');
-        });
-        link.addEventListener('mouseleave', function() {
-            this.classList.remove('hovered');
-        });
-    });
-</script>
 
 <!-- Reset Password Modal -->
 <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
@@ -650,6 +630,9 @@
         var $chevron = $('#balanceDropdownChevron');
         var balanceOpen = false;
 
+        // Initialize chevron to down position
+        $chevron.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+
         function openBalanceDropdown() {
             $balanceContent[0].style.setProperty('bottom', '56px', 'important');
             $balanceContent[0].style.setProperty('visibility', 'visible', 'important');
@@ -670,20 +653,59 @@
             closeBalanceDropdown();
         });
 
+        // Close dropdown if user taps outside
+        $(document).on('click', function(e) {
+            if (balanceOpen && !$(e.target).closest('#balanceDropdownBar, #balanceDropdownContent').length) {
+                closeBalanceDropdown();
+            }
+        });
+
+        // Close button handler for balance card
+        $(document).on('click', '#closeBalanceDropdown', function(e) {
+            e.stopPropagation();
+            closeBalanceDropdown();
+        });
+
+        // Hide balance dropdown when any modal is opened
+        $(document).on('show.bs.modal', '.modal', function() {
+            if (balanceOpen) {
+                closeBalanceDropdown();
+            }
+        });
+
+        // Main click handler for balance dropdown toggle
         $balanceBar.on('click', function(e) {
             e.stopPropagation();
+            // Check if any modal is currently visible
+            if ($('.modal.show').length > 0) {
+                return; // Don't toggle if modal is open
+            }
+            
+            // Toggle the dropdown
             if (balanceOpen) {
                 closeBalanceDropdown();
             } else {
                 openBalanceDropdown();
             }
         });
-
-        // Close dropdown if user taps outside
-        $(document).on('click', function(e) {
-            if (balanceOpen && !$(e.target).closest('#balanceDropdownBar, #balanceDropdownContent').length) {
-                closeBalanceDropdown();
+    });
+</script>
+<script>
+    // Interactive hover/focus effect for nav bar (mobile-friendly)
+    document.querySelectorAll('.bottom-nav .nav-link').forEach(link => {
+        link.addEventListener('touchstart', function() {
+            this.classList.add('active');
+        });
+        link.addEventListener('touchend', function() {
+            if (!this.href.endsWith(window.location.pathname)) {
+                this.classList.remove('active');
             }
+        });
+        link.addEventListener('mouseenter', function() {
+            this.classList.add('hovered');
+        });
+        link.addEventListener('mouseleave', function() {
+            this.classList.remove('hovered');
         });
     });
 </script>

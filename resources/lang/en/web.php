@@ -447,6 +447,13 @@ return [
     'target_price' => 'Target Price',
     'stop_loss_price' => 'Stop Loss Price',
     'take_profit_price' => 'Take Profit Price',
+    // Chat interface
+    'chat' => 'Chat',
+    'online_support' => 'Online Support Available',
+    'no_messages_yet' => 'No messages yet',
+    'start_conversation' => 'Start a conversation with our support team',
+    'type_message' => 'Type your message...',
+    'you' => 'You',
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

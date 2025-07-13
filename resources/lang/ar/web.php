@@ -445,5 +445,12 @@ return [
     'target_price'                => 'السعر المستهدف',
     'stop_loss_price'             => 'سعر وقف الخسارة',
     'take_profit_price'           => 'سعر جني الربح',
+    // Chat interface
+    'chat'                        => 'المحادثة',
+    'online_support'              => 'الدعم الفني متاح',
+    'no_messages_yet'             => 'لا توجد رسائل بعد',
+    'start_conversation'          => 'ابدأ محادثة مع فريق الدعم',
+    'type_message'                => 'اكتب رسالتك...',
+    'you'                         => 'أنت',
 
 ];
