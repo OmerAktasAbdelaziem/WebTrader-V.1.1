@@ -1,23 +1,23 @@
 @extends('layouts.mobile')
 <style>
-    /* Ultra-Modern Monochrome Trading Platform */
+    /* Clean Monochrome Trading Platform */
     :root {
         --bg-primary: #fafafa;
         --bg-secondary: #f5f5f5;
         --bg-card: #ffffff;
-        --bg-accent: #eeeeee;
-        --border-light: #e0e0e0;
-        --border-medium: #bdbdbd;
-        --border-dark: #9e9e9e;
-        --card-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
-        --hover-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
-        --text-primary: #212121;
-        --text-secondary: #424242;
-        --text-muted: #757575;
-        --text-light: #9e9e9e;
-        --accent-primary: #424242;
-        --accent-secondary: #616161;
-        --accent-dark: #212121;
+        --bg-accent: #f0f0f0;
+        --border-light: #e5e5e5;
+        --border-medium: #cccccc;
+        --border-dark: #999999;
+        --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        --hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        --text-primary: #1a1a1a;
+        --text-secondary: #404040;
+        --text-muted: #666666;
+        --text-light: #888888;
+        --accent-primary: #333333;
+        --accent-secondary: #555555;
+        --accent-dark: #1a1a1a;
     }
 
     * {
@@ -25,53 +25,23 @@
     }
 
     body {
-        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+        background: var(--bg-primary);
         font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         color: var(--text-primary);
         min-height: 100vh;
         overflow-x: hidden;
         font-weight: 400;
-        line-height: 1.6;
-        position: relative;
-    }
-
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background:
-            radial-gradient(circle at 20% 50%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
-            radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.01) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: -1;
+        line-height: 1.5;
     }
 
     .container.p-0 {
         margin: 20px auto;
         max-width: 1400px;
-        border-radius: 20px;
+        border-radius: 12px;
         background: var(--bg-card);
         border: 1px solid var(--border-light);
         box-shadow: var(--card-shadow);
-        padding: 32px 24px;
-        backdrop-filter: blur(20px);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .container.p-0::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--accent-dark), var(--accent-secondary), var(--accent-primary));
-        z-index: 1;
+        padding: 24px;
     }
 
     /* Market Status Bar */
@@ -79,91 +49,50 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-accent) 100%);
-        border-radius: 12px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
         padding: 16px 20px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         border: 1px solid var(--border-light);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .market-status-bar::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-        animation: shimmer 3s infinite;
-    }
-
-    @keyframes shimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
     }
 
     .market-status {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 500;
         color: var(--text-primary);
-        position: relative;
-        z-index: 2;
     }
 
     .status-indicator {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        background: var(--accent-dark);
-        animation: pulse 2s infinite;
-        box-shadow: 0 0 10px rgba(33, 33, 33, 0.3);
+        background: var(--text-primary);
     }
 
     .market-time {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         font-size: 14px;
         color: var(--text-secondary);
-        font-weight: 500;
-        position: relative;
-        z-index: 2;
+        font-weight: 400;
     }
 
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Enhanced Navigation Tabs */
+    /* Navigation Tabs */
     .nav-tabs {
         border: none;
         background: var(--bg-secondary);
-        border-radius: 12px;
-        padding: 6px;
-        margin-bottom: 28px;
+        border-radius: 8px;
+        padding: 4px;
+        margin-bottom: 20px;
         display: flex;
-        gap: 4px;
+        gap: 2px;
         overflow-x: auto;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .nav-tabs::-webkit-scrollbar {
@@ -171,69 +100,36 @@
     }
 
     .nav-tabs .nav-link {
-        padding: 16px 20px;
-        font-size: 14px;
-        font-weight: 600;
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 500;
         background: transparent;
         color: var(--text-muted);
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
         margin: 0;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.2s ease;
         white-space: nowrap;
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .nav-tabs .nav-link::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, var(--accent-secondary), var(--accent-primary));
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        border-radius: 8px;
     }
 
     .nav-tabs .nav-link i {
-        font-size: 16px;
-        transition: all 0.4s ease;
-        position: relative;
-        z-index: 2;
+        font-size: 12px;
+        margin-right: 6px;
     }
 
     .nav-tabs .nav-link.active {
-        background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent-secondary) 100%);
-        color: var(--bg-card);
-        box-shadow: 0 4px 20px rgba(33, 33, 33, 0.2);
-        font-weight: 700;
-        transform: translateY(-2px);
-    }
-
-    .nav-tabs .nav-link.active::before {
-        opacity: 1;
-    }
-
-    .nav-tabs .nav-link.active i {
-        color: var(--bg-card);
-        transform: scale(1.1);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        font-weight: 600;
     }
 
     .nav-tabs .nav-link:hover:not(.active) {
         background: var(--bg-accent);
-        color: var(--text-primary);
-        transform: translateY(-1px);
-    }
-
-    .nav-tabs .nav-link:hover:not(.active) i {
-        transform: translateY(-1px);
-        color: var(--accent-secondary);
+        color: var(--text-secondary);
     }
 
     .nav-item {
@@ -241,45 +137,37 @@
         min-width: 0;
     }
 
-    /* Enhanced Search Bar */
+    /* Search Bar */
     .search {
-        margin-bottom: 28px;
+        margin-bottom: 20px;
         position: relative;
-        overflow: hidden;
-        border-radius: 12px;
+        border-radius: 8px;
         background: var(--bg-card);
         border: 1px solid var(--border-light);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     .search:focus-within {
-        border-color: var(--accent-secondary);
-        box-shadow: 0 4px 20px rgba(66, 66, 66, 0.15);
-        transform: translateY(-1px);
+        border-color: var(--border-medium);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .search::before {
         content: '🔍';
         position: absolute;
-        left: 18px;
+        left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 16px;
+        font-size: 14px;
         z-index: 2;
         color: var(--text-muted);
-        transition: color 0.3s ease;
-    }
-
-    .search:focus-within::before {
-        color: var(--accent-secondary);
     }
 
     .search input {
-        padding: 18px 18px 18px 52px;
+        padding: 12px 12px 12px 40px;
         border: none;
         background: transparent;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 400;
         width: 100%;
         outline: none;
@@ -291,25 +179,16 @@
         font-weight: 400;
     }
 
-    /* Enhanced Star Icons */
+    /* Star Icons */
     .star-icon, .fa-star {
         cursor: pointer;
         color: var(--text-muted);
-        transition: all 0.3s ease;
-        font-size: 16px;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        transition: all 0.2s ease;
+        font-size: 14px;
     }
 
-    .fa-star.text-warning, .star-icon.favorited {
-        color: var(--accent-dark) !important;
-        transform: scale(1.2);
-        filter: drop-shadow(0 4px 8px rgba(33, 33, 33, 0.3));
-        animation: starGlow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes starGlow {
-        0% { filter: drop-shadow(0 4px 8px rgba(33, 33, 33, 0.3)); }
-        100% { filter: drop-shadow(0 4px 12px rgba(33, 33, 33, 0.4)); }
+    .fa-star.text-dark, .star-icon.favorited {
+        color: var(--text-primary) !important;
     }
 
     .fa-star.text-secondary {
@@ -317,29 +196,16 @@
     }
 
     .fa-star:hover {
-        color: var(--accent-secondary) !important;
-        transform: scale(1.1);
+        color: var(--text-secondary) !important;
     }
 
-    /* Ultra-Modern Table Design */
+    /* Clean Table Design */
     .table-responsive {
-        border-radius: 16px;
+        border-radius: 8px;
         overflow: hidden;
         background: var(--bg-card);
         border: 1px solid var(--border-light);
         box-shadow: var(--card-shadow);
-        position: relative;
-    }
-
-    .table-responsive::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--accent-secondary), var(--accent-primary), transparent);
-        z-index: 1;
     }
 
     table.table {
@@ -351,87 +217,63 @@
     }
 
     thead th {
-        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-accent) 100%);
+        background: var(--bg-secondary);
         color: var(--text-primary);
         font-size: 13px;
-        font-weight: 700;
-        padding: 24px 16px;
+        font-weight: 600;
+        padding: 16px 12px;
         border: none;
         position: sticky;
         top: 0;
         z-index: 10;
         text-transform: uppercase;
-        letter-spacing: 1.2px;
+        letter-spacing: 0.5px;
         text-align: center;
-        border-bottom: 2px solid var(--border-medium);
-        position: relative;
+        border-bottom: 1px solid var(--border-light);
     }
 
-    thead th::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+    .table-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-secondary);
+        z-index: 10;
     }
 
     th:first-child {
         text-align: left !important;
-        padding-left: 24px;
+        padding-left: 20px;
     }
 
     th, td {
         border: none;
-        padding: 18px 16px;
+        padding: 14px 12px;
         font-size: 14px;
         vertical-align: middle;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     td:first-child {
-        padding-left: 24px;
+        padding-left: 20px;
     }
 
-    /* Enhanced Asset Rows */
+    /* Asset Rows */
     tr.asset-row {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.2s ease;
         cursor: pointer;
         background: var(--bg-card);
         border-bottom: 1px solid var(--border-light);
-        position: relative;
-        overflow: hidden;
-    }
-
-    tr.asset-row::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(66, 66, 66, 0.08), transparent);
-        transition: left 0.6s ease;
-    }
-
-    tr.asset-row:hover::before {
-        left: 100%;
     }
 
     tr.asset-row:hover {
-        background: linear-gradient(135deg, var(--bg-accent) 0%, rgba(66, 66, 66, 0.03) 100%) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-        border-color: var(--accent-secondary);
-    }
-
-    tr.asset-row:nth-child(even) {
         background: var(--bg-secondary);
     }
 
+    tr.asset-row:nth-child(even) {
+        background: var(--bg-accent);
+    }
+
     tr.asset-row:nth-child(even):hover {
-        background: linear-gradient(135deg, var(--bg-accent) 0%, rgba(66, 66, 66, 0.03) 100%) !important;
+        background: var(--bg-secondary);
     }
 
     tr.asset-row td {
@@ -446,216 +288,148 @@
     .asset-row .name {
         font-weight: 600;
         color: var(--text-primary);
-        transition: all 0.3s ease;
-        margin-left: 12px;
+        margin-left: 8px;
         display: inline-block;
-        position: relative;
-        z-index: 2;
     }
 
     .asset-row:hover .name {
-        color: var(--accent-secondary);
-        text-decoration: underline;
-        text-decoration-color: var(--accent-secondary);
-        transform: translateX(4px);
+        color: var(--text-secondary);
     }
 
-    /* Price Styling - Modern Design */
+    /* Price Styling */
     .bid_price, .ask_price {
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
         font-weight: 600;
         font-size: 14px;
-        letter-spacing: 0.8px;
-        position: relative;
-        z-index: 2;
-    }
-
-    .bid_price {
+        letter-spacing: 0.5px;
         color: var(--text-primary);
-        background: linear-gradient(135deg, rgba(33, 33, 33, 0.08) 0%, rgba(33, 33, 33, 0.04) 100%);
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin: 4px;
-        border: 1px solid rgba(33, 33, 33, 0.15);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
+        background: var(--bg-secondary);
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin: 2px;
+        border: 1px solid var(--border-light);
+        transition: all 0.2s ease;
     }
 
-    .bid_price:hover {
-        background: linear-gradient(135deg, rgba(33, 33, 33, 0.12) 0%, rgba(33, 33, 33, 0.06) 100%);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-        transform: translateY(-1px);
+    .bid_price:hover, .ask_price:hover {
+        background: var(--bg-accent);
+        border-color: var(--border-medium);
     }
 
-    .ask_price {
-        color: var(--text-primary);
-        background: linear-gradient(135deg, rgba(66, 66, 66, 0.08) 0%, rgba(66, 66, 66, 0.04) 100%);
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin: 4px;
-        border: 1px solid rgba(66, 66, 66, 0.15);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-    }
-
-    .ask_price:hover {
-        background: linear-gradient(135deg, rgba(66, 66, 66, 0.12) 0%, rgba(66, 66, 66, 0.06) 100%);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-        transform: translateY(-1px);
-    }
-
-    /* Modern Asset Details Enhancement */
+    /* Asset Details */
     tr.collapse.asset-details > td {
         background: var(--bg-secondary) !important;
-        border-top: 2px solid var(--border-medium);
+        border-top: 1px solid var(--border-light);
         padding: 0;
     }
 
     .card.card-body {
         background: var(--bg-card);
-        border-radius: 12px;
+        border-radius: 8px;
         border: 1px solid var(--border-light);
-        box-shadow: var(--hover-shadow);
-        padding: 24px;
-        margin: 16px;
+        box-shadow: var(--card-shadow);
+        padding: 20px;
+        margin: 12px;
     }
 
-    /* Modern Grid Layout for Asset Info */
+    /* Asset Info Grid */
     .asset-info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
     }
 
     .info-item {
         background: var(--bg-secondary);
-        border-radius: 10px;
-        padding: 16px;
+        border-radius: 6px;
+        padding: 12px;
         text-align: center;
         border: 1px solid var(--border-light);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .info-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-primary) 100%);
+        transition: all 0.2s ease;
     }
 
     .info-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        background: var(--bg-card);
+        background: var(--bg-accent);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .info-item .label {
         display: block;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         color: var(--text-secondary);
         text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
     }
 
     .info-item .value {
         display: block;
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 15px;
+        font-weight: 600;
         color: var(--text-primary);
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-        letter-spacing: 0.5px;
     }
 
-    /* Modern Action Buttons Grid */
+    /* Action Buttons */
     .action-buttons {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 12px;
-        margin-top: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 16px;
     }
 
-    /* Enhanced Buttons */
+    /* Buttons */
     .btn {
-        border-radius: 10px !important;
-        font-size: 14px;
-        font-weight: 600;
-        padding: 14px 24px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 2px solid transparent;
-        text-transform: none;
-        letter-spacing: 0.5px;
-        position: relative;
-        overflow: hidden;
+        border-radius: 6px !important;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 10px 16px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        text-decoration: none;
-    }
-
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-        transition: left 0.6s;
-    }
-
-    .btn:hover::before {
-        left: 100%;
+        gap: 6px;
     }
 
     .btn-success {
-        background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent-secondary) 100%);
+        background: var(--text-primary);
         color: var(--bg-card);
-        border-color: var(--accent-dark);
-        box-shadow: 0 4px 20px rgba(33, 33, 33, 0.2);
+        border-color: var(--text-primary);
     }
 
     .btn-success:hover {
-        background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-dark) 100%);
+        background: var(--text-secondary);
+        border-color: var(--text-secondary);
         color: var(--bg-card);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 32px rgba(33, 33, 33, 0.25);
     }
 
     .btn-danger {
         background: var(--bg-card);
         color: var(--text-primary);
         border-color: var(--border-medium);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
     .btn-danger:hover {
-        background: var(--accent-secondary);
-        color: var(--bg-card);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 32px rgba(66, 66, 66, 0.15);
+        background: var(--bg-secondary);
+        border-color: var(--border-dark);
+        color: var(--text-primary);
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+        background: var(--text-secondary);
         color: var(--bg-card);
-        border-color: var(--accent-secondary);
-        box-shadow: 0 4px 20px rgba(66, 66, 66, 0.2);
+        border-color: var(--text-secondary);
     }
 
     .btn-primary:hover {
-        background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        background: var(--text-primary);
+        border-color: var(--text-primary);
         color: var(--bg-card);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 32px rgba(66, 66, 66, 0.25);
     }
 
     /* Enhanced Form Controls */
@@ -795,21 +569,16 @@
 
     .table-responsive::-webkit-scrollbar-track {
         background: var(--bg-secondary);
-        border-radius: 6px;
+        border-radius: 4px;
     }
 
     .table-responsive::-webkit-scrollbar-thumb {
         background: var(--border-medium);
-        border-radius: 6px;
+        border-radius: 4px;
     }
 
     .table-responsive::-webkit-scrollbar-thumb:hover {
         background: var(--text-secondary);
-    }
-
-    /* RTL Support */
-    .rtl {
-        direction: rtl;
     }
 
     /* Responsive Design - Enhanced */
@@ -977,9 +746,8 @@
     .btn:focus,
     .form-control:focus,
     .form-select:focus {
-        outline: 2px solid var(--accent-secondary);
+        outline: 2px solid var(--text-secondary);
         outline-offset: 2px;
-        box-shadow: 0 0 0 4px rgba(66, 66, 66, 0.1);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -994,39 +762,13 @@
     }
 
     /* Loading Animation */
-    @keyframes loadingPulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
-
     .loading {
-        animation: loadingPulse 1.5s ease-in-out infinite;
+        opacity: 0.6;
     }
 
-    /* Smooth scrollbar for webkit browsers */
-    .table-responsive::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        background: var(--bg-secondary);
-        border-radius: 8px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
-        border-radius: 8px;
-        border: 2px solid var(--bg-secondary);
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    }
-
-    /* Enhanced Modal Design */
+    /* Modal Design */
     .modal {
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(4px);
     }
 
     .modal-dialog {
@@ -1035,132 +777,82 @@
     }
 
     .modal-content {
-        border-radius: 16px;
+        border-radius: 8px;
         border: 1px solid var(--border-light);
         background: var(--bg-card);
-        box-shadow: var(--hover-shadow);
+        box-shadow: var(--card-shadow);
         overflow: hidden;
-        position: relative;
-    }
-
-    .modal-content::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary), var(--accent-dark));
-        z-index: 1;
     }
 
     .modal-header {
         border-bottom: 1px solid var(--border-light);
-        padding: 24px 28px 20px;
-        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-accent) 100%);
+        padding: 20px 24px 16px;
+        background: var(--bg-secondary);
     }
 
     .modal-title {
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text-primary);
-        font-size: 20px;
-        letter-spacing: 0.5px;
+        font-size: 18px;
     }
 
     .modal-body {
-        padding: 28px;
+        padding: 24px;
         background: var(--bg-card);
     }
 
     .btn-close {
         background: none;
         border: none;
-        font-size: 24px;
+        font-size: 20px;
         opacity: 0.7;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         color: var(--text-secondary);
     }
 
     .btn-close:hover {
         opacity: 1;
-        transform: scale(1.1);
-        color: var(--accent-secondary);
+        color: var(--text-primary);
     }
 
     /* Asset Dropdown Buttons */
     .asset-dropdown {
-        padding: 20px;
-        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-accent) 100%);
-        border-radius: 12px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .asset-dropdown::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary), var(--accent-dark));
+        padding: 16px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
     }
 
     .asset-dropdown-buttons {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 8px;
         justify-content: center;
     }
 
     .dropdown-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 16px;
-        background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-accent) 100%);
+        gap: 6px;
+        padding: 8px 12px;
+        background: var(--bg-card);
         color: var(--text-primary);
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: 6px;
         border: 1px solid var(--border-light);
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.2s ease;
         cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .dropdown-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(66, 66, 66, 0.1), transparent);
-        transition: left 0.5s;
-    }
-
-    .dropdown-btn:hover::before {
-        left: 100%;
     }
 
     .dropdown-btn:hover {
-        background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+        background: var(--text-primary);
         color: var(--bg-card);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(66, 66, 66, 0.2);
-        border-color: var(--accent-secondary);
+        border-color: var(--text-primary);
     }
 
     .dropdown-btn i {
-        font-size: 12px;
-        transition: transform 0.3s ease;
-    }
-
-    .dropdown-btn:hover i {
-        transform: scale(1.1);
+        font-size: 11px;
     }
 </style>
 
@@ -1215,7 +907,7 @@
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_fav_assets')}}">
             <div class="table-responsive" style="max-height: 68%; overflow-y: auto;">
                 <table class="table">
-                    <thead style="position: sticky; top: 0; background-color: #fff;">
+                    <thead class="table-header">
                         <tr>
                             <th style="text-align: left;">{{__('web.instrument')}}</th>
                             <th class="text-center">{{__('web.sell')}}</th>
@@ -1228,7 +920,7 @@
                                 <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                     <td style="text-align: left;">
                                         <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'fav'])}}" style="text-decoration: none;">
-                                            <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                            <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                         </a>
                                         <span class="name" data-bs-toggle="collapse" data-bs-target="#assetDetails{{ $asset->id }}">
                                             {{ $asset->name }}
@@ -1290,7 +982,7 @@
             <input type="text" class="form-control mb-3 search" placeholder="{{__('web.search_forex_assets')}}">
             <div class="table-responsive" style="max-height: 68%; width: 100%; overflow-y: auto;">
                 <table class="table" style="width: 100%;">
-                    <thead style="position: sticky; top: 0; background-color: #fff;">
+                    <thead class="table-header">
                         <tr>
                             <th style="text-align: left;">{{__('web.instrument')}}</th>
                             <th class="text-center">{{__('web.sell')}}</th>
@@ -1302,7 +994,7 @@
                             <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'forex'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'forex')">
-                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
                                     <span class="name">
                                         {{ $asset->name }}
@@ -1359,7 +1051,7 @@
                             <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'crypto'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'crypto')">
-                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
                                     <span class="name">
                                         {{ $asset->name }}
@@ -1416,7 +1108,7 @@
                             <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'stocks'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'stocks')">
-                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
                                     <span class="name">
                                         {{ $asset->name }}
@@ -1473,7 +1165,7 @@
                             <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'indices'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'indices')">
-                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
                                     <span class="name">
                                         {{ $asset->name }}
@@ -1530,7 +1222,7 @@
                             <tr class="asset-row" data-asset-id="{{ $asset->id }}">
                                 <td class="text-start" @if ($index %2 == 0) style="background: rgba(0, 0, 0, 0.05);"@endif>
                                     <a href="{{route('toggle.favourite',['id' => $asset->id, 'tab' => 'commodity'])}}" style="text-decoration: none;" onclick="toggleFavorite(event, {{ $asset->id }}, 'commodity')">
-                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-warning @else text-secondary @endif"></i>
+                                        <i class="fas fa-star @if (in_array($asset->id, $favourite_assets_ids)) text-dark @else text-secondary @endif"></i>
                                     </a>
                                     <span class="name">
                                         {{ $asset->name }}
