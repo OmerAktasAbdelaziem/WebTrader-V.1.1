@@ -299,7 +299,6 @@
         <div class="orb"></div>
         <div class="orb"></div>
     </div>
-
     <!-- Main Container -->
     <div class="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl form-container">
         <div class="glass-card rounded-3xl shadow-2xl overflow-hidden">
@@ -318,7 +317,6 @@
                     </div>
                 </div>
             @endif
-
             @if(session('success'))
                 <div class="mx-4 sm:mx-6 mt-4 sm:mt-6 bg-green-50/90 backdrop-blur-sm border-l-4 border-green-400 p-4 rounded-xl animate-fade-in-up" role="alert">
                     <div class="flex items-start">
@@ -333,7 +331,6 @@
                     </div>
                 </div>
             @endif
-
             <div class="px-6 sm:px-8 lg:px-10 py-8 sm:py-10">
                 <!-- Language Switcher -->
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-2 mb-8 sm:mb-10">
@@ -344,7 +341,6 @@
                         </a>
                     @endforeach
                 </div>
-
                 <!-- Header Section -->
                 <div class="text-center mb-8 sm:mb-10 animate-fade-in">
                     <div class="mb-4">
@@ -357,11 +353,9 @@
                         {{ __('web.sign_in_to_trading_account') }}
                     </p>
                 </div>
-
                 <!-- Login Form -->
                 <form method="POST" action="/client/login" class="space-y-6 sm:space-y-7" onsubmit="showLoginSpinner()">
                     @csrf
-
                     <!-- Username/Email Field -->
                     <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
                         <label for="user" class="block text-sm sm:text-base font-semibold text-gray-700 mb-3">
@@ -369,7 +363,6 @@
                         </label>
                         <input type="text" id="user" name="user" class="input-modern w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl focus:outline-none text-sm sm:text-base placeholder-gray-400" placeholder="{{ __('web.enter_username_or_email') }}" required autocomplete="username">
                     </div>
-
                     <!-- Password Field -->
                     <div class="animate-fade-in-up" style="animation-delay: 0.3s;">
                         <label for="password" class="block text-sm sm:text-base font-semibold text-gray-700 mb-3">
@@ -377,7 +370,6 @@
                         </label>
                         <input type="password" id="password" name="password" class="input-modern w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl focus:outline-none text-sm sm:text-base placeholder-gray-400" placeholder="{{ __('web.enter_your_password') }}" required autocomplete="current-password">
                     </div>
-
                     <!-- Login Button -->
                     <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
                         <button type="submit" id="loginBtn" class="btn-gradient w-full text-white font-semibold py-3 sm:py-4 px-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-200 text-sm sm:text-base lg:text-lg relative overflow-hidden">
@@ -392,7 +384,6 @@
                         </button>
                     </div>
                 </form>
-
                 <!-- Sign Up Link -->
                 <div class="text-center mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-200/50 animate-fade-in-up" style="animation-delay: 0.5s;">
                     <p class="text-sm sm:text-base text-gray-600">
@@ -403,7 +394,6 @@
                     </p>
                 </div>
             </div>
-
             <!-- TradingView Widget -->
             <div class="bg-stone-50/80 backdrop-blur-sm px-4 sm:px-6 lg:px-8 py-4 sm:py-6 animate-fade-in" style="animation-delay: 0.6s;">
                 <div class="tradingview-widget-container pointer-events-none select-none">
