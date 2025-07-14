@@ -86,6 +86,8 @@ return [
     'enter_your_password' => 'Enter your password',
     'creating_account' => 'Creating account...',
     'signing_in' => 'Signing in...',
+    'login_successful' => 'Login successful! Welcome back.',
+    'registration_successful' => 'Registration successful! Welcome to the platform.',
     // Account page keys
     'personal_information' => 'Personal Information',
     'trading_information' => 'Trading Information',

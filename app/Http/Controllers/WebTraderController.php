@@ -152,6 +152,16 @@ class WebTraderController extends Controller
         }
     }
 
+    public function showLoading(Request $request)
+    {
+        // Quick authentication check without heavy queries
+        if (!Auth::guard('client')->user()) {
+            return redirect()->route('client.login');
+        }
+        
+        return view('clientarea.webtrader_loading');
+    }
+
     public function get_financial_data($broker_id)
     {
         try {

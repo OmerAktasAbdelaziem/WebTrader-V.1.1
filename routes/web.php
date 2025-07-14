@@ -49,6 +49,8 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->post  ('/client/kyc/upload',               [ClientsController::class,         'uploadKycPhoto'          ])->name('client.kyc.upload');
     $router->get   ('/client/trading-platform',         [ClientsController::class,         'showTradingPlatform'     ])->name('client.trading.platform');
     $router->get   ('/client/webtrader',                [WebTraderController::class,       'index'                   ])->withoutMiddleware('clientAuth')->name('client.webtrader');
+    $router->get   ('/client/webtrader/loading',        [WebTraderController::class,       'showLoading'             ])->name('client.webtrader.loading');
+    $router->get   ('/client/webtrader/main',           [WebTraderController::class,       'index'                   ])->name('client.webtrader.main');
     $router->get   ('/deposit',                         [ClientsController::class,         'showDepositForm'         ])->name('client.deposit');
     $router->post  ('/deposit',                         [ClientsController::class,         'processDeposit'          ])->name('deposit.process');
     $router->post  ('/client/get-banks-by-country',     [BankController::class,            'getBanksByCountry'       ])->name('get.banks');
