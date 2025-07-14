@@ -368,9 +368,7 @@
 
                     <!-- Login Button -->
                     <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
-                        <button type="submit"
-                                class="btn-gradient w-full text-white font-semibold py-3 sm:py-4 px-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-200 text-sm sm:text-base lg:text-lg relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-                                :disabled="isLoading">
+                        <button type="submit" class="btn-gradient w-full text-white font-semibold py-3 sm:py-4 px-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-200 text-sm sm:text-base lg:text-lg relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isLoading">
                             <span x-show="!isLoading">{{ __('web.login') }}</span>
                             <span x-show="isLoading" class="flex items-center justify-center">
                                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

@@ -222,11 +222,11 @@
     </button>
     <button id="addToFavouriteBtn" data-asset-id="{{ $asset && $asset->id ? $asset->id : '' }}" class="dropdown-item d-flex align-items-center gap-2">
         <i class="bi bi-star fs-5 text-primary"></i>
-        <span>Add to Favourites</span>
+        <span>{{ __('web.add_to_favourites') }}</span>
     </button>
     <button id="removeFromFavouriteBtn" class="dropdown-item d-flex align-items-center gap-2">
         <i class="bi bi-star-fill fs-5 text-warning"></i>
-        <span>Remove from Favourites</span>
+        <span>{{ __('web.remove_from_favourites') }}</span>
     </button>
 </div>
 
@@ -1017,11 +1017,11 @@
                         <i class="bi bi-currency-bitcoin"></i>
                     </div>
                     <div class="method-info">
-                        <h4>Cryptocurrency</h4>
-                        <p>Fast and secure crypto deposits</p>
+                        <h4>{{ __('web.cryptocurrency') }}</h4>
+                        <p>{{ __('web.fast_secure_crypto') }}</p>
                         <div class="method-features">
-                            <span class="feature-badge crypto">Low Fees</span>
-                            <span class="feature-badge crypto">Instant</span>
+                            <span class="feature-badge crypto">{{ __('web.low_fees') }}</span>
+                            <span class="feature-badge crypto">{{ __('web.instant') }}</span>
                         </div>
                     </div>
                 </div>
@@ -1176,11 +1176,11 @@
                         <i class="bi bi-credit-card"></i>
                     </div>
                     <div class="method-info">
-                        <h4>Credit Card</h4>
-                        <p>Fast and secure card payments</p>
+                        <h4>{{ __('web.credit_card') }}</h4>
+                        <p>{{ __('web.fast_secure_card') }}</p>
                         <div class="method-features">
-                            <span class="feature-badge credit-card">Instant</span>
-                            <span class="feature-badge credit-card">Secure</span>
+                            <span class="feature-badge credit-card">{{ __('web.instant') }}</span>
+                            <span class="feature-badge credit-card">{{ __('web.secure') }}</span>
                         </div>
                     </div>
                 </div>
@@ -1191,21 +1191,21 @@
                         <input type="hidden" name="payment_method" value="credit_card">
                         
                         <div class="form-group">
-                            <label for="credit_card_deposit_amount" class="form-label">Amount (USD)</label>
+                            <label for="credit_card_deposit_amount" class="form-label">{{ __('web.amount_usd') }}</label>
                             <div class="input-with-icon">
                                 <i class="bi bi-currency-dollar"></i>
                                 <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
                                        step="0.01" min="10" placeholder="10.00" required>
                             </div>
-                            <small class="form-text">Minimum deposit: $10</small>
+                            <small class="form-text">{{ __('web.minimum_deposit_10') }}</small>
                         </div>
 
                         <!-- Credit Card Details -->
                         <div class="credit-card-details">
-                            <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>Card Information</h6>
+                            <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>{{ __('web.card_information') }}</h6>
                             
                             <div class="form-group">
-                                <label for="card_number" class="form-label">Card Number</label>
+                                <label for="card_number" class="form-label">{{ __('web.card_number') }}</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-credit-card-2-front"></i>
                                     <input type="text" name="card_number" id="card_number" class="form-control-modern" 
@@ -1216,7 +1216,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                        <label for="card_expiry" class="form-label">Expiry Date</label>
+                                        <label for="card_expiry" class="form-label">{{ __('web.expiry_date') }}</label>
                                         <div class="input-with-icon">
                                             <i class="bi bi-calendar"></i>
                                             <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" 
@@ -1226,7 +1226,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="card_cvv" class="form-label">CVV</label>
+                                        <label for="card_cvv" class="form-label">{{ __('web.cvv') }}</label>
                                         <div class="input-with-icon">
                                             <i class="bi bi-shield-lock"></i>
                                             <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" 
@@ -1237,16 +1237,16 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="card_holder_name" class="form-label">Cardholder Name</label>
+                                <label for="card_holder_name" class="form-label">{{ __('web.cardholder_name') }}</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-person"></i>
                                     <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern" 
-                                           placeholder="John Doe" required>
+                                           placeholder="{{ __('web.name') }}" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="billing_address" class="form-label">Billing Address</label>
+                                <label for="billing_address" class="form-label">{{ __('web.billing_address') }}</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-geo-alt"></i>
                                     <textarea name="billing_address" id="billing_address" class="form-control-modern" 
@@ -1272,9 +1272,9 @@
         <!-- Recent Deposits Section -->
         <div class="recent-transactions-section">
             <div class="section-header">
-                <h3><i class="bi bi-clock-history me-2"></i>Recent Deposits</h3>
+                <h3><i class="bi bi-clock-history me-2"></i>{{ __('web.recent_deposits') }}</h3>
                 <button class="btn btn-outline-primary btn-sm refresh-btn">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                    <i class="bi bi-arrow-clockwise me-1"></i>{{ __('web.refresh') }}
                 </button>
             </div>
             
@@ -1282,16 +1282,16 @@
             <div class="transaction-tabs">
                 <nav class="nav nav-tabs nav-tabs-dark" id="depositTabs" role="tablist">
                     <button class="nav-link active" id="all-deposits-tab" data-bs-toggle="tab" data-bs-target="#all-deposits" type="button" role="tab" aria-controls="all-deposits" aria-selected="true">
-                        <i class="bi bi-list-ul me-1"></i>All
+                        <i class="bi bi-list-ul me-1"></i>{{ __('web.all') }}
                     </button>
                     <button class="nav-link" id="pending-deposits-tab" data-bs-toggle="tab" data-bs-target="#pending-deposits" type="button" role="tab" aria-controls="pending-deposits" aria-selected="false">
-                        <i class="bi bi-clock me-1"></i>Pending
+                        <i class="bi bi-clock me-1"></i>{{ __('web.pending') }}
                     </button>
                     <button class="nav-link" id="accepted-deposits-tab" data-bs-toggle="tab" data-bs-target="#accepted-deposits" type="button" role="tab" aria-controls="accepted-deposits" aria-selected="false">
-                        <i class="bi bi-check-circle me-1"></i>Accepted
+                        <i class="bi bi-check-circle me-1"></i>{{ __('web.accepted') }}
                     </button>
                     <button class="nav-link" id="rejected-deposits-tab" data-bs-toggle="tab" data-bs-target="#rejected-deposits" type="button" role="tab" aria-controls="rejected-deposits" aria-selected="false">
-                        <i class="bi bi-x-circle me-1"></i>Rejected
+                        <i class="bi bi-x-circle me-1"></i>{{ __('web.rejected') }}
                     </button>
                 </nav>
                 
@@ -2271,16 +2271,16 @@
                                                 <i class="bi bi-cloud-arrow-up"></i>
                                             </div>
                                             <h4 class="upload-title-modern">{{ __('web.drag_drop_browse') }}</h4>
-                                            <p class="upload-description-modern">{{ __('web.upload_identity_documents') }}</p>
+                                            <p class="upload-description-modern">{{ __('web.or_click_browse') }}</p>
                                             <div class="file-types-modern">
                                                 <span class="file-type-badge">PDF</span>
                                                 <span class="file-type-badge">JPG</span>
                                                 <span class="file-type-badge">PNG</span>
                                             </div>
-                                            <p class="size-limit-modern">Maximum file size: 10MB per file</p>
+                                            <p class="size-limit-modern">{{ __('web.maximum_file_size') }}</p>
                                             <button type="button" class="btn-upload-modern kyc-btn" onclick="triggerKycFileInput()">
                                                 <i class="bi bi-folder-plus"></i>
-                                                <span>Choose Files</span>
+                                                <span>{{ __('web.choose_files') }}</span>
                                             </button>
                                             <input type="file" id="kycFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileSelect(event, 'kyc')">
                                         </div>
@@ -2289,19 +2289,19 @@
 
                                 <!-- Document Requirements -->
                                 <div class="requirements-section-modern">
-                                    <h5 class="requirements-title">Required Documents:</h5>
+                                    <h5 class="requirements-title">{{ __('web.required_documents') }}</h5>
                                     <div class="requirements-list">
                                         <div class="requirement-item">
                                             <i class="bi bi-check-circle text-success"></i>
-                                            <span>Government-issued ID (Passport, Driver's License)</span>
+                                            <span>{{ __('web.government_id') }}</span>
                                         </div>
                                         <div class="requirement-item">
                                             <i class="bi bi-check-circle text-success"></i>
-                                            <span>Proof of Address (Utility bill, Bank statement)</span>
+                                            <span>{{ __('web.proof_address') }}</span>
                                         </div>
                                         <div class="requirement-item">
                                             <i class="bi bi-check-circle text-success"></i>
-                                            <span>Selfie with ID document</span>
+                                            <span>{{ __('web.selfie_with_id') }}</span>
                                         </div>
                                     </div>
                                 </div>

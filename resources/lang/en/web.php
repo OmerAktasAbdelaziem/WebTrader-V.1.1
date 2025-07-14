@@ -894,6 +894,40 @@ return [
     'no_notifications' => 'No notifications',
     'all_caught_up' => 'You\'re all caught up! New notifications will appear here.',
     
+    // Additional Deposit Interface Keys
+    'recent_deposits' => 'Recent Deposits',
+    'all' => 'All',
+    'refresh' => 'Refresh',
+    'no_deposits_found' => 'No deposits found',
+    'deposit_history_here' => 'Your deposit history will appear here',
+    'no_pending_deposits' => 'No pending deposits found',
+    'pending_deposits_here' => 'Pending deposits will appear here',
+    'no_accepted_deposits' => 'No accepted deposits found',
+    'accepted_deposits_here' => 'Accepted deposits will appear here',
+    'no_rejected_deposits' => 'No rejected deposits found',
+    'rejected_deposits_here' => 'Rejected deposits will appear here',
+    
+    // Additional common interface elements
+    'select_cryptocurrency' => 'Select Cryptocurrency',
+    'close' => 'Close',
+    'choose_files' => 'Choose Files',
+    'drop_documents_here' => 'Drop your documents here',
+    'or_click_browse' => 'or click to browse from your computer',
+    'maximum_file_size' => 'Maximum file size: 10MB per file',
+    'required_documents' => 'Required Documents:',
+    'government_id' => 'Government-issued ID (Passport, Driver\'s License)',
+    'proof_address' => 'Proof of Address (Utility bill, Bank statement)',
+    'selfie_with_id' => 'Selfie with ID document',
+    'one_time_upload' => 'One-time Upload',
+    'add_to_favourites' => 'Add to Favourites',
+    'remove_from_favourites' => 'Remove from Favourites',
+    'required' => 'Required',
+    'security_info_title' => 'Your Documents Are Secure',
+    'security_info_description' => 'All uploads are protected with bank-level encryption. Your personal information is handled in accordance with international privacy standards and regulations.',
+    'ssl_encryption' => '256-bit SSL Encryption',
+    'privacy_protected' => 'Privacy Protected',
+    'gdpr_compliant' => 'GDPR Compliant',
+    
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];
