@@ -902,6 +902,7 @@ return [
     'mark_all_read'               => 'تعيين الكل كمقروء',
     'clear_all'                   => 'مسح الكل',
     'no_notifications'            => 'لا توجد إشعارات',
+    'check_back_later'            => 'تحقق مرة أخرى لاحقاً للحصول على التحديثات',
     'all_caught_up'               => 'أنت محدث بالكامل! ستظهر الإشعارات الجديدة هنا.',
     
     // Additional Deposit Interface Keys

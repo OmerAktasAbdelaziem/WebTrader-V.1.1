@@ -900,6 +900,8 @@ return [
     'mark_all_read' => 'Mark All as Read',
     'clear_all' => 'Clear All',
     'no_notifications' => 'No notifications',
+    'no_notification' => 'No notifications',
+    'check_back_later' => 'Check back later for updates',
     'all_caught_up' => 'You\'re all caught up! New notifications will appear here.',
     
     // Additional Deposit Interface Keys

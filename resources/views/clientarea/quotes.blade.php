@@ -1188,6 +1188,158 @@
         outline: 2px solid var(--text-secondary);
         outline-offset: 2px;
     }
+    
+    /* Dark Theme Overrides for Quotes Page */
+    [data-theme="dark"] {
+        --bg-primary: #121624;
+        --bg-secondary: #1C1F26;
+        --bg-tertiary: #141927;
+        --bg-card: #1C1F26;
+        --text-primary: #FFFFFF;
+        --text-secondary: #B3B3B3;
+        --text-muted: #808080;
+        --border-light: #2A2D35;
+        --border-medium: #3A3D45;
+        --accent-color: #FFD700;
+        --gold-primary: #FFD700;
+        --gold-secondary: #FFC107;
+        --card-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    
+    /* Dark theme button styling */
+    [data-theme="dark"] .btn-success {
+        background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-secondary) 100%) !important;
+        border-color: var(--gold-primary) !important;
+        color: #121624 !important;
+        font-weight: 600;
+    }
+    
+    [data-theme="dark"] .btn-success:hover {
+        background: linear-gradient(135deg, var(--gold-secondary) 0%, #FFB300 100%) !important;
+        border-color: var(--gold-secondary) !important;
+        color: #121624 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    }
+    
+    [data-theme="dark"] .btn-danger {
+        background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+        border-color: #EF4444 !important;
+        color: #FFFFFF !important;
+    }
+    
+    [data-theme="dark"] .btn-danger:hover {
+        background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
+        border-color: #DC2626 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+    }
+    
+    [data-theme="dark"] .btn-primary {
+        background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-secondary) 100%) !important;
+        border-color: var(--gold-primary) !important;
+        color: #121624 !important;
+        font-weight: 600;
+    }
+    
+    [data-theme="dark"] .btn-primary:hover {
+        background: linear-gradient(135deg, var(--gold-secondary) 0%, #FFB300 100%) !important;
+        border-color: var(--gold-secondary) !important;
+        color: #121624 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    }
+    
+    /* Dark theme nav tabs */
+    [data-theme="dark"] .nav-tabs {
+        border-bottom-color: var(--border-light) !important;
+    }
+    
+    [data-theme="dark"] .nav-tabs .nav-link {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-secondary) !important;
+        border-color: var(--border-light) !important;
+    }
+    
+    [data-theme="dark"] .nav-tabs .nav-link.active {
+        background-color: var(--gold-primary) !important;
+        color: #121624 !important;
+        border-color: var(--gold-primary) var(--gold-primary) var(--bg-card) !important;
+        font-weight: 600;
+    }
+    
+    [data-theme="dark"] .nav-tabs .nav-link:hover {
+        background-color: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-medium) !important;
+    }
+    
+    /* Dark theme table styling */
+    [data-theme="dark"] .table {
+        --bs-table-bg: var(--bg-card);
+        --bs-table-color: var(--text-primary);
+        --bs-table-border-color: var(--border-light);
+        --bs-table-striped-bg: var(--bg-tertiary);
+        --bs-table-hover-bg: var(--bg-secondary);
+    }
+    
+    [data-theme="dark"] .table th {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-light) !important;
+    }
+    
+    [data-theme="dark"] .table td {
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-light) !important;
+    }
+    
+    [data-theme="dark"] .table tbody tr:hover td {
+        background-color: var(--bg-secondary) !important;
+    }
+    
+    /* Dark theme market status */
+    [data-theme="dark"] .market-status-bar {
+        background-color: var(--bg-secondary) !important;
+        border-bottom-color: var(--border-light) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Dark theme search input */
+    [data-theme="dark"] .search input {
+        background-color: var(--bg-tertiary) !important;
+        border-color: var(--border-light) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] .search input:focus {
+        border-color: var(--gold-primary) !important;
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1) !important;
+    }
+    
+    [data-theme="dark"] .search::before {
+        color: var(--text-muted) !important;
+    }
+    
+    /* Dark theme alerts */
+    [data-theme="dark"] .alert-info {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%) !important;
+        color: var(--gold-primary) !important;
+        border-color: var(--gold-primary) !important;
+    }
+    
+    [data-theme="dark"] .alert-warning {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%) !important;
+        color: #F59E0B !important;
+        border-color: #F59E0B !important;
+    }
+    
+    [data-theme="dark"] .alert-success {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.05) 100%) !important;
+        color: #10B981 !important;
+        border-color: #10B981 !important;
+    }
 
     @media (prefers-reduced-motion: reduce) {
         *,
@@ -2283,37 +2435,37 @@
 
                     <!-- British Market -->
                     <div class="col-lg-6">
-                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
-                            <div class="card-header bg-transparent border-0 pb-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                            <span class="text-white fw-bold">🇬🇧</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6 class="card-title mb-0 fw-bold">{{__('web.british_market')}}</h6>
-                                        <small class="text-muted">LSE</small>
-                                    </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.wednesday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.thursday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.friday')}}</small></div>
+                                    <div class="col-4"><small class="fw-medium">1:30 PM</small></div>
+                                    <div class="col-4"><small class="fw-medium">8:00 PM</small></div>
+                                </div>
+                                <div class="row g-2 mb-1">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.saturday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-4"><small><i class="fas fa-circle text-danger me-1" style="font-size: 6px;"></i>{{__('web.sunday')}}</small></div>
+                                    <div class="col-8"><small class="text-danger fw-medium">{{__('web.closed')}}</small></div>
                                 </div>
                             </div>
-                            <div class="card-body pt-2">
-                                <div class="row g-2">
-                                    <div class="col-4"><small class="text-muted fw-bold">Day</small></div>
-                                    <div class="col-4"><small class="text-muted fw-bold">Open</small></div>
-                                    <div class="col-4"><small class="text-muted fw-bold">Close</small></div>
-                                </div>
-                                <hr class="my-2">
-                                <div class="row g-2 mb-1">
-                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.monday')}}</small></div>
-                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
-                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
-                                </div>
-                                <div class="row g-2 mb-1">
-                                    <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.tuesday')}}</small></div>
-                                    <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
-                                    <div class="col-4"><small class="fw-medium">7:30 PM</small></div>
-                                </div>
+                        </div>
+                    </div>
+
+                    <!-- British Market -->
+                    <div class="col-lg-6">
+                        <div class="card h-100" style="border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-card);">
+                            <div class="card-header bg-transparent border-0 pb-0">
                                 <div class="row g-2 mb-1">
                                     <div class="col-4"><small><i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>{{__('web.wednesday')}}</small></div>
                                     <div class="col-4"><small class="fw-medium">11:00 AM</small></div>
