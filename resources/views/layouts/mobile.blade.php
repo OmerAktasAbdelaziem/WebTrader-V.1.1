@@ -212,6 +212,24 @@
         border-top: 1px solid var(--border-color);
         box-shadow: 0 -2px 12px rgba(0,0,0,0.3);
     }
+
+    /* Dark mode balance dropdown text and icons - override inline styles */
+    [data-theme="dark"] #balanceDropdownBar .fw-semibold {
+        color: #FFFFFF !important;
+    }
+
+    [data-theme="dark"] #balanceDropdownBar .iconify {
+        color: #FFFFFF !important;
+    }
+
+    [data-theme="dark"] #balanceDropdownBar .badge {
+        background: var(--gold-primary) !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] #balanceDropdownChevron {
+        color: #FFFFFF !important;
+    }
     
     [data-theme="dark"] .balance-dropdown-content {
         background: var(--bg-primary) !important;

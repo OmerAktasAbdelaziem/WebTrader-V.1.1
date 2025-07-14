@@ -213,7 +213,7 @@
     }
 
     .fa-star.text-dark, .star-icon.favorited {
-        color: var(--text-primary) !important;
+        color: #FFD700 !important;
     }
 
     .fa-star.text-secondary {
@@ -327,13 +327,22 @@
         font-weight: 600;
         font-size: 14px;
         letter-spacing: 0.5px;
-        color: var(--text-primary);
         background: var(--bg-secondary);
         border-radius: 4px;
         padding: 8px 12px;
         margin: 2px;
         border: 1px solid var(--border-light);
         transition: all 0.2s ease;
+    }
+
+    .bid_price {
+        color: #EF4444;
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .ask_price {
+        color: #10B981;
+        border-color: rgba(16, 185, 129, 0.3);
     }
 
     .bid_price:hover, .ask_price:hover {
@@ -1291,12 +1300,22 @@
     
     [data-theme="dark"] .table td {
         background-color: var(--bg-card) !important;
-        color: var(--text-primary) !important;
         border-color: var(--border-light) !important;
     }
     
     [data-theme="dark"] .table tbody tr:hover td {
         background-color: var(--bg-secondary) !important;
+    }
+    
+    /* Dark theme price colors */
+    [data-theme="dark"] .bid_price {
+        color: #EF4444 !important;
+        border-color: rgba(239, 68, 68, 0.3) !important;
+    }
+    
+    [data-theme="dark"] .ask_price {
+        color: #10B981 !important;
+        border-color: rgba(16, 185, 129, 0.3) !important;
     }
     
     /* Dark theme market status */
@@ -1316,6 +1335,35 @@
     [data-theme="dark"] .search input:focus {
         border-color: var(--gold-primary) !important;
         box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1) !important;
+    }
+    
+    /* All search placeholders white in dark mode */
+    [data-theme="dark"] .search input::placeholder,
+    [data-theme="dark"] input[placeholder*="search"]::placeholder,
+    [data-theme="dark"] input[placeholder*="Search"]::placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .search input::-webkit-input-placeholder,
+    [data-theme="dark"] input[placeholder*="search"]::-webkit-input-placeholder,
+    [data-theme="dark"] input[placeholder*="Search"]::-webkit-input-placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .search input::-moz-placeholder,
+    [data-theme="dark"] input[placeholder*="search"]::-moz-placeholder,
+    [data-theme="dark"] input[placeholder*="Search"]::-moz-placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .search input:-ms-input-placeholder,
+    [data-theme="dark"] input[placeholder*="search"]:-ms-input-placeholder,
+    [data-theme="dark"] input[placeholder*="Search"]:-ms-input-placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
     }
     
     [data-theme="dark"] .search::before {
@@ -1339,6 +1387,37 @@
         background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.05) 100%) !important;
         color: #10B981 !important;
         border-color: #10B981 !important;
+    }
+
+    /* Dark theme star icons */
+    [data-theme="dark"] .fa-star.text-dark,
+    [data-theme="dark"] .star-icon.favorited {
+        color: var(--gold-primary) !important;
+    }
+
+    [data-theme="dark"] .fa-star:hover {
+        color: var(--gold-secondary) !important;
+    }
+
+    /* Modal form control placeholders in dark mode */
+    [data-theme="dark"] .modal .form-control::placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .modal .form-control::-webkit-input-placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .modal .form-control::-moz-placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .modal .form-control:-ms-input-placeholder {
+        color: #FFFFFF !important;
+        opacity: 1;
     }
 
     @media (prefers-reduced-motion: reduce) {
