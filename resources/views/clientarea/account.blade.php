@@ -113,6 +113,268 @@
             font-size: 1.7rem;
         }
     }
+
+    /* Dark Theme Styles */
+    [data-theme="dark"] .account-container {
+        background: #1C1F26 !important;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1.5px 6px rgba(0, 0, 0, 0.2) !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .avatar {
+        background: linear-gradient(135deg, #FFD700 60%, #e6c200 100%) !important;
+        color: #121624 !important;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .account-title {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .account-id {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .account-type {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .account-balance {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .account-date {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .section-title {
+        color: #FFD700 !important;
+        border-bottom: 1.5px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .info-list li {
+        border-bottom: 1px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .info-label {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .info-value {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .info-value.positive {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .info-value.negative {
+        color: #ff6b6b !important;
+    }
+
+    [data-theme="dark"] .logout-btn {
+        background: linear-gradient(90deg, #FFD700 60%, #e6c200 100%) !important;
+        color: #121624 !important;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .logout-btn:hover {
+        background: linear-gradient(90deg, #e6c200 60%, #FFD700 100%) !important;
+        color: #121624 !important;
+    }
+
+    /* Dark Theme Modal Styles */
+    [data-theme="dark"] .modal-content {
+        background: #1C1F26 !important;
+        border: 1px solid #2a2d3a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .modal-header {
+        background: #121624 !important;
+        border-bottom: 1px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .modal-title {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .btn-close {
+        filter: invert(1) !important;
+    }
+
+    [data-theme="dark"] .modal-body {
+        background: #1C1F26 !important;
+    }
+
+    /* Dark Theme Stepper Styles */
+    [data-theme="dark"] .bs-stepper {
+        background: #1C1F26 !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-header {
+        background: #121624 !important;
+        border-bottom: 1px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .step-trigger {
+        background: transparent !important;
+        color: #b0b3b8 !important;
+        border: none !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-circle {
+        background: #2a2d3a !important;
+        color: #ffffff !important;
+        border: 2px solid #FFD700 !important;
+    }
+
+    [data-theme="dark"] .step.active .bs-stepper-circle {
+        background: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-label {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .step.active .bs-stepper-label {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .line {
+        background: #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-content {
+        background: #1C1F26 !important;
+    }
+
+    /* Dark Theme Form Controls */
+    [data-theme="dark"] .form-label {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .form-control,
+    [data-theme="dark"] .form-select {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .form-control:focus,
+    [data-theme="dark"] .form-select:focus {
+        background: #141927 !important;
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.25) !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .form-control::placeholder {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .form-select option {
+        background: #141927 !important;
+        color: #ffffff !important;
+    }
+
+    /* Dark Theme Button Styles */
+    [data-theme="dark"] .btn-primary {
+        background: #FFD700 !important;
+        border-color: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-primary:hover {
+        background: #e6c200 !important;
+        border-color: #e6c200 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-secondary {
+        background: #2a2d3a !important;
+        border-color: #2a2d3a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .btn-secondary:hover {
+        background: #3a3d4a !important;
+        border-color: #3a3d4a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .btn-success {
+        background: #FFD700 !important;
+        border-color: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-success:hover {
+        background: #e6c200 !important;
+        border-color: #e6c200 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-outline-secondary {
+        background: transparent !important;
+        border-color: #FFD700 !important;
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .btn-outline-secondary:hover {
+        background: #FFD700 !important;
+        border-color: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    /* Dark Theme Withdraw Modal Sidebar */
+    [data-theme="dark"] .modal-body .col-md-4 {
+        background: #121624 !important;
+    }
+
+    [data-theme="dark"] .modal-body .col-md-4 h5 {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .nav-pills .nav-link {
+        color: #FFD700 !important;
+        background: transparent !important;
+    }
+
+    [data-theme="dark"] .nav-pills .nav-link.active {
+        background: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .nav-pills .nav-link:hover {
+        background: rgba(255, 215, 0, 0.1) !important;
+        color: #FFD700 !important;
+    }
+
+    /* Dark Theme Bank Information Display */
+    [data-theme="dark"] #bank-info {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-top: 1rem !important;
+    }
+
+    [data-theme="dark"] #bank-info h5 {
+        color: #FFD700 !important;
+        border-bottom: 1px solid #2a2d3a !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    [data-theme="dark"] #bank-info p {
+        color: #ffffff !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    [data-theme="dark"] #bank-info strong {
+        color: #b0b3b8 !important;
+    }
 </style>
 
 @section('content')

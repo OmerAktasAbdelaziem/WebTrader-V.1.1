@@ -303,6 +303,139 @@
             font-size: 0.85rem;
         }
     }
+
+    /* Dark Theme Styles */
+    [data-theme="dark"] html,
+    [data-theme="dark"] body {
+        background: #121624 !important;
+    }
+
+    [data-theme="dark"] .chat-container {
+        background: #1C1F26 !important;
+        border: 1px solid #2a2d3a !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    [data-theme="dark"] .chat-content {
+        background: #121624 !important;
+    }
+
+    [data-theme="dark"] .chat-input-area {
+        background: #1C1F26 !important;
+        border-top: 1px solid #2a2d3a !important;
+        box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Dark Theme Message Bubbles */
+    [data-theme="dark"] .message-left .message-content {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        color: #ffffff !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .message-right .message-content {
+        background: #FFD700 !important;
+        color: #121624 !important;
+        border: 1px solid #e6c200 !important;
+        box-shadow: 0 1px 4px rgba(255, 215, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .message-time {
+        opacity: 0.7 !important;
+        color: inherit !important;
+    }
+
+    [data-theme="dark"] .message-sender {
+        color: #b0b3b8 !important;
+        opacity: 0.8 !important;
+    }
+
+    [data-theme="dark"] .message-text {
+        color: inherit !important;
+    }
+
+    /* Dark Theme Input Group */
+    [data-theme="dark"] .input-group {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .input-group-text {
+        background: #141927 !important;
+        color: #b0b3b8 !important;
+        border: none !important;
+    }
+
+    [data-theme="dark"] .form-control {
+        background: #141927 !important;
+        color: #ffffff !important;
+        border: none !important;
+    }
+
+    [data-theme="dark"] .form-control:focus {
+        background: #141927 !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+    }
+
+    [data-theme="dark"] .form-control::placeholder {
+        color: #b0b3b8 !important;
+        opacity: 0.7 !important;
+    }
+
+    [data-theme="dark"] .send-btn {
+        background: #FFD700 !important;
+        color: #121624 !important;
+        border: none !important;
+    }
+
+    [data-theme="dark"] .send-btn:hover {
+        background: #e6c200 !important;
+        color: #121624 !important;
+    }
+
+    /* Dark Theme Empty Chat State */
+    [data-theme="dark"] .empty-chat {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .empty-chat i {
+        color: #3a3d4a !important;
+    }
+
+    [data-theme="dark"] .empty-chat h6 {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .empty-chat p {
+        color: #b0b3b8 !important;
+    }
+
+    /* Dark Theme Typing Indicator */
+    [data-theme="dark"] .typing-dots {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .typing-dots span {
+        background: #FFD700 !important;
+    }
+
+    /* Dark Theme Scrollbar */
+    [data-theme="dark"] .messages-area::-webkit-scrollbar-thumb {
+        background: rgba(255, 215, 0, 0.4) !important;
+    }
+
+    [data-theme="dark"] .messages-area::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 215, 0, 0.6) !important;
+    }
+
+    [data-theme="dark"] .messages-area::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
 </style>
 
 <div class="chat-container">

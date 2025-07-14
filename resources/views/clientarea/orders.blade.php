@@ -914,7 +914,7 @@
                 <div class="scrollable-content">
                     @foreach($activeOrders as $index => $order)
                         <div class="order-card">
-                            <div class="order-item" data-bs-toggle="collapse" data-bs-target="#orderDetails{{ $order->id }}" aria-expanded="false">
+                            <div class="order-item" data-target="#orderDetails{{ $order->id }}" aria-expanded="false">
                                 <input class="modern-checkbox check-active check-number" type="checkbox" form="multiCloseForm" name="order_id[]" value="{{$order->id}}" onclick="event.stopPropagation()">
                                 
                                 <div class="symbol-section">
@@ -1057,7 +1057,7 @@
                     @if (isset($order->closed_at) && $order->closed_at != null)
                         @php $totalPnl += $order->pnl; @endphp
                         <div class="order-card">
-                            <div class="order-item" data-bs-toggle="collapse" data-bs-target="#historyDetails{{ $order->id }}" aria-expanded="false">
+                            <div class="order-item" data-target="#historyDetails{{ $order->id }}" aria-expanded="false">
                                 <div class="symbol-section">
                                     <div class="symbol-name">{{ $order->asset->name }}</div>
                                     <div class="order-type @if($order->type == 1) buy @else sell @endif">
@@ -1280,18 +1280,22 @@
                 }
                 
                 const $this = $(this);
-                const target = $this.data('bs-target');
+                const target = $this.data('target');
                 
                 if (target) {
                     const $details = $(target);
-                    const isExpanding = !$details.hasClass('show');
+                    const isCurrentlyExpanded = $details.hasClass('show');
                     
-                    if (isExpanding) {
-                        $this.addClass('expanded');
-                        $details.addClass('show');
-                    } else {
+                    if (isCurrentlyExpanded) {
+                        // Close the details
                         $this.removeClass('expanded');
                         $details.removeClass('show');
+                        $this.attr('aria-expanded', 'false');
+                    } else {
+                        // Open the details
+                        $this.addClass('expanded');
+                        $details.addClass('show');
+                        $this.attr('aria-expanded', 'true');
                     }
                 }
             });
