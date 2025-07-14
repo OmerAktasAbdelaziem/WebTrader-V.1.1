@@ -1422,8 +1422,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (logoutForm) {
                     logoutForm.submit();
                 } else {
-                    console.error("Logout form not found!");
-                }
+}
             }
         });
     }
@@ -1514,8 +1513,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
-                    showNotification("Error updating profile", "error");
+showNotification("Error updating profile", "error");
                 });
         });
     }
@@ -1555,13 +1553,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ensure all interface elements exist and log their status
     const interfaces = getAllInterfaces();
 
-    console.log("Interface elements found:", {
-        mainContent: !!interfaces.mainContent,
-        accountInterface: !!interfaces.accountInterface,
-        depositInterface: !!interfaces.depositInterface,
-        withdrawalInterface: !!interfaces.withdrawalInterface,
-    });
-
     // Ensure interfaces have proper styling and are initially hidden
     Object.values(interfaces).forEach((element) => {
         if (element) {
@@ -1575,37 +1566,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Show the correct interface based on URL parameter
-    console.log(
-        "Initializing interface based on URL parameter:",
-        interfaceParam
-    );
 
     switch (interfaceParam) {
         case "account":
-            console.log("URL parameter indicates account interface");
             showAccountInterface();
             break;
         case "deposit":
-            console.log("URL parameter indicates deposit interface");
             showDepositInterface();
             break;
         case "withdrawal":
-            console.log("URL parameter indicates withdrawal interface");
             showWithdrawalInterface();
             break;
         case "chat":
-            console.log("URL parameter indicates chat interface");
             showChatInterface();
             break;
         case "upload":
-            console.log("URL parameter indicates upload document interface");
             showUploadDocumentInterface();
             break;
         case "trading":
         default:
-            console.log(
-                "URL parameter indicates trading interface (or default)"
-            );
             showMainContent();
             break;
     }
@@ -1784,8 +1763,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 })
                 .catch((error) => {
-                    console.error("Error sending message:", error);
-                    showNotification("Error sending message", "error");
+showNotification("Error sending message", "error");
                 })
                 .finally(() => {
                     // Re-enable submit button
@@ -1864,7 +1842,6 @@ function addMessageToChat(sender, message, isSupport) {
 
 // Function to fix interface DOM structure by moving them to body level
 function fixInterfaceStructure() {
-    console.log("=== FIXING INTERFACE STRUCTURE ===");
 
     const interfaces = getAllInterfaces();
     const body = document.body;
@@ -1874,17 +1851,14 @@ function fixInterfaceStructure() {
         if (element && key !== "mainContent") {
             // Don't move mainContent
             const currentParent = element.parentElement;
-            console.log(`${key} current parent:`, currentParent?.id || "no ID");
 
             // If not already a direct child of body, move it
             if (currentParent && currentParent !== body) {
-                console.log(`Moving ${key} to body level`);
                 body.appendChild(element);
             }
         }
     });
 
-    console.log("=== INTERFACE STRUCTURE FIXED ===");
 }
 
 // Filter assets function
@@ -2047,8 +2021,7 @@ function toggleFavorite(assetId, action) {
             }
         })
         .catch((error) => {
-            console.error("Error:", error);
-            showNotification("Error updating favorites", "error");
+showNotification("Error updating favorites", "error");
         });
 
     // Hide context menu
@@ -2114,53 +2087,14 @@ function debugInterfaceVisibility(interfaceName) {
     const element = interfaces[interfaceName];
 
     if (!element) {
-        console.error(`Interface ${interfaceName} not found`);
-        return;
+return;
     }
 
     const computed = window.getComputedStyle(element);
     const rect = element.getBoundingClientRect();
-
-    console.log(`=== DEBUG: ${interfaceName.toUpperCase()} INTERFACE ===`);
-    console.log("Element:", element);
-    console.log("Element ID:", element.id);
-    console.log("Element classes:", element.className);
-    console.log("Inline styles:", {
-        display: element.style.display,
-        visibility: element.style.visibility,
-        opacity: element.style.opacity,
-        zIndex: element.style.zIndex,
-        position: element.style.position,
-        width: element.style.width,
-        height: element.style.height,
-    });
-    console.log("Computed styles:", {
-        display: computed.display,
-        visibility: computed.visibility,
-        opacity: computed.opacity,
-        zIndex: computed.zIndex,
-        position: computed.position,
-        width: computed.width,
-        height: computed.height,
-        overflow: computed.overflow,
-    });
-    console.log("Bounding rect:", {
-        width: rect.width,
-        height: rect.height,
-        top: rect.top,
-        left: rect.left,
-        bottom: rect.bottom,
-        right: rect.right,
-    });
-    console.log("Parent element:", element.parentElement);
-    console.log("Children count:", element.children.length);
-
-    // Check if element has content
+// Check if element has content
     const hasVisibleContent = element.textContent.trim().length > 0;
-    console.log("Has text content:", hasVisibleContent);
-    console.log("HTML content length:", element.innerHTML.length);
-
-    return {
+return {
         element,
         computed,
         rect,
@@ -2170,25 +2104,12 @@ function debugInterfaceVisibility(interfaceName) {
 
 // Enhanced debug function to trace the DOM hierarchy
 function debugDOMStructure() {
-    console.log("=== DOM STRUCTURE DEBUG ===");
-
-    const interfaces = getAllInterfaces();
+const interfaces = getAllInterfaces();
 
     Object.keys(interfaces).forEach((key) => {
         const element = interfaces[key];
         if (element) {
-            console.log(`\n${key.toUpperCase()}:`);
-            console.log("- Element:", element);
-            console.log("- Parent:", element.parentElement);
-            console.log("- Parent ID:", element.parentElement?.id);
-            console.log("- Parent classes:", element.parentElement?.className);
-            console.log("- Grandparent:", element.parentElement?.parentElement);
-            console.log(
-                "- Grandparent ID:",
-                element.parentElement?.parentElement?.id
-            );
-
-            // Check if nested inside another interface
+// Check if nested inside another interface
             let parent = element.parentElement;
             let nesting = [];
             while (parent) {
@@ -2205,11 +2126,8 @@ function debugDOMStructure() {
                 }
                 parent = parent.parentElement;
             }
-            console.log("- Nested inside interfaces:", nesting);
-        }
+}
     });
-
-    console.log("\n=== END DOM STRUCTURE DEBUG ===");
 }
 
 // Function to update form fields and displayed prices when asset is selected
@@ -2264,82 +2182,44 @@ function highlightCurrentAsset() {
 
 // Global test functions for debugging navigation
 window.testNavigation = function () {
-    console.log("=== NAVIGATION TEST ===");
-
-    const interfaces = getAllInterfaces();
-    console.log("Interface elements:", {
-        mainContent: !!interfaces.mainContent,
-        accountInterface: !!interfaces.accountInterface,
-        depositInterface: !!interfaces.depositInterface,
-        withdrawalInterface: !!interfaces.withdrawalInterface,
-    });
-
-    const icons = {
+const interfaces = getAllInterfaces();
+const icons = {
         markets: document.querySelector(".markets-icon"),
         account: document.querySelector(".account-icon"),
         deposit: document.querySelector(".deposit-icon"),
         withdrawal: document.querySelector(".withdrawal-icon"),
     };
-    console.log("Navigation icons:", {
-        markets: !!icons.markets,
-        account: !!icons.account,
-        deposit: !!icons.deposit,
-        withdrawal: !!icons.withdrawal,
-    });
-
-    return { interfaces, icons };
+return { interfaces, icons };
 };
 
 window.testShowAccount = function () {
-    console.log("=== MANUAL TEST: Showing Account Interface ===");
-    showAccountInterface();
+showAccountInterface();
 };
 
 window.testShowDeposit = function () {
-    console.log("=== MANUAL TEST: Showing Deposit Interface ===");
-    showDepositInterface();
+showDepositInterface();
 };
 
 window.testShowWithdrawal = function () {
-    console.log("=== MANUAL TEST: Showing Withdrawal Interface ===");
-    showWithdrawalInterface();
+showWithdrawalInterface();
 };
 
 window.testShowMain = function () {
-    console.log("=== MANUAL TEST: Showing Main Content ===");
-    showMainContent();
+showMainContent();
 };
 
 // Simple test function to check interface visibility and content
 window.testAllInterfaces = function () {
-    console.log("=== TESTING ALL INTERFACES ===");
-
     const interfaces = getAllInterfaces();
 
     Object.keys(interfaces).forEach((key) => {
         const element = interfaces[key];
         if (element) {
-            console.log(`\n${key.toUpperCase()}:`);
-            console.log("- Element exists:", !!element);
-            console.log("- Display:", element.style.display);
-            console.log("- Visibility:", element.style.visibility);
-            console.log("- Content length:", element.innerHTML.length);
-            console.log("- Has children:", element.children.length);
-            console.log(
-                "- Computed display:",
-                window.getComputedStyle(element).display
-            );
-            console.log(
-                "- Computed visibility:",
-                window.getComputedStyle(element).visibility
-            );
-            console.log("- Bounding box:", element.getBoundingClientRect());
+            // Interface element exists
         } else {
-            console.log(`${key.toUpperCase()}: NOT FOUND`);
+            // Interface element not found
         }
     });
-
-    console.log("\n=== END TEST ===");
 };
 
 // ============= GLOBAL FUNCTION EXPORTS =============
@@ -2381,52 +2261,28 @@ window.debugDOMStructure = debugDOMStructure;
 
 // Toggle notification popup
 function toggleNotificationPopup() {
-    console.log("toggleNotificationPopup called");
-    const popup = document.getElementById("notificationPopup");
+const popup = document.getElementById("notificationPopup");
     if (!popup) {
-        console.log("Notification popup element not found");
-        return;
+return;
     }
-
-    console.log(
-        "Popup found, current state:",
-        popup.style.display,
-        popup.classList.contains("show")
-    );
-
-    // Simplified visibility check - just check if it has the 'show' class
+// Simplified visibility check - just check if it has the 'show' class
     const isCurrentlyVisible = popup.classList.contains("show");
-
-    console.log("Popup is currently visible:", isCurrentlyVisible);
-
-    if (!isCurrentlyVisible) {
-        console.log("Showing popup");
-        showNotificationPopup();
+if (!isCurrentlyVisible) {
+showNotificationPopup();
     } else {
-        console.log("Closing popup");
-        closeNotificationPopup();
+closeNotificationPopup();
     }
 }
 
 // Show notification popup
 function showNotificationPopup() {
-    console.log("showNotificationPopup called");
-    const popup = document.getElementById("notificationPopup");
+const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
     if (!popup || !notificationIcon) {
-        console.log(
-            "Missing elements - popup:",
-            !!popup,
-            "icon:",
-            !!notificationIcon
-        );
-        return;
+return;
     }
-
-    console.log("Elements found, showing popup...");
-
-    // First, ensure popup is reset to initial state
+// First, ensure popup is reset to initial state
     popup.classList.remove("show");
     popup.style.removeProperty("display");
     popup.style.removeProperty("visibility");
@@ -2436,10 +2292,7 @@ function showNotificationPopup() {
     const iconRect = notificationIcon.getBoundingClientRect();
     const popupWidth = 350; // Width from CSS
     const popupHeight = 500; // Max height from CSS
-
-    console.log("Icon position:", iconRect);
-
-    // Calculate initial position to the right of the icon
+// Calculate initial position to the right of the icon
     let left = iconRect.right + 10;
     let top = iconRect.top;
 
@@ -2466,10 +2319,7 @@ function showNotificationPopup() {
     if (top < 10) {
         top = 10;
     }
-
-    console.log("Final popup position:", left, top);
-
-    // Set position
+// Set position
     popup.style.left = left + "px";
     popup.style.top = top + "px";
 
@@ -2484,8 +2334,6 @@ function showNotificationPopup() {
 
     // Add show class
     popup.classList.add("show");
-
-    console.log("Popup should now be visible");
 }
 
 // Close notification popup
@@ -2509,25 +2357,19 @@ function initializeNotificationPopup() {
 
     const notificationIcon = document.querySelector(".notification-icon");
     if (!notificationIcon) {
-        console.log("Notification icon not found");
-        return;
+return;
     }
-
-    console.log("Notification icon found, initializing...");
-
-    // Only initialize if not already done
+// Only initialize if not already done
     if (!notificationIcon.hasAttribute("data-initialized")) {
         // Add event listener directly without cloning
         notificationIcon.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log("Notification icon clicked!");
-            toggleNotificationPopup();
+toggleNotificationPopup();
         });
 
         notificationIcon.setAttribute("data-initialized", "true");
-        console.log("Notification icon initialized successfully");
-    }
+}
 
     // Ensure the close-on-outside-click is only added once globally
     if (!document.hasAttribute("data-notification-outside-click-initialized")) {
@@ -2695,14 +2537,7 @@ function updateSidebarActive(selector) {
 function debugInterfaceVisibility(interfaceName) {
     const element = document.getElementById(interfaceName);
     if (element) {
-        console.log(`${interfaceName} debug:`, {
-            display: element.style.display,
-            visibility: element.style.visibility,
-            opacity: element.style.opacity,
-            zIndex: element.style.zIndex,
-            position: element.style.position,
-        });
-    }
+}
 }
 
 // Function to update asset prices in the order form
@@ -2739,10 +2574,6 @@ function updateAssetPrices(assetId, symbol, bidPrice, askPrice) {
     askPriceDisplays.forEach((display) => {
         display.textContent = askPrice;
     });
-
-    console.log(
-        `Updated prices for ${symbol}: Bid=${bidPrice}, Ask=${askPrice}`
-    );
 }
 
 // Function to highlight current asset
@@ -2880,3 +2711,6 @@ window.showOnlyFavorites = showOnlyFavorites;
 window.showAllAssets = showAllAssets;
 window.toggleFavorite = toggleFavorite;
 window.autoResizeTextarea = autoResizeTextarea;
+
+
+

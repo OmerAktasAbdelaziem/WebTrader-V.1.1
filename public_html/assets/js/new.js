@@ -304,9 +304,7 @@ $(function() {
 				const isEmailMatch = emailFilter ? email.includes(emailFilter) : true;
 				const isPhoneMatch = phoneFilter ? phone.includes(phoneFilter) : true;
 				const isCountryMatch = countryTextFilter.length > 0 ? countryTextFilter.some(s => country.includes(s)) : true;
-				const isStatusMatch = statusTextFilter.length > 0 ? statusTextFilter.some(s => status.includes(s)) : true;
-				console.log(countryTextFilter);
-				console.log(countryTextFilter);
+				const isStatusMatch = statusTextFilter.length > 0 ? statusTextFilter.some(s => status.includes(s)) : true;                            // Filter processing
 	
 				if (isNameMatch && isEmailMatch && isPhoneMatch && isCountryMatch && isStatusMatch) {
 					$(this).show();
@@ -318,13 +316,11 @@ $(function() {
 	}
 
 	if ($("#client_emails2").length) {
-		$('#client_emails2').on('itemAdded', function(event) {
-			console.log('Email added: ' + event.item);
-			console.log($('#client_emails2').val());
+		$('#client_emails2').on('itemAdded', function(event) {		// Email added handler
 		});
 	
 		$('#client_emails2').on('itemRemoved', function(event) {
-			console.log('Email removed: ' + event.item);
+		// Email removed handler
 		});
 	
 		$('#client_emails2').on('beforeItemAdd', function(event) {

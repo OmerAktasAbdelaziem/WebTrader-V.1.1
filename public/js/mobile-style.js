@@ -321,7 +321,6 @@ function showSearchResults(count, term) {
 // WebSocket connection (placeholder for real implementation)
 function initializeWebSocket() {
     // Replace with actual WebSocket implementation
-    console.log("WebSocket initialization placeholder");
     // const ws = new WebSocket('wss://your-websocket-endpoint');
     // ws.onmessage = function(event) {
     //     const data = JSON.parse(event.data);

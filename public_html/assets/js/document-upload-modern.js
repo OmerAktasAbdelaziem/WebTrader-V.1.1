@@ -362,6 +362,41 @@ function simulateUpload(callback) {
     }, 200);
 }
 
+// Setup file input functionality
+function setupFileInputs() {
+    // KYC file inputs
+    const kycFileInput = document.getElementById("kycFileInput");
+    const kycDropzone = document.getElementById("kycDropzone");
+
+    if (kycFileInput && kycDropzone) {
+        kycDropzone.addEventListener("click", () => {
+            kycFileInput.click();
+        });
+
+        kycFileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files, "kyc");
+            }
+        });
+    }
+
+    // Additional documents file inputs
+    const additionalFileInput = document.getElementById("additionalFileInput");
+    const additionalDropzone = document.getElementById("additionalDropzone");
+
+    if (additionalFileInput && additionalDropzone) {
+        additionalDropzone.addEventListener("click", () => {
+            additionalFileInput.click();
+        });
+
+        additionalFileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files, "additional");
+            }
+        });
+    }
+}
+
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize document interface if on the document page

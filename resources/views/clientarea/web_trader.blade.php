@@ -1253,7 +1253,6 @@
 
         $(".search").on("input", function () {
             let searchValue = $(this).val().toLowerCase();
-            console.log(searchValue);
 
             $(".name").each(function () {
                 let nameText = $(this).text().toLowerCase();

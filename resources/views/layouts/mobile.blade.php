@@ -816,7 +816,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Notification marked as read');
+                // Notification marked as read successfully
             }
         })
         .catch(error => {
