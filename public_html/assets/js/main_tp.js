@@ -31,7 +31,6 @@ function startAjaxPnl() {
         assetId = $("#asset-select").val();
     }
 
-
     $.ajax({
         url:
             "https://crm.hadathplus.com/client/get_pnl/" +
@@ -42,7 +41,6 @@ function startAjaxPnl() {
         method: "GET",
         dataType: "json",
         success: function (data) {
-
             if (!data || typeof data !== "object") {
                 console.error(
                     "Invalid response from server - not an object:",

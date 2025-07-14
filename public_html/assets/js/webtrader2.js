@@ -1422,7 +1422,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (logoutForm) {
                     logoutForm.submit();
                 } else {
-}
+                }
             }
         });
     }
@@ -1513,7 +1513,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 })
                 .catch((error) => {
-showNotification("Error updating profile", "error");
+                    showNotification("Error updating profile", "error");
                 });
         });
     }
@@ -1763,7 +1763,7 @@ showNotification("Error updating profile", "error");
                     }
                 })
                 .catch((error) => {
-showNotification("Error sending message", "error");
+                    showNotification("Error sending message", "error");
                 })
                 .finally(() => {
                     // Re-enable submit button
@@ -1842,7 +1842,6 @@ function addMessageToChat(sender, message, isSupport) {
 
 // Function to fix interface DOM structure by moving them to body level
 function fixInterfaceStructure() {
-
     const interfaces = getAllInterfaces();
     const body = document.body;
 
@@ -1858,7 +1857,6 @@ function fixInterfaceStructure() {
             }
         }
     });
-
 }
 
 // Filter assets function
@@ -2021,7 +2019,7 @@ function toggleFavorite(assetId, action) {
             }
         })
         .catch((error) => {
-showNotification("Error updating favorites", "error");
+            showNotification("Error updating favorites", "error");
         });
 
     // Hide context menu
@@ -2087,14 +2085,14 @@ function debugInterfaceVisibility(interfaceName) {
     const element = interfaces[interfaceName];
 
     if (!element) {
-return;
+        return;
     }
 
     const computed = window.getComputedStyle(element);
     const rect = element.getBoundingClientRect();
-// Check if element has content
+    // Check if element has content
     const hasVisibleContent = element.textContent.trim().length > 0;
-return {
+    return {
         element,
         computed,
         rect,
@@ -2104,12 +2102,12 @@ return {
 
 // Enhanced debug function to trace the DOM hierarchy
 function debugDOMStructure() {
-const interfaces = getAllInterfaces();
+    const interfaces = getAllInterfaces();
 
     Object.keys(interfaces).forEach((key) => {
         const element = interfaces[key];
         if (element) {
-// Check if nested inside another interface
+            // Check if nested inside another interface
             let parent = element.parentElement;
             let nesting = [];
             while (parent) {
@@ -2126,7 +2124,7 @@ const interfaces = getAllInterfaces();
                 }
                 parent = parent.parentElement;
             }
-}
+        }
     });
 }
 
@@ -2182,30 +2180,30 @@ function highlightCurrentAsset() {
 
 // Global test functions for debugging navigation
 window.testNavigation = function () {
-const interfaces = getAllInterfaces();
-const icons = {
+    const interfaces = getAllInterfaces();
+    const icons = {
         markets: document.querySelector(".markets-icon"),
         account: document.querySelector(".account-icon"),
         deposit: document.querySelector(".deposit-icon"),
         withdrawal: document.querySelector(".withdrawal-icon"),
     };
-return { interfaces, icons };
+    return { interfaces, icons };
 };
 
 window.testShowAccount = function () {
-showAccountInterface();
+    showAccountInterface();
 };
 
 window.testShowDeposit = function () {
-showDepositInterface();
+    showDepositInterface();
 };
 
 window.testShowWithdrawal = function () {
-showWithdrawalInterface();
+    showWithdrawalInterface();
 };
 
 window.testShowMain = function () {
-showMainContent();
+    showMainContent();
 };
 
 // Simple test function to check interface visibility and content
@@ -2261,28 +2259,28 @@ window.debugDOMStructure = debugDOMStructure;
 
 // Toggle notification popup
 function toggleNotificationPopup() {
-const popup = document.getElementById("notificationPopup");
+    const popup = document.getElementById("notificationPopup");
     if (!popup) {
-return;
+        return;
     }
-// Simplified visibility check - just check if it has the 'show' class
+    // Simplified visibility check - just check if it has the 'show' class
     const isCurrentlyVisible = popup.classList.contains("show");
-if (!isCurrentlyVisible) {
-showNotificationPopup();
+    if (!isCurrentlyVisible) {
+        showNotificationPopup();
     } else {
-closeNotificationPopup();
+        closeNotificationPopup();
     }
 }
 
 // Show notification popup
 function showNotificationPopup() {
-const popup = document.getElementById("notificationPopup");
+    const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
     if (!popup || !notificationIcon) {
-return;
+        return;
     }
-// First, ensure popup is reset to initial state
+    // First, ensure popup is reset to initial state
     popup.classList.remove("show");
     popup.style.removeProperty("display");
     popup.style.removeProperty("visibility");
@@ -2292,7 +2290,7 @@ return;
     const iconRect = notificationIcon.getBoundingClientRect();
     const popupWidth = 350; // Width from CSS
     const popupHeight = 500; // Max height from CSS
-// Calculate initial position to the right of the icon
+    // Calculate initial position to the right of the icon
     let left = iconRect.right + 10;
     let top = iconRect.top;
 
@@ -2319,7 +2317,7 @@ return;
     if (top < 10) {
         top = 10;
     }
-// Set position
+    // Set position
     popup.style.left = left + "px";
     popup.style.top = top + "px";
 
@@ -2357,19 +2355,19 @@ function initializeNotificationPopup() {
 
     const notificationIcon = document.querySelector(".notification-icon");
     if (!notificationIcon) {
-return;
+        return;
     }
-// Only initialize if not already done
+    // Only initialize if not already done
     if (!notificationIcon.hasAttribute("data-initialized")) {
         // Add event listener directly without cloning
         notificationIcon.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-toggleNotificationPopup();
+            toggleNotificationPopup();
         });
 
         notificationIcon.setAttribute("data-initialized", "true");
-}
+    }
 
     // Ensure the close-on-outside-click is only added once globally
     if (!document.hasAttribute("data-notification-outside-click-initialized")) {
@@ -2537,7 +2535,7 @@ function updateSidebarActive(selector) {
 function debugInterfaceVisibility(interfaceName) {
     const element = document.getElementById(interfaceName);
     if (element) {
-}
+    }
 }
 
 // Function to update asset prices in the order form
@@ -2711,6 +2709,3 @@ window.showOnlyFavorites = showOnlyFavorites;
 window.showAllAssets = showAllAssets;
 window.toggleFavorite = toggleFavorite;
 window.autoResizeTextarea = autoResizeTextarea;
-
-
-
