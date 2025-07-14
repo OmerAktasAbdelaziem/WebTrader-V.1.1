@@ -278,6 +278,18 @@
             }
         }
     </style>
+    <script>
+        function showLoginSpinner() {
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            loginBtn.disabled = true;
+            loginBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            loginText.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
+        }
+    </script>
 </head>
 <body class="font-inter relative flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
     <!-- Floating Orbs Background -->
@@ -347,7 +359,7 @@
                 </div>
 
                 <!-- Login Form -->
-                <form method="POST" action="{{ route('client.login') }}" class="space-y-6 sm:space-y-7" x-data="{ isLoading: false }" @submit="isLoading = true">
+                <form method="POST" action="/client/login" class="space-y-6 sm:space-y-7" onsubmit="showLoginSpinner()">
                     @csrf
 
                     <!-- Username/Email Field -->
@@ -368,9 +380,9 @@
 
                     <!-- Login Button -->
                     <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
-                        <button type="submit" class="btn-gradient w-full text-white font-semibold py-3 sm:py-4 px-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-200 text-sm sm:text-base lg:text-lg relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isLoading">
-                            <span x-show="!isLoading">{{ __('web.login') }}</span>
-                            <span x-show="isLoading" class="flex items-center justify-center">
+                        <button type="submit" id="loginBtn" class="btn-gradient w-full text-white font-semibold py-3 sm:py-4 px-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-200 text-sm sm:text-base lg:text-lg relative overflow-hidden">
+                            <span id="loginText">{{ __('web.login') }}</span>
+                            <span id="loginSpinner" class="hidden flex items-center justify-center">
                                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
