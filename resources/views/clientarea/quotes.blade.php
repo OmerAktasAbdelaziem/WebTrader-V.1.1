@@ -1768,13 +1768,13 @@
                             </div>
                             
                             <div class="btn-group-modern">
-                                <button type="submit" class="btn btn-danger" formaction="{{route('order.store',['type' => 2])}}">
-                                    <i class="fas fa-arrow-down me-2"></i>
-                                    {{__('web.sell')}} <strong id="sell-price">0</strong>
-                                </button>
                                 <button type="submit" class="btn btn-success" formaction="{{route('order.store',['type' => 1])}}">
                                     <i class="fas fa-arrow-up me-2"></i>
                                     {{__('web.buy')}} <strong id="buy-price">0</strong>
+                                </button>
+                                <button type="submit" class="btn btn-danger" formaction="{{route('order.store',['type' => 2])}}">
+                                    <i class="fas fa-arrow-down me-2"></i>
+                                    {{__('web.sell')}} <strong id="sell-price">0</strong>
                                 </button>
                             </div>
                             
