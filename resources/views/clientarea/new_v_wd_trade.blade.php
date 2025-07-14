@@ -922,14 +922,21 @@
                                                     <i class="bi bi-wallet2 me-2"></i>
                                                     USDT (TRC20) Deposit Address
                                                 </label>
-                                                <div class="address-input-container">
+                                                
+                                                <!-- Address Input Display (Above Copy Button) -->
+                                                <div class="address-display-container mb-3">
                                                     <div class="address-value-modern" id="usdtAddress">{{ $usdtAddress }}</div>
                                                     <input type="hidden" id="usdtAddressValue" value="{{ $usdtAddress }}">
+                                                </div>
+                                                
+                                                <!-- Copy Button (Below Address) -->
+                                                <div class="copy-button-container">
                                                     <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('usdtAddress').textContent)">
                                                         <i class="bi bi-copy"></i>
-                                                        <span>Copy</span>
+                                                        <span>Copy Address</span>
                                                     </button>
                                                 </div>
+                                                
                                                 <div class="address-warning">
                                                     <i class="bi bi-exclamation-triangle me-2"></i>
                                                     <span>Send only USDT (TRC20) to this address. Scan QR code or copy address to your crypto wallet.</span>

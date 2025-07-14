@@ -1575,11 +1575,12 @@ body {
         color: #ffcc02;
         font-family: 'Courier New', monospace;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         word-break: break-all;
-        flex: 1;
+        width: 100%;
         position: relative;
         overflow: hidden;
+        text-align: center;
     }
 
     .address-value-modern::before {
@@ -1593,78 +1594,130 @@ body {
         animation: scan 3s infinite;
     }
 
-    @keyframes scan {
-        0% { left: -100%; }
-        100% { left: 100%; }
+    /* Address Display Container - New Layout */
+    .address-display-container {
+        margin-bottom: 1rem;
     }
 
-    .copy-btn-modern {
+    .address-display-container .address-value-modern {
+        background: linear-gradient(135deg, #1a1d23 0%, #252a34 100%);
+        border: 2px solid #ffcc02;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        color: #ffcc02;
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        font-size: 0.95rem;
+        word-break: break-all;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .address-display-container .address-value-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 204, 2, 0.1), transparent);
+        animation: scan 3s infinite;
+    }
+
+    /* Copy Button Container - New Layout */
+    .copy-button-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .copy-button-container .copy-btn-modern {
         background: linear-gradient(135deg, #ffcc02 0%, #ffa500 100%);
         border: none;
         border-radius: 12px;
-        padding: 1rem 1.5rem;
+        padding: 1rem 2rem;
         color: #1a1a1a;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
         box-shadow: 0 4px 15px rgba(255, 204, 2, 0.3);
+        font-size: 1rem;
+        min-width: 150px;
+        justify-content: center;
     }
 
-    .copy-btn-modern:hover {
+    .copy-button-container .copy-btn-modern:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(255, 204, 2, 0.4);
         background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
     }
 
-    .copy-btn-modern:active {
+    .copy-button-container .copy-btn-modern:active {
         transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(255, 204, 2, 0.2);
     }
 
-    .address-warning {
+    /* Legacy address-input-container styling for compatibility */
+    .address-input-container {
         display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .address-input-container .address-value {
+        background: rgba(255, 204, 2, 0.1);
+        padding: 0.8rem;
+        border-radius: 8px;
+        color: #ffcc02;
+        font-family: monospace;
+        font-weight: 600;
+        font-size: 0.9rem;
+        word-break: break-all;
+        flex: 1;
+    }
+
+    .address-input-container .qr-section {
+        flex-shrink: 0;
+    }
+
+    .address-input-container .qr-code-container {
+        display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: rgba(255, 152, 0, 0.1);
-        border: 1px solid rgba(255, 152, 0, 0.3);
+    }
+
+    .address-input-container .qr-code-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        background: white;
+        padding: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .address-input-container .qr-placeholder {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 204, 2, 0.1);
+        border: 2px dashed #ffcc02;
         border-radius: 10px;
-        padding: 0.75rem 1rem;
-        color: #ff9800;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffcc02;
     }
 
-    .address-warning i {
-        color: #ff9800;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .usdt-deposit-container {
-            padding: 1.5rem;
-            gap: 1.5rem;
-        }
-
-        .qr-code-image-large {
-            width: 160px;
-            height: 160px;
-        }
-
-        .qr-code-frame {
-            padding: 1rem;
-        }
-
-        .address-input-container {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .copy-btn-modern {
-            justify-content: center;
-        }
+    .address-input-container .qr-placeholder i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
     }
 
     /* File Upload Styles */
@@ -2011,7 +2064,6 @@ body {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
-        justify-content: center;
     }
     
     .quick-action-btn {
@@ -2347,230 +2399,6 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-/* Responsive Design for Chat Overlay */
-@media (max-width: 768px) {
-    .chat-overlay-content {
-        width: 95%;
-        height: 85vh;
-        margin: 0 auto;
-    }
-    
-    .chat-overlay-header {
-        padding: 0.8rem 1rem;
-    }
-    
-    .chat-overlay-title {
-        font-size: 1rem;
-        gap: 0.6rem;
-    }
-    
-    .chat-overlay-messages {
-        padding: 0.8rem 1rem;
-    }
-    
-    .chat-overlay .chat-input-container {
-        padding: 0.8rem 1rem;
-    }
-    
-    .chat-overlay .quick-action-btn span {
-        display: none;
-    }
-    
-    .chat-overlay .quick-action-btn {
-        min-width: auto;
-        padding: 0.6rem;
-    }
-    
-    .chat-overlay .quick-action-btn i {
-        font-size: 1.2rem;
-    }
-}
-
-/* ============= NOTIFICATION POPUP STYLES ============= */
-
-/* Notification Popup */
-.notification-popup {
-    position: fixed;
-    top: 10px; /* Will be overridden by JavaScript */
-    left: 70px; /* Will be overridden by JavaScript */
-    width: 350px;
-    max-height: 500px;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    border: 1px solid #4f8cff;
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(79, 140, 255, 0.3);
-    backdrop-filter: blur(10px);
-    z-index: 9999;
-    opacity: 0;
-    transform: translateY(-20px) scale(0.9);
-    transition: all 0.3s ease;
-}
-
-.notification-popup.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.notification-popup-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.notification-popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #333;
-    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-    border-radius: 12px 12px 0 0;
-}
-
-.notification-popup-title {
-    display: flex;
-    align-items: center;
-    color: #4f8cff;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-
-.notification-popup-close {
-    background: transparent;
-    border: none;
-    color: #888;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.notification-popup-close:hover {
-    color: #fff;
-    background: rgba(79, 140, 255, 0.1);
-}
-
-.notification-popup-messages {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 400px;
-    padding: 0;
-}
-
-/* Notification Items */
-.notification-item {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #333;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.notification-item:last-child {
-    border-bottom: none;
-}
-
-.notification-item:hover {
-    background: rgba(79, 140, 255, 0.1);
-}
-
-.notification-content {
-    flex: 1;
-    margin-right: 15px;
-}
-
-.notification-text {
-    color: #fff;
-    font-size: 0.95rem;
-    font-weight: 500;
-    margin-bottom: 5px;
-    line-height: 1.4;
-}
-
-.notification-time {
-    color: #888;
-    font-size: 0.8rem;
-}
-
-.notification-icon {
-    color: #4f8cff;
-    font-size: 1.2rem;
-    opacity: 0.7;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    user-select: none;
-}
-
-.notification-icon:hover {
-    opacity: 1;
-    color: #5a9bff;
-    transform: scale(1.1);
-}
-
-/* No Notifications Message */
-.no-notifications-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    text-align: center;
-    color: #888;
-}
-
-.no-notifications-icon {
-    font-size: 3rem;
-    color: #555;
-    margin-bottom: 15px;
-}
-
-.no-notifications-message h4 {
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-.no-notifications-message p {
-    color: #888;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin: 0;
-}
-
-/* Notification Icon Badge */
-.notification-icon {
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    user-select: none;
-}
-
-.notification-icon:hover {
-    opacity: 1;
-    color: #5a9bff;
-    transform: scale(1.1);
-}
-
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ff4757;
-    color: white;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 0.7rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    animation: pulse 2s infinite;
 }
 
 /* Responsive Design for Notification Popup */
