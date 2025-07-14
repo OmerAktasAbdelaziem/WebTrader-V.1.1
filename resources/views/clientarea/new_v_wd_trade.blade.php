@@ -2006,127 +2006,276 @@
 
 <!-- Upload Document Interface -->
 <div id="uploadDocumentInterface" class="main-content" style="display: none;">
-    <div class="modern-interface-container">
-        <!-- Header Section -->
-        <div class="interface-header">
-            <div class="header-left">
-                <div class="interface-icon">
-                    <i class="bi bi-file-earmark-arrow-up"></i>
-                </div>
-                <div class="header-text">
-                    <h1>Upload Documents</h1>
-                    <p>Upload your KYC documents and other required files</p>
-                </div>
-            </div>
-            <div class="header-actions">
-                <button class="btn btn-modern btn-secondary back-to-trading-btn">
-                    <i class="bi bi-arrow-left"></i>
-                    <span>Back to Trading</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Upload Sections -->
-        <div class="upload-sections">
-            <!-- KYC Documents Section -->
-            <div class="upload-section kyc-section">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <i class="bi bi-shield-check"></i>
+    <div class="document-interface-wrapper">
+        <!-- Modern Header with Glassmorphism -->
+        <div class="document-header-modern">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="header-content-modern">
+                            <div class="header-icon-modern">
+                                <div class="icon-wrapper-modern">
+                                    <i class="bi bi-file-earmark-arrow-up"></i>
+                                </div>
+                            </div>
+                            <div class="header-text-modern">
+                                <h1 class="header-title-modern">Document Management Center</h1>
+                                <p class="header-subtitle-modern">Securely upload and manage your verification documents</p>
+                                <div class="header-stats-modern">
+                                    <span class="stat-item-modern">
+                                        <i class="bi bi-shield-check text-success"></i>
+                                        <span>Bank-level Security</span>
+                                    </span>
+                                    <span class="stat-item-modern">
+                                        <i class="bi bi-lightning text-warning"></i>
+                                        <span>Instant Processing</span>
+                                    </span>
+                                    <span class="stat-item-modern">
+                                        <i class="bi bi-cloud-check text-info"></i>
+                                        <span>Cloud Storage</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="section-title">
-                        <h3>KYC Documents</h3>
-                        <p>Upload your identity verification documents (one-time upload)</p>
-                    </div>
-                </div>
-                
-                <div class="upload-area" id="kycUploadArea">
-                    <div class="upload-dropzone" id="kycDropzone">
-                        <div class="dropzone-content">
-                            <i class="bi bi-cloud-arrow-up display-4 text-primary mb-3"></i>
-                            <h4>Upload KYC Documents</h4>
-                            <p class="text-muted">Drag and drop files here or click to browse</p>
-                            <p class="text-muted small">Supported formats: PDF, JPG, PNG (Max 10MB)</p>
-                            <button type="button" class="btn btn-outline-primary" onclick="triggerKycFileInput()">
-                                <i class="bi bi-folder-plus me-2"></i>
-                                Choose Files
+                    <div class="col-lg-4 text-end">
+                        <div class="header-actions-modern">
+                            <button class="btn-modern-secondary back-to-trading-btn">
+                                <i class="bi bi-arrow-left"></i>
+                                <span>Back to Trading</span>
                             </button>
-                            <input type="file" id="kycFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
-                        </div>
-                    </div>
-                    
-                    <!-- KYC Files List -->
-                    <div class="uploaded-files" id="kycFilesList" style="display: none;">
-                        <h5 class="mb-3">
-                            <i class="bi bi-files me-2"></i>
-                            Uploaded KYC Documents
-                        </h5>
-                        <div class="files-container" id="kycFilesContainer">
-                            <!-- Files will be populated here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Other Documents Section -->
-            <div class="upload-section other-docs-section">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <i class="bi bi-file-earmark-text"></i>
-                    </div>
-                    <div class="section-title">
-                        <h3>Other Documents</h3>
-                        <p>Upload additional documents (multiple uploads allowed)</p>
-                    </div>
-                </div>
-                
-                <div class="upload-area" id="otherDocsUploadArea">
-                    <div class="upload-dropzone" id="otherDocsDropzone">
-                        <div class="dropzone-content">
-                            <i class="bi bi-cloud-arrow-up display-4 text-success mb-3"></i>
-                            <h4>Upload Other Documents</h4>
-                            <p class="text-muted">Drag and drop files here or click to browse</p>
-                            <p class="text-muted small">Supported formats: PDF, JPG, PNG, DOC, DOCX (Max 10MB each)</p>
-                            <button type="button" class="btn btn-outline-success" onclick="triggerOtherDocsFileInput()">
-                                <i class="bi bi-folder-plus me-2"></i>
-                                Choose Files
-                            </button>
-                            <input type="file" id="otherDocsFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;">
-                        </div>
-                    </div>
-                    
-                    <!-- Other Documents Files List -->
-                    <div class="uploaded-files" id="otherDocsFilesList" style="display: none;">
-                        <h5 class="mb-3">
-                            <i class="bi bi-files me-2"></i>
-                            Uploaded Other Documents
-                        </h5>
-                        <div class="files-container" id="otherDocsFilesContainer">
-                            <!-- Files will be populated here -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Upload Progress -->
-        <div class="upload-progress" id="uploadProgress" style="display: none;">
-            <div class="progress-header">
-                <h5>
-                    <i class="bi bi-cloud-arrow-up me-2"></i>
-                    Uploading Documents...
-                </h5>
-                <span class="progress-text" id="progressText">0%</span>
-            </div>
-            <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                     id="progressBar" role="progressbar" style="width: 0%"></div>
-            </div>
-        </div>
+        <!-- Main Content Grid -->
+        <div class="document-content-modern">
+            <div class="container-fluid">
+                <div class="row g-4">
+                    <!-- KYC Documents Card -->
+                    <div class="col-lg-6">
+                        <div class="document-card-modern kyc-card-modern">
+                            <div class="card-header-modern">
+                                <div class="header-icon-section">
+                                    <div class="icon-bg-modern kyc-icon-bg">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <div class="header-text-section">
+                                        <h3 class="card-title-modern">KYC Verification Documents</h3>
+                                        <p class="card-subtitle-modern">Identity verification for account compliance</p>
+                                        <div class="requirement-badges">
+                                            <span class="badge-modern required">Required</span>
+                                            <span class="badge-modern one-time">One-time Upload</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <!-- Upload Status Messages -->
-        <div class="upload-messages" id="uploadMessages">
-            <!-- Success/Error messages will appear here -->
+                            <div class="card-body-modern">
+                                <!-- Upload Zone -->
+                                <div class="upload-zone-modern" id="kycUploadZone">
+                                    <div class="dropzone-modern" id="kycDropzone" ondrop="dropHandler(event, 'kyc')" ondragover="dragOverHandler(event)" ondragenter="dragEnterHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                        <div class="dropzone-content-modern">
+                                            <div class="upload-icon-modern kyc-upload-icon">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                            </div>
+                                            <h4 class="upload-title-modern">Drop your KYC documents here</h4>
+                                            <p class="upload-description-modern">or click to browse from your computer</p>
+                                            <div class="file-types-modern">
+                                                <span class="file-type-badge">PDF</span>
+                                                <span class="file-type-badge">JPG</span>
+                                                <span class="file-type-badge">PNG</span>
+                                            </div>
+                                            <p class="size-limit-modern">Maximum file size: 10MB per file</p>
+                                            <button type="button" class="btn-upload-modern kyc-btn" onclick="triggerKycFileInput()">
+                                                <i class="bi bi-folder-plus"></i>
+                                                <span>Choose Files</span>
+                                            </button>
+                                            <input type="file" id="kycFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileSelect(event, 'kyc')">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document Requirements -->
+                                <div class="requirements-section-modern">
+                                    <h5 class="requirements-title">Required Documents:</h5>
+                                    <div class="requirements-list">
+                                        <div class="requirement-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <span>Government-issued ID (Passport, Driver's License)</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <span>Proof of Address (Utility bill, Bank statement)</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <span>Selfie with ID document</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Uploaded Files Display -->
+                                <div class="uploaded-files-modern" id="kycFilesList" style="display: none;">
+                                    <div class="files-header-modern">
+                                        <h5><i class="bi bi-files"></i> Uploaded KYC Documents</h5>
+                                        <span class="files-count" id="kycFilesCount">0 files</span>
+                                    </div>
+                                    <div class="files-grid-modern" id="kycFilesContainer">
+                                        <!-- Files will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Documents Card -->
+                    <div class="col-lg-6">
+                        <div class="document-card-modern additional-card-modern">
+                            <div class="card-header-modern">
+                                <div class="header-icon-section">
+                                    <div class="icon-bg-modern additional-icon-bg">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </div>
+                                    <div class="header-text-section">
+                                        <h3 class="card-title-modern">Additional Documents</h3>
+                                        <p class="card-subtitle-modern">Supporting documents and certificates</p>
+                                        <div class="requirement-badges">
+                                            <span class="badge-modern optional">Optional</span>
+                                            <span class="badge-modern multiple">Multiple Uploads</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body-modern">
+                                <!-- Upload Zone -->
+                                <div class="upload-zone-modern" id="additionalUploadZone">
+                                    <div class="dropzone-modern" id="additionalDropzone" ondrop="dropHandler(event, 'additional')" ondragover="dragOverHandler(event)" ondragenter="dragEnterHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                        <div class="dropzone-content-modern">
+                                            <div class="upload-icon-modern additional-upload-icon">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                            </div>
+                                            <h4 class="upload-title-modern">Drop additional documents here</h4>
+                                            <p class="upload-description-modern">or click to browse from your computer</p>
+                                            <div class="file-types-modern">
+                                                <span class="file-type-badge">PDF</span>
+                                                <span class="file-type-badge">DOC</span>
+                                                <span class="file-type-badge">DOCX</span>
+                                                <span class="file-type-badge">JPG</span>
+                                                <span class="file-type-badge">PNG</span>
+                                            </div>
+                                            <p class="size-limit-modern">Maximum file size: 10MB per file</p>
+                                            <button type="button" class="btn-upload-modern additional-btn" onclick="triggerAdditionalFileInput()">
+                                                <i class="bi bi-folder-plus"></i>
+                                                <span>Choose Files</span>
+                                            </button>
+                                            <input type="file" id="additionalFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;" onchange="handleFileSelect(event, 'additional')">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document Types -->
+                                <div class="document-types-section-modern">
+                                    <h5 class="document-types-title">Accepted Document Types:</h5>
+                                    <div class="document-types-grid">
+                                        <div class="document-type-item">
+                                            <i class="bi bi-building text-primary"></i>
+                                            <span>Business Certificates</span>
+                                        </div>
+                                        <div class="document-type-item">
+                                            <i class="bi bi-award text-success"></i>
+                                            <span>Professional Licenses</span>
+                                        </div>
+                                        <div class="document-type-item">
+                                            <i class="bi bi-bank text-warning"></i>
+                                            <span>Financial Statements</span>
+                                        </div>
+                                        <div class="document-type-item">
+                                            <i class="bi bi-file-text text-info"></i>
+                                            <span>Supporting Documents</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Uploaded Files Display -->
+                                <div class="uploaded-files-modern" id="additionalFilesList" style="display: none;">
+                                    <div class="files-header-modern">
+                                        <h5><i class="bi bi-files"></i> Uploaded Additional Documents</h5>
+                                        <span class="files-count" id="additionalFilesCount">0 files</span>
+                                    </div>
+                                    <div class="files-grid-modern" id="additionalFilesContainer">
+                                        <!-- Files will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Progress Section -->
+                <div class="row mt-4" id="uploadProgressSection" style="display: none;">
+                    <div class="col-12">
+                        <div class="progress-card-modern">
+                            <div class="progress-header-modern">
+                                <div class="progress-icon-modern">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                </div>
+                                <div class="progress-text-modern">
+                                    <h5>Uploading Documents...</h5>
+                                    <p id="progressDescription">Preparing files for upload</p>
+                                </div>
+                                <div class="progress-percentage-modern">
+                                    <span id="progressText">0%</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar-modern">
+                                <div class="progress-fill-modern" id="progressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Status Messages -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="upload-messages-modern" id="uploadMessages">
+                            <!-- Success/Error messages will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Information -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="security-info-modern">
+                            <div class="security-icon-modern">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <div class="security-content-modern">
+                                <h5>Your Documents Are Secure</h5>
+                                <p>All uploads are protected with bank-level encryption. Your personal information is handled in accordance with international privacy standards and regulations.</p>
+                                <div class="security-features">
+                                    <span class="security-feature">
+                                        <i class="bi bi-lock"></i>
+                                        <span>256-bit SSL Encryption</span>
+                                    </span>
+                                    <span class="security-feature">
+                                        <i class="bi bi-eye-slash"></i>
+                                        <span>Privacy Protected</span>
+                                    </span>
+                                    <span class="security-feature">
+                                        <i class="bi bi-check-circle"></i>
+                                        <span>GDPR Compliant</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -2208,6 +2357,9 @@
     // Add route for toggling favourites
     document.body.setAttribute('data-toggle-favourite-route', '{{ route("toggle.favourite") }}');
 </script>
+
+<!-- Modern Document Upload JavaScript -->
+<script src="{{ asset('assets/js/document-upload-modern.js') }}"></script>
 
 
 </body>
