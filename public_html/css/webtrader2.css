@@ -2401,25 +2401,425 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Responsive Design for Notification Popup */
+/* ============= MODERN NOTIFICATION POPUP ============= */
+
+/* Main Notification Popup Container */
+.notification-popup-modern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 20px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification-popup-modern.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* Overlay Background */
+.notification-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+}
+
+/* Notification Container */
+.notification-popup-container {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    border-radius: 20px;
+    width: 420px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    transform: translateX(100px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-popup-modern.show .notification-popup-container {
+    transform: translateX(0) scale(1);
+}
+
+/* Header */
+.notification-popup-header-modern {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.1) 100%);
+}
+
+.notification-popup-title-modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-icon-modern {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.notification-title-text h4 {
+    color: #f8fafc;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.notification-count-text {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.notification-popup-close-modern {
+    width: 36px;
+    height: 36px;
+    background: rgba(71, 85, 105, 0.3);
+    border: none;
+    border-radius: 10px;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.notification-popup-close-modern:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+/* Body */
+.notification-popup-body-modern {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.notification-popup-body-modern::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-popup-body-modern::-webkit-scrollbar-track {
+    background: rgba(71, 85, 105, 0.1);
+}
+
+.notification-popup-body-modern::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.5);
+    border-radius: 3px;
+}
+
+.notification-popup-body-modern::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 0.7);
+}
+
+/* No Notifications State */
+.no-notifications-message-modern {
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.no-notifications-illustration {
+    position: relative;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-bell-empty {
+    font-size: 4rem;
+    color: #475569;
+    position: relative;
+    z-index: 2;
+}
+
+.notification-waves {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.wave {
+    position: absolute;
+    border: 2px solid #3b82f6;
+    border-radius: 50%;
+    opacity: 0;
+    animation: wave-animation 3s infinite;
+}
+
+.wave-1 {
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+}
+
+.wave-2 {
+    width: 120px;
+    height: 120px;
+    animation-delay: 1s;
+}
+
+.wave-3 {
+    width: 160px;
+    height: 160px;
+    animation-delay: 2s;
+}
+
+@keyframes wave-animation {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+.no-notifications-content h5 {
+    color: #f8fafc;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.no-notifications-content p {
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.no-notifications-content small {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+/* Notification Items */
+.notification-item-modern {
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-item-modern:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(29, 78, 216, 0.05) 100%);
+}
+
+.notification-item-modern:last-child {
+    border-bottom: none;
+}
+
+.notification-item-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.notification-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-item-text {
+    color: #f8fafc;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.notification-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-time {
+    color: #3b82f6;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.notification-date {
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+.notification-item-actions {
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.notification-item-modern:hover .notification-item-actions {
+    opacity: 1;
+}
+
+.notification-action-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(71, 85, 105, 0.3);
+    border: none;
+    border-radius: 6px;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.notification-action-btn.mark-read:hover {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.notification-action-btn.delete:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* Footer */
+.notification-popup-footer-modern {
+    padding: 1rem 2rem;
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+    display: flex;
+    gap: 1rem;
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.notification-footer-btn {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(71, 85, 105, 0.3) 0%, rgba(51, 65, 85, 0.3) 100%);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.notification-footer-btn.mark-all-read:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+}
+
+.notification-footer-btn.clear-all:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+/* Responsive Design for Modern Notification Popup */
 @media (max-width: 768px) {
-    .notification-popup {
-        width: calc(100vw - 40px);
-        right: 20px;
-        top: 70px;
-        max-height: 60vh;
+    .notification-popup-modern {
+        padding: 10px;
+        align-items: stretch;
+        justify-content: stretch;
     }
     
-    .notification-popup-messages {
-        max-height: calc(60vh - 80px);
+    .notification-popup-container {
+        width: 100%;
+        max-width: none;
+        border-radius: 16px;
+        transform: translateY(100px) scale(0.95);
     }
     
-    .notification-item {
-        padding: 12px 15px;
+    .notification-popup-modern.show .notification-popup-container {
+        transform: translateY(0) scale(1);
     }
     
-    .notification-text {
-        font-size: 0.9rem;
+    .notification-popup-header-modern {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .notification-item-modern {
+        padding: 1rem 1.5rem;
+    }
+    
+    .notification-popup-footer-modern {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+    }
+    
+    .notification-footer-btn {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .notification-popup-header-modern {
+        padding: 1rem;
+    }
+    
+    .notification-item-modern {
+        padding: 0.875rem 1rem;
+        gap: 0.75rem;
+    }
+    
+    .notification-item-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .notification-popup-footer-modern {
+        padding: 1rem;
     }
 }
 

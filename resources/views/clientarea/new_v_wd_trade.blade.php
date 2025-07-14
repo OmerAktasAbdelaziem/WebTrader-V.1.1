@@ -2287,42 +2287,84 @@
     </div>
 </div>
 
-<!-- Notification Popup -->
-<div id="notificationPopup" class="notification-popup" style="display: none;">
-    <div class="notification-popup-content">
-        <div class="notification-popup-header">
-            <div class="notification-popup-title">
-                <i class="bi bi-bell me-2"></i>
-                <span>Notifications</span>
+<!-- Modern Notification Popup -->
+<div id="notificationPopup" class="notification-popup-modern" style="display: none;">
+    <div class="notification-popup-overlay" onclick="closeNotificationPopup()"></div>
+    <div class="notification-popup-container">
+        <div class="notification-popup-header-modern">
+            <div class="notification-popup-title-modern">
+                <div class="notification-icon-modern">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+                <div class="notification-title-text">
+                    <h4>Notifications</h4>
+                    <span class="notification-count-text">{{ count($notifications ?? []) }} new {{ count($notifications ?? []) === 1 ? 'notification' : 'notifications' }}</span>
+                </div>
             </div>
-            <button class="notification-popup-close" onclick="closeNotificationPopup()">
+            <button class="notification-popup-close-modern" onclick="closeNotificationPopup()">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         
-        <div class="notification-popup-messages" id="notificationPopupMessages">
-            @if(empty($notifications) || count($notifications) == 0)
-                <div class="no-notifications-message">
-                    <div class="no-notifications-icon">
-                        <i class="bi bi-bell-slash"></i>
-                    </div>
-                    <h4>No Notifications</h4>
-                    <p>You don't have any notifications at this time.</p>
-                </div>
-            @else
-                @foreach($notifications as $notification)
-                    <div class="notification-item" data-id="{{ $notification->id }}">
-                        <div class="notification-content">
-                            <div class="notification-text">{{ __('web.'.$notification->text) }}</div>
-                            <div class="notification-time">{{ date('d/m H:i', strtotime($notification->created_at)) }}</div>
+        <div class="notification-popup-body-modern">
+            <div class="notification-popup-messages-modern" id="notificationPopupMessages">
+                @if(empty($notifications) || count($notifications) == 0)
+                    <div class="no-notifications-message-modern">
+                        <div class="no-notifications-illustration">
+                            <div class="notification-bell-empty">
+                                <i class="bi bi-bell-slash"></i>
+                            </div>
+                            <div class="notification-waves">
+                                <span class="wave wave-1"></span>
+                                <span class="wave wave-2"></span>
+                                <span class="wave wave-3"></span>
+                            </div>
                         </div>
-                        <div class="notification-icon">
-                            <i class="bi bi-info-circle"></i>
+                        <div class="no-notifications-content">
+                            <h5>All Caught Up!</h5>
+                            <p>You don't have any new notifications at this time.</p>
+                            <small>We'll notify you when something important happens.</small>
                         </div>
                     </div>
-                @endforeach
-            @endif
+                @else
+                    @foreach($notifications as $notification)
+                        <div class="notification-item-modern" data-id="{{ $notification->id }}">
+                            <div class="notification-item-icon">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </div>
+                            <div class="notification-item-content">
+                                <div class="notification-item-text">{{ __('web.'.$notification->text) }}</div>
+                                <div class="notification-item-meta">
+                                    <span class="notification-time">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</span>
+                                    <span class="notification-date">{{ date('M d, Y H:i', strtotime($notification->created_at)) }}</span>
+                                </div>
+                            </div>
+                            <div class="notification-item-actions">
+                                <button class="notification-action-btn mark-read" onclick="markNotificationAsRead({{ $notification->id }})" title="Mark as read">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                                <button class="notification-action-btn delete" onclick="deleteNotification({{ $notification->id }})" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
         </div>
+        
+        @if(!empty($notifications) && count($notifications) > 0)
+            <div class="notification-popup-footer-modern">
+                <button class="notification-footer-btn mark-all-read" onclick="markAllNotificationsAsRead()">
+                    <i class="bi bi-check-all me-2"></i>
+                    Mark All as Read
+                </button>
+                <button class="notification-footer-btn clear-all" onclick="clearAllNotifications()">
+                    <i class="bi bi-trash me-2"></i>
+                    Clear All
+                </button>
+            </div>
+        @endif
     </div>
 </div>
 
