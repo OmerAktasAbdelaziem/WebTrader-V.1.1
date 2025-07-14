@@ -9,16 +9,26 @@ class AddSLToOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedDouble('s_l')->nullable();
-            $table->unsignedDouble('s_p')->nullable();
+            if (!Schema::hasColumn('orders', 's_l')) {
+                $table->unsignedDouble('s_l')->nullable();
+            }
+
+            if (!Schema::hasColumn('orders', 's_p')) {
+                $table->unsignedDouble('s_p')->nullable();
+            }
         });
     }
 
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('s_l');
-            $table->dropColumn('s_p');
+            if (Schema::hasColumn('orders', 's_l')) {
+                $table->dropColumn('s_l');
+            }
+
+            if (Schema::hasColumn('orders', 's_p')) {
+                $table->dropColumn('s_p');
+            }
         });
     }
 }
