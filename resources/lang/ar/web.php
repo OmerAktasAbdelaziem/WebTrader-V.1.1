@@ -137,6 +137,7 @@ return [
     'signing_in'                      => 'جاري تسجيل الدخول...',
     'login_successful'                => 'تم تسجيل الدخول بنجاح! مرحباً بعودتك.',
     'registration_successful'         => 'تم التسجيل بنجاح! مرحباً بك في المنصة.',
+    'password_reset_successful'       => 'تم إعادة تعيين كلمة المرور بنجاح! تم تسجيل دخولك.',
     'bank_country'                    => 'دولة البنك',
     'trade_volume'                    => 'حجم التداول',
     'new_password'                    => 'كلمة المرور الجديدة',

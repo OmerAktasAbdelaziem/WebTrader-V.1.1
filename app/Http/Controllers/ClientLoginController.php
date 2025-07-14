@@ -147,7 +147,7 @@ class ClientLoginController extends Controller
         Log::warning('Login reset for user:', ['user' => $client->first_name,'pass' => $request->password]);
 
         if (Auth::guard('client')->attempt(['username' => $client->username, 'password' => $request->new_password, 'deleted' => 0])) {
-            return redirect()->route('client.dashboard')->with('success', __('web.login_successful'));
+            return redirect()->route('client.webtrader.loading')->with('success', __('web.password_reset_successful'));
         }
     }
 }

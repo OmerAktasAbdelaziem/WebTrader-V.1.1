@@ -88,6 +88,12 @@ return [
     'signing_in' => 'Signing in...',
     'login_successful' => 'Login successful! Welcome back.',
     'registration_successful' => 'Registration successful! Welcome to the platform.',
+    'password_reset_successful' => 'Password reset successful! You are now logged in.',
+    'loading_trading_platform' => 'Loading Trading Platform',
+    'preparing_your_trading_environment' => 'Preparing your trading environment...',
+    'loading_market_data' => 'Loading market data',
+    'loading_your_portfolio' => 'Loading your portfolio',
+    'initializing_charts' => 'Initializing charts',
     // Account page keys
     'personal_information' => 'Personal Information',
     'trading_information' => 'Trading Information',

@@ -93,8 +93,7 @@ class WebTraderController extends Controller
             ->where('closed_at', '>=', $from)
             ->where('closed_at', '<=', $to)
             ->orderBy('closed_at', 'DESC')
-            ->limit(20) // Add limit for initial load
-            ->get();
+            ->paginate(10); // Keep pagination but reduce from 6 to 10 per page
             
         $openOrders = Order::where('status', 'active')
             ->whereNull('closed_at')
