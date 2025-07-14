@@ -45,26 +45,6 @@
                     <span class="blue-text">Track all markets on TradingView</span>
                 </a>
             </div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-            {
-              "autosize": true,
-              "symbol": "{{ $symbol }}",
-              "interval": "{{ $interval }}",
-              "timezone": "Etc/UTC",
-              "theme": "light",
-              "style": "{{ $style }}",
-              "locale": "en",
-              "withdateranges": true,
-              "hide_side_toolbar": false,
-              "allow_symbol_change": false,
-              "details": true,
-              "hotlist": false,
-              "calendar": false,
-              "studies": [],
-              "support_host": "https://www.tradingview.com"
-            }
-            </script>
-            <!-- TradingView Widget END -->
         </div>
     </div>
 
@@ -275,26 +255,149 @@
     }
 }
 
-/* Dark mode support */
+/* Dark Theme Support */
+[data-theme="dark"] .charts-modern-container {
+    background: linear-gradient(135deg, #121624 0%, #1C1F26 100%);
+    background-attachment: fixed;
+}
+
+[data-theme="dark"] .charts-header {
+    background: rgba(28, 31, 38, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #2A2D35;
+}
+
+[data-theme="dark"] .symbol-name {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .symbol-description {
+    color: #B3B3B3 !important;
+}
+
+[data-theme="dark"] .chart-actions .btn {
+    background: rgba(28, 31, 38, 0.8) !important;
+    border: 1px solid #2A2D35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .chart-actions .btn:hover {
+    background: rgba(20, 25, 39, 0.9) !important;
+    border-color: #FFD700 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background-color: #1C1F26 !important;
+    border: 1px solid #2A2D35 !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+    background-color: rgba(255, 215, 0, 0.1) !important;
+    color: #FFD700 !important;
+}
+
+[data-theme="dark"] .chart-wrapper {
+    background: #141927 !important;
+}
+
+[data-theme="dark"] .chart-loading-overlay {
+    background: rgba(20, 25, 39, 0.95) !important;
+    backdrop-filter: blur(5px);
+}
+
+[data-theme="dark"] .loading-spinner .spinner-border {
+    color: #FFD700 !important;
+}
+
+[data-theme="dark"] .loading-spinner p {
+    color: #B3B3B3 !important;
+}
+
+[data-theme="dark"] .quick-tools-panel {
+    background: rgba(28, 31, 38, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #2A2D35 !important;
+}
+
+[data-theme="dark"] .tool-btn {
+    background: rgba(20, 25, 39, 0.8) !important;
+    border: 1px solid #2A2D35 !important;
+    color: #B3B3B3 !important;
+}
+
+[data-theme="dark"] .tool-btn:hover {
+    background: rgba(28, 31, 38, 0.95) !important;
+    border-color: #FFD700 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+[data-theme="dark"] .tool-btn.active {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%) !important;
+    color: #121624 !important;
+    border-color: #FFD700 !important;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .tool-btn.active:hover {
+    background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+/* Dark theme responsive adjustments */
+@media (max-width: 576px) {
+    [data-theme="dark"] .charts-header {
+        background: rgba(28, 31, 38, 0.98);
+    }
+    
+    [data-theme="dark"] .quick-tools-panel {
+        background: rgba(28, 31, 38, 0.98);
+    }
+}
+
+/* Prefers dark mode fallback */
 @media (prefers-color-scheme: dark) {
     .charts-modern-container {
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        background: linear-gradient(135deg, #121624 0%, #1C1F26 100%);
     }
     
     .charts-header,
     .quick-tools-panel {
-        background: rgba(52, 73, 94, 0.95);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: rgba(28, 31, 38, 0.95);
+        border-color: #2A2D35;
     }
     
     .symbol-name {
-        color: #ecf0f1;
+        color: #FFFFFF;
+    }
+    
+    .symbol-description {
+        color: #B3B3B3;
     }
     
     .tool-btn {
-        background: rgba(52, 73, 94, 0.8);
-        border-color: rgba(255, 255, 255, 0.1);
-        color: #bdc3c7;
+        background: rgba(20, 25, 39, 0.8);
+        border-color: #2A2D35;
+        color: #B3B3B3;
+    }
+    
+    .tool-btn:hover {
+        border-color: #FFD700;
+        color: #FFFFFF;
+    }
+    
+    .tool-btn.active {
+        background: #FFD700;
+        color: #121624;
+        border-color: #FFD700;
     }
 }
 </style>
@@ -305,9 +408,24 @@ let currentSymbol = '{{ $symbol }}';
 let currentInterval = '{{ $interval }}';
 let currentStyle = {{ $style }};
 
+// Function to get current chart theme based on data-theme attribute
+function getChartTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme') || 'light';
+    return currentTheme === 'dark' ? 'dark' : 'light';
+}
+
+// Function to reload chart with new theme
+function reloadChartWithTheme() {
+    const chartTheme = getChartTheme();
+    const url = `{{ route('clientarea.charts') }}?symbol=${currentSymbol}&interval=${currentInterval}&style=${currentStyle}&theme=${chartTheme}`;
+    window.location.href = url;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     initializeActiveStyle();
+    setupThemeWatcher();
+    loadTradingViewWidget();
     
     // Hide loading overlay after chart loads
     setTimeout(() => {
@@ -332,6 +450,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
 });
 
+function loadTradingViewWidget() {
+    // Clear any existing widget
+    const widgetContainer = document.querySelector('.tradingview-widget-container__widget');
+    if (widgetContainer) {
+        widgetContainer.innerHTML = '';
+    }
+    
+    // Get current theme
+    const currentTheme = getChartTheme();
+    
+    // Create script element
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    script.async = true;
+    
+    // Widget configuration
+    script.innerHTML = JSON.stringify({
+        "autosize": true,
+        "symbol": "{{ $symbol }}",
+        "interval": "{{ $interval }}",
+        "timezone": "Etc/UTC",
+        "theme": currentTheme,
+        "style": "{{ $style }}",
+        "locale": "en",
+        "withdateranges": true,
+        "hide_side_toolbar": false,
+        "allow_symbol_change": false,
+        "details": true,
+        "hotlist": false,
+        "calendar": false,
+        "studies": [],
+        "support_host": "https://www.tradingview.com"
+    });
+    
+    // Append script to widget container
+    widgetContainer.appendChild(script);
+}
+
+function setupThemeWatcher() {
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                // Theme changed, reload widget with new theme
+                setTimeout(() => {
+                    loadTradingViewWidget();
+                }, 300); // Small delay to ensure theme transition completes
+            }
+        });
+    });
+    
+    // Start observing theme changes
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+    });
+    
+    // Also listen for storage changes (theme switching in other tabs)
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'theme') {
+            setTimeout(() => {
+                loadTradingViewWidget();
+            }, 300);
+        }
+    });
+}
+
 function initializeActiveStyle() {
     // Set active style based on current style
     document.querySelectorAll('.tool-btn').forEach(btn => {
@@ -348,8 +534,9 @@ function setupEventListeners() {
 
 function changeInterval(interval) {
     currentInterval = interval;
+    const chartTheme = getChartTheme();
     // For the embedded widget, we'll need to reload with new parameters
-    location.href = `{{ route('clientarea.charts') }}?symbol=${currentSymbol}&interval=${interval}&style=${currentStyle}`;
+    location.href = `{{ route('clientarea.charts') }}?symbol=${currentSymbol}&interval=${interval}&style=${currentStyle}&theme=${chartTheme}`;
 }
 
 function changeChartStyle(style) {
@@ -359,8 +546,9 @@ function changeChartStyle(style) {
     document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
     event.target.closest('.tool-btn').classList.add('active');
     
+    const chartTheme = getChartTheme();
     // For the embedded widget, we'll need to reload with new parameters
-    location.href = `{{ route('clientarea.charts') }}?symbol=${currentSymbol}&interval=${currentInterval}&style=${style}`;
+    location.href = `{{ route('clientarea.charts') }}?symbol=${currentSymbol}&interval=${currentInterval}&style=${style}&theme=${chartTheme}`;
 }
 
 // Handle page visibility for performance
