@@ -36,17 +36,17 @@
         padding: 6px 10px;
     }
     
-    /* Compact Header Styles */
+    /* Enhanced Header Styles */
     .topbar {
         background-color: #FAFAFA !important;
         border-bottom: 1px solid #E5E5E5;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        padding: 8px 12px !important;
-        min-height: 50px;
+        padding: 12px 16px !important;
+        min-height: 64px;
     }
     
     .topbar .btn {
-        padding: 4px 8px;
+        padding: 6px 10px;
         border-radius: 8px;
         background: transparent;
         border: none;
@@ -62,9 +62,9 @@
         background: none;
         border: none;
         color: #424242;
-        font-size: 20px;
+        font-size: 24px;
         cursor: pointer;
-        padding: 6px;
+        padding: 8px;
         border-radius: 6px;
         transition: all 0.2s;
     }
@@ -75,7 +75,7 @@
     }
     
     .topbar .iconify {
-        font-size: 20px;
+        font-size: 24px;
     }
     
     .topbar .dropdown-menu {
@@ -196,17 +196,17 @@
     /* Responsive adjustments */
     @media (max-width: 576px) {
         .topbar {
-            padding: 6px 10px !important;
-            min-height: 46px;
+            padding: 10px 12px !important;
+            min-height: 58px;
         }
         
         .topbar .iconify {
-            font-size: 18px;
+            font-size: 22px;
         }
         
         .hamburger-btn {
-            font-size: 18px;
-            padding: 4px;
+            font-size: 22px;
+            padding: 6px;
         }
         
         .bottom-nav {
@@ -231,8 +231,8 @@
     
     @media (max-width: 400px) {
         .topbar {
-            padding: 4px 8px !important;
-            min-height: 44px;
+            padding: 8px 10px !important;
+            min-height: 54px;
         }
         
         .bottom-nav .nav-label {
@@ -243,20 +243,20 @@
     /* Main container adjustments */
     .main-container {
         padding-bottom: 70px !important;
-        padding-top: 60px !important;
+        padding-top: 74px !important;
     }
     
     @media (max-width: 576px) {
         .main-container {
             padding-bottom: 66px !important;
-            padding-top: 56px !important;
+            padding-top: 68px !important;
         }
     }
     
     @media (max-width: 400px) {
         .main-container {
             padding-bottom: 64px !important;
-            padding-top: 54px !important;
+            padding-top: 64px !important;
         }
     }
     
@@ -781,6 +781,19 @@
         });
     });
 
+    // Mark all notifications as read when dropdown is opened
+    document.getElementById('notificationDropdown').addEventListener('click', function() {
+        // Small delay to ensure dropdown is opened
+        setTimeout(function() {
+            markAllNotificationsAsRead();
+        }, 100);
+    });
+
+    // Also mark as read when dropdown is shown via Bootstrap event
+    document.getElementById('notificationDropdown').addEventListener('shown.bs.dropdown', function() {
+        markAllNotificationsAsRead();
+    });
+
     // Notification click handler to mark as read
     document.addEventListener('click', function(e) {
         const notificationItem = e.target.closest('.notification-item');
@@ -789,6 +802,54 @@
             markNotificationAsRead(notificationId, notificationItem);
         }
     });
+
+    function markAllNotificationsAsRead() {
+        // Hide notification badge immediately
+        const badge = document.querySelector('#notificationDropdown .badge');
+        if (badge) {
+            badge.style.display = 'none';
+        }
+
+        // Mark all notification items as read visually
+        document.querySelectorAll('.notification-item').forEach(function(item) {
+            item.style.opacity = '0.6';
+            item.style.backgroundColor = '#F8F9FA';
+            const dot = item.querySelector('.notification-dot');
+            if (dot) {
+                dot.style.backgroundColor = '#E0E0E0';
+            }
+        });
+
+        // Update counters to 0
+        const counterInDropdown = document.getElementById('notificationCounter');
+        const totalCounter = document.getElementById('notificationTotal');
+        
+        if (counterInDropdown) {
+            counterInDropdown.textContent = '0';
+        }
+        
+        if (totalCounter) {
+            totalCounter.textContent = '0 notification(s) total';
+        }
+
+        // Send AJAX request to mark all notifications as read on server
+        fetch('/notifications/mark-all-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('All notifications marked as read successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Error marking all notifications as read:', error);
+        });
+    }
 
     function markNotificationAsRead(notificationId, notificationElement) {
         // Mark notification as read visually

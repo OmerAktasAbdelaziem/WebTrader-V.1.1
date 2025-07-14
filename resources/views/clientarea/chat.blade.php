@@ -37,7 +37,7 @@
     
     .chat-input-area {
         position: sticky;
-        bottom: 0;
+        bottom: 20px;
         background: #FAFAFA;
         padding: 12px;
         border-top: 1px solid #E5E5E5;
