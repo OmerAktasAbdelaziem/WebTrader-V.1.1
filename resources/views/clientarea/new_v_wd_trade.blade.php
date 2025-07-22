@@ -174,7 +174,7 @@
 
 <!-- Sidebar Navigation -->
 <div class="sidebar">
-    <!-- Language Switcher -->
+    <!-- Language Switcher  -->
     <div class="language-switcher-container">
         <button class="language-switcher-btn">
             <i class="bi bi-globe"></i>
