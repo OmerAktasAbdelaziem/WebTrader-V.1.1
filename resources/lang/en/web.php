@@ -790,6 +790,7 @@ return [
     'account_type_cannot_change' => 'Account type cannot be changed',
     
     // Deposit Interface
+    'the_provided_credentials_do_not_match_our_records' => 'The provided credentials do not match our records',
     'deposit_funds' => 'Deposit Funds',
     'fund_account_quickly' => 'Fund your account quickly and securely',
     'current_balance' => 'Current Balance',
