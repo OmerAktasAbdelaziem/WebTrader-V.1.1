@@ -10,20 +10,21 @@ class Bank extends Model
     use HasFactory;
 
     protected $fillable = [
-        'beneficiary_country',
-        'beneficiary_address',
-        'aba_routing_number',
-        'beneficiary_name',
-        'account_number',
-        'swift_code',
-        'is_active',
         'currency',
-        'address',
         'country',
         'type',
         'name',
+        'address',
+        'beneficiary_name',
+        'beneficiary_country',
+        'beneficiary_address',
+        'aba_routing_number',
         'iban',
+        'swift_code',
+        'account_number',
         'bic',
+        'is_active',
+        'pipeline_id',
     ];
 
     public function moneyTrx()

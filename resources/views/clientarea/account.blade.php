@@ -1,122 +1,417 @@
 @extends('layouts.mobile')
 <style>
-    .nav-tabs .nav-link {
-        padding: 10px 44px;
-        font-size: 12px;
-        background-color: #cccccc;
-        color: #000;
-        border-radius: 0 !important;
+    .account-container {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(30, 185, 116, 0.08), 0 1.5px 6px rgba(70, 153, 217, 0.07);
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        max-width: 430px;
+        margin: 2rem auto;
     }
-    .nav-tabs .nav-link.active {
-        background-color: #4699D9 !important;
-        color: #fff !important;
-        border-radius: 0 !important;
+    .account-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1.5rem;
     }
-    .container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        width: 350px;
+    .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1EBC74 60%, #4699D9 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: #fff;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 2px 8px rgba(30, 185, 116, 0.12);
     }
-    h3 {
-        border-bottom: 2px solid #CCCCCC;
-        padding-bottom: 5px;
-        margin-bottom: 15px;
-        font-size: 18px;
+    .account-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 0.25rem;
     }
-    .info {
-        margin-bottom: 15px;
+    .account-id {
+        font-size: 0.95rem;
+        color: #888;
+        margin-bottom: 0.5rem;
     }
-    .info div {
+    .account-type {
+        font-size: 0.95rem;
+        color: #1EBC74;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .account-date {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #4699D9;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        border-bottom: 1.5px solid #e3e3e3;
+        padding-bottom: 0.25rem;
+    }
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1.5rem 0;
+    }
+    .info-list li {
         display: flex;
         justify-content: space-between;
-        margin: 5px 0;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f2f2f2;
+        font-size: 1rem;
     }
-    .green-text {
-        color: #4caf50;
-        font-weight: bold;
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+    .info-label {
+        color: #888;
+        font-weight: 500;
+    }
+    .info-value {
+        color: #222;
+        font-weight: 600;
+    }
+    .info-value.positive {
+        color: #1EBC74;
+    }
+    .info-value.negative {
+        color: #e74c3c;
     }
     .logout-btn {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         border: none;
-        background-color: #4caf50;
-        color: white;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
+        background: linear-gradient(90deg, #1EBC74 60%, #4699D9 100%);
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+        box-shadow: 0 2px 8px rgba(30, 185, 116, 0.10);
+        transition: background 0.2s;
     }
     .logout-btn:hover {
-        background-color: #45a049;
+        background: linear-gradient(90deg, #4699D9 60%, #1EBC74 100%);
     }
-    .balance {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 15px;
+    @media (max-width: 600px) {
+        .account-container {
+            padding: 1.2rem 0.5rem 1rem 0.5rem;
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            font-size: 1.7rem;
+        }
+    }
+
+    /* Dark Theme Styles */
+    [data-theme="dark"] .account-container {
+        background: #1C1F26 !important;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1.5px 6px rgba(0, 0, 0, 0.2) !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .avatar {
+        background: linear-gradient(135deg, #FFD700 60%, #e6c200 100%) !important;
+        color: #121624 !important;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .account-title {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .account-id {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .account-type {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .account-balance {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .account-date {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .section-title {
+        color: #FFD700 !important;
+        border-bottom: 1.5px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .info-list li {
+        border-bottom: 1px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .info-label {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .info-value {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .info-value.positive {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .info-value.negative {
+        color: #ff6b6b !important;
+    }
+
+    [data-theme="dark"] .logout-btn {
+        background: linear-gradient(90deg, #FFD700 60%, #e6c200 100%) !important;
+        color: #121624 !important;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] .logout-btn:hover {
+        background: linear-gradient(90deg, #e6c200 60%, #FFD700 100%) !important;
+        color: #121624 !important;
+    }
+
+    /* Dark Theme Modal Styles */
+    [data-theme="dark"] .modal-content {
+        background: #1C1F26 !important;
+        border: 1px solid #2a2d3a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .modal-header {
+        background: #121624 !important;
+        border-bottom: 1px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .modal-title {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .btn-close {
+        filter: invert(1) !important;
+    }
+
+    [data-theme="dark"] .modal-body {
+        background: #1C1F26 !important;
+    }
+
+    /* Dark Theme Stepper Styles */
+    [data-theme="dark"] .bs-stepper {
+        background: #1C1F26 !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-header {
+        background: #121624 !important;
+        border-bottom: 1px solid #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .step-trigger {
+        background: transparent !important;
+        color: #b0b3b8 !important;
+        border: none !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-circle {
+        background: #2a2d3a !important;
+        color: #ffffff !important;
+        border: 2px solid #FFD700 !important;
+    }
+
+    [data-theme="dark"] .step.active .bs-stepper-circle {
+        background: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-label {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .step.active .bs-stepper-label {
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .line {
+        background: #2a2d3a !important;
+    }
+
+    [data-theme="dark"] .bs-stepper-content {
+        background: #1C1F26 !important;
+    }
+
+    /* Dark Theme Form Controls */
+    [data-theme="dark"] .form-label {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .form-control,
+    [data-theme="dark"] .form-select {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .form-control:focus,
+    [data-theme="dark"] .form-select:focus {
+        background: #141927 !important;
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.25) !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .form-control::placeholder {
+        color: #b0b3b8 !important;
+    }
+
+    [data-theme="dark"] .form-select option {
+        background: #141927 !important;
+        color: #ffffff !important;
+    }
+
+    /* Dark Theme Button Styles */
+    [data-theme="dark"] .btn-primary {
+        background: #FFD700 !important;
+        border-color: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-primary:hover {
+        background: #e6c200 !important;
+        border-color: #e6c200 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-secondary {
+        background: #2a2d3a !important;
+        border-color: #2a2d3a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .btn-secondary:hover {
+        background: #3a3d4a !important;
+        border-color: #3a3d4a !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .btn-success {
+        background: #FFD700 !important;
+        border-color: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-success:hover {
+        background: #e6c200 !important;
+        border-color: #e6c200 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .btn-outline-secondary {
+        background: transparent !important;
+        border-color: #FFD700 !important;
+        color: #FFD700 !important;
+    }
+
+    [data-theme="dark"] .btn-outline-secondary:hover {
+        background: #FFD700 !important;
+        border-color: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    /* Dark Theme Withdraw Modal Sidebar */
+    [data-theme="dark"] .modal-body .col-md-4 {
+        background: #121624 !important;
+    }
+
+    [data-theme="dark"] .modal-body .col-md-4 h5 {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .nav-pills .nav-link {
+        color: #FFD700 !important;
+        background: transparent !important;
+    }
+
+    [data-theme="dark"] .nav-pills .nav-link.active {
+        background: #FFD700 !important;
+        color: #121624 !important;
+    }
+
+    [data-theme="dark"] .nav-pills .nav-link:hover {
+        background: rgba(255, 215, 0, 0.1) !important;
+        color: #FFD700 !important;
+    }
+
+    /* Dark Theme Bank Information Display */
+    [data-theme="dark"] #bank-info {
+        background: #141927 !important;
+        border: 1px solid #2a2d3a !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-top: 1rem !important;
+    }
+
+    [data-theme="dark"] #bank-info h5 {
+        color: #FFD700 !important;
+        border-bottom: 1px solid #2a2d3a !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    [data-theme="dark"] #bank-info p {
+        color: #ffffff !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    [data-theme="dark"] #bank-info strong {
+        color: #b0b3b8 !important;
     }
 </style>
 
 @section('content')
-<div class="container-fluid">
-    <ul class="nav nav-tabs" id="firstTabSet" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#information" type="button" role="tab" aria-controls="information" aria-selected="true">{{__('web.information')}}</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#balance" type="button" role="tab" aria-controls="balance" aria-selected="false">{{__('web.balance')}}</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="firstTabSetContent">
-        <div class="tab-pane fade show active" id="information" role="tabpanel" aria-labelledby="information-tab">
-            <br>
-            <h3>{{__('web.personal_information')}}</h3>
-            <div class="info">
-                <div><strong>{{__('web.name')}}:</strong> <span>{{ $user->first_name }} {{ $user->last_name }}</span></div>
-                <div><strong>{{__('web.id')}}:</strong> <span>{{ $user->id }}</span></div>
-                <div><strong>{{__('web.account_type')}}:</strong> <span>{{__('web.'.$user->account_type??'Demo')}}</span></div>
-                <div><strong>{{__('web.registration_date')}}:</strong> <span>{{ $user->reg_date->format('m/d/Y') }}</span></div>
-            </div>
-    
-            <h3>{{__('web.trading_information')}}</h3>
-            <div class="info">
-                <div><strong>{{__('web.currency')}}:</strong> <span>USD</span></div>
-                <div><strong>{{__('web.leverage')}}:</strong> <span>{{$user->leverage??'1:500'}}</span></div>
-                <div><strong>{{__('web.profitloss')}}:</strong> <span class="@if ($finance['currentPL'] < 0) text-danger @else green-text @endif">{{number_format($finance['currentPL'], '3','.',',')}} $</span></div>
-            </div>
-            <form action="{{ route('client.logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="logout-btn">{{__('web.logout')}}</button>
-            </form>
+
+<div class="account-container">
+    <div class="account-header">
+        <div class="avatar">
+            <span class="iconify" data-icon="mdi:account-circle"></span>
         </div>
-
-        <div class="tab-pane fade" id="balance" role="tabpanel" aria-labelledby="balance-tab">
-            <br>
-            <div class="balance text-center">{{__('web.balance')}} : <span class="green-text">{{number_format($finance['balance'], '2','.',',')}} $</span></div>
-
-            <div class="info">
-            <div><strong>{{__('web.equity')}} :</strong> <span>{{number_format($finance['equity'], '2','.',',')}} $</span></div>
-            <div><strong>{{__('web.profitloss')}} :</strong> <span>{{number_format($finance['currentPL'], '3','.',',')}} $</span></div>
-            <div><strong>{{__('web.margin')}} :</strong> <span>{{number_format($finance['usedMargin'], '2','.',',')}} $</span></div>
-            <div><strong>{{__('web.free')}} :</strong> <span>{{number_format($finance['freeMargin'], '2','.',',')}} $</span></div>
-            <div><strong>{{__('web.bonus')}} :</strong> <span>{{number_format($finance['bonus'], '2','.',',')}} $</span></div>
-            <div><strong>{{__('web.credit')}} :</strong> <span>{{number_format($finance['credit'], '2','.',',')}} $</span></div>
-            </div>
-            <div class="d-flex flex-column align-items-center mt-3">
-                @isset(auth()->guard('client')->user()->options['enableDepositRequest'])
-                    <button class="btn btn-primary mb-2" style="background-color: #1A7230; border-color: #1A7230;" data-bs-toggle="modal" data-bs-target="#depositModal">
-                        <span class="iconify" data-icon="ph:hand-deposit-fill" data-inline="false"></span> {{__('web.deposit')}}
-                    </button>
-                @endisset
-                @isset(auth()->guard('client')->user()->options['enableWithdrawalRequest'])
-                    <button class="btn btn-secondary mb-2" style="background-color: #1A7230; border-color: #1A7230;" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                        <span class="iconify" data-icon="bx:money-withdraw" data-inline="false"></span> {{__('web.withdraw')}}
-                    </button>
-                @endisset
-            </div>
+        <div class="account-title">{{ $user->first_name }} {{ $user->last_name }}</div>
+        <div class="account-id">ID: {{ $user->id }}</div>
+        <div class="account-type">{{__('web.'.$user->account_type??'Demo')}}</div>
+        <div class="account-balance" style="font-size:1.1rem;color:#1EBC74;font-weight:600;margin-bottom:0.5rem;">
+            $ {{ number_format($finance['balance'] ?? 0, 2, '.', ',') }} USD
         </div>
     </div>
 
+    <div class="section-title"><span class="iconify" data-icon="mdi:information-outline"></span> {{__('web.personal_information')}}</div>
+    <ul class="info-list">
+        <li><span class="info-label">{{__('web.name')}}</span><span class="info-value">{{ $user->first_name }} {{ $user->last_name }}</span></li>
+        <li><span class="info-label">{{__('web.id')}}</span><span class="info-value">{{ $user->id }}</span></li>
+        <li><span class="info-label">{{__('web.account_type')}}</span><span class="info-value">{{__('web.'.$user->account_type??'Demo')}}</span></li>
+        <li><span class="info-label">{{__('web.registration_date')}}</span><span class="info-value">{{ $user->reg_date->format('m/d/Y') }}</span></li>
+    </ul>
+
+    <div class="section-title"><span class="iconify" data-icon="mdi:chart-line"></span> {{__('web.trading_information')}}</div>
+    <ul class="info-list">
+        <li><span class="info-label">{{__('web.currency')}}</span><span class="info-value">USD</span></li>
+        <li><span class="info-label">{{__('web.leverage')}}</span><span class="info-value">{{$user->leverage??'1:500'}}</span></li>
+        <li><span class="info-label">{{__('web.profitloss')}}</span><span class="info-value @if ($finance['currentPL'] < 0) negative @else positive @endif">{{number_format($finance['currentPL'], '3','.',',')}} $</span></li>
+    </ul>
+
+    <form action="{{ route('client.logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="logout-btn">{{__('web.logout')}}</button>
+    </form>
+</div>
 
 
 @isset(auth()->guard('client')->user()->options['enableDepositRequest'])

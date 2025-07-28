@@ -37,7 +37,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single', 'telegram'],
+            'channels' => ['single'],
         ],
 
         'single' => [

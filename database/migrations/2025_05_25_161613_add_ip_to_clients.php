@@ -6,27 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 class AddIpToClients extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table('clients', function (Blueprint $table) {
-         $table->string('registeration_ip')->nullable();
+            if (!Schema::hasColumn('clients', 'registeration_ip')) {
+                $table->string('registeration_ip')->nullable();
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->dropColumn('registeration_ip');
+            if (Schema::hasColumn('clients', 'registeration_ip')) {
+                $table->dropColumn('registeration_ip');
+            }
         });
     }
 }

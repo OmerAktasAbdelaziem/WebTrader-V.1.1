@@ -35,7 +35,7 @@ class ViewServiceProvider extends ServiceProvider
                 $client = Client::find($user->id);
                 $view->with([
                     'nav_pipelines'  => Pipeline::select('id', 'name')->where('id', '!=', $user->pipeline_id)->get(),
-                    'notifications'  => Notification::where('client_id',auth()->guard('client')->user()->id)->latest()->limit(15)->get(),
+                    'notifications'  => Notification::where('client_id',auth()->guard('client')->user()->id)->unread()->latest()->limit(15)->get(),
                     'finance'        => (new ClientsController)->get_financial_data($client->broker_id),
                     'system'         => SystemStyle::first(),
                     'locale'         => Session::get('locale'),
