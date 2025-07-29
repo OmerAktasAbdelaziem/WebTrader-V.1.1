@@ -369,6 +369,37 @@ class ClientsController extends Controller
 
     public function get_financial_data($broker_id)
     {
+        
+    
+    //TODO: The code in this function should be edited, so curl should be applied by service, service code ready but 
+        //first using of Clients controller in code should be handeled
+   
+$apiUrl = config('services.crm_api.url')."/api/getFinancialData?broker_id=".$broker_id;
+$apiKey = config('services.crm_api.key');
+
+$ch = curl_init();
+
+curl_setopt_array($ch, [
+    CURLOPT_URL => $apiUrl,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+        "X-API-KEY: $apiKey"
+    ],
+]);
+
+$response = curl_exec($ch);
+$finance = [];
+if (curl_errno($ch)) {
+    echo 'cURL Error: ' . curl_error($ch);
+} else {
+    $data = json_decode($response, true);
+    $finance = $data['finance'];
+}
+
+curl_close($ch);
+    
+    return $finance;
+        /*
         $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
@@ -414,6 +445,7 @@ class ClientsController extends Controller
         $finance['equity']  = $finance['balance'] +  $finance['currentPL'] + $finance['bonus'];
         $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
         return $finance;
+        */
     }
 
     public function toggleFavourite(Request $request,$id)
