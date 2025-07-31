@@ -1556,7 +1556,7 @@
     }
 </script>
 
-<script src="{{ url('assets/js/main_tp.min.js?v1.599') }}"></script>
+<script src="{{ url('assets/js/main_tp.min.js') }}"></script>
 <script src="{{ url('js/mobile-style.js?v1.0') }}"></script>
 
 <script>

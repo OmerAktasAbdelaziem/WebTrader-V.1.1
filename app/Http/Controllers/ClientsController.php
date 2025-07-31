@@ -148,6 +148,14 @@ class ClientsController extends Controller
 
     public function processDeposit(Request $request)
     {
+        Log::info('=== DEPOSIT FORM SUBMISSION START ===', [
+            'all_data' => $request->all(),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'files' => $request->allFiles(),
+            'user_agent' => $request->userAgent(),
+            'ip' => $request->ip()
+        ]);
         $user = Auth::guard('client')->user();
         if (!$user || !$user->broker_id) {
             return redirect()->route('client.login')->with('error', 'Please login first');
@@ -275,6 +283,13 @@ class ClientsController extends Controller
 
     public function submitWithdrawForm(Request $request)
     {
+        Log::info('=== WITHDRAWAL FORM SUBMISSION START ===', [
+            'all_data' => $request->all(),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'user_agent' => $request->userAgent(),
+            'ip' => $request->ip()
+        ]);
         $bankTransferRule = 'nullable|string|required_if:payment_method,bank_transfer';
         $cryptoRule = 'nullable|string|required_if:payment_method,cryptocurrency';
         
@@ -289,7 +304,7 @@ class ClientsController extends Controller
                 'swift_code'          => $bankTransferRule,
                 // Cryptocurrency fields
                 'crypto_type'         => $cryptoRule,
-                'wallet_address'      => $cryptoRule,
+                'crypto_address'      => $cryptoRule,
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
@@ -342,7 +357,7 @@ class ClientsController extends Controller
                     'status'       => 'pending',
                     'crypto_details' => [
                         'crypto_type'    => $request->crypto_type,
-                        'wallet_address' => $request->wallet_address,
+                        'wallet_address' => $request->crypto_address,
                     ],
                 ]);
                 Log::info('Cryptocurrency withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
