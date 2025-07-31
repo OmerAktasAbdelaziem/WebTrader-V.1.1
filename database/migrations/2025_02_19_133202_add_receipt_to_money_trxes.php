@@ -10,7 +10,7 @@ class AddReceiptToMoneyTrxes extends Migration
     public function up()
     {
         Schema::table('money_trxes', function (Blueprint $table) {
-            $table->string('receipt')->nullable()->after('usdt');
+            // $table->string('receipt')->nullable()->after('usdt');
         });
     }
 
