@@ -7,7 +7,7 @@
                 <i class="fas fa-wallet me-2 text-primary"></i>{{ __('web.balance') }}
             </div>
             <div class="d-flex align-items-center gap-2">
-                <div class="fw-semibold" style="font-size: 1.2rem;">$ {{ number_format($finance['balance'], 2, '.', ',') }}</div>
+                <div class="fw-semibold" style="font-size: 1.2rem;">$ {{ number_format(isset($finance['balance']) ? $finance['balance'] : 0, 2, '.', ',') }}</div>
                 <button id="closeBalanceDropdown" class="btn btn-sm p-1" style="border: none; background: transparent; color: #888; font-size: 1.2rem;" aria-label="Close balance details">
                     <i class="fas fa-times"></i>
                 </button>
@@ -17,37 +17,37 @@
             <div class="col-6 col-md-4 mb-2">
                 <div class="border rounded-3 py-2 px-1 h-100">
                     <div class="small text-muted">{{ __('web.equity') }}</div>
-                    <div class="fw-bold equity">$ {{ number_format($finance['equity'], 2, '.', ',') }}</div>
+                    <div class="fw-bold equity">$ {{ number_format(isset($finance['equity']) ? $finance['equity'] : 0, 2, '.', ',') }}</div>
                 </div>
             </div>
             <div class="col-6 col-md-4 mb-2">
                 <div class="border rounded-3 py-2 px-1 h-100">
                     <div class="small text-muted">{{ __('web.profitloss') }}</div>
-                    <div class="fw-bold currentPL">$ {{ number_format($finance['currentPL'], 2, '.', ',') }}</div>
+                    <div class="fw-bold currentPL">$ {{ number_format(isset($finance['currentPL']) ? $finance['currentPL'] : 0, 2, '.', ',') }}</div>
                 </div>
             </div>
             <div class="col-6 col-md-4 mb-2">
                 <div class="border rounded-3 py-2 px-1 h-100">
                     <div class="small text-muted">{{ __('web.margin') }}</div>
-                    <div class="fw-bold">$ {{ number_format($finance['usedMargin'], 2, '.', ',') }}</div>
+                    <div class="fw-bold">$ {{ number_format(isset($finance['usedMargin']) ? $finance['usedMargin'] : 0, 2, '.', ',') }}</div>
                 </div>
             </div>
             <div class="col-6 col-md-4 mb-2">
                 <div class="border rounded-3 py-2 px-1 h-100">
                     <div class="small text-muted">{{ __('web.free') }}</div>
-                    <div class="fw-bold">$ {{ number_format($finance['freeMargin'], 2, '.', ',') }}</div>
+                    <div class="fw-bold">$ {{ number_format(isset($finance['freeMargin']) ? $finance['freeMargin'] : 0, 2, '.', ',') }}</div>
                 </div>
             </div>
             <div class="col-6 col-md-4 mb-2">
                 <div class="border rounded-3 py-2 px-1 h-100">
                     <div class="small text-muted">{{ __('web.bonus') }}</div>
-                    <div class="fw-bold">$ {{ number_format($finance['bonus'], 2, '.', ',') }}</div>
+                    <div class="fw-bold">$ {{ number_format(isset($finance['bonus']) ? $finance['bonus'] : 0, 2, '.', ',') }}</div>
                 </div>
             </div>
             <div class="col-6 col-md-4 mb-2">
                 <div class="border rounded-3 py-2 px-1 h-100">
                     <div class="small text-muted">{{ __('web.credit') }}</div>
-                    <div class="fw-bold">$ {{ number_format($finance['credit'], 2, '.', ',') }}</div>
+                    <div class="fw-bold">$ {{ number_format(isset($finance['credit']) ? $finance['credit'] : 0, 2, '.', ',') }}</div>
                 </div>
             </div>
         </div>

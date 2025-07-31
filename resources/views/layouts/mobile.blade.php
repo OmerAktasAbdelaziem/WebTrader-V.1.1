@@ -30,6 +30,17 @@
     <script src="{{ url('assets/js/scrollbar.min.js?v1.599') }}"></script>
     <script src="{{ url('assets/plugins/select2/js/select2.min.js?v1.599') }}"></script>
     <script src="{{ url('assets/js/form-select2.min.js?v1.599') }}"></script>
+    
+    <!-- Theme Initialization Script - Must be in head to prevent FOUC -->
+    <script>
+        (function() {
+            // Get theme from localStorage immediately
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            // Apply theme to html element before page renders
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+
 <style>
     .btn {
         font-size: 11px;
@@ -355,6 +366,23 @@
         color: var(--text-primary) !important;
     }
     
+    /* Dark mode table responsive containers */
+    [data-theme="dark"] .table-responsive {
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Dark mode tab content */
+    [data-theme="dark"] .tab-content {
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] .tab-pane {
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+    }
+    
     /* Dark Mode Text Colors */
     [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
     [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
@@ -367,6 +395,23 @@
     
     [data-theme="dark"] .text-muted {
         color: var(--text-muted) !important;
+    }
+    
+    /* Dark mode text in tables and cards */
+    [data-theme="dark"] .card-body .text-muted,
+    [data-theme="dark"] .table .text-muted {
+        color: var(--text-muted) !important;
+    }
+    
+    /* Dark mode for small text elements */
+    [data-theme="dark"] small,
+    [data-theme="dark"] .small {
+        color: var(--text-secondary) !important;
+    }
+    
+    /* Dark mode for text center elements */
+    [data-theme="dark"] .text-center {
+        color: var(--text-primary);
     }
     
     /* Dark Mode Links */
@@ -385,6 +430,45 @@
         --bs-table-border-color: var(--border-color);
         --bs-table-striped-bg: var(--bg-tertiary);
         --bs-table-hover-bg: var(--bg-tertiary);
+    }
+    
+    /* Ensure all table text is properly colored in dark mode */
+    [data-theme="dark"] .table th,
+    [data-theme="dark"] .table td,
+    [data-theme="dark"] .table thead th,
+    [data-theme="dark"] .table tbody td,
+    [data-theme="dark"] .table-striped > tbody > tr > td,
+    [data-theme="dark"] .table-striped > tbody > tr > th {
+        color: var(--text-primary) !important;
+        background-color: inherit;
+    }
+    
+    /* Dark mode table headers */
+    [data-theme="dark"] .table thead th {
+        border-bottom-color: var(--border-color) !important;
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Dark mode table borders */
+    [data-theme="dark"] .table td,
+    [data-theme="dark"] .table th {
+        border-top-color: var(--border-color) !important;
+        border-color: var(--border-color) !important;
+    }
+    
+    /* Dark mode striped rows */
+    [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td,
+    [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > th {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Dark mode table hover effects */
+    [data-theme="dark"] .table-hover > tbody > tr:hover > td,
+    [data-theme="dark"] .table-hover > tbody > tr:hover > th {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: var(--text-primary) !important;
     }
     
     /* Dark Mode Select2 (if used) */
@@ -869,14 +953,14 @@
                 <div class="dropdown">
                     <button class="btn position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="iconify" data-icon="line-md:bell-loop" data-inline="false"></span>
-                        @if ($notifications->count() > 0)
+                        @if (isset($notifications) && $notifications->count() > 0)
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color:#424242;color:#FFFFFF;font-size:9px;padding:2px 6px;">
                                 @if ($notifications->count() > 9) 9+ @else {{$notifications->count()}} @endif
                             </span>
                         @endif
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="notificationDropdown" style="min-width: 280px;max-width:85vw;border-radius:10px;border:1px solid #E5E5E5;box-shadow:0 3px 15px rgba(0,0,0,0.08);background-color:#FAFAFA;">
-                        @if ($notifications->count() == 0)
+                        @if (!isset($notifications) || $notifications->count() == 0)
                             <li class="dropdown-header" style="background-color:#424242;color:#FFFFFF;padding:8px 12px;margin:-8px -8px 6px -8px;border-radius:10px 10px 0 0;font-weight:600;font-size:0.85rem;">
                                 <span class="iconify me-1" data-icon="material-symbols:notifications" style="font-size:1rem;"></span>
                                 {{__('web.notifications')}}
@@ -895,7 +979,7 @@
                                     {{__('web.notifications')}}
                                 </span>
                                 <span id="notificationCounter" style="background-color:rgba(255,255,255,0.2);color:#FFFFFF;font-size:0.7rem;padding:2px 6px;border-radius:8px;font-weight:500;">
-                                    {{$notifications->count()}}
+                                    {{isset($notifications) ? $notifications->count() : 0}}
                                 </span>
                             </li>
                             <div style="max-height:200px;overflow-y:auto;">
@@ -921,7 +1005,7 @@
                             <li style="margin:6px 6px 0 6px;">
                                 <div style="border-top:1px solid #F0F0F0;padding:6px 0;">
                                     <div style="text-align:center;padding:4px;">
-                                        <span id="notificationTotal" style="color:#757575;font-size:0.75rem;">{{$notifications->count()}} notification(s) total</span>
+                                        <span id="notificationTotal" style="color:#757575;font-size:0.75rem;">{{isset($notifications) ? $notifications->count() : 0}} notification(s) total</span>
                                     </div>
                                 </div>
                             </li>
@@ -949,7 +1033,7 @@
                 <!-- Chat -->
                 <a href="{{route('chat.index')}}" class="btn position-relative" aria-label="Chat">
                     <span class="iconify" data-icon="mynaui:message" data-inline="false"></span>
-                    @if ($totalChat > 0)
+                    @if (isset($totalChat) && $totalChat > 0)
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
                             @if ($totalChat > 99) +99 @else {{$totalChat}} @endif
                             <span class="visually-hidden">unread messages</span>
@@ -993,7 +1077,7 @@
             {{ __('web.balance') }}
         </span>
         <span class="badge ms-2" style="background:#424242;color:#FFFFFF;font-size:0.9rem;padding:0.35em 0.9em;border-radius:12px;font-weight:500;">
-            $ {{ number_format($finance['balance'], 2, '.', ',') }}
+            $ {{ number_format(isset($finance['balance']) ? $finance['balance'] : 0, 2, '.', ',') }}
         </span>
     </div>
     <span id="balanceDropdownChevron" class="ms-2 d-flex align-items-center justify-content-center"
@@ -1006,7 +1090,7 @@
     <div class="container">
        <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8">
-             @include('clientarea.balance-card', ['finance' => $finance, 'locale' => $locale])
+             @include('clientarea.balance-card', ['finance' => $finance ?? [], 'locale' => $locale ?? app()->getLocale()])
           </div>
        </div>
     </div>
@@ -1143,21 +1227,31 @@
                                     <div class="col-6">
                                         <label for="asset-select" class="form-label" style="color:#424242;">{{__('web.item')}}</label>
                                         <select class="single-select form-select inside-modal me-2" id="asset-select" name="currency" style="border:1px solid #E5E5E5;background-color:#FFFFFF;">
-                                            @foreach ($forexAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($cryptoAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($stocksAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($indicesAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
-                                            @foreach ($commodityAssets as $item)
-                                                <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
-                                            @endforeach
+                                            @if(isset($forexAssets))
+                                                @foreach ($forexAssets as $item)
+                                                    <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                                @endforeach
+                                            @endif
+                                            @if(isset($cryptoAssets))
+                                                @foreach ($cryptoAssets as $item)
+                                                    <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                                @endforeach
+                                            @endif
+                                            @if(isset($stocksAssets))
+                                                @foreach ($stocksAssets as $item)
+                                                    <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                                @endforeach
+                                            @endif
+                                            @if(isset($indicesAssets))
+                                                @foreach ($indicesAssets as $item)
+                                                    <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                                @endforeach
+                                            @endif
+                                            @if(isset($commodityAssets))
+                                                @foreach ($commodityAssets as $item)
+                                                    <option value="{{$item->id}}" data-bid="{{$item->bid_price}}" data-ask="{{$item->ask_price}}">{{$item->name}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                     <div class="col-6">
@@ -1285,10 +1379,8 @@
     // Get current theme from localStorage or default to light
     let currentTheme = localStorage.getItem('theme') || 'light';
     
-    // Apply theme on page load
-    function applyTheme(theme) {
-        htmlElement.setAttribute('data-theme', theme);
-        
+    // Apply theme function (for UI updates only, theme already applied in head)
+    function updateThemeUI(theme) {
         if (theme === 'dark') {
             lightIcon.style.display = 'none';
             darkIcon.style.display = 'inline';
@@ -1309,8 +1401,8 @@
         }, 500);
     }
     
-    // Initialize theme
-    applyTheme(currentTheme);
+    // Initialize theme UI (theme is already applied to HTML in head)
+    updateThemeUI(currentTheme);
     
     // Theme switcher click handler
     themeSwitcher.addEventListener('click', function() {
@@ -1326,7 +1418,11 @@
         // Toggle theme
         currentTheme = currentTheme === 'light' ? 'dark' : 'light';
         localStorage.setItem('theme', currentTheme);
-        applyTheme(currentTheme);
+        
+        // Apply theme to HTML element
+        htmlElement.setAttribute('data-theme', currentTheme);
+        // Update UI elements
+        updateThemeUI(currentTheme);
         
         // Optional: Add a subtle vibration on mobile devices
         if ('vibrate' in navigator) {

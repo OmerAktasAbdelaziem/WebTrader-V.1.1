@@ -404,7 +404,7 @@
     <ul class="info-list">
         <li><span class="info-label">{{__('web.currency')}}</span><span class="info-value">USD</span></li>
         <li><span class="info-label">{{__('web.leverage')}}</span><span class="info-value">{{$user->leverage??'1:500'}}</span></li>
-        <li><span class="info-label">{{__('web.profitloss')}}</span><span class="info-value @if ($finance['currentPL'] < 0) negative @else positive @endif">{{number_format($finance['currentPL'], '3','.',',')}} $</span></li>
+        <li><span class="info-label">{{__('web.profitloss')}}</span><span class="info-value @if (isset($finance['currentPL']) && $finance['currentPL'] < 0) negative @else positive @endif">{{number_format(isset($finance['currentPL']) ? $finance['currentPL'] : 0, '3','.',',')}} $</span></li>
     </ul>
 
     <form action="{{ route('client.logout') }}" method="POST">

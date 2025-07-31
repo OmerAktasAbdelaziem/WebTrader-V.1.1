@@ -33,10 +33,10 @@
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="amount" name="amount" min="10" step="0.01" required placeholder="{{__('web.amount')}}">
                                     <span class="input-group-text bg-light text-primary" id="currentBalanceField">
-                                        {{ isset($finance) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }} USD
+                                        {{ isset($finance['balance']) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }} USD
                                     </span>
                                 </div>
-                                <small class="form-text text-muted">{{__('web.current_balance')}}: ${{ isset($finance) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }} | Minimum deposit: $10</small>
+                                <small class="form-text text-muted">{{__('web.current_balance')}}: ${{ isset($finance['balance']) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }} | Minimum deposit: $10</small>
                             </div>
 
                             <!-- Bank Transfer Fields -->
