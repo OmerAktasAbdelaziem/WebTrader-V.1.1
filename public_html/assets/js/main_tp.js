@@ -33,7 +33,7 @@ function startAjaxPnl() {
 
     $.ajax({
         url:
-            "https://crm.hadathplus.com/client/get_pnl/" +
+            "https://crm.avaxtrades.com/client/get_pnl/" +
             client_id +
             "/" +
             assetId +
