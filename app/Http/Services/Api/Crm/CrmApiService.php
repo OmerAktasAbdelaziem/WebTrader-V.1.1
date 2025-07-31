@@ -1,44 +1,36 @@
 <?php
 namespace App\Http\Services\Api\Crm;
 
-use App\Http\Services\Api\Crm\Interfaces;
+use App\Http\Services\Api\Crm\Interfaces\CrmApiServiceInterface;
 
-class CrmApiService implements Interfaces\CrmApiServiceInterface
+use App\Http\Services\Api\Core\HttpClientServiceInterface;
+
+class CrmApiService implements CrmApiServiceInterface
 {
-    protected $baseUrl;
-    protected $apiKey;
+    protected HttpClientServiceInterface $httpClientService;
+    protected string $baseUrl;
+    protected string $apiKey;
 
-    public function __construct()
+    public function __construct(HttpClientServiceInterface $httpClientService)
     {
-        $this->baseUrl = config('services.crm.url');
-        $this->apiKey = config('services.crm.key');
+        $this->httpClientService = $httpClientService;
+        $this->baseUrl = config('services.crm_api.url');
+        $this->apiKey = config('services.crm_api.key');
     }
 
     public function getFinancialData(int $brokerId): array
     {
-        $url = $this->baseUrl . "/api/getFinancialData?broker_id=" . $brokerId;
+        $url = $this->baseUrl . '/api/getFinancialData';
 
-        $ch = curl_init();
+        $headers = [
+            'X-API-KEY' => $this->apiKey,
+            'Accept'    => 'application/json',
+        ];
 
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
-                "X-API-KEY: {$this->apiKey}"
-            ],
+        $response = $this->httpClientService->request('GET', $url, $headers, [
+            'broker_id' => $brokerId,
         ]);
 
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            curl_close($ch);
-            throw new \Exception('cURL Error: ' . curl_error($ch));
-        }
-
-        curl_close($ch);
-
-        $data = json_decode($response, true);
-
-        return $data['finance'] ?? [];
+        return $response->body->finance ?? [];
     }
 }

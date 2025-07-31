@@ -41,7 +41,7 @@ return [
         'host'      => "https://platform.phooenixs.com/phoenixfxbowcf/Backoffice.svc",
         'pass'      => "Admin24",
     ],
-    'crm' => [
+    'crm_api' => [
     'url' => env('CRM_API_URL'),
     'key' => env('CRM_API_KEY'),
 ],

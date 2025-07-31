@@ -485,8 +485,8 @@ class ClientsController extends Controller
     //TODO: The code in this function should be edited, so curl should be applied by service, service code ready but 
         //first using of Clients controller in code should be handeled
    
-$apiUrl = config('services.crm.url')."/api/getFinancialData?broker_id=".$broker_id;
-$apiKey = config('services.crm.key');
+$apiUrl = config('services.crm_api.url')."/api/getFinancialData?broker_id=".$broker_id;
+$apiKey = config('services.crm_api.key');
 
 $ch = curl_init();
 
