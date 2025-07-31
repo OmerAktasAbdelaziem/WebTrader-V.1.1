@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('ref_currency')->nullable();
             $table->decimal('required_margin', 12, 2)->nullable();
             $table->text('comment')->nullable();
-            $table->timestamp('created_at')->nullable();
+            // $table->timestamp('created_at')->nullable();
             $table->timestamp('closed_at')->nullable();
             $table->timestamps();
         });
