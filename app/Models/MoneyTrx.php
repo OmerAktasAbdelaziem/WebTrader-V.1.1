@@ -20,6 +20,7 @@ class MoneyTrx extends Model
         'method',
         'usdt',
         'receipt',
+        'country',
         'crypto_details',
         'credit_card_details'
     ];

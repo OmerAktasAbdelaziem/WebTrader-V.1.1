@@ -223,9 +223,15 @@ class ClientsController extends Controller
             'bank_details' => null,
             'credit_card_details' => null,
         ];
-        MoneyTrx::create($depositData);
-
-        return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
+        
+        try {
+            $moneyTrx = MoneyTrx::create($depositData);
+            Log::info('Deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
+            return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
+        } catch (\Exception $e) {
+            Log::error('Deposit creation failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id, 'data' => $depositData]);
+            return redirect()->back()->with('error', 'Failed to process deposit. Please try again.');
+        }
     }
 
     /**
@@ -277,7 +283,7 @@ class ClientsController extends Controller
                 'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency',
                 'amount'              => 'required|numeric|min:1',
                 // Bank transfer fields
-                'account_holder'      => $bankTransferRule,
+                'account_name'        => $bankTransferRule,  // Changed from account_holder to account_name
                 'bank_name'           => $bankTransferRule,
                 'account_number'      => $bankTransferRule,
                 'swift_code'          => $bankTransferRule,
@@ -301,16 +307,19 @@ class ClientsController extends Controller
         $finance = $this->get_financial_data($user->broker_id);
         $return  = true;
 
-        if ($request->amount > $finance['balance']) {
+        // Debug: Log the request data
+        Log::info('Withdrawal request data', ['data' => $request->all(), 'broker_id' => $user->broker_id]);
+
+        if ($request->amount > ($finance['balance'] ?? 0)) {
             if (!isset($options['canWithdrawalCredit'])) {
                 if (!isset($options['canWithdrawalBonus'])) {
                     $return = false;
                 }
-                if ($request->amount > ($finance['balance'] + $finance['bonus'])) {
+                if ($request->amount > (($finance['balance'] ?? 0) + ($finance['bonus'] ?? 0))) {
                     $return = false;
                 }
             }
-            if ($request->amount > ($finance['balance'] + $finance['credit'])) {
+            if ($request->amount > (($finance['balance'] ?? 0) + ($finance['credit'] ?? 0))) {
                 $return = false;
             }
         }
@@ -325,7 +334,7 @@ class ClientsController extends Controller
         // Create withdrawal transaction based on payment method
         try {
             if ($request->payment_method === 'cryptocurrency') {
-                MoneyTrx::create([
+                $moneyTrx = MoneyTrx::create([
                     'broker_id'    => $user->broker_id,
                     'amount'       => $request->amount,
                     'method'       => 'cryptocurrency',
@@ -336,20 +345,22 @@ class ClientsController extends Controller
                         'wallet_address' => $request->wallet_address,
                     ],
                 ]);
+                Log::info('Cryptocurrency withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
             } else {
-                MoneyTrx::create([
+                $moneyTrx = MoneyTrx::create([
                     'broker_id'    => $user->broker_id,
                     'amount'       => $request->amount,
                     'method'       => 'bank_transfer',
                     'type'         => 'withdraw',
                     'status'       => 'pending',
                     'bank_details' => [
-                        'account_holder'  => $request->account_holder,
+                        'account_holder'  => $request->account_name,  // Changed from account_holder to account_name
                         'bank_name'       => $request->bank_name,
                         'account_number'  => $request->account_number,
                         'swift_code'      => $request->swift_code,
                     ],
                 ]);
+                Log::info('Bank transfer withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
             }
 
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
@@ -360,6 +371,7 @@ class ClientsController extends Controller
             }
             return redirect()->back()->with('success', __('web.withdraw_request_submitted_successfully'));
         } catch (\Exception $e) {
+            Log::error('Withdrawal submission failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id, 'trace' => $e->getTraceAsString()]);
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json(['success' => false, 'message' => 'An error occurred while submitting the withdrawal request: ' . $e->getMessage()]);
             }

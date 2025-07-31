@@ -13,7 +13,7 @@
                     <div class="d-flex justify-content-center mt-2">
                         <div class="small simple-balance-box p-2 rounded-2 shadow-sm" style="background:#fafbfc; min-width:160px; max-width:220px;">
                             <div class="text-center" style="font-size:0.95rem; color:#222; font-weight:600;">{{__('web.available_balance')}}</div>
-                            <div class="text-center fw-bold" style="font-size:1.25rem; color:#1db954;">${{ number_format($balance ?? ($finance['balance'] ?? 0), 2) }}</div>
+                            <div class="text-center fw-bold" style="font-size:1.25rem; color:#1db954;">${{ number_format($balance ?? (isset($finance['balance']) ? $finance['balance'] : 0), 2) }}</div>
                         </div>
                     </div>
                 </div>
@@ -25,9 +25,9 @@
                                 <label for="amount" class="form-label fw-semibold">{{__('web.amount')}} (USD)</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white border-end-0"><i class="iconify" data-icon="mdi:currency-usd"></i></span>
-                                    <input type="number" class="form-control border-start-0" id="amount" name="amount" min="1" max="{{ $balance ?? ($finance['balance'] ?? 0) }}" step="0.01" required placeholder="0.00">
+                                    <input type="number" class="form-control border-start-0" id="amount" name="amount" min="1" max="{{ $balance ?? (isset($finance['balance']) ? $finance['balance'] : 0) }}" step="0.01" required placeholder="0.00">
                                 </div>
-                                <small class="form-text text-muted">{{__('web.max')}}: ${{ number_format($balance ?? ($finance['balance'] ?? 0), 2) }}</small>
+                                <small class="form-text text-muted">{{__('web.max')}}: ${{ number_format($balance ?? (isset($finance['balance']) ? $finance['balance'] : 0), 2) }}</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="payment_method" class="form-label fw-semibold">{{__('web.payment_method')}}</label>
@@ -250,7 +250,7 @@ $(document).ready(function() {
     });
     $('#amount').on('input', function() {
         const amount = parseFloat($(this).val());
-        const maxAmount = parseFloat('{{ $balance ?? ($finance['balance'] ?? 0) }}');
+        const maxAmount = parseFloat('{{ $balance ?? (isset($finance['balance']) ? $finance['balance'] : 0) }}');
         if (amount > maxAmount) {
             $(this).val(maxAmount);
         }
