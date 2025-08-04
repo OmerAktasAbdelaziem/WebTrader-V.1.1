@@ -393,10 +393,38 @@ if (curl_errno($ch)) {
     echo 'cURL Error: ' . curl_error($ch);
 } else {
     $data = json_decode($response, true);
-    $finance = $data['finance'];
+    $finance = $data['finance'] ?? [];
 }
 
 curl_close($ch);
+
+// Ensure all required finance keys exist with default values
+$defaultFinance = [
+    'last_deposit_amount' => 0.00,
+    'totalWithdrawal'     => 0.00,
+    'totalDeposit'        => 0.00,
+    'ftd_amount'          => 0.00,
+    'usedMargin'          => 0.00,
+    'currentPL'           => 0.00,
+    'balance'             => 0.00,
+    'credit'              => 0.00,
+    'bonus'               => 0.00,
+    'equity'              => 0.00,
+    'freeMargin'          => 0.00,
+];
+
+// Merge with defaults to ensure all keys exist
+$finance = array_merge($defaultFinance, $finance);
+
+// Calculate equity if not provided or zero
+if (!isset($finance['equity']) || $finance['equity'] == 0) {
+    $finance['equity'] = $finance['balance'] + $finance['currentPL'] + $finance['bonus'];
+}
+
+// Calculate freeMargin if not provided or zero
+if (!isset($finance['freeMargin']) || $finance['freeMargin'] == 0) {
+    $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
+}
     
     return $finance;
         /*
