@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Pipeline;
 use App\Models\Client;
+use App\Models\PasswordReset;
 use Carbon\Carbon;
 
 class ClientLoginController extends Controller
@@ -135,18 +137,28 @@ class ClientLoginController extends Controller
         $successMessage = __('web.forgot_password_email_sent');
         
         if ($client) {
-            // Generate a new random password
-            $newPassword = $this->generateRandomPassword(12);
+            // Delete any existing password reset tokens for this email
+            PasswordReset::where('email', $request->email)->delete();
             
-            // Update the client's password
-            $client->update([
-                'password_text' => $newPassword,
-                'password' => Hash::make($newPassword),
+            // Generate a secure token
+            $token = Str::random(60);
+            
+            // Store the password reset token
+            PasswordReset::create([
+                'email' => $request->email,
+                'token' => Hash::make($token),
+                'created_at' => Carbon::now(),
             ]);
 
-            // Send email with new password
+            // Create password reset URL
+            $resetUrl = route('client.password.reset.form', ['token' => $token, 'email' => $request->email]);
+
+            // Send email with reset link
             try {
-                Mail::send('emails.forgot_password', ['client' => $client, 'newPassword' => $newPassword], function ($message) use ($client) {
+                Mail::send('emails.forgot_password', [
+                    'client' => $client,
+                    'resetUrl' => $resetUrl
+                ], function ($message) use ($client) {
                     $message->to($client->email)
                             ->subject(__('web.password_reset_subject'));
                 });
@@ -164,16 +176,83 @@ class ClientLoginController extends Controller
         return redirect()->back()->with('success', $successMessage);
     }
 
-    private function generateRandomPassword($length = 12)
+    public function showPasswordResetForm(Request $request, $token)
     {
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
-        $password = '';
+        $email = $request->get('email');
         
-        for ($i = 0; $i < $length; $i++) {
-            $password .= $characters[rand(0, strlen($characters) - 1)];
+        if (!$email || !$token) {
+            return redirect()->route('client.login')->with('error', __('web.invalid_reset_link'));
         }
         
-        return $password;
+        // Check if token exists and is not expired
+        $resetRecord = PasswordReset::where('email', $email)
+            ->where('created_at', '>', Carbon::now()->subHour())
+            ->first();
+            
+        if (!$resetRecord) {
+            return redirect()->route('client.login')->with('error', __('web.expired_reset_link'));
+        }
+        
+        return view('clientarea.password_reset_form', compact('token', 'email'));
+    }
+
+    public function processPasswordReset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // Find the password reset record
+        $resetRecord = PasswordReset::where('email', $request->email)
+            ->where('created_at', '>', Carbon::now()->subHour())
+            ->first();
+
+        if (!$resetRecord) {
+            return redirect()->route('client.login')->with('error', __('web.expired_reset_link'));
+        }
+
+        // Verify token
+        $tokenFound = false;
+        $allResetRecords = PasswordReset::where('email', $request->email)
+            ->where('created_at', '>', Carbon::now()->subHour())
+            ->get();
+            
+        foreach ($allResetRecords as $record) {
+            if (Hash::check($request->token, $record->token)) {
+                $tokenFound = true;
+                break;
+            }
+        }
+
+        if (!$tokenFound) {
+            return redirect()->route('client.login')->with('error', __('web.invalid_reset_link'));
+        }
+
+        // Find the client
+        $client = Client::where('email', $request->email)->first();
+        
+        if (!$client) {
+            return redirect()->route('client.login')->with('error', __('web.user_not_found'));
+        }
+
+        // Update the client's password
+        $client->update([
+            'password_text' => $request->password,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Delete all password reset tokens for this email
+        PasswordReset::where('email', $request->email)->delete();
+
+        // Log the successful password reset
+        Log::info('Password successfully reset for user: ' . $client->email);
+
+        // Automatically log in the client
+        Auth::guard('client')->login($client);
+
+        return redirect()->route('client.webtrader')->with('success', __('web.password_reset_successful'));
     }
 
     private function createBrokerId() {

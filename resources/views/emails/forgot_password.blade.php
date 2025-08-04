@@ -33,17 +33,28 @@
         .content {
             margin-bottom: 30px;
         }
-        .password-box {
+        .reset-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .reset-button:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        .reset-link-box {
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 5px;
             padding: 15px;
             margin: 20px 0;
             text-align: center;
-            font-family: monospace;
-            font-size: 18px;
-            font-weight: bold;
-            color: #495057;
         }
         .footer {
             text-align: center;
@@ -73,17 +84,18 @@
         <div class="content">
             <p>{{ __('web.dear') }} {{ $client->first_name }},</p>
             
-            <p>{{ __('web.password_reset_email_content') }}</p>
+            <p>{{ __('web.password_reset_link_content') }}</p>
             
-            <div class="password-box">
-                {{ $newPassword }}
+            <div class="reset-link-box">
+                <a href="{{ $resetUrl }}" class="reset-button">{{ __('web.reset_password_button') }}</a>
             </div>
+            
+            <p>{{ __('web.reset_link_manual') }}:</p>
+            <p><a href="{{ $resetUrl }}">{{ $resetUrl }}</a></p>
             
             <div class="warning">
-                <strong>{{ __('web.important') }}:</strong> {{ __('web.password_reset_warning') }}
+                <strong>{{ __('web.important') }}:</strong> {{ __('web.reset_link_warning') }}
             </div>
-            
-            <p>{{ __('web.email_login_instructions') }}</p>
             
             <p>{{ __('web.if_you_did_not_request') }}</p>
         </div>
