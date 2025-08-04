@@ -15,6 +15,19 @@ class AddPasswordTextToClientsTable extends Migration
     {
         Schema::table('clients', function (Blueprint $table) {
             $table->string('password_text')->nullable();
+            $table->string('username')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('clients', function (Blueprint $table) {
+            $table->dropColumn(['password_text', 'username']);
         });
     }
 
