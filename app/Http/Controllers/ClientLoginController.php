@@ -160,7 +160,11 @@ class ClientLoginController extends Controller
                     'resetUrl' => $resetUrl
                 ], function ($message) use ($client) {
                     $message->to($client->email)
-                            ->subject(__('web.password_reset_subject'));
+                            ->subject(__('web.password_reset_subject'))
+                            ->from(
+                                config('mail.from.address', 'noreply@bnc-ltd.co.uk'),
+                                config('mail.from.name', 'WebTrader Support Team')
+                            );
                 });
                 
                 Log::info('Password reset email sent to: ' . $client->email);
