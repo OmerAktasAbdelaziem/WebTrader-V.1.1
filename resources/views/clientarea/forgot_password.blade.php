@@ -40,6 +40,11 @@
                 <span class="block sm:inline">{{ session('fail') }}</span>
             </div>
         @endif
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
         <div class="px-6 py-4">
             <div class="flex" style="justify-content: center;padding-bottom: 10px">
                 @foreach(['en' => 'English', 'ar' => 'العربية'] as $language => $name)
@@ -54,21 +59,59 @@
             </div>
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900">{{ __('web.forgot_password') }}</h2>
-                <p class="mt-2 text-sm text-gray-600">{{ __('web.forgot_password_description') }}</p>
+                @if(isset($emailConfirmed) && $emailConfirmed)
+                    <p class="mt-2 text-sm text-green-600">{{ __('web.email_found_set_new_password') }}</p>
+                @else
+                    <p class="mt-2 text-sm text-gray-600">{{ __('web.forgot_password_description') }}</p>
+                @endif
             </div>
-            <form method="POST" action="{{ route('client.forgot.password.submit') }}">
-                @csrf
-                <div class="mb-6">
-                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.email_address') }}:</label>
-                    <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="flex items-center justify-between">
-                    <button type="submit" class="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" style="background-color: #CDEC76; color:white;">{{ __('web.reset_password') }}</button>
-                </div>
-                <div class="text-center mt-4">
-                    <a style="color: rgb(31, 121, 238);" href="{{ route('client.login') }}">{{ __('web.back_to_login') }}</a>
-                </div>
-            </form>
+
+            @if(isset($emailConfirmed) && $emailConfirmed)
+                <!-- Show password reset form when email is confirmed -->
+                <form method="POST" action="{{ route('client.update.password') }}">
+                    @csrf
+                    <input type="hidden" name="email" value="{{ $confirmedEmail }}">
+                    
+                    <div class="mb-4">
+                        <label for="confirmed_email" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.email_address') }}:</label>
+                        <input type="email" id="confirmed_email" value="{{ $confirmedEmail }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight bg-gray-100" readonly>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="new_password" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.new_password') }}:</label>
+                        <input type="password" id="new_password" name="new_password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required minlength="6">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="new_password_confirmation" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.confirm_password') }}:</label>
+                        <input type="password" id="new_password_confirmation" name="new_password_confirmation" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required minlength="6">
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <button type="submit" class="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" style="background-color: #CDEC76; color:white;">{{ __('web.update_password') }}</button>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a style="color: rgb(31, 121, 238);" href="{{ route('client.forgot.password') }}">{{ __('web.try_different_email') }}</a>
+                    </div>
+                </form>
+            @else
+                <!-- Show email input form -->
+                <form method="POST" action="{{ route('client.forgot.password.submit') }}">
+                    @csrf
+                    <div class="mb-6">
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.email_address') }}:</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button type="submit" class="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" style="background-color: #CDEC76; color:white;">{{ __('web.find_account') }}</button>
+                    </div>
+                </form>
+            @endif
+            
+            <div class="text-center mt-4">
+                <a style="color: rgb(31, 121, 238);" href="{{ route('client.login') }}">{{ __('web.back_to_login') }}</a>
+            </div>
         </div>
         <div class="tradingview-widget-container pointer-events-none select-none" style="user-select: none;">
             <div class="tradingview-widget-container__widget"></div>
