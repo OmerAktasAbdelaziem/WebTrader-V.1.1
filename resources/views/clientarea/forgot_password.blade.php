@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('web.client_login') }}</title>
+    <title>{{ __('web.forgot_password') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url('assets/images/favicon-32x32.png') }}" type="image/png" />
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
@@ -35,6 +35,11 @@
                 <span class="block sm:inline">{{ session('success') }}</span>
             </div>
         @endif
+        @if(session('fail'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ session('fail') }}</span>
+            </div>
+        @endif
         <div class="px-6 py-4">
             <div class="flex" style="justify-content: center;padding-bottom: 10px">
                 @foreach(['en' => 'English', 'ar' => 'العربية'] as $language => $name)
@@ -47,23 +52,21 @@
             <div class="mb-4 text-center">
                 <img src="{{ url('assets/images/logo-icon1.png') }}" class="logo mx-auto" alt="BNC Logo">
             </div>
-            <form method="POST" action="{{ route('client.login') }}">
+            <div class="mb-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-900">{{ __('web.forgot_password') }}</h2>
+                <p class="mt-2 text-sm text-gray-600">{{ __('web.forgot_password_description') }}</p>
+            </div>
+            <form method="POST" action="{{ route('client.forgot.password.submit') }}">
                 @csrf
-                <div class="mb-4">
-                    <label for="user" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.username_or_email') }}:</label>
-                    <input type="text" id="user" name="user" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
                 <div class="mb-6">
-                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.password') }}:</label>
-                    <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">{{ __('web.email_address') }}:</label>
+                    <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                 </div>
                 <div class="flex items-center justify-between">
-                    <button type="submit" class="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"  style="background-color: #CDEC76; color:white;">{{ __('web.login') }}</button>
+                    <button type="submit" class="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" style="background-color: #CDEC76; color:white;">{{ __('web.reset_password') }}</button>
                 </div>
-                <div class="flex items-center justify-between mt-4">
-                    <!-- <a style="color: rgb(31, 121, 238);" href="{{route ('client.signup')}}">{{ __('web.create_new_account') }}</a> -->
-                    <a style="color: rgb(31, 121, 238);" href="https://dashboard.bnc-ltd.co.uk/client/signup">{{ __('web.create_new_account') }}</a>
-                    <a style="color: rgb(31, 121, 238);" href="{{ route('client.forgot.password') }}">{{ __('web.forgot_password') }}</a>
+                <div class="text-center mt-4">
+                    <a style="color: rgb(31, 121, 238);" href="{{ route('client.login') }}">{{ __('web.back_to_login') }}</a>
                 </div>
             </form>
         </div>

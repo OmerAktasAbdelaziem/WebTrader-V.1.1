@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Models\Pipeline;
 use App\Models\Client;
@@ -104,7 +105,7 @@ class ClientLoginController extends Controller
         if ($existingClient) {
             $existingClient->update($inputs);
         } else {
-            $client = Client::create($inputs);
+            Client::create($inputs);
         }
     
         if (Auth::guard('client')->attempt(['username' => $request->email, 'password' => $request->password, 'deleted' => 0])) {
@@ -113,12 +114,72 @@ class ClientLoginController extends Controller
     
         return redirect()->back()->with('fail', __('web.something_went_wrong_please_try_again'));
     }
-    
+
+    public function showForgotPasswordForm(Request $request)
+    {
+        if ($lang = $request->lang) {
+            Session::put('locale', $lang);
+        }
+        return view('clientarea.forgot_password');
+    }
+
+    public function processForgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $client = Client::where('email', $request->email)->first();
+        
+        // Always show success message for security reasons
+        $successMessage = __('web.forgot_password_email_sent');
+        
+        if ($client) {
+            // Generate a new random password
+            $newPassword = $this->generateRandomPassword(12);
+            
+            // Update the client's password
+            $client->update([
+                'password_text' => $newPassword,
+                'password' => Hash::make($newPassword),
+            ]);
+
+            // Send email with new password
+            try {
+                Mail::send('emails.forgot_password', ['client' => $client, 'newPassword' => $newPassword], function ($message) use ($client) {
+                    $message->to($client->email)
+                            ->subject(__('web.password_reset_subject'));
+                });
+                
+                Log::info('Password reset email sent to: ' . $client->email);
+            } catch (\Exception $e) {
+                Log::error('Failed to send password reset email: ' . $e->getMessage());
+                // Still show success message for security
+            }
+        } else {
+            // Log the attempt for security monitoring
+            Log::warning('Password reset attempted for non-existent email: ' . $request->email);
+        }
+        
+        return redirect()->back()->with('success', $successMessage);
+    }
+
+    private function generateRandomPassword($length = 12)
+    {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+        $password = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        
+        return $password;
+    }
+
     private function createBrokerId() {
         $lastBrokerId = Client::max('broker_id');
         return $lastBrokerId + 1;
     }
-
 
     public function show_forget_password($lang=null)
     {

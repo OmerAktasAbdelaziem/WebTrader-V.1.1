@@ -36,6 +36,9 @@ Route::post('/client/signup',                    [ClientLoginController::class, 
 Route::get ('/client/login',                     [ClientLoginController::class,     'showLoginForm'           ])->name('client.login');
 Route::post('/client/login',                     [ClientLoginController::class,     'login'                   ]);
 
+Route::get ('/client/forgot-password',           [ClientLoginController::class,     'showForgotPasswordForm'  ])->name('client.forgot.password');
+Route::post('/client/forgot-password',           [ClientLoginController::class,     'processForgotPassword'   ])->name('client.forgot.password.submit');
+
 Route::post('/client/logout',                    [LoginController::class,           'logout'                  ])->name('client.logout');
 
 Route::get ('/client/reset/password',            [ClientsController::class,         'showResetPasswordForm'   ])->name('client.reset.password');
