@@ -369,66 +369,77 @@ class ClientsController extends Controller
 
     public function get_financial_data($broker_id)
     {
+        // Check if CRM API configuration is available
+        $apiUrl = config('services.crm_api.url');
+        $apiKey = config('services.crm_api.key');
         
+        if ($apiUrl && $apiKey) {
+            // Try to get data from external API
+            $apiFullUrl = $apiUrl . "/api/getFinancialData?broker_id=" . $broker_id;
+            
+            $ch = curl_init();
+            
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $apiFullUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10, // Add timeout
+                CURLOPT_HTTPHEADER => [
+                    "X-API-KEY: $apiKey"
+                ],
+            ]);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if (!curl_errno($ch) && $httpCode == 200 && $response) {
+                $data = json_decode($response, true);
+                if ($data && isset($data['finance'])) {
+                    curl_close($ch);
+                    $finance = $data['finance'];
+                    
+                    // Ensure all required finance keys exist with default values
+                    $defaultFinance = [
+                        'last_deposit_amount' => 0.00,
+                        'totalWithdrawal'     => 0.00,
+                        'totalDeposit'        => 0.00,
+                        'ftd_amount'          => 0.00,
+                        'usedMargin'          => 0.00,
+                        'currentPL'           => 0.00,
+                        'balance'             => 0.00,
+                        'credit'              => 0.00,
+                        'bonus'               => 0.00,
+                        'equity'              => 0.00,
+                        'freeMargin'          => 0.00,
+                    ];
+                    
+                    // Merge with defaults to ensure all keys exist
+                    $finance = array_merge($defaultFinance, $finance);
+                    
+                    // Calculate equity if not provided or zero
+                    if (!isset($finance['equity']) || $finance['equity'] == 0) {
+                        $finance['equity'] = $finance['balance'] + $finance['currentPL'] + $finance['bonus'];
+                    }
+                    
+                    // Calculate freeMargin if not provided or zero
+                    if (!isset($finance['freeMargin']) || $finance['freeMargin'] == 0) {
+                        $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
+                    }
+                    
+                    return $finance;
+                }
+            }
+            
+            curl_close($ch);
+            Log::warning('CRM API call failed or returned invalid data for broker_id: ' . $broker_id);
+        }
+        
+        // Fallback to local calculation if API is not configured or fails
+        return $this->calculateLocalFinancialData($broker_id);
+    }
     
-    //TODO: The code in this function should be edited, so curl should be applied by service, service code ready but 
-        //first using of Clients controller in code should be handeled
-   
-$apiUrl = config('services.crm_api.url')."/api/getFinancialData?broker_id=".$broker_id;
-$apiKey = config('services.crm_api.key');
-
-$ch = curl_init();
-
-curl_setopt_array($ch, [
-    CURLOPT_URL => $apiUrl,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-        "X-API-KEY: $apiKey"
-    ],
-]);
-
-$response = curl_exec($ch);
-$finance = [];
-if (curl_errno($ch)) {
-    echo 'cURL Error: ' . curl_error($ch);
-} else {
-    $data = json_decode($response, true);
-    $finance = $data['finance'] ?? [];
-}
-
-curl_close($ch);
-
-// Ensure all required finance keys exist with default values
-$defaultFinance = [
-    'last_deposit_amount' => 0.00,
-    'totalWithdrawal'     => 0.00,
-    'totalDeposit'        => 0.00,
-    'ftd_amount'          => 0.00,
-    'usedMargin'          => 0.00,
-    'currentPL'           => 0.00,
-    'balance'             => 0.00,
-    'credit'              => 0.00,
-    'bonus'               => 0.00,
-    'equity'              => 0.00,
-    'freeMargin'          => 0.00,
-];
-
-// Merge with defaults to ensure all keys exist
-$finance = array_merge($defaultFinance, $finance);
-
-// Calculate equity if not provided or zero
-if (!isset($finance['equity']) || $finance['equity'] == 0) {
-    $finance['equity'] = $finance['balance'] + $finance['currentPL'] + $finance['bonus'];
-}
-
-// Calculate freeMargin if not provided or zero
-if (!isset($finance['freeMargin']) || $finance['freeMargin'] == 0) {
-    $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
-}
-    
-    return $finance;
-        /*
-        $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+    private function calculateLocalFinancialData($broker_id)
+    {
+        $openedOrders = Order::where('broker_id', $broker_id)->whereNull('closed_at')->get();
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
         $finance['totalWithdrawal']     = 0.00;
@@ -439,11 +450,11 @@ if (!isset($finance['freeMargin']) || $finance['freeMargin'] == 0) {
         $finance['balance']             = 0.00;
         $finance['credit']              = 0.00;
         $finance['bonus']               = 0.00;
-        //$MoneyTrxs                      = MoneyTrx::where('broker_id',$broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        
         $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
-    ->where('money_trxes.broker_id', $broker_id)
-    ->where('money_trxes.status', 'accepted')
-    ->select('money_trx_details.amount','money_trx_details.type')->latest()->get();
+            ->where('money_trxes.broker_id', $broker_id)
+            ->where('money_trxes.status', 'accepted')
+            ->select('money_trx_details.amount', 'money_trx_details.type')->latest()->get();
 
         foreach ($MoneyTrxs as $MoneyTrx) {
             if ($MoneyTrx->type == 'deposit') {
@@ -469,11 +480,12 @@ if (!isset($finance['freeMargin']) || $finance['freeMargin'] == 0) {
                 $finance['bonus'] -= $MoneyTrx->amount;
             }
         }
-        $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + Order::where('broker_id',$broker_id)->whereNotNull('closed_at')->sum('pnl')+$finance['credit'];
-        $finance['equity']  = $finance['balance'] +  $finance['currentPL'] + $finance['bonus'];
-        $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
+        
+        $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl') + $finance['credit'];
+        $finance['equity']  = $finance['balance'] + $finance['currentPL'] + $finance['bonus'];
+        $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
+        
         return $finance;
-        */
     }
 
     public function toggleFavourite(Request $request,$id)
