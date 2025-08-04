@@ -369,6 +369,9 @@ class ClientsController extends Controller
 
     public function get_financial_data($broker_id)
     {
+        //TODO: The code in this function should be edited, so curl should be applied by service, service code ready but 
+        //first using of Clients controller in code should be handeled
+        
         // Check if CRM API configuration is available
         $apiUrl = config('services.crm_api.url');
         $apiKey = config('services.crm_api.key');
