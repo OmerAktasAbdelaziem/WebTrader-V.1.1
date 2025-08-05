@@ -619,36 +619,35 @@
             </div>
         
             <!-- Quick Trading Floating -->
-            <!--@if(!isset(auth()->guard('client')->user()->options['cantOpen']))-->
-            <!--    <div class="quick-trading">-->
-            <!--        <form method="POST" class="form form2 ng-untouched ng-pristine ng-valid d-flex align-items-center m-0">-->
+            @if(!isset(auth()->guard('client')->user()->options['cantOpen']))
+                <div class="quick-trading">
+                    <form method="POST" class="form form2 ng-untouched ng-pristine ng-valid d-flex align-items-center m-0">
                         <!-- Sell Button -->
-            <!--            <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">-->
-            <!--                <span>{{__('web.sell')}}<strong class="sellPrice">{{$asset->bid_price}}</strong></span>-->
-            <!--            </button>-->
-                
-                        <!-- Counter Input -->
-            <!--            <div class="formset d-flex align-items-center" style="gap: 5px;">-->
-            <!--                <a class="btn-counter btn-minus" href="#" style="padding: 1px 5px;">-</a>-->
-            <!--                <input name="amount" id="orderAmount" type="text" value="0.01" step="0.01" min="0.01" style="width: 55px; padding: 2px; text-align: center;">-->
-            <!--                <a class="btn-counter btn-plus" href="#" style="padding: 1px 5px;">+</a>-->
-            <!--            </div>-->
-                
+                        <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">
+                            <span>{{__('web.sell')}}<strong class="sellPrice">{{$asset->bid_price}}</strong></span>
+                        </button>
+                        <!-- Counter Input --> 
+                        <div class="formset d-flex align-items-center" style="gap: 5px;">
+                            <a class="btn-counter btn-minus" href="#" style="padding: 1px 5px;">-</a>
+                            <input name="amount" id="orderAmount" type="text" value="0.01" step="0.01" min="0.01" style="width: 55px; padding: 2px; text-align: center;">
+                            <a class="btn-counter btn-plus" href="#" style="padding: 1px 5px;">+</a>
+                        </div>
+
                         <!-- Buy Button -->
-            <!--            <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">-->
-            <!--                <span>{{__('web.buy')}}<strong class="buyPrice">{{$asset->ask_price}} </strong></span>-->
-            <!--            </button>-->
-                
+                        <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">
+                            <span>{{__('web.buy')}}<strong class="buyPrice">{{$asset->ask_price}} </strong></span>
+                        </button>
+
                         <!-- Navigation Button (Behind Buy Button) -->
-            <!--            <button type="button" id="openNavModal" class="btn btn-white btn-md ms-2 d-flex align-items-center justify-content-center">-->
-            <!--                <span class="iconify" data-icon="fluent:navigation-24-filled" data-inline="false"></span>-->
-            <!--            </button>-->
-            <!--            <input type="hidden" class="form-control" name="currency" value="{{$asset->id}}" readonly>-->
-            <!--            <input type="hidden" class="form-control bidInput" name="bid" id="bidQuick" value="{{$asset->bid_price}}" readonly>-->
-            <!--            <input type="hidden" class="form-control askInput" name="ask" id="askQuick" value="{{$asset->ask_price}}" readonly>-->
-            <!--        </form>-->
-            <!--    </div>-->
-            <!--@endif-->
+                        <button type="button" id="openNavModal" class="btn btn-white btn-md ms-2 d-flex align-items-center justify-content-center">
+                            <span class="iconify" data-icon="fluent:navigation-24-filled" data-inline="false"></span>
+                        </button>
+                        <input type="hidden" class="form-control" name="currency" value="{{$asset->id}}" readonly>
+                        <input type="hidden" class="form-control bidInput" name="bid" id="bidQuick" value="{{$asset->bid_price}}" readonly>
+                        <input type="hidden" class="form-control askInput" name="ask" id="askQuick" value="{{$asset->ask_price}}" readonly>
+                    </form>
+                </div>
+            @endif
             
             <!-- New Navigation Info Modal -->
             <div id="navInfoModal" class="modal fade" tabindex="-1" aria-labelledby="navInfoLabel" aria-hidden="true">
@@ -1102,7 +1101,7 @@
                                         <option value="bank">Bank Transfer</option>
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-primary" onclick="stepper1.next()">{{__('web.next')}}</button>
+                                <button type="button" class="btn btn-primary" id="step1NextBtn">{{__('web.next')}}</button>
                             </div>
 
                             <!-- Step 2: Payment Details -->
@@ -1168,8 +1167,8 @@
                                     <input type="number" class="form-control" id="amount1" name="amount" required>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <button type="button" class="btn btn-secondary" onclick="stepper1.previous()">{{__('web.previous')}}</button>
-                                    <button type="button" class="btn btn-primary" onclick="stepper1.next()">{{__('web.next')}}</button>
+                                    <button type="button" class="btn btn-secondary" id="step2PrevBtn">{{__('web.previous')}}</button>
+                                    <button type="button" class="btn btn-primary" id="step2NextBtn">{{__('web.next')}}</button>
                                 </div>
                             </div>
 
@@ -1181,7 +1180,7 @@
                                     <input type="file" class="form-control" id="receipt" name="receipt" accept="image/*" required>
                                 </div>
                                 <div class="d-flex align-items-center gap-3">
-                                    <button type="button" class="btn btn-outline-secondary px-4" onclick="stepper1.previous()"><i class="bx bx-left-arrow-alt me-2"></i>{{__('web.previous')}}</button>
+                                    <button type="button" class="btn btn-outline-secondary px-4" id="step3PrevBtn"><i class="bx bx-left-arrow-alt me-2"></i>{{__('web.previous')}}</button>
                                     <button type="submit" class="btn btn-success px-4">{{__('web.submit')}}</button>
                                 </div>
                             </div>
@@ -1356,8 +1355,58 @@
         }
         
         // Initialize stepper
-        window.stepper1 = new Stepper(stepperElement);
-        console.log('Stepper initialized successfully');
+        try {
+            window.stepper1 = new Stepper(stepperElement, {
+                linear: true,
+                animation: true
+            });
+            console.log('Stepper initialized successfully');
+        } catch (error) {
+            console.error('Error initializing stepper:', error);
+            return;
+        }
+
+        // Add event listeners for stepper navigation buttons
+        const step1NextBtn = document.getElementById('step1NextBtn');
+        const step2PrevBtn = document.getElementById('step2PrevBtn');
+        const step2NextBtn = document.getElementById('step2NextBtn');
+        const step3PrevBtn = document.getElementById('step3PrevBtn');
+
+        if (step1NextBtn) {
+            step1NextBtn.addEventListener('click', function() {
+                console.log('Step 1 Next clicked');
+                if (window.stepper1) {
+                    window.stepper1.next();
+                }
+            });
+        }
+
+        if (step2PrevBtn) {
+            step2PrevBtn.addEventListener('click', function() {
+                console.log('Step 2 Previous clicked');
+                if (window.stepper1) {
+                    window.stepper1.previous();
+                }
+            });
+        }
+
+        if (step2NextBtn) {
+            step2NextBtn.addEventListener('click', function() {
+                console.log('Step 2 Next clicked');
+                if (window.stepper1) {
+                    window.stepper1.next();
+                }
+            });
+        }
+
+        if (step3PrevBtn) {
+            step3PrevBtn.addEventListener('click', function() {
+                console.log('Step 3 Previous clicked');
+                if (window.stepper1) {
+                    window.stepper1.previous();
+                }
+            });
+        }
 
         // Check payment method element
         const paymentMethodEl = document.getElementById('payment-method');
@@ -1378,13 +1427,6 @@
                 document.getElementById('bank-details').style.display = 'block';
             }
         });
-
-        // Check bank name element
-        const bankNameEl = document.getElementById('bank-name0');
-        if (!bankNameEl) {
-            console.error('Bank name element not found!');
-            return;
-        }
 
         // Check bank name element
         const bankNameEl = document.getElementById('bank-name0');
