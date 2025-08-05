@@ -624,7 +624,7 @@
                     <form method="POST" class="form form2 ng-untouched ng-pristine ng-valid d-flex align-items-center m-0">
                         <!-- Sell Button -->
                         <button type="submit" class="btn btn-danger btn-md me-2" formaction="{{route('order.store',['type' => 2])}}">
-                            <span>{{__('web.sell')}}<strong class="sellPrice">{{$asset->bid_price}}</strong></span>
+                            <span>{{__('web.sell')}}<strong class="sellPrice"> {{$asset->bid_price}}</strong></span>
                         </button>
                         <!-- Counter Input --> 
                         <div class="formset d-flex align-items-center" style="gap: 5px;">
@@ -635,7 +635,7 @@
 
                         <!-- Buy Button -->
                         <button type="submit" class="btn btn-success btn-md ms-2" formaction="{{route('order.store',['type' => 1])}}">
-                            <span>{{__('web.buy')}}<strong class="buyPrice">{{$asset->ask_price}} </strong></span>
+                            <span>{{__('web.buy')}}<strong class="buyPrice"> {{$asset->ask_price}} </strong></span>
                         </button>
 
                         <!-- Navigation Button (Behind Buy Button) -->
@@ -1345,12 +1345,9 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('DOM loaded, initializing stepper...');
-        
         // Check if stepper element exists
         const stepperElement = document.querySelector('#stepper1');
         if (!stepperElement) {
-            console.error('Stepper element not found!');
             return;
         }
         
@@ -1360,9 +1357,7 @@
                 linear: true,
                 animation: true
             });
-            console.log('Stepper initialized successfully');
         } catch (error) {
-            console.error('Error initializing stepper:', error);
             return;
         }
 
@@ -1374,7 +1369,6 @@
 
         if (step1NextBtn) {
             step1NextBtn.addEventListener('click', function() {
-                console.log('Step 1 Next clicked');
                 if (window.stepper1) {
                     window.stepper1.next();
                 }
@@ -1383,7 +1377,6 @@
 
         if (step2PrevBtn) {
             step2PrevBtn.addEventListener('click', function() {
-                console.log('Step 2 Previous clicked');
                 if (window.stepper1) {
                     window.stepper1.previous();
                 }
@@ -1392,7 +1385,6 @@
 
         if (step2NextBtn) {
             step2NextBtn.addEventListener('click', function() {
-                console.log('Step 2 Next clicked');
                 if (window.stepper1) {
                     window.stepper1.next();
                 }
@@ -1401,7 +1393,6 @@
 
         if (step3PrevBtn) {
             step3PrevBtn.addEventListener('click', function() {
-                console.log('Step 3 Previous clicked');
                 if (window.stepper1) {
                     window.stepper1.previous();
                 }
@@ -1411,12 +1402,10 @@
         // Check payment method element
         const paymentMethodEl = document.getElementById('payment-method');
         if (!paymentMethodEl) {
-            console.error('Payment method element not found!');
             return;
         }
 
         paymentMethodEl.addEventListener('change', function () {
-            console.log('Payment method changed to:', this.value);
             let method = this.value;
             document.querySelectorAll('.payment-details').forEach(function (element) {
                 element.style.display = 'none';
@@ -1431,12 +1420,10 @@
         // Check bank name element
         const bankNameEl = document.getElementById('bank-name0');
         if (!bankNameEl) {
-            console.error('Bank name element not found!');
             return;
         }
 
         bankNameEl.addEventListener('change', function () {
-            console.log('Bank selection changed');
             let selectedOption = this.options[this.selectedIndex];
             document.getElementById('bank-name-detail').textContent = selectedOption.textContent;
             document.getElementById('bank-address-detail').textContent = selectedOption.dataset.address || 'N/A';
