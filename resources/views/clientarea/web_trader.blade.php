@@ -1068,7 +1068,7 @@
             <div class="modal-body p-4">
                 <div id="stepper1" class="bs-stepper linear">
                     <div class="bs-stepper-header" role="tablist">
-                        <div class="step" data-target="#step-1">
+                        <div class="step active" data-target="#step-1">
                             <button type="button" class="step-trigger" role="tab" id="stepper1trigger1" aria-controls="step-1">
                                 <span class="bs-stepper-circle">1</span>
                                 <span class="bs-stepper-label">{{__('web.choose_payment_method')}}</span>
@@ -1093,7 +1093,7 @@
                         <form id="depositForm" method="POST" action="{{ route('deposit.process') }}" enctype="multipart/form-data">
                             @csrf
                             <!-- Step 1: Payment Method Selection -->
-                            <div id="step-1" role="tabpanel" class="bs-stepper-pane" aria-labelledby="stepper1trigger1">
+                            <div id="step-1" role="tabpanel" class="bs-stepper-pane active dstepper-active" aria-labelledby="stepper1trigger1" style="display: block;">
                                 <div class="mb-3">
                                     <label for="payment-method" class="form-label">{{__('web.payment_method')}} *</label>
                                     <select class="form-select" id="payment-method" name="payment_method" required>
@@ -1346,9 +1346,28 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-        window.stepper1 = new Stepper(document.querySelector('#stepper1'));
+        console.log('DOM loaded, initializing stepper...');
+        
+        // Check if stepper element exists
+        const stepperElement = document.querySelector('#stepper1');
+        if (!stepperElement) {
+            console.error('Stepper element not found!');
+            return;
+        }
+        
+        // Initialize stepper
+        window.stepper1 = new Stepper(stepperElement);
+        console.log('Stepper initialized successfully');
 
-        document.getElementById('payment-method').addEventListener('change', function () {
+        // Check payment method element
+        const paymentMethodEl = document.getElementById('payment-method');
+        if (!paymentMethodEl) {
+            console.error('Payment method element not found!');
+            return;
+        }
+
+        paymentMethodEl.addEventListener('change', function () {
+            console.log('Payment method changed to:', this.value);
             let method = this.value;
             document.querySelectorAll('.payment-details').forEach(function (element) {
                 element.style.display = 'none';
@@ -1360,7 +1379,22 @@
             }
         });
 
-        document.getElementById('bank-name').addEventListener('change', function () {
+        // Check bank name element
+        const bankNameEl = document.getElementById('bank-name0');
+        if (!bankNameEl) {
+            console.error('Bank name element not found!');
+            return;
+        }
+
+        // Check bank name element
+        const bankNameEl = document.getElementById('bank-name0');
+        if (!bankNameEl) {
+            console.error('Bank name element not found!');
+            return;
+        }
+
+        bankNameEl.addEventListener('change', function () {
+            console.log('Bank selection changed');
             let selectedOption = this.options[this.selectedIndex];
             document.getElementById('bank-name-detail').textContent = selectedOption.textContent;
             document.getElementById('bank-address-detail').textContent = selectedOption.dataset.address || 'N/A';
