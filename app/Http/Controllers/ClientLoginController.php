@@ -32,10 +32,10 @@ class ClientLoginController extends Controller
         $credentials = $request->only('user', 'password');
 
         if (Auth::guard('client')->attempt(['email' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0])) {
-            return redirect()->route('client.webtrader')->with('success', __('web.login_successful'));
+            return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
         }
         if (Auth::guard('client')->attempt(['username' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0])) {
-            return redirect()->route('client.webtrader')->with('success', __('web.login_successful'));
+            return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
         }
 
         Log::warning('Login failed for user:', ['user' => $request->user,'pass' => $request->password]);
@@ -82,7 +82,7 @@ class ClientLoginController extends Controller
             $broker_id = $this->createBrokerId();
             $inputs['broker_id'] = $broker_id;
         }
-     
+    
         $options = [];
         $inputs['password_text']            = $request->password;
         $options['isEnabled']               = 1;
@@ -108,7 +108,7 @@ class ClientLoginController extends Controller
         }
     
         if (Auth::guard('client')->attempt(['username' => $request->email, 'password' => $request->password, 'deleted' => 0])) {
-            return redirect()->route('client.dashboard')->with('success', __('web.login_successful'));
+            return redirect()->route('client.webtrader.loading')->with('success', __('web.registration_successful'));
         }
     
         return redirect()->back()->with('fail', __('web.something_went_wrong_please_try_again'));
@@ -147,7 +147,7 @@ class ClientLoginController extends Controller
         Log::warning('Login reset for user:', ['user' => $client->first_name,'pass' => $request->password]);
 
         if (Auth::guard('client')->attempt(['username' => $client->username, 'password' => $request->new_password, 'deleted' => 0])) {
-            return redirect()->route('client.dashboard')->with('success', __('web.login_successful'));
+            return redirect()->route('client.webtrader.loading')->with('success', __('web.password_reset_successful'));
         }
     }
 }

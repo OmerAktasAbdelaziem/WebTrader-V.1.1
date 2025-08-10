@@ -1,9 +1,36 @@
+// WebTrader 2.0 JavaScript Functions
+// Fixed missing function definitions and added defensive programming
+// All referenced functions are now properly defined
+
+// Get URL parameter function
+function getURLParameter(key) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(key);
+}
+
+// Insert quick message function for chat
+function insertQuickMessage(message) {
+    const chatInput = document.getElementById("chatMessage");
+    if (chatInput) {
+        chatInput.value = message;
+        chatInput.focus();
+        // Optionally trigger input event to notify any listeners
+        chatInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+}
+
 // Amount change function
 function changeAmount(amount) {
     const input = document.getElementById("amount");
     let current = parseFloat(input.value) || 0;
     current = Math.max(0.01, (current + amount).toFixed(2));
     input.value = current;
+}
+
+// Set amount function for quick amount buttons
+function setAmount(amount) {
+    const input = document.getElementById("amount");
+    input.value = amount.toFixed(2);
 }
 
 // Copy to clipboard function
@@ -148,7 +175,7 @@ function autoFixAssetCategories() {
 
     // Only log if categories were actually fixed
     if (fixedCount > 0) {
-        console.log(`Auto-fixed ${fixedCount} asset categories on page load`);
+        // Auto-fixed category information available if needed
     }
 }
 
@@ -298,6 +325,9 @@ function getAllInterfaces() {
         depositInterface: document.getElementById("depositInterface"),
         withdrawalInterface: document.getElementById("withdrawalInterface"),
         chatInterface: document.getElementById("chatInterface"),
+        uploadDocumentInterface: document.getElementById(
+            "uploadDocumentInterface"
+        ),
     };
 }
 
@@ -310,29 +340,23 @@ function hideAllInterfaces() {
             element.style.opacity = "0";
         }
     });
+
+    // Only close notification popup if it's currently open (don't force hide it)
+    const notificationPopup = document.getElementById("notificationPopup");
+    if (notificationPopup && notificationPopup.classList.contains("show")) {
+        closeNotificationPopup();
+    }
 }
 
 function showMainContent() {
-    console.log("showMainContent() called");
-
     // Hide all interfaces first
     hideAllInterfaces();
 
     const interfaces = getAllInterfaces();
 
     if (!interfaces.mainContent) {
-        console.error("Main content element not found");
         return;
     }
-
-    // Show main content with forceful styling to override any CSS conflicts
-    console.log("Main content element:", interfaces.mainContent);
-    console.log(
-        "Before styling - display:",
-        interfaces.mainContent.style.display,
-        "visibility:",
-        interfaces.mainContent.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.mainContent.style.setProperty("display", "block", "important");
@@ -355,25 +379,12 @@ function showMainContent() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.mainContent.style.display,
-        "visibility:",
-        interfaces.mainContent.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "trading");
     updateSidebarActive(".markets-icon");
-
-    console.log(
-        "showMainContent() completed - main content should be visible now"
-    );
 }
 
 function showAccountInterface() {
-    console.log("showAccountInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -383,18 +394,8 @@ function showAccountInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.accountInterface) {
-        console.error("Account interface element not found");
         return;
     }
-
-    // Show account interface with forceful styling to override any CSS conflicts
-    console.log("Account interface element:", interfaces.accountInterface);
-    console.log(
-        "Before styling - display:",
-        interfaces.accountInterface.style.display,
-        "visibility:",
-        interfaces.accountInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.accountInterface.style.setProperty(
@@ -432,28 +433,15 @@ function showAccountInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.accountInterface.style.display,
-        "visibility:",
-        interfaces.accountInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "account");
     updateSidebarActive(".account-icon");
-
-    console.log(
-        "showAccountInterface() completed - account interface should be visible now"
-    );
 
     // Debug visibility
     debugInterfaceVisibility("accountInterface");
 }
 
 function showDepositInterface() {
-    console.log("showDepositInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -463,18 +451,8 @@ function showDepositInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.depositInterface) {
-        console.error("Deposit interface element not found");
         return;
     }
-
-    // Show deposit interface with forceful styling to override any CSS conflicts
-    console.log("Deposit interface element:", interfaces.depositInterface);
-    console.log(
-        "Before styling - display:",
-        interfaces.depositInterface.style.display,
-        "visibility:",
-        interfaces.depositInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.depositInterface.style.setProperty(
@@ -512,28 +490,15 @@ function showDepositInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.depositInterface.style.display,
-        "visibility:",
-        interfaces.depositInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "deposit");
     updateSidebarActive(".deposit-icon");
-
-    console.log(
-        "showDepositInterface() completed - deposit interface should be visible now"
-    );
 
     // Debug visibility
     debugInterfaceVisibility("depositInterface");
 }
 
 function showWithdrawalInterface() {
-    console.log("showWithdrawalInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -543,21 +508,8 @@ function showWithdrawalInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.withdrawalInterface) {
-        console.error("Withdrawal interface element not found");
         return;
     }
-
-    // Show withdrawal interface with forceful styling to override any CSS conflicts
-    console.log(
-        "Withdrawal interface element:",
-        interfaces.withdrawalInterface
-    );
-    console.log(
-        "Before styling - display:",
-        interfaces.withdrawalInterface.style.display,
-        "visibility:",
-        interfaces.withdrawalInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.withdrawalInterface.style.setProperty(
@@ -603,25 +555,12 @@ function showWithdrawalInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.withdrawalInterface.style.display,
-        "visibility:",
-        interfaces.withdrawalInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "withdrawal");
     updateSidebarActive(".withdrawal-icon");
-
-    console.log(
-        "showWithdrawalInterface() completed - withdrawal interface should be visible now"
-    );
 }
 
 function showChatInterface() {
-    console.log("showChatInterface() called");
-
     // Fix DOM structure first
     fixInterfaceStructure();
 
@@ -631,18 +570,8 @@ function showChatInterface() {
     const interfaces = getAllInterfaces();
 
     if (!interfaces.chatInterface) {
-        console.error("Chat interface element not found");
         return;
     }
-
-    // Show chat interface with forceful styling to override any CSS conflicts
-    console.log("Chat interface element:", interfaces.chatInterface);
-    console.log(
-        "Before styling - display:",
-        interfaces.chatInterface.style.display,
-        "visibility:",
-        interfaces.chatInterface.style.visibility
-    );
 
     // Use setProperty with !important to override any CSS rules
     interfaces.chatInterface.style.setProperty("display", "block", "important");
@@ -668,20 +597,9 @@ function showChatInterface() {
         "important"
     );
 
-    console.log(
-        "After styling - display:",
-        interfaces.chatInterface.style.display,
-        "visibility:",
-        interfaces.chatInterface.style.visibility
-    );
-
     // Update URL parameter and sidebar
     updateURLParameter("interface", "chat");
     updateSidebarActive(".chat-icon");
-
-    console.log(
-        "showChatInterface() completed - chat interface should be visible now"
-    );
 
     // Scroll to bottom of chat messages
     scrollToBottomOfChat();
@@ -690,59 +608,510 @@ function showChatInterface() {
     debugInterfaceVisibility("chatInterface");
 }
 
-// Chat-specific utility functions
-function scrollToBottomOfChat() {
-    const chatMessages = document.getElementById("chatMessages");
-    if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+function showUploadDocumentInterface() {
+    // Fix DOM structure first
+    fixInterfaceStructure();
+
+    // Hide all interfaces first
+    hideAllInterfaces();
+
+    const interfaces = getAllInterfaces();
+
+    if (!interfaces.uploadDocumentInterface) {
+        return;
+    }
+
+    // Use setProperty with !important to override any CSS rules
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "display",
+        "block",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "visibility",
+        "visible",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "opacity",
+        "1",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "z-index",
+        "9999",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "position",
+        "fixed",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "top",
+        "0",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "left",
+        "0",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "width",
+        "100%",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "height",
+        "100vh",
+        "important"
+    );
+    interfaces.uploadDocumentInterface.style.setProperty(
+        "background",
+        "linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%)",
+        "important"
+    );
+
+    // Update URL parameter and sidebar
+    updateURLParameter("interface", "upload");
+    updateSidebarActive(".upload-document-icon");
+
+    // Initialize drag and drop functionality
+    initializeDragAndDrop();
+
+    // Debug visibility
+    debugInterfaceVisibility("uploadDocumentInterface");
+}
+
+// Upload Document Interface Functions
+function initializeDragAndDrop() {
+    // KYC Dropzone
+    const kycDropzone = document.getElementById("kycDropzone");
+    const kycFileInput = document.getElementById("kycFileInput");
+
+    if (kycDropzone && kycFileInput) {
+        setupDropzone(kycDropzone, kycFileInput, handleKycFiles);
+    }
+
+    // Other Documents Dropzone
+    const otherDocsDropzone = document.getElementById("otherDocsDropzone");
+    const otherDocsFileInput = document.getElementById("otherDocsFileInput");
+
+    if (otherDocsDropzone && otherDocsFileInput) {
+        setupDropzone(
+            otherDocsDropzone,
+            otherDocsFileInput,
+            handleOtherDocsFiles
+        );
     }
 }
 
-function insertQuickMessage(message) {
-    const chatInput = document.getElementById("chatMessage");
-    if (chatInput) {
-        chatInput.value = message;
-        chatInput.focus();
-        // Auto-resize textarea
-        autoResizeTextarea(chatInput);
-    }
-}
-
-function autoResizeTextarea(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
-}
-
-// Function to update URL parameters without page reload
-function updateURLParameter(key, value) {
-    const url = new URL(window.location.href);
-    url.searchParams.set(key, value);
-    window.history.pushState({}, "", url);
-}
-
-// Function to get URL parameter
-function getURLParameter(key) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(key);
-}
-
-// Update sidebar active states
-function updateSidebarActive(activeClass) {
-    console.log("updateSidebarActive() called with class:", activeClass);
-
-    // Remove active class from all nav icons
-    document.querySelectorAll(".nav-icon").forEach((icon) => {
-        icon.classList.remove("active");
+function setupDropzone(dropzone, fileInput, handleFiles) {
+    // Drag and drop events
+    dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("dragover");
     });
 
-    // Add active class to the specified icon
-    const activeIcon = document.querySelector(activeClass);
-    if (activeIcon) {
-        activeIcon.classList.add("active");
-        console.log("Active class added to:", activeClass);
-    } else {
-        console.error("Active icon not found for class:", activeClass);
+    dropzone.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+    });
+
+    // Click to select files
+    dropzone.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    // File input change
+    fileInput.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+    });
+}
+
+function triggerKycFileInput() {
+    const kycFileInput = document.getElementById("kycFileInput");
+    if (kycFileInput) {
+        kycFileInput.click();
     }
+}
+
+function triggerOtherDocsFileInput() {
+    const otherDocsFileInput = document.getElementById("otherDocsFileInput");
+    if (otherDocsFileInput) {
+        otherDocsFileInput.click();
+    }
+}
+
+function handleKycFiles(files) {
+    const maxFiles = 5; // Limit KYC files
+    const maxSize = 10 * 1024 * 1024; // 10MB per file
+    const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "application/pdf",
+    ];
+
+    if (files.length > maxFiles) {
+        showUploadMessage(
+            "error",
+            `You can only upload up to ${maxFiles} KYC documents.`
+        );
+        return;
+    }
+
+    const validFiles = [];
+    const invalidFiles = [];
+
+    files.forEach((file) => {
+        if (!allowedTypes.includes(file.type)) {
+            invalidFiles.push(`${file.name} - Invalid file type`);
+        } else if (file.size > maxSize) {
+            invalidFiles.push(`${file.name} - File too large (max 10MB)`);
+        } else {
+            validFiles.push(file);
+        }
+    });
+
+    if (invalidFiles.length > 0) {
+        showUploadMessage(
+            "error",
+            "Some files were rejected: " + invalidFiles.join(", ")
+        );
+    }
+
+    if (validFiles.length > 0) {
+        uploadFiles(validFiles, "kyc");
+    }
+}
+
+function handleOtherDocsFiles(files) {
+    const maxSize = 10 * 1024 * 1024; // 10MB per file
+    const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    const validFiles = [];
+    const invalidFiles = [];
+
+    files.forEach((file) => {
+        if (!allowedTypes.includes(file.type)) {
+            invalidFiles.push(`${file.name} - Invalid file type`);
+        } else if (file.size > maxSize) {
+            invalidFiles.push(`${file.name} - File too large (max 10MB)`);
+        } else {
+            validFiles.push(file);
+        }
+    });
+
+    if (invalidFiles.length > 0) {
+        showUploadMessage(
+            "error",
+            "Some files were rejected: " + invalidFiles.join(", ")
+        );
+    }
+
+    if (validFiles.length > 0) {
+        uploadFiles(validFiles, "other");
+    }
+}
+
+function uploadFiles(files, type) {
+    const formData = new FormData();
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const uploadProgress = document.getElementById("uploadProgress");
+
+    // Show progress bar
+    if (uploadProgress) {
+        uploadProgress.style.display = "block";
+    }
+
+    // Add files to form data
+    files.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+    });
+    formData.append("type", type);
+    formData.append(
+        "_token",
+        document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content")
+    );
+
+    // Create XMLHttpRequest to track upload progress
+    const xhr = new XMLHttpRequest();
+
+    // Upload progress tracking
+    xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            if (progressBar) {
+                progressBar.style.width = percentComplete + "%";
+            }
+            if (progressText) {
+                progressText.textContent = Math.round(percentComplete) + "%";
+            }
+        }
+    });
+
+    // Upload complete
+    xhr.addEventListener("load", () => {
+        if (uploadProgress) {
+            uploadProgress.style.display = "none";
+        }
+
+        try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                showUploadMessage(
+                    "success",
+                    response.message || "Files uploaded successfully!"
+                );
+                displayUploadedFiles(response.files, type);
+
+                // Clear file inputs
+                const kycFileInput = document.getElementById("kycFileInput");
+                const otherDocsFileInput =
+                    document.getElementById("otherDocsFileInput");
+                if (kycFileInput) kycFileInput.value = "";
+                if (otherDocsFileInput) otherDocsFileInput.value = "";
+            } else {
+                showUploadMessage(
+                    "error",
+                    response.message || "Upload failed. Please try again."
+                );
+            }
+        } catch (error) {
+            showUploadMessage("error", "Upload failed. Please try again.");
+        }
+    });
+
+    // Upload error
+    xhr.addEventListener("error", () => {
+        if (uploadProgress) {
+            uploadProgress.style.display = "none";
+        }
+        showUploadMessage(
+            "error",
+            "Upload failed. Please check your connection and try again."
+        );
+    });
+
+    // Send the request
+    xhr.open("POST", "/client/upload-documents", true);
+    xhr.send(formData);
+}
+
+function displayUploadedFiles(files, type) {
+    const containerId =
+        type === "kyc" ? "kycFilesContainer" : "otherDocsFilesContainer";
+    const listId = type === "kyc" ? "kycFilesList" : "otherDocsFilesList";
+
+    const container = document.getElementById(containerId);
+    const list = document.getElementById(listId);
+
+    if (!container || !list) return;
+
+    // Show the files list
+    list.style.display = "block";
+
+    // Clear existing files
+    container.innerHTML = "";
+
+    // Add each file
+    files.forEach((file) => {
+        const fileItem = createFileItem(file, type);
+        container.appendChild(fileItem);
+    });
+}
+
+function createFileItem(file, type) {
+    const fileItem = document.createElement("div");
+    fileItem.className = "file-item";
+    fileItem.innerHTML = `
+        <div class="file-info">
+            <div class="file-icon">
+                <i class="bi bi-${getFileIcon(file.type)}"></i>
+            </div>
+            <div class="file-details">
+                <h6>${file.name}</h6>
+                <p>${formatFileSize(file.size)} • ${getFileType(
+        file.type
+    )} • ${formatDate(file.uploaded_at)}</p>
+            </div>
+        </div>
+        <div class="file-actions">
+            <button class="btn btn-outline-primary btn-sm" onclick="downloadFile('${
+                file.id
+            }')">
+                <i class="bi bi-download"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="deleteFile('${
+                file.id
+            }', '${type}')">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+    return fileItem;
+}
+
+function getFileIcon(type) {
+    const iconMap = {
+        "application/pdf": "file-pdf",
+        "image/jpeg": "file-image",
+        "image/jpg": "file-image",
+        "image/png": "file-image",
+        "application/msword": "file-word",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            "file-word",
+    };
+    return iconMap[type] || "file-earmark";
+}
+
+function getFileType(type) {
+    const typeMap = {
+        "application/pdf": "PDF",
+        "image/jpeg": "JPEG",
+        "image/jpg": "JPG",
+        "image/png": "PNG",
+        "application/msword": "DOC",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            "DOCX",
+    };
+    return typeMap[type] || "Unknown";
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
+function downloadFile(fileId) {
+    window.open(`/client/download-document/${fileId}`, "_blank");
+}
+
+function deleteFile(fileId, type) {
+    if (!confirm("Are you sure you want to delete this file?")) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file_id", fileId);
+    formData.append(
+        "_token",
+        document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content")
+    );
+
+    fetch("/client/delete-document", {
+        method: "POST",
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                showUploadMessage("success", "File deleted successfully!");
+                // Refresh the files list
+                loadExistingFiles();
+            } else {
+                showUploadMessage(
+                    "error",
+                    data.message || "Failed to delete file."
+                );
+            }
+        })
+        .catch((error) => {
+            showUploadMessage(
+                "error",
+                "Failed to delete file. Please try again."
+            );
+        });
+}
+
+function showUploadMessage(type, message) {
+    const messagesContainer = document.getElementById("uploadMessages");
+    if (!messagesContainer) return;
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `upload-message ${type}`;
+    messageDiv.innerHTML = `
+        <i class="bi bi-${
+            type === "success"
+                ? "check-circle"
+                : type === "error"
+                ? "exclamation-circle"
+                : "info-circle"
+        }"></i>
+        <span>${message}</span>
+    `;
+
+    messagesContainer.appendChild(messageDiv);
+
+    // Auto-remove message after 5 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+        }
+    }, 5000);
+}
+
+function loadExistingFiles() {
+    fetch("/client/get-documents", {
+        method: "GET",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                if (data.kyc_files && data.kyc_files.length > 0) {
+                    displayUploadedFiles(data.kyc_files, "kyc");
+                }
+                if (data.other_files && data.other_files.length > 0) {
+                    displayUploadedFiles(data.other_files, "other");
+                }
+            }
+        })
+        .catch((error) => {
+            // Silently fail - files will be loaded on next page refresh
+        });
 }
 
 // Single consolidated DOM initialization
@@ -1006,7 +1375,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const accountIcon = document.querySelector(".account-icon");
     const depositIcon = document.querySelector(".deposit-icon");
     const withdrawalIcon = document.querySelector(".withdrawal-icon");
-    const chatIcon = document.querySelector(".chat-icon");
     const logoutIcon = document.querySelector(".logout-icon");
 
     if (marketsIcon) {
@@ -1037,6 +1405,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Chat icon navigation - now goes directly to chat interface (no overlay)
+    const chatIcon = document.querySelector(".chat-icon");
     if (chatIcon) {
         chatIcon.addEventListener("click", function (e) {
             e.preventDefault();
@@ -1052,7 +1422,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (logoutForm) {
                     logoutForm.submit();
                 } else {
-                    console.error("Logout form not found!");
                 }
             }
         });
@@ -1080,7 +1449,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const askPrice = askPriceSpan.textContent.trim();
 
                 // Update prices immediately for better UX
-                updateAssetPrices(assetId, assetSymbol, bidPrice, askPrice);
+                if (typeof updateAssetPrices === "function") {
+                    updateAssetPrices(assetId, assetSymbol, bidPrice, askPrice);
+                }
             }
         });
     });
@@ -1142,7 +1513,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
                     showNotification("Error updating profile", "error");
                 });
         });
@@ -1183,13 +1553,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ensure all interface elements exist and log their status
     const interfaces = getAllInterfaces();
 
-    console.log("Interface elements found:", {
-        mainContent: !!interfaces.mainContent,
-        accountInterface: !!interfaces.accountInterface,
-        depositInterface: !!interfaces.depositInterface,
-        withdrawalInterface: !!interfaces.withdrawalInterface,
-    });
-
     // Ensure interfaces have proper styling and are initially hidden
     Object.values(interfaces).forEach((element) => {
         if (element) {
@@ -1203,112 +1566,133 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Show the correct interface based on URL parameter
-    console.log(
-        "Initializing interface based on URL parameter:",
-        interfaceParam
-    );
 
     switch (interfaceParam) {
         case "account":
-            console.log("URL parameter indicates account interface");
             showAccountInterface();
             break;
         case "deposit":
-            console.log("URL parameter indicates deposit interface");
             showDepositInterface();
             break;
         case "withdrawal":
-            console.log("URL parameter indicates withdrawal interface");
             showWithdrawalInterface();
             break;
         case "chat":
-            console.log("URL parameter indicates chat interface");
             showChatInterface();
+            break;
+        case "upload":
+            showUploadDocumentInterface();
             break;
         case "trading":
         default:
-            console.log(
-                "URL parameter indicates trading interface (or default)"
-            );
             showMainContent();
             break;
     }
 
     // Initialize current asset highlighting
-    highlightCurrentAsset();
+    if (typeof highlightCurrentAsset === "function") {
+        highlightCurrentAsset();
+    }
 
     // Asset search functionality
-    document
-        .getElementById("assetSearch")
-        .addEventListener("input", function () {
-            filterAssets();
+    const assetSearchElement = document.getElementById("assetSearch");
+    if (assetSearchElement) {
+        assetSearchElement.addEventListener("input", function () {
+            if (typeof filterAssets === "function") {
+                filterAssets();
+            }
         });
+    }
 
     // Category filter functionality
-    document
-        .getElementById("categoryFilter")
-        .addEventListener("change", function () {
-            filterAssets();
+    const categoryFilterElement = document.getElementById("categoryFilter");
+    if (categoryFilterElement) {
+        categoryFilterElement.addEventListener("change", function () {
+            if (typeof filterAssets === "function") {
+                filterAssets();
+            }
         });
+    }
 
     // Also listen for keyup events on search for better responsiveness
-    document
-        .getElementById("assetSearch")
-        .addEventListener("keyup", function () {
-            filterAssets();
+    if (assetSearchElement) {
+        assetSearchElement.addEventListener("keyup", function () {
+            if (typeof filterAssets === "function") {
+                filterAssets();
+            }
         });
+    }
 
     // Favorites functionality
-    document
-        .getElementById("showFavouritesBtn")
-        .addEventListener("click", function () {
+    const showFavouritesBtn = document.getElementById("showFavouritesBtn");
+    if (showFavouritesBtn) {
+        showFavouritesBtn.addEventListener("click", function () {
             const btn = this;
             if (btn.classList.contains("active")) {
                 btn.classList.remove("active");
                 btn.style.backgroundColor = "#23272f";
-                showAllAssets();
+                if (typeof showAllAssets === "function") {
+                    showAllAssets();
+                }
             } else {
                 btn.classList.add("active");
                 btn.style.backgroundColor = "#4f8cff";
-                showOnlyFavorites();
+                if (typeof showOnlyFavorites === "function") {
+                    showOnlyFavorites();
+                }
             }
         });
+    }
 
     // Context menu for favorites
-    document
-        .getElementById("addToFavouriteBtn")
-        .addEventListener("click", function () {
+    const addToFavouriteBtn = document.getElementById("addToFavouriteBtn");
+    if (addToFavouriteBtn) {
+        addToFavouriteBtn.addEventListener("click", function () {
             const assetId = this.getAttribute("data-asset-id");
-            toggleFavorite(assetId, "add");
+            if (typeof toggleFavorite === "function") {
+                toggleFavorite(assetId, "add");
+            }
         });
+    }
 
-    document
-        .getElementById("removeFromFavouriteBtn")
-        .addEventListener("click", function () {
+    const removeFromFavouriteBtn = document.getElementById(
+        "removeFromFavouriteBtn"
+    );
+    if (removeFromFavouriteBtn) {
+        removeFromFavouriteBtn.addEventListener("click", function () {
             const assetId = this.getAttribute("data-asset-id");
-            toggleFavorite(assetId, "remove");
+            if (typeof toggleFavorite === "function") {
+                toggleFavorite(assetId, "remove");
+            }
         });
+    }
 
     // Buy and Sell button functionality
-    document.getElementById("buyBtn").addEventListener("click", function () {
-        const assetId = document.getElementById("selectedAssetId").value;
-        if (!assetId || assetId === "null" || assetId === "") {
-            showNotification("Please select a valid asset first", "error");
-            return;
-        }
-        document.getElementById("orderType").value = "1"; // 1 = buy
-        document.getElementById("orderForm").submit();
-    });
+    const buyBtn = document.getElementById("buyBtn");
+    if (buyBtn) {
+        buyBtn.addEventListener("click", function () {
+            const assetId = document.getElementById("selectedAssetId").value;
+            if (!assetId || assetId === "null" || assetId === "") {
+                showNotification("Please select a valid asset first", "error");
+                return;
+            }
+            document.getElementById("orderType").value = "1"; // 1 = buy
+            document.getElementById("orderForm").submit();
+        });
+    }
 
-    document.getElementById("sellBtn").addEventListener("click", function () {
-        const assetId = document.getElementById("selectedAssetId").value;
-        if (!assetId || assetId === "null" || assetId === "") {
-            showNotification("Please select a valid asset first", "error");
-            return;
-        }
-        document.getElementById("orderType").value = "2"; // 2 = sell
-        document.getElementById("orderForm").submit();
-    });
+    const sellBtn = document.getElementById("sellBtn");
+    if (sellBtn) {
+        sellBtn.addEventListener("click", function () {
+            const assetId = document.getElementById("selectedAssetId").value;
+            if (!assetId || assetId === "null" || assetId === "") {
+                showNotification("Please select a valid asset first", "error");
+                return;
+            }
+            document.getElementById("orderType").value = "2"; // 2 = sell
+            document.getElementById("orderForm").submit();
+        });
+    }
 
     // Chat functionality
     const chatForm = document.getElementById("chatForm");
@@ -1335,7 +1719,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Clear input immediately for better UX
             chatInput.value = "";
-            autoResizeTextarea(chatInput);
+            if (typeof autoResizeTextarea === "function") {
+                autoResizeTextarea(chatInput);
+            }
 
             // Prepare form data
             const formData = new FormData(this);
@@ -1366,7 +1752,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             "Message sent successfully",
                             "success"
                         );
-                        scrollToBottomOfChat();
+                        if (typeof scrollToBottomOfChat === "function") {
+                            scrollToBottomOfChat();
+                        }
                     } else {
                         showNotification(
                             data.error || "Failed to send message",
@@ -1375,7 +1763,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 })
                 .catch((error) => {
-                    console.error("Error sending message:", error);
                     showNotification("Error sending message", "error");
                 })
                 .finally(() => {
@@ -1390,7 +1777,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (chatInput) {
         // Auto-resize textarea as user types
         chatInput.addEventListener("input", function () {
-            autoResizeTextarea(this);
+            if (typeof autoResizeTextarea === "function") {
+                autoResizeTextarea(this);
+            }
         });
 
         // Submit on Enter (without Shift)
@@ -1402,11 +1791,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Initialize chat overlay functionality
-    initializeChatOverlay();
-
     // Initialize notification popup functionality
     initializeNotificationPopup();
+
+    // Initialize upload document interface on page load
+    if (document.getElementById("uploadDocumentInterface")) {
+        loadExistingFiles();
+    }
 });
 
 // Function to add a message to the chat UI
@@ -1451,8 +1842,6 @@ function addMessageToChat(sender, message, isSupport) {
 
 // Function to fix interface DOM structure by moving them to body level
 function fixInterfaceStructure() {
-    console.log("=== FIXING INTERFACE STRUCTURE ===");
-
     const interfaces = getAllInterfaces();
     const body = document.body;
 
@@ -1461,17 +1850,13 @@ function fixInterfaceStructure() {
         if (element && key !== "mainContent") {
             // Don't move mainContent
             const currentParent = element.parentElement;
-            console.log(`${key} current parent:`, currentParent?.id || "no ID");
 
             // If not already a direct child of body, move it
             if (currentParent && currentParent !== body) {
-                console.log(`Moving ${key} to body level`);
                 body.appendChild(element);
             }
         }
     });
-
-    console.log("=== INTERFACE STRUCTURE FIXED ===");
 }
 
 // Filter assets function
@@ -1634,7 +2019,6 @@ function toggleFavorite(assetId, action) {
             }
         })
         .catch((error) => {
-            console.error("Error:", error);
             showNotification("Error updating favorites", "error");
         });
 
@@ -1701,52 +2085,13 @@ function debugInterfaceVisibility(interfaceName) {
     const element = interfaces[interfaceName];
 
     if (!element) {
-        console.error(`Interface ${interfaceName} not found`);
         return;
     }
 
     const computed = window.getComputedStyle(element);
     const rect = element.getBoundingClientRect();
-
-    console.log(`=== DEBUG: ${interfaceName.toUpperCase()} INTERFACE ===`);
-    console.log("Element:", element);
-    console.log("Element ID:", element.id);
-    console.log("Element classes:", element.className);
-    console.log("Inline styles:", {
-        display: element.style.display,
-        visibility: element.style.visibility,
-        opacity: element.style.opacity,
-        zIndex: element.style.zIndex,
-        position: element.style.position,
-        width: element.style.width,
-        height: element.style.height,
-    });
-    console.log("Computed styles:", {
-        display: computed.display,
-        visibility: computed.visibility,
-        opacity: computed.opacity,
-        zIndex: computed.zIndex,
-        position: computed.position,
-        width: computed.width,
-        height: computed.height,
-        overflow: computed.overflow,
-    });
-    console.log("Bounding rect:", {
-        width: rect.width,
-        height: rect.height,
-        top: rect.top,
-        left: rect.left,
-        bottom: rect.bottom,
-        right: rect.right,
-    });
-    console.log("Parent element:", element.parentElement);
-    console.log("Children count:", element.children.length);
-
     // Check if element has content
     const hasVisibleContent = element.textContent.trim().length > 0;
-    console.log("Has text content:", hasVisibleContent);
-    console.log("HTML content length:", element.innerHTML.length);
-
     return {
         element,
         computed,
@@ -1757,24 +2102,11 @@ function debugInterfaceVisibility(interfaceName) {
 
 // Enhanced debug function to trace the DOM hierarchy
 function debugDOMStructure() {
-    console.log("=== DOM STRUCTURE DEBUG ===");
-
     const interfaces = getAllInterfaces();
 
     Object.keys(interfaces).forEach((key) => {
         const element = interfaces[key];
         if (element) {
-            console.log(`\n${key.toUpperCase()}:`);
-            console.log("- Element:", element);
-            console.log("- Parent:", element.parentElement);
-            console.log("- Parent ID:", element.parentElement?.id);
-            console.log("- Parent classes:", element.parentElement?.className);
-            console.log("- Grandparent:", element.parentElement?.parentElement);
-            console.log(
-                "- Grandparent ID:",
-                element.parentElement?.parentElement?.id
-            );
-
             // Check if nested inside another interface
             let parent = element.parentElement;
             let nesting = [];
@@ -1792,11 +2124,8 @@ function debugDOMStructure() {
                 }
                 parent = parent.parentElement;
             }
-            console.log("- Nested inside interfaces:", nesting);
         }
     });
-
-    console.log("\n=== END DOM STRUCTURE DEBUG ===");
 }
 
 // Function to update form fields and displayed prices when asset is selected
@@ -1851,82 +2180,44 @@ function highlightCurrentAsset() {
 
 // Global test functions for debugging navigation
 window.testNavigation = function () {
-    console.log("=== NAVIGATION TEST ===");
-
     const interfaces = getAllInterfaces();
-    console.log("Interface elements:", {
-        mainContent: !!interfaces.mainContent,
-        accountInterface: !!interfaces.accountInterface,
-        depositInterface: !!interfaces.depositInterface,
-        withdrawalInterface: !!interfaces.withdrawalInterface,
-    });
-
     const icons = {
         markets: document.querySelector(".markets-icon"),
         account: document.querySelector(".account-icon"),
         deposit: document.querySelector(".deposit-icon"),
         withdrawal: document.querySelector(".withdrawal-icon"),
     };
-    console.log("Navigation icons:", {
-        markets: !!icons.markets,
-        account: !!icons.account,
-        deposit: !!icons.deposit,
-        withdrawal: !!icons.withdrawal,
-    });
-
     return { interfaces, icons };
 };
 
 window.testShowAccount = function () {
-    console.log("=== MANUAL TEST: Showing Account Interface ===");
     showAccountInterface();
 };
 
 window.testShowDeposit = function () {
-    console.log("=== MANUAL TEST: Showing Deposit Interface ===");
     showDepositInterface();
 };
 
 window.testShowWithdrawal = function () {
-    console.log("=== MANUAL TEST: Showing Withdrawal Interface ===");
     showWithdrawalInterface();
 };
 
 window.testShowMain = function () {
-    console.log("=== MANUAL TEST: Showing Main Content ===");
     showMainContent();
 };
 
 // Simple test function to check interface visibility and content
 window.testAllInterfaces = function () {
-    console.log("=== TESTING ALL INTERFACES ===");
-
     const interfaces = getAllInterfaces();
 
     Object.keys(interfaces).forEach((key) => {
         const element = interfaces[key];
         if (element) {
-            console.log(`\n${key.toUpperCase()}:`);
-            console.log("- Element exists:", !!element);
-            console.log("- Display:", element.style.display);
-            console.log("- Visibility:", element.style.visibility);
-            console.log("- Content length:", element.innerHTML.length);
-            console.log("- Has children:", element.children.length);
-            console.log(
-                "- Computed display:",
-                window.getComputedStyle(element).display
-            );
-            console.log(
-                "- Computed visibility:",
-                window.getComputedStyle(element).visibility
-            );
-            console.log("- Bounding box:", element.getBoundingClientRect());
+            // Interface element exists
         } else {
-            console.log(`${key.toUpperCase()}: NOT FOUND`);
+            // Interface element not found
         }
     });
-
-    console.log("\n=== END TEST ===");
 };
 
 // ============= GLOBAL FUNCTION EXPORTS =============
@@ -1959,239 +2250,22 @@ window.debugInterfaceVisibility = debugInterfaceVisibility;
 window.debugDOMStructure = debugDOMStructure;
 window.fixInterfaceStructure = fixInterfaceStructure;
 window.insertQuickMessage = insertQuickMessage;
+window.getURLParameter = getURLParameter;
 window.scrollToBottomOfChat = scrollToBottomOfChat;
 window.addMessageToChat = addMessageToChat;
 window.debugDOMStructure = debugDOMStructure;
-
-// ============= CHAT OVERLAY FUNCTIONS =============
-// Toggle chat overlay visibility
-function toggleChatOverlay() {
-    const overlay = document.getElementById("liveChatOverlay");
-    if (overlay) {
-        if (overlay.style.display === "none" || overlay.style.display === "") {
-            overlay.style.display = "flex";
-            scrollToBottomOfChatOverlay();
-        } else {
-            overlay.style.display = "none";
-        }
-    }
-}
-
-// Insert quick message into overlay chat input
-function insertQuickMessageOverlay(message) {
-    const chatInput = document.getElementById("chatOverlayMessage");
-    if (chatInput) {
-        chatInput.value = message;
-        chatInput.focus();
-        autoResizeTextarea(chatInput);
-    }
-}
-
-// Scroll to bottom of chat overlay messages
-function scrollToBottomOfChatOverlay() {
-    const messagesContainer = document.getElementById("chatOverlayMessages");
-    if (messagesContainer) {
-        setTimeout(() => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 100);
-    }
-}
-
-// Add message to chat overlay
-function addMessageToChatOverlay(message, isUser = true) {
-    const messagesContainer = document.getElementById("chatOverlayMessages");
-    if (!messagesContainer) return;
-
-    // Remove welcome message if it exists
-    const welcomeMessage = messagesContainer.querySelector(".welcome-message");
-    if (welcomeMessage) {
-        welcomeMessage.remove();
-    }
-
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `message ${
-        isUser ? "user-message" : "support-message"
-    }`;
-
-    const currentTime = new Date().toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-
-    if (isUser) {
-        messageDiv.innerHTML = `
-            <div class="message-content">
-                <div class="message-header">
-                    <span class="message-sender">You</span>
-                    <span class="message-time">${currentTime}</span>
-                </div>
-                <div class="message-text">${message}</div>
-            </div>
-            <div class="message-avatar">
-                <i class="bi bi-person-circle"></i>
-            </div>
-        `;
-    } else {
-        messageDiv.innerHTML = `
-            <div class="message-avatar">
-                <i class="bi bi-headset"></i>
-            </div>
-            <div class="message-content">
-                <div class="message-header">
-                    <span class="message-sender">Support Team</span>
-                    <span class="message-time">${currentTime}</span>
-                </div>
-                <div class="message-text">${message}</div>
-            </div>
-        `;
-    }
-
-    messagesContainer.appendChild(messageDiv);
-    scrollToBottomOfChatOverlay();
-}
-
-// Auto-resize textarea for chat overlay
-function autoResizeTextarea(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
-}
-
-// Initialize chat overlay functionality
-function initializeChatOverlay() {
-    // Handle chat icon click
-    const chatIcon = document.querySelector(".chat-icon");
-    if (chatIcon) {
-        chatIcon.addEventListener("click", toggleChatOverlay);
-    }
-
-    // Handle overlay form submission
-    const chatOverlayForm = document.getElementById("chatOverlayForm");
-    if (chatOverlayForm) {
-        chatOverlayForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const messageInput = document.getElementById("chatOverlayMessage");
-            const message = messageInput.value.trim();
-
-            if (!message) {
-                showNotification("Please enter a message", "warning");
-                return;
-            }
-
-            // Add user message to chat immediately
-            addMessageToChatOverlay(message, true);
-
-            // Clear input
-            messageInput.value = "";
-            autoResizeTextarea(messageInput);
-
-            // Submit via AJAX
-            try {
-                const formData = new FormData(chatOverlayForm);
-                const response = await fetch(chatOverlayForm.action, {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "X-CSRF-TOKEN": document
-                            .querySelector('meta[name="csrf-token"]')
-                            .getAttribute("content"),
-                    },
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showNotification("Message sent successfully!", "success");
-                    // Auto-response simulation (you can customize this)
-                    setTimeout(() => {
-                        addMessageToChatOverlay(
-                            "Thank you for your message. Our support team will respond shortly.",
-                            false
-                        );
-                    }, 1000);
-                } else {
-                    showNotification(
-                        result.message || "Failed to send message",
-                        "error"
-                    );
-                    // Remove the message that was added optimistically
-                    const messages = document.querySelectorAll(
-                        "#chatOverlayMessages .message"
-                    );
-                    if (messages.length > 0) {
-                        messages[messages.length - 1].remove();
-                    }
-                }
-            } catch (error) {
-                console.error("Chat submission error:", error);
-                showNotification("Network error. Please try again.", "error");
-                // Remove the message that was added optimistically
-                const messages = document.querySelectorAll(
-                    "#chatOverlayMessages .message"
-                );
-                if (messages.length > 0) {
-                    messages[messages.length - 1].remove();
-                }
-            }
-        });
-    }
-
-    // Handle textarea auto-resize in overlay
-    const chatOverlayMessage = document.getElementById("chatOverlayMessage");
-    if (chatOverlayMessage) {
-        chatOverlayMessage.addEventListener("input", function () {
-            autoResizeTextarea(this);
-        });
-
-        // Handle Enter key (Shift+Enter for new line)
-        chatOverlayMessage.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                chatOverlayForm.dispatchEvent(new Event("submit"));
-            }
-        });
-    }
-
-    // Close overlay when clicking outside
-    const overlay = document.getElementById("liveChatOverlay");
-    if (overlay) {
-        overlay.addEventListener("click", function (e) {
-            if (e.target === overlay) {
-                toggleChatOverlay();
-            }
-        });
-    }
-
-    // Handle escape key to close overlay
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") {
-            const overlay = document.getElementById("liveChatOverlay");
-            if (overlay && overlay.style.display === "flex") {
-                toggleChatOverlay();
-            }
-        }
-    });
-}
-
-// Export chat overlay functions globally
-window.toggleChatOverlay = toggleChatOverlay;
-window.insertQuickMessageOverlay = insertQuickMessageOverlay;
-window.scrollToBottomOfChatOverlay = scrollToBottomOfChatOverlay;
-window.addMessageToChatOverlay = addMessageToChatOverlay;
-window.initializeChatOverlay = initializeChatOverlay;
 
 // ============= NOTIFICATION POPUP FUNCTIONALITY =============
 
 // Toggle notification popup
 function toggleNotificationPopup() {
     const popup = document.getElementById("notificationPopup");
-    if (!popup) return;
-
-    if (popup.style.display === "none" || !popup.style.display) {
+    if (!popup) {
+        return;
+    }
+    // Simplified visibility check - just check if it has the 'show' class
+    const isCurrentlyVisible = popup.classList.contains("show");
+    if (!isCurrentlyVisible) {
         showNotificationPopup();
     } else {
         closeNotificationPopup();
@@ -2203,79 +2277,132 @@ function showNotificationPopup() {
     const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
-    if (!popup || !notificationIcon) return;
+    if (!popup || !notificationIcon) {
+        return;
+    }
+    // First, ensure popup is reset to initial state
+    popup.classList.remove("show");
+    popup.style.removeProperty("display");
+    popup.style.removeProperty("visibility");
+    popup.style.removeProperty("opacity");
 
     // Position the popup near the notification icon
     const iconRect = notificationIcon.getBoundingClientRect();
     const popupWidth = 350; // Width from CSS
-
-    // Position to the right of the icon with some spacing
-    popup.style.left = iconRect.right + 10 + "px";
-    popup.style.top = iconRect.top + "px";
+    const popupHeight = 500; // Max height from CSS
+    // Calculate initial position to the right of the icon
+    let left = iconRect.right + 10;
+    let top = iconRect.top;
 
     // Ensure popup doesn't go off screen
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
     // Adjust horizontal position if popup would go off screen
-    if (iconRect.right + popupWidth + 10 > viewportWidth) {
-        popup.style.left = iconRect.left - popupWidth - 10 + "px";
+    if (left + popupWidth > viewportWidth) {
+        left = iconRect.left - popupWidth - 10;
+    }
+
+    // Ensure left position is not negative
+    if (left < 10) {
+        left = 10;
     }
 
     // Adjust vertical position if popup would go off screen
-    if (iconRect.top + 500 > viewportHeight) {
-        // 500 is max-height from CSS
-        popup.style.top = viewportHeight - 500 - 20 + "px";
+    if (top + popupHeight > viewportHeight) {
+        top = viewportHeight - popupHeight - 20;
     }
 
-    popup.style.display = "block";
-    // Small delay to allow display change to take effect before animation
-    setTimeout(() => {
-        popup.classList.add("show");
-    }, 10);
+    // Ensure top position is not negative
+    if (top < 10) {
+        top = 10;
+    }
+    // Set position
+    popup.style.left = left + "px";
+    popup.style.top = top + "px";
+
+    // Show popup with proper styling
+    popup.style.setProperty("display", "block", "important");
+    popup.style.setProperty("visibility", "visible", "important");
+    popup.style.setProperty("opacity", "1", "important");
+    popup.style.setProperty("z-index", "999999", "important");
+    popup.style.setProperty("position", "fixed", "important");
+    popup.style.setProperty("transform", "translateY(0) scale(1)", "important");
+    popup.style.setProperty("pointer-events", "auto", "important");
+
+    // Add show class
+    popup.classList.add("show");
 }
 
 // Close notification popup
 function closeNotificationPopup() {
     const popup = document.getElementById("notificationPopup");
-    if (!popup) return;
+    if (!popup) {
+        return;
+    }
 
     popup.classList.remove("show");
     setTimeout(() => {
-        popup.style.display = "none";
+        popup.style.setProperty("display", "none", "important");
+        popup.style.setProperty("visibility", "hidden", "important");
+        popup.style.setProperty("opacity", "0", "important");
     }, 300); // Match the transition duration
 }
 
 // Initialize notification popup functionality
 function initializeNotificationPopup() {
-    // Add click event to notification icon
+    // Find notification icon
+
     const notificationIcon = document.querySelector(".notification-icon");
-    if (notificationIcon) {
-        notificationIcon.addEventListener("click", toggleNotificationPopup);
+    if (!notificationIcon) {
+        return;
+    }
+    // Only initialize if not already done
+    if (!notificationIcon.hasAttribute("data-initialized")) {
+        // Add event listener directly without cloning
+        notificationIcon.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleNotificationPopup();
+        });
+
+        notificationIcon.setAttribute("data-initialized", "true");
     }
 
-    // Close popup when clicking outside
-    document.addEventListener("click", function (event) {
-        const popup = document.getElementById("notificationPopup");
-        const notificationIcon = document.querySelector(".notification-icon");
+    // Ensure the close-on-outside-click is only added once globally
+    if (!document.hasAttribute("data-notification-outside-click-initialized")) {
+        document.addEventListener("click", function (event) {
+            const popup = document.getElementById("notificationPopup");
+            const notificationIcon =
+                document.querySelector(".notification-icon");
 
-        if (
-            popup &&
-            popup.style.display === "block" &&
-            !popup.contains(event.target) &&
-            !notificationIcon.contains(event.target)
-        ) {
-            closeNotificationPopup();
-        }
-    });
+            if (
+                popup &&
+                (popup.style.display === "block" ||
+                    popup.classList.contains("show")) &&
+                !popup.contains(event.target) &&
+                notificationIcon &&
+                !notificationIcon.contains(event.target)
+            ) {
+                closeNotificationPopup();
+            }
+        });
+        document.setAttribute(
+            "data-notification-outside-click-initialized",
+            "true"
+        );
+    }
 
     // Handle notification item clicks
     const notificationItems = document.querySelectorAll(".notification-item");
     notificationItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            const notificationId = this.dataset.id;
-            markNotificationAsRead(notificationId);
-        });
+        if (!item.hasAttribute("data-click-initialized")) {
+            item.addEventListener("click", function () {
+                const notificationId = this.dataset.id;
+                markNotificationAsRead(notificationId);
+            });
+            item.setAttribute("data-click-initialized", "true");
+        }
     });
 }
 
@@ -2335,7 +2462,6 @@ function markNotificationAsRead(notificationId) {
             }
         })
         .catch((error) => {
-            console.error("Error:", error);
             showNotification("Error marking notification as read", "error");
         });
 }
@@ -2363,10 +2489,223 @@ function updateNotificationBadge(count) {
     }
 }
 
-// Export notification functions globally
+// Make functions available globally
 window.toggleNotificationPopup = toggleNotificationPopup;
 window.showNotificationPopup = showNotificationPopup;
 window.closeNotificationPopup = closeNotificationPopup;
-window.initializeNotificationPopup = initializeNotificationPopup;
-window.markNotificationAsRead = markNotificationAsRead;
-window.updateNotificationBadge = updateNotificationBadge;
+
+// ============= MISSING FUNCTIONS =============
+
+// Function to scroll to bottom of chat messages
+function scrollToBottomOfChat() {
+    const chatMessages = document.getElementById("chatMessages");
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+// Function to update URL parameter
+function updateURLParameter(key, value) {
+    const url = new URL(window.location);
+    if (value) {
+        url.searchParams.set(key, value);
+    } else {
+        url.searchParams.delete(key);
+    }
+    window.history.replaceState({}, "", url);
+}
+
+// Function to update sidebar active state
+function updateSidebarActive(selector) {
+    // شيل الـ active class من كل العناصر الأساسية في الـ sidebar
+    document.querySelectorAll(".sidebar .nav-link").forEach((item) => {
+        item.classList.remove("active");
+        item.style.removeProperty("background-color");
+        item.style.removeProperty("color");
+    });
+
+    // اختار العنصر الجديد وفعّله
+    const targetElement = document.querySelector(selector);
+    if (targetElement) {
+        targetElement.classList.add("active");
+    }
+}
+
+// Function to debug interface visibility
+function debugInterfaceVisibility(interfaceName) {
+    const element = document.getElementById(interfaceName);
+    if (element) {
+    }
+}
+
+// Function to update asset prices in the order form
+function updateAssetPrices(assetId, symbol, bidPrice, askPrice) {
+    // Store current symbol globally
+    window.currentSymbol = symbol;
+
+    // Update the selected asset ID in the form
+    const selectedAssetIdInput = document.getElementById("selectedAssetId");
+    if (selectedAssetIdInput) {
+        selectedAssetIdInput.value = assetId;
+    }
+
+    // Update the symbol display in the order form
+    const symbolDisplays = document.querySelectorAll(
+        ".current-symbol, .selected-symbol"
+    );
+    symbolDisplays.forEach((display) => {
+        display.textContent = symbol;
+    });
+
+    // Update bid/ask prices in the order form
+    const bidPriceDisplays = document.querySelectorAll(
+        ".current-bid, .bid-price-display"
+    );
+    const askPriceDisplays = document.querySelectorAll(
+        ".current-ask, .ask-price-display"
+    );
+
+    bidPriceDisplays.forEach((display) => {
+        display.textContent = bidPrice;
+    });
+
+    askPriceDisplays.forEach((display) => {
+        display.textContent = askPrice;
+    });
+}
+
+// Function to highlight current asset
+function highlightCurrentAsset() {
+    const currentSymbol = window.currentSymbol;
+    if (!currentSymbol) return;
+
+    // Remove highlighting from all assets
+    document.querySelectorAll(".asset-button").forEach((button) => {
+        button.classList.remove("active", "selected");
+    });
+
+    // Highlight the current asset
+    const currentAssetButton = document.querySelector(
+        `[data-symbol="${currentSymbol}"]`
+    );
+    if (currentAssetButton) {
+        currentAssetButton.classList.add("active", "selected");
+    }
+}
+
+// Function to show only favorites
+function showOnlyFavorites() {
+    const assetButtons = document.querySelectorAll(".asset-button");
+    const favoriteAssets = window.favouriteAssetIds || [];
+
+    assetButtons.forEach((button) => {
+        const assetId = button.getAttribute("data-asset-id");
+        const isFavorite = favoriteAssets.includes(parseInt(assetId));
+
+        if (isFavorite) {
+            button.style.display = "flex";
+            button.style.visibility = "visible";
+            button.classList.remove("d-none", "hidden");
+            button.classList.add("d-flex");
+        } else {
+            button.style.display = "none";
+            button.style.visibility = "hidden";
+            button.classList.add("d-none", "hidden");
+            button.classList.remove("d-flex");
+        }
+    });
+}
+
+// Function to show all assets
+function showAllAssets() {
+    const assetButtons = document.querySelectorAll(".asset-button");
+
+    assetButtons.forEach((button) => {
+        button.style.display = "flex";
+        button.style.visibility = "visible";
+        button.classList.remove("d-none", "hidden");
+        button.classList.add("d-flex");
+    });
+}
+
+// Function to toggle favorite status
+function toggleFavorite(assetId, action) {
+    const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+    fetch("/toggle-favourite", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({
+            asset_id: assetId,
+            action: action,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Update the global favorites list
+                window.favouriteAssetIds = data.favourites || [];
+
+                // Update the star icon for this asset
+                const assetButton = document.querySelector(
+                    `[data-asset-id="${assetId}"]`
+                );
+                const starIcon = assetButton
+                    ? assetButton.querySelector(".favorite-star")
+                    : null;
+
+                if (starIcon) {
+                    if (action === "add") {
+                        starIcon.classList.remove("bi-star");
+                        starIcon.classList.add("bi-star-fill");
+                        starIcon.style.color = "#ffc107";
+                    } else {
+                        starIcon.classList.remove("bi-star-fill");
+                        starIcon.classList.add("bi-star");
+                        starIcon.style.color = "#6c757d";
+                    }
+                }
+
+                showNotification(
+                    action === "add"
+                        ? "Added to favorites!"
+                        : "Removed from favorites!",
+                    "success"
+                );
+            } else {
+                showNotification(
+                    data.message || "Error updating favorites",
+                    "error"
+                );
+            }
+        })
+        .catch((error) => {
+            showNotification("Error updating favorites", "error");
+        });
+}
+
+// Function to auto-resize textarea
+function autoResizeTextarea(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
+}
+
+// Note: initializeNotificationPopup function is already defined earlier in the file
+
+// Make additional functions globally available
+window.scrollToBottomOfChat = scrollToBottomOfChat;
+window.updateURLParameter = updateURLParameter;
+window.updateSidebarActive = updateSidebarActive;
+window.debugInterfaceVisibility = debugInterfaceVisibility;
+window.updateAssetPrices = updateAssetPrices;
+window.highlightCurrentAsset = highlightCurrentAsset;
+window.showOnlyFavorites = showOnlyFavorites;
+window.showAllAssets = showAllAssets;
+window.toggleFavorite = toggleFavorite;
+window.autoResizeTextarea = autoResizeTextarea;

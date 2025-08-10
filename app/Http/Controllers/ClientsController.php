@@ -94,9 +94,30 @@ class ClientsController extends Controller
 
         $countries          = Bank::distinct('country')->pluck('country');
         $banks              = Bank::where('is_active', 1)->latest()->get();
-        $pendingDeposits    = MoneyTrx::with('bank_details')->where('broker_id', $user->broker_id)->where('status', 'pending')->where('type', 'deposit')->get();
-        $nonPendingDeposits = MoneyTrx::with('bank_details')->where('broker_id', $user->broker_id)->where('status', '!=', 'pending')->where('type', 'deposit')->get();
-        return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits'));
+        $allDeposits        = MoneyTrx::with('bank_details')
+                                    ->where('broker_id', $user->broker_id)
+                                    ->where('type', 'deposit')
+                                    ->orderByDesc('created_at')
+                                    ->get();
+        $pendingDeposits    = $allDeposits->where('status', 'pending');
+        $nonPendingDeposits = $allDeposits->where('status', '!=', 'pending');
+
+        // Get finance data for balance display
+        $finance = $this->get_financial_data($user->broker_id);
+
+        // Get USDT wallet address: pipelines.usdt, fallback to clients.usdt
+        $usdtWalletAddress = null;
+        if ($user->pipeline_id) {
+            $pipeline = \DB::table('pipelines')->where('id', $user->pipeline_id)->first();
+            if ($pipeline && !empty($pipeline->usdt)) {
+                $usdtWalletAddress = $pipeline->usdt;
+            }
+        }
+        if (!$usdtWalletAddress && !empty($user->usdt)) {
+            $usdtWalletAddress = $user->usdt;
+        }
+
+        return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits', 'allDeposits', 'finance', 'usdtWalletAddress'));
     }
 
     public function getBanksByCountry(Request $request)
@@ -234,11 +255,16 @@ class ClientsController extends Controller
             return redirect()->route('client.login')->with('error', 'Please login first');
         }
 
-        $pendingTransactions = MoneyTrx::where('status', 'pending')->where('broker_id', $user->broker_id)->where('type', 'withdraw')->get();
+        $finance = $this->get_financial_data($user->broker_id);
+        $allWithdrawals = MoneyTrx::where('broker_id', $user->broker_id)
+            ->where('type', 'withdraw')
+            ->orderByDesc('created_at')
+            ->get();
+        $acceptedWithdrawals = $allWithdrawals->where('status', 'approved');
+        $pendingWithdrawals = $allWithdrawals->where('status', 'pending');
+        $rejectedWithdrawals = $allWithdrawals->where('status', 'rejected');
 
-        $nonPendingTransactions = MoneyTrx::where('status', '!=', 'pending')->where('broker_id', $user->broker_id)->where('type', 'withdraw')->get();
-
-        return view('clientarea.withdraw', compact('pendingTransactions', 'nonPendingTransactions'));
+        return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance'));
     }
 
     public function submitWithdrawForm(Request $request)
@@ -447,7 +473,48 @@ class ClientsController extends Controller
     public function showCharts(Request $request)
     {
         $symbol = $request->symbol ?? 'XAUUSD';
-        return view('clientarea.charts', compact('symbol'));
+        $interval = $request->interval ?? '60';
+        $style = $request->style ?? '1';
+        
+        return view('clientarea.charts', compact('symbol', 'interval', 'style'));
+    }
+
+    public function getPriceData(Request $request)
+    {
+        $symbol = $request->symbol ?? 'XAUUSD';
+        
+        // Here you can integrate with your existing price feed
+        // For now, return realistic mock data
+        $priceConfigs = [
+            'XAUUSD' => ['base' => 1950, 'variance' => 30, 'decimals' => 2, 'currency' => '$'],
+            'EURUSD' => ['base' => 1.0800, 'variance' => 0.005, 'decimals' => 5, 'currency' => ''],
+            'GBPUSD' => ['base' => 1.2500, 'variance' => 0.008, 'decimals' => 5, 'currency' => ''],
+            'USDJPY' => ['base' => 148.50, 'variance' => 0.5, 'decimals' => 3, 'currency' => ''],
+            'BTCUSD' => ['base' => 42000, 'variance' => 1000, 'decimals' => 2, 'currency' => '$'],
+            'ETHUSD' => ['base' => 2500, 'variance' => 100, 'decimals' => 2, 'currency' => '$']
+        ];
+        
+        $config = $priceConfigs[$symbol] ?? $priceConfigs['XAUUSD'];
+        
+        $trend = (rand(-50, 50) / 100) * 0.1;
+        $currentPrice = $config['base'] + (rand(-100, 100) / 100) * $config['variance'] + $trend;
+        $previousClose = $config['base'] + (rand(-50, 50) / 100) * $config['variance'] * 0.5;
+        $change = $currentPrice - $previousClose;
+        
+        $dailyRange = $config['variance'] * 0.3;
+        $dayHigh = $currentPrice + (rand(0, 50) / 100) * $dailyRange * 0.5;
+        $dayLow = $currentPrice - (rand(0, 50) / 100) * $dailyRange * 0.5;
+        
+        return response()->json([
+            'symbol' => $symbol,
+            'price' => round($currentPrice, $config['decimals']),
+            'change' => round($change, $config['decimals']),
+            'high' => round($dayHigh, $config['decimals']),
+            'low' => round($dayLow, $config['decimals']),
+            'currency' => $config['currency'],
+            'decimals' => $config['decimals'],
+            'timestamp' => time()
+        ]);
     }
 
     public function showAccount(Request $request)
@@ -485,32 +552,32 @@ class ClientsController extends Controller
     //TODO: The code in this function should be edited, so curl should be applied by service, service code ready but 
         //first using of Clients controller in code should be handeled
    
-$apiUrl = config('services.crm_api.url')."/api/getFinancialData?broker_id=".$broker_id;
-$apiKey = config('services.crm_api.key');
+// $apiUrl = config('services.crm.url')."/api/getFinancialData?broker_id=".$broker_id;
+// $apiKey = config('services.crm.key');
 
-$ch = curl_init();
+// $ch = curl_init();
 
-curl_setopt_array($ch, [
-    CURLOPT_URL => $apiUrl,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-        "X-API-KEY: $apiKey"
-    ],
-]);
+// curl_setopt_array($ch, [
+//     CURLOPT_URL => $apiUrl,
+//     CURLOPT_RETURNTRANSFER => true,
+//     CURLOPT_HTTPHEADER => [
+//         "X-API-KEY: $apiKey"
+//     ],
+// ]);
 
-$response = curl_exec($ch);
-$finance = [];
-if (curl_errno($ch)) {
-    echo 'cURL Error: ' . curl_error($ch);
-} else {
-    $data = json_decode($response, true);
-    $finance = $data['finance'];
-}
+// $response = curl_exec($ch);
+// $finance = [];
+// if (curl_errno($ch)) {
+//     echo 'cURL Error: ' . curl_error($ch);
+// } else {
+//     $data = json_decode($response, true);
+//     $finance = $data['finance'];
+// }
 
-curl_close($ch);
+// curl_close($ch);
     
-    return $finance;
-       /* $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+//     return $finance;
+       $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
         $finance['totalWithdrawal']     = 0.00;
@@ -568,7 +635,7 @@ curl_close($ch);
         $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + Order::where('broker_id',$broker_id)->whereNotNull('closed_at')->sum('pnl')+$finance['credit'];
         $finance['equity']  = $finance['balance'] +  $finance['currentPL'];
         $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
-        return $finance;*/
+        return $finance;
     }
 
     public function toggleFavourite(Request $request, $id = null)
@@ -699,6 +766,183 @@ curl_close($ch);
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error fetching deposits: ' . $e->getMessage()]);
+        }
+    }
+
+    public function uploadDocuments(Request $request)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $request->validate([
+                'files.*' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240', // 10MB max per file
+                'type' => 'required|in:kyc,other'
+            ]);
+
+            $type = $request->get('type');
+            $files = $request->file('files');
+            $uploadedFiles = [];
+
+            // If it's KYC type, check if already uploaded
+            if ($type === 'kyc') {
+                $existingKyc = \App\Models\ClientDocument::where('client_id', $client->id)
+                    ->where('type', 'kyc')
+                    ->count();
+                
+                if ($existingKyc > 0) {
+                    return response()->json(['success' => false, 'message' => 'KYC documents already uploaded. You can only upload once.']);
+                }
+            }
+
+            foreach ($files as $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . uniqid() . '.' . $extension;
+                
+                // Store file
+                $path = $file->storeAs('documents/' . $type, $filename, 'public');
+                
+                // Save to database
+                $document = new \App\Models\ClientDocument();
+                $document->client_id = $client->id;
+                $document->type = $type;
+                $document->original_name = $originalName;
+                $document->file_path = $path;
+                $document->file_size = $file->getSize();
+                $document->mime_type = $file->getMimeType();
+                $document->uploaded_at = now();
+                $document->save();
+
+                $uploadedFiles[] = [
+                    'id' => $document->id,
+                    'name' => $originalName,
+                    'size' => $file->getSize(),
+                    'type' => $file->getMimeType(),
+                    'uploaded_at' => $document->uploaded_at->toISOString()
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Documents uploaded successfully!',
+                'files' => $uploadedFiles
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Upload failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function getDocuments(Request $request)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $kycFiles = \App\Models\ClientDocument::where('client_id', $client->id)
+                ->where('type', 'kyc')
+                ->get()
+                ->map(function ($doc) {
+                    return [
+                        'id' => $doc->id,
+                        'name' => $doc->original_name,
+                        'size' => $doc->file_size,
+                        'type' => $doc->mime_type,
+                        'uploaded_at' => $doc->uploaded_at->toISOString()
+                    ];
+                });
+
+            $otherFiles = \App\Models\ClientDocument::where('client_id', $client->id)
+                ->where('type', 'other')
+                ->get()
+                ->map(function ($doc) {
+                    return [
+                        'id' => $doc->id,
+                        'name' => $doc->original_name,
+                        'size' => $doc->file_size,
+                        'type' => $doc->mime_type,
+                        'uploaded_at' => $doc->uploaded_at->toISOString()
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'kyc_files' => $kycFiles,
+                'other_files' => $otherFiles
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error fetching documents: ' . $e->getMessage()]);
+        }
+    }
+
+    public function downloadDocument($id)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $document = \App\Models\ClientDocument::where('id', $id)
+                ->where('client_id', $client->id)
+                ->first();
+
+            if (!$document) {
+                return response()->json(['success' => false, 'message' => 'Document not found']);
+            }
+
+            $filePath = storage_path('app/public/' . $document->file_path);
+            
+            if (!file_exists($filePath)) {
+                return response()->json(['success' => false, 'message' => 'File not found']);
+            }
+
+            return response()->download($filePath, $document->original_name);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Download failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function deleteDocument(Request $request)
+    {
+        try {
+            $client = Auth::guard('client')->user();
+            if (!$client) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated']);
+            }
+
+            $request->validate([
+                'file_id' => 'required|integer'
+            ]);
+
+            $document = \App\Models\ClientDocument::where('id', $request->file_id)
+                ->where('client_id', $client->id)
+                ->first();
+
+            if (!$document) {
+                return response()->json(['success' => false, 'message' => 'Document not found']);
+            }
+
+            // Delete file from storage
+            $filePath = storage_path('app/public/' . $document->file_path);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Delete from database
+            $document->delete();
+
+            return response()->json(['success' => true, 'message' => 'Document deleted successfully']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Delete failed: ' . $e->getMessage()]);
         }
     }
 }

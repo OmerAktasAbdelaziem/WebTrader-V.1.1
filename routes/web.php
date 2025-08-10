@@ -6,6 +6,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientLoginController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WebTraderController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,8 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->post  ('/client/kyc/upload',               [ClientsController::class,         'uploadKycPhoto'          ])->name('client.kyc.upload');
     $router->get   ('/client/trading-platform',         [ClientsController::class,         'showTradingPlatform'     ])->name('client.trading.platform');
     $router->get   ('/client/webtrader',                [WebTraderController::class,       'index'                   ])->withoutMiddleware('clientAuth')->name('client.webtrader');
+    $router->get   ('/client/webtrader/loading',        [WebTraderController::class,       'showLoading'             ])->name('client.webtrader.loading');
+    $router->get   ('/client/webtrader/main',           [WebTraderController::class,       'index'                   ])->name('client.webtrader.main');
     $router->get   ('/deposit',                         [ClientsController::class,         'showDepositForm'         ])->name('client.deposit');
     $router->post  ('/deposit',                         [ClientsController::class,         'processDeposit'          ])->name('deposit.process');
     $router->post  ('/client/get-banks-by-country',     [BankController::class,            'getBanksByCountry'       ])->name('get.banks');
@@ -57,6 +60,7 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/client/quotes',                   [ClientsController::class,         'showQuotes'              ])->name('clientarea.quotes');
     $router->get   ('/client/orders',                   [ClientsController::class,         'showOrders'              ])->name('clientarea.orders');
     $router->get   ('/client/charts',                   [ClientsController::class,         'showCharts'              ])->name('clientarea.charts');
+    $router->get   ('/api/price-data',                  [ClientsController::class,         'getPriceData'            ])->name('api.price.data');
     $router->get   ('/client/account',                  [ClientsController::class,         'showAccount'             ])->name('clientarea.account');
     $router->put   ('/client/profile',                  [ClientsController::class,         'updateProfile'           ])->name('client.update.profile');
     $router->post  ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
@@ -65,7 +69,6 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->post  ('/order/{id}',                      [OrderController::class,           'close'                   ])->name('order.close');
     $router->put   ('/order/{id}',                      [OrderController::class,           'update'                  ])->name('order.update');
     $router->delete('/order/{id}',                      [OrderController::class,           'delete'                  ])->name('order.delete');
-    $router->post  ('/deposit',                         [ClientsController::class,         'processDeposit'          ])->name('client.deposit');
     $router->post  ('/withdrawal',                      [ClientsController::class,         'processWithdrawal'       ])->name('client.withdrawal');
     $router->get   ('/transactions/refresh',            [ClientsController::class,         'refreshTransactions'     ])->name('client.transactions.refresh');
     $router->get   ('/deposits/refresh',                [ClientsController::class,         'refreshDepositTransactions'])->name('client.deposits.refresh');
@@ -73,4 +76,14 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->post  ('/chat',                            [ChatController::class,            'store'                   ])->name('chat.store');
     $router->post  ('/notification/read',               [WebTraderController::class,       'markNotificationAsRead'  ])->name('notification.read');
     $router->get   ('/notification/test',               [WebTraderController::class,       'createTestNotifications' ])->name('notification.test');
+    
+    // New notification routes
+    $router->post  ('/notifications/{id}/read',         [NotificationController::class,    'markAsRead'              ])->name('notifications.mark-as-read');
+    $router->post  ('/notifications/mark-all-read',     [NotificationController::class,    'markAllAsRead'           ])->name('notifications.mark-all-read');
+    
+    // Upload Document Routes
+    $router->post  ('/client/upload-documents',         [ClientsController::class,         'uploadDocuments'         ])->name('client.upload.documents');
+    $router->get   ('/client/get-documents',            [ClientsController::class,         'getDocuments'            ])->name('client.get.documents');
+    $router->get   ('/client/download-document/{id}',   [ClientsController::class,         'downloadDocument'        ])->name('client.download.document');
+    $router->post  ('/client/delete-document',          [ClientsController::class,         'deleteDocument'          ])->name('client.delete.document');
 });

@@ -73,28 +73,57 @@ class WebTraderController extends Controller
             $to = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
         }
 
-        list($assetsPrices,$favourite_assets, $favourite_assets_ids, $asset_group_id) = $this->get_assets();
+        list($assets_from_group, $favourite_assets, $favourite_assets_ids, $asset_group_id) = $this->get_assets();
         
         // Ensure we have a valid authenticated client
         if (!$client || !$client->broker_id) {
             return redirect()->route('client.login')->with('error', __('web.please_login_first'));
         }
         
-        $pendingOrders = Order::where('status', '!=', 'active')->whereNull('closed_at')->where('broker_id', $client->broker_id)->latest()->get();
-        $closedOrders  = Order::whereNotNull('closed_at')->where('broker_id', $client->broker_id)->where('closed_at','>=',$from)->where('closed_at','<=',$to)->orderBy('closed_at','Desc')->paginate(6);
-        $openOrders    = Order::where('status', 'active')->whereNull('closed_at')->where('broker_id', $client->broker_id)->latest()->get();
-        $countries     = Bank::distinct('country')->pluck('country');
-        $finance       = $this->get_financial_data($client->broker_id);
-        $banks         = Bank::where('is_active', 1)->latest()->get();
-        $assetsPrices  = Asset::select('id', 'symbol', 'name', 'bid_price', 'ask_price', 'category')->get();
-        $categories    = Asset::select('category')->distinct()->pluck('category');
-        $orders = Order::whereNull('closed_at')->get();
+        // Optimize database queries with eager loading and combine where possible
+        $pendingOrders = Order::where('status', '!=', 'active')
+            ->whereNull('closed_at')
+            ->where('broker_id', $client->broker_id)
+            ->latest()
+            ->limit(50) // Add limit to prevent loading too many records
+            ->get();
+            
+        $closedOrders = Order::whereNotNull('closed_at')
+            ->where('broker_id', $client->broker_id)
+            ->where('closed_at', '>=', $from)
+            ->where('closed_at', '<=', $to)
+            ->orderBy('closed_at', 'DESC')
+            ->paginate(10); // Keep pagination but reduce from 6 to 10 per page
+            
+        $openOrders = Order::where('status', 'active')
+            ->whereNull('closed_at')
+            ->where('broker_id', $client->broker_id)
+            ->latest()
+            ->limit(50) // Add limit
+            ->get();
+            
+        // Load static data that doesn't change often - these could be cached
+        $countries = Bank::distinct('country')->pluck('country');
+        $finance = $this->get_financial_data($client->broker_id);
+        $banks = Bank::where('is_active', 1)->latest()->limit(20)->get(); // Add limit
         
-        // Get chat messages for the current user
-        $chat = Chat_ah::where('client_id', $client->id)->orderBy('created_at', 'asc')->get();
+        // Get assets data efficiently with caching (consider implementing Redis cache)
+        $assetsPrices = Asset::select('id', 'symbol', 'name', 'bid_price', 'ask_price', 'category')
+            ->where('bid_price', '!=', 0)
+            ->get();
+        $categories = Asset::select('category')->distinct()->pluck('category');
+        $orders = Order::whereNull('closed_at')->where('broker_id', $client->broker_id)->count(); // Just get count instead of all records
         
-        // Get notifications for the current user
-        $notifications = Notification::where('client_id', $client->id)->latest()->take(10)->get();
+        // Optimize chat and notifications queries
+        $chat = Chat_ah::where('client_id', $client->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(50) // Limit chat messages
+            ->get();
+            
+        $notifications = Notification::where('client_id', $client->id)
+            ->latest()
+            ->limit(10)
+            ->get();
 
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
@@ -120,6 +149,16 @@ class WebTraderController extends Controller
                 'notifications'
             ));
         }
+    }
+
+    public function showLoading(Request $request)
+    {
+        // Quick authentication check without heavy queries
+        if (!Auth::guard('client')->user()) {
+            return redirect()->route('client.login');
+        }
+        
+        return view('clientarea.webtrader_loading');
     }
 
     public function get_financial_data($broker_id)

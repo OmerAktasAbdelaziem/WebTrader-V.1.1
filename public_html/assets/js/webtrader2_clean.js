@@ -55,8 +55,7 @@ function showMainContent() {
     const withdrawalInterface = document.getElementById("withdrawalInterface");
 
     if (!mainContent) {
-        console.error("Main content element not found");
-        return;
+return;
     }
 
     mainContent.style.display = "block";
@@ -76,8 +75,7 @@ function showAccountInterface() {
     const withdrawalInterface = document.getElementById("withdrawalInterface");
 
     if (!accountInterface) {
-        console.error("Account interface element not found");
-        return;
+return;
     }
 
     if (mainContent) mainContent.style.display = "none";
@@ -97,8 +95,7 @@ function showDepositInterface() {
     const withdrawalInterface = document.getElementById("withdrawalInterface");
 
     if (!depositInterface) {
-        console.error("Deposit interface element not found");
-        return;
+return;
     }
 
     if (mainContent) mainContent.style.display = "none";
@@ -118,8 +115,7 @@ function showWithdrawalInterface() {
     const withdrawalInterface = document.getElementById("withdrawalInterface");
 
     if (!withdrawalInterface) {
-        console.error("Withdrawal interface element not found");
-        return;
+return;
     }
 
     if (mainContent) mainContent.style.display = "none";
@@ -265,8 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (logoutForm) {
                     logoutForm.submit();
                 } else {
-                    console.error("Logout form not found!");
-                }
+}
             }
         });
     }
@@ -341,3 +336,4 @@ function highlightCurrentAsset() {
         currentAssetButton.classList.add("d-flex");
     }
 }
+

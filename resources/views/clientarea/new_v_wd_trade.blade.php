@@ -9,41 +9,224 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="{{ url('css/webtrader.css') }}" rel="stylesheet" />
     <link href="{{ url('css/webtrader2.css') }}" rel="stylesheet" />
+    
+    <style>
+        /* Modern Language Switcher Styles */
+        .language-switcher-container {
+            position: relative;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .language-switcher-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: #e0e0e0;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .language-switcher-btn:hover {
+            background: rgba(79, 140, 255, 0.2);
+            border-color: rgba(79, 140, 255, 0.4);
+            color: #4f8cff;
+            transform: scale(1.1);
+        }
+
+        .language-switcher-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.3);
+        }
+
+        .language-switcher-btn.active {
+            background: rgba(79, 140, 255, 0.3);
+            border-color: #4f8cff;
+            color: #4f8cff;
+            transform: scale(1.1);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 150%;
+            left: 65px;
+            transform: translateY(-50%);
+            min-width: 180px;
+            background: rgba(25, 30, 36, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(79, 140, 255, 0.2);
+            border-radius: 0.75rem;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-50%) translateX(-10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            overflow: hidden;
+        }
+
+        .language-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0) scale(1);
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .language-option:last-child {
+            border-bottom: none;
+        }
+
+        .language-option:hover {
+            background: rgba(79, 140, 255, 0.1);
+            color: #4f8cff;
+            text-decoration: none;
+        }
+
+        .language-option.active {
+            background: rgba(79, 140, 255, 0.15);
+            color: #4f8cff;
+        }
+
+        .option-flag {
+            border-radius: 3px;
+            object-fit: cover;
+            margin-right: 0.75rem;
+        }
+
+        .option-name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .active-check {
+            font-size: 0.875rem;
+            color: #4f8cff;
+            opacity: 0.8;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .language-switcher-container {
+                padding: 0.25rem;
+            }
+            
+            .language-switcher-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .language-dropdown {
+                left: 45px;
+                min-width: 160px;
+            }
+            
+            .option-flag {
+                width: 16px;
+                height: 12px;
+            }
+            
+            .language-option {
+                padding: 0.625rem 0.875rem;
+            }
+            
+            .option-name {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Close dropdown when clicking outside */
+        .language-dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 15;
+            background: transparent;
+        }
+    </style>
 
 </head>
 <body>
 
 <!-- Sidebar Navigation -->
 <div class="sidebar">
-    <i class="bi bi-bell nav-icon notification-icon" title="Notifications" style="font-size:1.2rem; padding:0.3rem; position: relative;">
+    <!-- Language Switcher  -->
+    <div class="language-switcher-container">
+        <button class="language-switcher-btn">
+            <i class="bi bi-globe"></i>
+        </button>
+        
+        <div class="language-dropdown" id="languageDropdown">
+            @foreach(['en' => 'English', 'ar' => 'العربية'] as $language => $name)
+                <a href="{{ switchUrlLocaleTo($language) }}" 
+                   class="language-option {{ app()->getLocale() == $language ? 'active' : '' }}">
+                    <img src="{{ config('app.flagIconUrlForLocale.' . $language) }}" 
+                         width="18" 
+                         height="13" 
+                         alt="{{ $name }}" 
+                         class="option-flag">
+                    <span class="option-name">{{ $name }}</span>
+                    @if(app()->getLocale() == $language)
+                        <i class="bi bi-check-lg active-check"></i>
+                    @endif
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    <i class="bi bi-bell nav-icon notification-icon" title="{{ __('web.notifications') }}" style="font-size:1.2rem; padding:0.3rem; position: relative; cursor: pointer; z-index: 1000;">
         @if(!empty($notifications) && count($notifications) > 0)
             <span class="notification-badge">{{ count($notifications) }}</span>
         @endif
     </i>
-    <i class="bi bi-chat-dots nav-icon chat-icon" title="Live Chat" style="font-size:1.2rem; padding:0.3rem;"></i>
+    <i class="bi bi-chat-dots nav-icon chat-icon" title="{{ __('web.live_chat') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
 
     <div style="height: 20px; border-bottom: 2px solid #4f8cff; margin: 0 10px 20px 10px; opacity: 0.7;"></div>
 
-    <i class="bi bi-bar-chart nav-icon markets-icon active" title="Markets" style="font-size:1.2rem; padding:0.3rem;"></i>
-    <i class="bi bi-person nav-icon account-icon" title="Account" style="font-size:1.2rem; padding:0.3rem;"></i>
-    <i class="bi bi-arrow-up-circle nav-icon deposit-icon" title="Deposit" style="font-size:1.2rem; padding:0.3rem;"></i>
-    <i class="bi bi-arrow-down-circle nav-icon withdrawal-icon" title="Withdrawal" style="font-size:1.2rem; padding:0.3rem;"></i>
-    <i class="bi bi-box-arrow-right nav-icon logout-icon" title="Logout" style="font-size:1.2rem; padding:0.3rem;"></i>
+    <i class="bi bi-bar-chart nav-icon markets-icon active" title="{{ __('web.markets') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
+    <i class="bi bi-person nav-icon account-icon" title="{{ __('web.account') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
+    <i class="bi bi-arrow-up-circle nav-icon deposit-icon" title="{{ __('web.deposit') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
+    <i class="bi bi-arrow-down-circle nav-icon withdrawal-icon" title="{{ __('web.withdrawal') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
+    <i class="bi bi-box-arrow-right nav-icon logout-icon" title="{{ __('web.logout') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
 </div>
 
 <!-- Custom Context Menu -->
 <div id="customContextMenu" class="shadow-lg p-2">
     <button id="goToAssetBtn" class="dropdown-item d-flex align-items-center gap-2">
         <i class="bi bi-arrow-right-circle fs-5"></i>
-        <span>Go to Asset</span>
+        <span>{{ __('web.go_to_asset') }}</span>
     </button>
     <button id="addToFavouriteBtn" data-asset-id="{{ $asset && $asset->id ? $asset->id : '' }}" class="dropdown-item d-flex align-items-center gap-2">
         <i class="bi bi-star fs-5 text-primary"></i>
-        <span>Add to Favourites</span>
+        <span>{{ __('web.add_to_favourites') }}</span>
     </button>
     <button id="removeFromFavouriteBtn" class="dropdown-item d-flex align-items-center gap-2">
         <i class="bi bi-star-fill fs-5 text-warning"></i>
-        <span>Remove from Favourites</span>
+        <span>{{ __('web.remove_from_favourites') }}</span>
     </button>
 </div>
 
@@ -79,27 +262,27 @@
                 <!-- Asset Search & Filters -->
                 <div class="mb-3 d-flex gap-2 align-items-center">
                     <div class="flex-grow-1">
-                        <input type="text" id="assetSearch" class="searchbar form-control-sm w-100" placeholder="Search symbols..." style="background: #23272f; border: 1px solid #353b48; color: #e0e0e0; border-radius: 6px; padding: 0.5rem;">
+                        <input type="text" id="assetSearch" class="searchbar form-control-sm w-100" placeholder="{{ __('web.search_symbols') }}" style="background: #23272f; border: 1px solid #353b48; color: #e0e0e0; border-radius: 6px; padding: 0.5rem;">
                     </div>
                     <div>
                         <select id="categoryFilter" class="filtercategory form-select-sm" style="background: #23272f; border: 1px solid #353b48; color: #e0e0e0; border-radius: 6px; padding: 0.5rem; min-width: 100px;">
-                            <option value="">All</option>
+                            <option value="">{{ __('web.all') }}</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category }}">{{ $category }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <button type="button" id="showFavouritesBtn" class="btn btn-sm" title="Show Favourites" style="background:#23272f; color:#4f8cff; border:1px solid #353b48; padding: 0.5rem 0.75rem; border-radius: 6px;">
+                        <button type="button" id="showFavouritesBtn" class="btn btn-sm" title="{{ __('web.show_favourites') }}" style="background:#23272f; color:#4f8cff; border:1px solid #353b48; padding: 0.5rem 0.75rem; border-radius: 6px;">
                             <i class="bi bi-star-fill"></i>
                         </button>
                     </div>
                 </div>
                 <div class="assets d-grid gap-2" id="assetGrid">
                     <div class="row fw-bold text-secondary mb-2" style="font-size: 1rem;">
-                        <div class="col-6">Market</div>
-                        <div class="col-3 text-center">Bid</div>
-                        <div class="col-3 text-center">Ask</div>
+                        <div class="col-6">{{ __('web.market') }}</div>
+                        <div class="col-3 text-center">{{ __('web.bid') }}</div>
+                        <div class="col-3 text-center">{{ __('web.ask') }}</div>
                     </div>
                     
                     {{-- Current Asset First --}}
@@ -187,25 +370,45 @@
                     <input type="hidden" id="currentChartSymbol" value="{{ $symbol ?? '' }}">
                     
 
-                    <!-- Amount and Trade Buttons -->
-                    <div class="d-flex gap-2 mb-3 align-items-center justify-content-center">
-                        <button type="button" id="sellBtn" class="btnorder btn-danger">
-                            <span class="d-flex flex-column align-items-center">
-                                <strong class="sellPrice" id="displayBidPrice">{{ $asset && $asset->bid_price ? number_format($asset->bid_price, 4) : '0.0000' }}</strong>
-                                <span>{{ __('web.sell') }}</span>
-                            </span>
-                        </button>
-                        <div class="input-group" style="max-width: 140px;">
-                            <button type="button" class="btnminus" onclick="changeAmount(-0.01)">−</button>
-                            <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="0.01" class="amount text-center" readonly/>
-                            <button type="button" class="btnplus" onclick="changeAmount(0.01)">+</button>
+                    <!-- Trading Controls -->
+                    <div class="trading-controls mb-3">
+                        <!-- Quick Amount Buttons -->
+                        <div class="quick-amounts-row mb-2">
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(0.01)">Min</button>
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(0.10)">0.10</button>
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(1.00)">1.00</button>
+                            <button type="button" class="quick-amount-btn" onclick="setAmount(10.00)">10.00</button>
                         </div>
-                        <button type="button" id="buyBtn" class="btnorder btn-success">
-                            <span class="d-flex flex-column align-items-center">
-                                <strong class="buyPrice" id="displayAskPrice">{{ $asset && $asset->ask_price ? number_format($asset->ask_price, 4) : '0.0000' }}</strong>
-                                <span>{{ __('web.buy') }}</span>
-                            </span>
-                        </button>
+
+                        <!-- Trade Buttons with Amount in Center -->
+                        <div class="trade-buttons-with-amount">
+                            <button type="button" id="sellBtn" class="trade-btn sell-btn">
+                                <div class="trade-btn-content">
+                                    <span class="trade-action">{{ __('web.sell') }}</span>
+                                    <span class="trade-price" id="displayBidPrice">{{ $asset && $asset->bid_price ? number_format($asset->bid_price, 4) : '0.0000' }}</span>
+                                </div>
+                            </button>
+
+                            <div class="amount-control-center">
+                                <label for="amount" class="amount-label">{{ __('web.amount') }}</label>
+                                <div class="amount-input-group">
+                                    <button type="button" class="amount-btn minus-btn" onclick="changeAmount(-0.01)">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="0.01" class="amount-input" readonly/>
+                                    <button type="button" class="amount-btn plus-btn" onclick="changeAmount(0.01)">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="buyBtn" class="trade-btn buy-btn">
+                                <div class="trade-btn-content">
+                                    <span class="trade-action">{{ __('web.buy') }}</span>
+                                    <span class="trade-price" id="displayAskPrice">{{ $asset && $asset->ask_price ? number_format($asset->ask_price, 4) : '0.0000' }}</span>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                     </form>
                 </div>
@@ -217,16 +420,16 @@
             <div class="details-panel">
             <div class="d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-center">
                 <ul class="nav nav-tabs border-0 mb-0" id="tradeTabs" role="tablist">
-                    <li class="nav-item"><a class="nav-link {{ (!isset($tab) || $tab == 'openedOrder') ? 'active' : '' }}" data-bs-toggle="tab" href="#openOrders" role="tab">Orders</a></li>
-                    <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'summary') ? 'active' : '' }}" data-bs-toggle="tab" href="#summary" role="tab">Pending</a></li>
-                    <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'history') ? 'active' : '' }}" data-bs-toggle="tab" href="#history" role="tab">History</a></li>
+                    <li class="nav-item"><a class="nav-link {{ (!isset($tab) || $tab == 'openedOrder') ? 'active' : '' }}" data-bs-toggle="tab" href="#openOrders" role="tab">{{ __('web.orders') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'summary') ? 'active' : '' }}" data-bs-toggle="tab" href="#summary" role="tab">{{ __('web.pending') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'history') ? 'active' : '' }}" data-bs-toggle="tab" href="#history" role="tab">{{ __('web.history') }}</a></li>
                 </ul>
                 <div class="account-summary-inline d-flex flex-wrap">
-                    <div><span class="text-secondary">Balance:</span> <span class="text-light">${{ number_format($finance['balance'], 2) }}</span></div>
-                    <div><span class="text-secondary">Margin:</span> <span class="text-light">${{ number_format($finance['freeMargin'], 2) }}</span></div>
-                    <div><span class="text-secondary">Equity:</span> <span class="text-light">${{ number_format($finance['equity'], 2) }}</span></div>
-                    <div><span class="text-secondary">Credit:</span> <span class="text-light">${{ number_format($finance['credit'], 2) }}</span></div>
-                    <div><span class="text-secondary">Bonus:</span> <span class="text-light">${{ number_format($finance['bonus'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.credit') }}:</span> <span class="text-light">${{ number_format($finance['credit'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.bonus') }}:</span> <span class="text-light">${{ number_format($finance['bonus'], 2) }}</span></div>
                 </div>
             </div>
             <div class="tab-content">
@@ -236,16 +439,16 @@
                         <table class="table table-dark table-sm align-middle mb-0">
                             <thead>
                             <tr>
-                                <th>Instrument</th>
-                                <th>Type</th>
-                                <th>Size</th>
-                                <th>Entry Price</th>
-                                <th>Current Price</th>
-                                <th>Stop Loss</th>
-                                <th>Take Profit</th>
-                                <th>Created at</th>
-                                <th>Profit &amp; Loss</th>
-                                <th>Actions</th>
+                                <th>{{ __('web.instrument') }}</th>
+                                <th>{{ __('web.type') }}</th>
+                                <th>{{ __('web.size') }}</th>
+                                <th>{{ __('web.entry_price') }}</th>
+                                <th>{{ __('web.current_price') }}</th>
+                                <th>{{ __('web.stop_loss') }}</th>
+                                <th>{{ __('web.take_profit') }}</th>
+                                <th>{{ __('web.created_at') }}</th>
+                                <th>{{ __('web.profit_loss') }}</th>
+                                <th>{{ __('web.actions') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -265,12 +468,12 @@
                                         <td>
                                             <form action="{{ route('order.close', ['id'=>$order->id]) }}" class="d-inline" method="POST">
                                                 @csrf
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to close this order?')">
-                                                    Close
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('web.confirm_close_order') }}')">
+                                                    {{ __('web.close') }}
                                                 </button>
                                             </form>
                                             <button type="button" class="btn btn-warning btn-sm ms-1" onclick="editOrder({{ $order->id }}, '{{ $order->s_l }}', '{{ $order->s_p }}')" data-bs-toggle="modal" data-bs-target="#editOrderModal">
-                                                Edit
+                                                {{ __('web.edit') }}
                                             </button>
                                         </td>
                                     </tr>
@@ -292,16 +495,16 @@
                         <table class="table table-dark table-sm align-middle mb-0">
                             <thead>
                             <tr>
-                                <th>Instrument</th>
-                                <th>Type</th>
-                                <th>Size</th>
-                                <th>Open Price</th>
-                                <th>Close Price</th>
-                                <th>Stop Loss</th>
-                                <th>Take Profit</th>
-                                <th>Opened</th>
-                                <th>Closed</th>
-                                <th>Profit &amp; Loss</th>
+                                <th>{{ __('web.instrument') }}</th>
+                                <th>{{ __('web.type') }}</th>
+                                <th>{{ __('web.size') }}</th>
+                                <th>{{ __('web.open_price') }}</th>
+                                <th>{{ __('web.close_price') }}</th>
+                                <th>{{ __('web.stop_loss') }}</th>
+                                <th>{{ __('web.take_profit') }}</th>
+                                <th>{{ __('web.opened') }}</th>
+                                <th>{{ __('web.closed') }}</th>
+                                <th>{{ __('web.profit_loss') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -375,12 +578,12 @@
                                             <form action="{{ route('order.delete', ['id'=>$order->id]) }}" class="d-inline" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this pending order?')">
-                                                    Cancel
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('web.confirm_cancel_pending_order') }}')">
+                                                    {{ __('web.cancel') }}
                                                 </button>
                                             </form>
                                             <button type="button" class="btn btn-warning btn-sm ms-1" onclick="editOrder({{ $order->id }}, '{{ $order->s_l }}', '{{ $order->s_p }}')" data-bs-toggle="modal" data-bs-target="#editOrderModal">
-                                                Edit
+                                                {{ __('web.edit') }}
                                             </button>
                                         </td>
                                     </tr>
@@ -410,14 +613,13 @@
                     <i class="bi bi-person-circle"></i>
                 </div>
                 <div class="header-text">
-                    <h1>Account Dashboard</h1>
-                    <p>Overview of your trading account and statistics</p>
+                    <h1>{{ __('web.account_dashboard') }}</h1>
+                    <p>{{ __('web.overview_trading_account') }}</p>
                 </div>
-            </div>
-            <div class="header-actions">
+            </div>                <div class="header-actions">
                 <button class="btn-modern btn-secondary back-to-trading-btn">
                     <i class="bi bi-arrow-left"></i>
-                    <span>Back to Trading</span>
+                    <span>{{ __('web.back_to_trading') }}</span>
                 </button>
             </div>
         </div>
@@ -430,7 +632,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>${{ number_format($finance['balance'], 2) }}</h3>
-                    <p>Account Balance</p>
+                    <p>{{ __('web.account_balance') }}</p>
                 </div>
                 <div class="stat-trend positive">
                     <i class="bi bi-arrow-up"></i>
@@ -443,7 +645,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>${{ number_format($finance['equity'], 2) }}</h3>
-                    <p>Total Equity</p>
+                    <p>{{ __('web.total_equity') }}</p>
                 </div>
                 <div class="stat-trend positive">
                     <i class="bi bi-arrow-up"></i>
@@ -456,7 +658,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>${{ number_format($finance['freeMargin'], 2) }}</h3>
-                    <p>Free Margin</p>
+                    <p>{{ __('web.free_margin') }}</p>
                 </div>
                 <div class="stat-trend neutral">
                     <i class="bi bi-dash"></i>
@@ -469,7 +671,7 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="{{ $finance['currentPL'] >= 0 ? 'text-success' : 'text-danger' }}">${{ number_format($finance['currentPL'], 2) }}</h3>
-                    <p>Current P&L</p>
+                    <p>{{ __('web.current_pnl') }}</p>
                 </div>
                 <div class="stat-trend {{ $finance['currentPL'] >= 0 ? 'positive' : 'negative' }}">
                     <i class="bi bi-{{ $finance['currentPL'] >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -481,9 +683,9 @@
         <div class="info-cards-grid">
             <div class="info-card personal-info">
                 <div class="card-header">
-                    <h3><i class="bi bi-person-lines-fill"></i> Personal Information</h3>
+                    <h3><i class="bi bi-person-lines-fill"></i> {{ __('web.personal_information') }}</h3>
                     <button class="btn btn-sm btn-outline-primary edit-profile-btn" id="editProfileBtn">
-                        <i class="bi bi-pencil"></i> Edit
+                        <i class="bi bi-pencil"></i> {{ __('web.edit') }}
                     </button>
                 </div>
                 <div class="card-content">
@@ -491,55 +693,55 @@
                         @csrf
                         @method('PUT')
                         <div class="info-row">
-                            <span class="label">Name</span>
+                            <span class="label">{{ __('web.name') }}</span>
                             <input type="text" name="name" class="form-control-modern" value="{{ auth()->guard('client')->user()->name }}" required>
                         </div>
                         <div class="info-row">
-                            <span class="label">Email</span>
+                            <span class="label">{{ __('web.email') }}</span>
                             <input type="email" name="email" class="form-control-modern" value="{{ auth()->guard('client')->user()->email }}" required>
                         </div>
                         <div class="info-row">
-                            <span class="label">Phone</span>
+                            <span class="label">{{ __('web.phone') }}</span>
                             <input type="text" name="phone" class="form-control-modern" value="{{ auth()->guard('client')->user()->phone ?? '' }}" placeholder="Enter your phone number">
                         </div>
                         <div class="info-row">
-                            <span class="label">Country</span>
+                            <span class="label">{{ __('web.country') }}</span>
                             <input type="text" name="country" class="form-control-modern" value="{{ auth()->guard('client')->user()->country ?? '' }}" placeholder="Enter your country">
                         </div>
                         <div class="info-row">
-                            <span class="label">Account Type</span>
+                            <span class="label">{{ __('web.account_type') }}</span>
                             <span class="value badge-premium">{{ auth()->guard('client')->user()->account_type ?? 'Standard' }}</span>
-                            <small class="text-muted">Account type cannot be changed</small>
+                            <small class="text-muted">{{ __('web.account_type_cannot_change') }}</small>
                         </div>
                         <div class="form-actions mt-3">
                             <button type="submit" class="btn btn-gradient-primary me-2">
-                                <i class="bi bi-check-lg"></i> Save Changes
+                                <i class="bi bi-check-lg"></i> {{ __('web.save_changes') }}
                             </button>
                             <button type="button" class="btn btn-secondary cancel-edit-btn">
-                                <i class="bi bi-x-lg"></i> Cancel
+                                <i class="bi bi-x-lg"></i> {{ __('web.cancel') }}
                             </button>
                         </div>
                     </form>
                     
                     <div id="profileDisplay" class="profile-display">
                         <div class="info-row">
-                            <span class="label">Name</span>
+                            <span class="label">{{ __('web.name') }}</span>
                             <span class="value enhanced">{{ auth()->guard('client')->user()->name }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Email</span>
+                            <span class="label">{{ __('web.email') }}</span>
                             <span class="value enhanced">{{ auth()->guard('client')->user()->email }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Phone</span>
-                            <span class="value enhanced">{{ auth()->guard('client')->user()->phone ?? 'Not provided' }}</span>
+                            <span class="label">{{ __('web.phone') }}</span>
+                            <span class="value enhanced">{{ auth()->guard('client')->user()->phone ?? __('web.not_provided') }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Country</span>
-                            <span class="value enhanced">{{ auth()->guard('client')->user()->country ?? 'Not provided' }}</span>
+                            <span class="label">{{ __('web.country') }}</span>
+                            <span class="value enhanced">{{ auth()->guard('client')->user()->country ?? __('web.not_provided') }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Account Type</span>
+                            <span class="label">{{ __('web.account_type') }}</span>
                             <span class="value badge-premium enhanced">{{ auth()->guard('client')->user()->account_type ?? 'Standard' }}</span>
                         </div>
                     </div>
@@ -548,7 +750,7 @@
 
             <div class="info-card trading-stats">
                 <div class="card-header">
-                    <h3><i class="bi bi-graph-up-arrow"></i> Trading Statistics</h3>
+                    <h3><i class="bi bi-graph-up-arrow"></i> {{ __('web.trading_statistics') }}</h3>
                 </div>
                 <div class="card-content">
                     <div class="stats-grid-3x2">
@@ -556,37 +758,37 @@
                             <div class="stat-circle total-orders">
                                 <span>{{ number_format($finance['totalOrders'] ?? 0, 0) }}</span>
                             </div>
-                            <p>Total Orders</p>
+                            <p>{{ __('web.total_orders') }}</p>
                         </div>
                         <div class="stat-item">
                             <div class="stat-circle active-orders">
                                 <span>{{ number_format($finance['activeOrders'] ?? 0, 0) }}</span>
                             </div>
-                            <p>Active Orders</p>
+                            <p>{{ __('web.active_orders') }}</p>
                         </div>
                         <div class="stat-item">
                             <div class="stat-circle closed-orders">
                                 <span>{{ number_format($finance['closedOrders'] ?? 0, 0) }}</span>
                             </div>
-                            <p>Closed Orders</p>
+                            <p>{{ __('web.closed_orders') }}</p>
                         </div>
                         <div class="stat-item">
                             <div class="stat-circle win-orders">
                                 <span>{{ number_format($finance['winOrders'] ?? 0, 0) }}</span>
                             </div>
-                            <p>Win Orders</p>
+                            <p>{{ __('web.win_orders') }}</p>
                         </div>
                         <div class="stat-item">
                             <div class="stat-circle lose-orders">
                                 <span>{{ number_format($finance['loseOrders'] ?? 0, 0) }}</span>
                             </div>
-                            <p>Lose Orders</p>
+                            <p>{{ __('web.lose_orders') }}</p>
                         </div>
                         <div class="stat-item">
                             <div class="stat-circle total-pnl {{ ($finance['totalPnL'] ?? 0) >= 0 ? 'profit' : 'loss' }}">
                                 <span>${{ number_format($finance['totalPnL'] ?? 0, 2) }}</span>
                             </div>
-                            <p>Total PnL</p>
+                            <p>{{ __('web.total_pnl') }}</p>
                         </div>
                     </div>
                 </div>
@@ -597,15 +799,19 @@
         <div class="quick-actions">
             <button class="action-btn deposit-action" onclick="showDepositInterface()">
                 <i class="bi bi-arrow-up-circle"></i>
-                <span>Make Deposit</span>
+                <span>{{ __('web.make_deposit') }}</span>
             </button>
             <button class="action-btn withdrawal-action" onclick="showWithdrawalInterface()">
                 <i class="bi bi-arrow-down-circle"></i>
-                <span>Withdraw Funds</span>
+                <span>{{ __('web.withdraw_funds') }}</span>
             </button>
             <button class="action-btn trading-action" onclick="showMainContent()">
                 <i class="bi bi-graph-up"></i>
-                <span>Start Trading</span>
+                <span>{{ __('web.start_trading') }}</span>
+            </button>
+            <button class="action-btn upload-document-action" onclick="showUploadDocumentInterface()">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+                <span>{{ __('web.upload_document') }}</span>
             </button>
         </div>
     </div>
@@ -621,14 +827,14 @@
                     <i class="bi bi-arrow-up-circle"></i>
                 </div>
                 <div class="header-text">
-                    <h1>Deposit Funds</h1>
-                    <p>Fund your account quickly and securely</p>
+                    <h1>{{ __('web.deposit_funds') }}</h1>
+                    <p>{{ __('web.fund_account_quickly') }}</p>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="btn btn-modern btn-secondary back-to-trading-btn">
                     <i class="bi bi-arrow-left"></i>
-                    <span>Back to Trading</span>
+                    <span>{{ __('web.back_to_trading') }}</span>
                 </button>
             </div>
         </div>
@@ -641,12 +847,12 @@
                         <i class="bi bi-wallet2"></i>
                     </div>
                     <div>
-                        <h6 class="text-white mb-1">Current Balance</h6>
+                        <h6 class="text-white mb-1">{{ __('web.current_balance') }}</h6>
                         <h3 class="text-white mb-0">${{ number_format($finance['balance'], 2) }}</h3>
                     </div>
                 </div>
                 <div class="text-end">
-                    <small class="text-white">Available for withdrawal</small>
+                    <small class="text-white">{{ __('web.available_withdrawal') }}</small>
                     <div class="text-success font-weight-bold">${{ number_format($finance['balance'], 2) }}</div>
                 </div>
             </div>
@@ -661,11 +867,11 @@
                         <i class="bi bi-bank"></i>
                     </div>
                     <div class="method-info">
-                        <h4>Bank Transfer</h4>
-                        <p>Secure bank-to-bank transfer</p>
+                        <h4>{{ __('web.bank_transfer') }}</h4>
+                        <p>{{ __('web.secure_bank_transfer') }}</p>
                         <div class="method-features">
-                            <span class="feature-badge">No Fees</span>
-                            <span class="feature-badge">1-3 Business Days</span>
+                            <span class="feature-badge">{{ __('web.no_fees') }}</span>
+                            <span class="feature-badge">{{ __('web.business_days_1_3') }}</span>
                         </div>
                     </div>
                 </div>
@@ -676,19 +882,19 @@
                         <input type="hidden" name="payment_method" value="bank_transfer">
                         
                         <div class="form-group">
-                            <label for="bank_deposit_amount" class="form-label">Amount (USD)</label>
+                            <label for="bank_deposit_amount" class="form-label">{{ __('web.amount_usd') }}</label>
                             <div class="input-with-icon">
                                 <i class="bi bi-currency-dollar"></i>
                                 <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" 
                                        step="0.01" min="10" placeholder="10.00" required>
                             </div>
-                            <small class="form-text">Minimum deposit: $10</small>
+                            <small class="form-text">{{ __('web.minimum_deposit_10') }}</small>
                         </div>
                         
                         <div class="form-group">
-                            <label for="country_select" class="form-label">Select Country</label>
+                            <label for="country_select" class="form-label">{{ __('web.select_country') }}</label>
                             <select name="country" id="country_select" class="form-select-modern" required>
-                                <option value="">Choose your country...</option>
+                                <option value="">{{ __('web.choose_country') }}</option>
                                 @php
                                     $countries = [];
                                     foreach($banks ?? [] as $bank) {
@@ -705,15 +911,15 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="bank_select" class="form-label">Select Bank</label>
+                            <label for="bank_select" class="form-label">{{ __('web.select_bank') }}</label>
                             <select name="bank_id" id="bank_select" class="form-select-modern" required disabled>
-                                <option value="">First select a country...</option>
+                                <option value="">{{ __('web.first_select_country') }}</option>
                             </select>
                         </div>
                         
                         <!-- Bank Details Display -->
                         <div id="bankDetailsDisplay" class="bank-details-card" style="display: none;">
-                            <h5 class="text-white mb-3"><i class="bi bi-bank me-2"></i>Bank Transfer Details</h5>
+                            <h5 class="text-white mb-3"><i class="bi bi-bank me-2"></i>{{ __('web.bank_transfer_details') }}</h5>
                             <div class="details-grid">
                                 <div class="detail-item">
                                     <span class="detail-label">Bank Name:</span>
@@ -784,7 +990,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="bank_receipt" class="form-label">Upload Receipt</label>
+                            <label for="bank_receipt" class="form-label">{{ __('web.upload_receipt') }}</label>
                             <div class="file-upload-area">
                                 <input type="file" name="receipt" id="bank_receipt" class="file-input" 
                                        accept=".pdf,.png,.jpg,.jpeg" required>
@@ -811,11 +1017,11 @@
                         <i class="bi bi-currency-bitcoin"></i>
                     </div>
                     <div class="method-info">
-                        <h4>Cryptocurrency</h4>
-                        <p>Fast and secure crypto deposits</p>
+                        <h4>{{ __('web.cryptocurrency') }}</h4>
+                        <p>{{ __('web.fast_secure_crypto') }}</p>
                         <div class="method-features">
-                            <span class="feature-badge crypto">Low Fees</span>
-                            <span class="feature-badge crypto">Instant</span>
+                            <span class="feature-badge crypto">{{ __('web.low_fees') }}</span>
+                            <span class="feature-badge crypto">{{ __('web.instant') }}</span>
                         </div>
                     </div>
                 </div>
@@ -898,14 +1104,21 @@
                                                     <i class="bi bi-wallet2 me-2"></i>
                                                     USDT (TRC20) Deposit Address
                                                 </label>
-                                                <div class="address-input-container">
+                                                
+                                                <!-- Address Input Display (Above Copy Button) -->
+                                                <div class="address-display-container mb-3">
                                                     <div class="address-value-modern" id="usdtAddress">{{ $usdtAddress }}</div>
                                                     <input type="hidden" id="usdtAddressValue" value="{{ $usdtAddress }}">
+                                                </div>
+                                                
+                                                <!-- Copy Button (Below Address) -->
+                                                <div class="copy-button-container">
                                                     <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('usdtAddress').textContent)">
                                                         <i class="bi bi-copy"></i>
-                                                        <span>Copy</span>
+                                                        <span>Copy Address</span>
                                                     </button>
                                                 </div>
+                                                
                                                 <div class="address-warning">
                                                     <i class="bi bi-exclamation-triangle me-2"></i>
                                                     <span>Send only USDT (TRC20) to this address. Scan QR code or copy address to your crypto wallet.</span>
@@ -963,11 +1176,11 @@
                         <i class="bi bi-credit-card"></i>
                     </div>
                     <div class="method-info">
-                        <h4>Credit Card</h4>
-                        <p>Fast and secure card payments</p>
+                        <h4>{{ __('web.credit_card') }}</h4>
+                        <p>{{ __('web.fast_secure_card') }}</p>
                         <div class="method-features">
-                            <span class="feature-badge credit-card">Instant</span>
-                            <span class="feature-badge credit-card">Secure</span>
+                            <span class="feature-badge credit-card">{{ __('web.instant') }}</span>
+                            <span class="feature-badge credit-card">{{ __('web.secure') }}</span>
                         </div>
                     </div>
                 </div>
@@ -978,21 +1191,21 @@
                         <input type="hidden" name="payment_method" value="credit_card">
                         
                         <div class="form-group">
-                            <label for="credit_card_deposit_amount" class="form-label">Amount (USD)</label>
+                            <label for="credit_card_deposit_amount" class="form-label">{{ __('web.amount_usd') }}</label>
                             <div class="input-with-icon">
                                 <i class="bi bi-currency-dollar"></i>
                                 <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
                                        step="0.01" min="10" placeholder="10.00" required>
                             </div>
-                            <small class="form-text">Minimum deposit: $10</small>
+                            <small class="form-text">{{ __('web.minimum_deposit_10') }}</small>
                         </div>
 
                         <!-- Credit Card Details -->
                         <div class="credit-card-details">
-                            <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>Card Information</h6>
+                            <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>{{ __('web.card_information') }}</h6>
                             
                             <div class="form-group">
-                                <label for="card_number" class="form-label">Card Number</label>
+                                <label for="card_number" class="form-label">{{ __('web.card_number') }}</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-credit-card-2-front"></i>
                                     <input type="text" name="card_number" id="card_number" class="form-control-modern" 
@@ -1003,7 +1216,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                        <label for="card_expiry" class="form-label">Expiry Date</label>
+                                        <label for="card_expiry" class="form-label">{{ __('web.expiry_date') }}</label>
                                         <div class="input-with-icon">
                                             <i class="bi bi-calendar"></i>
                                             <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" 
@@ -1013,7 +1226,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="card_cvv" class="form-label">CVV</label>
+                                        <label for="card_cvv" class="form-label">{{ __('web.cvv') }}</label>
                                         <div class="input-with-icon">
                                             <i class="bi bi-shield-lock"></i>
                                             <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" 
@@ -1024,16 +1237,16 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="card_holder_name" class="form-label">Cardholder Name</label>
+                                <label for="card_holder_name" class="form-label">{{ __('web.cardholder_name') }}</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-person"></i>
                                     <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern" 
-                                           placeholder="John Doe" required>
+                                           placeholder="{{ __('web.name') }}" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="billing_address" class="form-label">Billing Address</label>
+                                <label for="billing_address" class="form-label">{{ __('web.billing_address') }}</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-geo-alt"></i>
                                     <textarea name="billing_address" id="billing_address" class="form-control-modern" 
@@ -1059,9 +1272,9 @@
         <!-- Recent Deposits Section -->
         <div class="recent-transactions-section">
             <div class="section-header">
-                <h3><i class="bi bi-clock-history me-2"></i>Recent Deposits</h3>
+                <h3><i class="bi bi-clock-history me-2"></i>{{ __('web.recent_deposits') }}</h3>
                 <button class="btn btn-outline-primary btn-sm refresh-btn">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                    <i class="bi bi-arrow-clockwise me-1"></i>{{ __('web.refresh') }}
                 </button>
             </div>
             
@@ -1069,16 +1282,16 @@
             <div class="transaction-tabs">
                 <nav class="nav nav-tabs nav-tabs-dark" id="depositTabs" role="tablist">
                     <button class="nav-link active" id="all-deposits-tab" data-bs-toggle="tab" data-bs-target="#all-deposits" type="button" role="tab" aria-controls="all-deposits" aria-selected="true">
-                        <i class="bi bi-list-ul me-1"></i>All
+                        <i class="bi bi-list-ul me-1"></i>{{ __('web.all') }}
                     </button>
                     <button class="nav-link" id="pending-deposits-tab" data-bs-toggle="tab" data-bs-target="#pending-deposits" type="button" role="tab" aria-controls="pending-deposits" aria-selected="false">
-                        <i class="bi bi-clock me-1"></i>Pending
+                        <i class="bi bi-clock me-1"></i>{{ __('web.pending') }}
                     </button>
                     <button class="nav-link" id="accepted-deposits-tab" data-bs-toggle="tab" data-bs-target="#accepted-deposits" type="button" role="tab" aria-controls="accepted-deposits" aria-selected="false">
-                        <i class="bi bi-check-circle me-1"></i>Accepted
+                        <i class="bi bi-check-circle me-1"></i>{{ __('web.accepted') }}
                     </button>
                     <button class="nav-link" id="rejected-deposits-tab" data-bs-toggle="tab" data-bs-target="#rejected-deposits" type="button" role="tab" aria-controls="rejected-deposits" aria-selected="false">
-                        <i class="bi bi-x-circle me-1"></i>Rejected
+                        <i class="bi bi-x-circle me-1"></i>{{ __('web.rejected') }}
                     </button>
                 </nav>
                 
@@ -1089,11 +1302,11 @@
                             <table class="table table-modern">
                                 <thead>
                                     <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
+                                        <th>{{ __('web.transaction_id') }}</th>
+                                        <th>{{ __('web.amount') }}</th>
+                                        <th>{{ __('web.method') }}</th>
+                                        <th>{{ __('web.status') }}</th>
+                                        <th>{{ __('web.date') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="all-deposits-tbody">
@@ -1118,11 +1331,11 @@
                                             <td class="text-light">${{ number_format($deposit->amount, 2) }}</td>
                                             <td class="text-light">
                                                 @if($deposit->usdt)
-                                                    USDT
+                                                    {{ __('web.cryptocurrency') }}
                                                 @elseif($deposit->credit_card_details)
-                                                    Credit Card
+                                                    {{ __('web.credit_card') }}
                                                 @else
-                                                    Bank Transfer
+                                                    {{ __('web.bank_transfer') }}
                                                 @endif
                                             </td>
                                             <td>
@@ -1190,15 +1403,15 @@
                                             <td class="text-light">${{ number_format($deposit->amount, 2) }}</td>
                                             <td class="text-light">
                                                 @if($deposit->usdt)
-                                                    USDT
+                                                    {{ __('web.cryptocurrency') }}
                                                 @elseif($deposit->credit_card_details)
-                                                    Credit Card
+                                                    {{ __('web.credit_card') }}
                                                 @else
-                                                    Bank Transfer
+                                                    {{ __('web.bank_transfer') }}
                                                 @endif
                                             </td>
                                             <td>
-                                                <span class="badge bg-warning">{{ ucfirst($deposit->status ?? 'Pending') }}</span>
+                                                <span class="badge bg-warning">{{ ucfirst($deposit->status ?? __('web.pending')) }}</span>
                                             </td>
                                             <td class="text-light">{{ $deposit->created_at->format('M d, Y H:i') }}</td>
                                         </tr>
@@ -1207,8 +1420,8 @@
                                             <td colspan="5" class="text-center py-5">
                                                 <div class="empty-state">
                                                     <i class="bi bi-clock display-4 mb-3 text-light"></i>
-                                                    <p class="text-light">No pending deposits found</p>
-                                                    <small class="text-light opacity-75">Pending deposits will appear here</small>
+                                                    <p class="text-light">{{ __('web.no_pending_deposits') }}</p>
+                                                    <small class="text-light opacity-75">{{ __('web.pending_deposits_here') }}</small>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1348,17 +1561,17 @@
                         <div>
                             <h2 class="text-white mb-2">
                                 <i class="bi bi-arrow-down-circle me-3" style="color: #ffcc02;"></i>
-                                Withdrawal Management
+                                {{ __('web.withdrawal_management') }}
                             </h2>
                         </div>
                         <div class="d-flex gap-3">
                             <button class="btn btn-gradient-primary new-withdrawal-btn" data-bs-toggle="modal" data-bs-target="#newWithdrawalModal">
                                 <i class="bi bi-plus-circle me-2"></i>
-                                New Withdrawal
+                                {{ __('web.new_withdrawal') }}
                             </button>
                             <button class="btn btn-gradient-primary back-to-trading-btn">
                                 <i class="bi bi-arrow-left me-2"></i>
-                                Back to Trading
+                                {{ __('web.back_to_trading') }}
                             </button>
                         </div>
                     </div>
@@ -1373,7 +1586,7 @@
                                             <i class="bi bi-wallet2"></i>
                                         </div>
                                         <div>
-                                            <h6 class="text-white mb-1">Available Balance</h6>
+                                            <h6 class="text-white mb-1">{{ __('web.available_balance') }}</h6>
                                             <h4 class="text-white mb-0">${{ number_format($finance['balance'], 2) }}</h4>
                                         </div>
                                     </div>
@@ -1388,7 +1601,7 @@
                                             <i class="bi bi-clock-history"></i>
                                         </div>
                                         <div>
-                                            <h6 class="text-white mb-1">Pending Withdrawals</h6>
+                                            <h6 class="text-white mb-1">{{ __('web.pending_withdrawals') }}</h6>
                                             <h4 class="text-white mb-0">${{ number_format($finance['pendingWithdrawal'], 2) }}</h4>
                                         </div>
                                     </div>
@@ -1403,7 +1616,7 @@
                                             <i class="bi bi-check-circle"></i>
                                         </div>
                                         <div>
-                                            <h6 class="text-white mb-1">Total Withdrawn</h6>
+                                            <h6 class="text-white mb-1">{{ __('web.total_withdrawn') }}</h6>
                                             <h4 class="text-white mb-0">${{ number_format($finance['totalWithdrawal'], 2) }}</h4>
                                         </div>
                                     </div>
@@ -1415,9 +1628,9 @@
                     <!-- Recent Withdrawals Section -->
                     <div class="recent-transactions-section">
                         <div class="section-header">
-                            <h3><i class="bi bi-clock-history me-2"></i>Recent Withdrawals</h3>
+                            <h3><i class="bi bi-clock-history me-2"></i>{{ __('web.recent_withdrawals') }}</h3>
                             <button class="btn btn-outline-primary btn-sm refresh-btn">
-                                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                                <i class="bi bi-arrow-clockwise me-1"></i>{{ __('web.refresh') }}
                             </button>
                         </div>
                         
@@ -1425,16 +1638,16 @@
                         <div class="transaction-tabs">
                             <nav class="nav nav-tabs nav-tabs-dark" id="withdrawalTabs" role="tablist">
                                 <button class="nav-link active" id="all-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#all-withdrawals" type="button" role="tab" aria-controls="all-withdrawals" aria-selected="true">
-                                    <i class="bi bi-list-ul me-1"></i>All
+                                    <i class="bi bi-list-ul me-1"></i>{{ __('web.all') }}
                                 </button>
                                 <button class="nav-link" id="pending-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#pending-withdrawals" type="button" role="tab" aria-controls="pending-withdrawals" aria-selected="false">
-                                    <i class="bi bi-clock me-1"></i>Pending
+                                    <i class="bi bi-clock me-1"></i>{{ __('web.pending') }}
                                 </button>
                                 <button class="nav-link" id="accepted-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#accepted-withdrawals" type="button" role="tab" aria-controls="accepted-withdrawals" aria-selected="false">
-                                    <i class="bi bi-check-circle me-1"></i>Accepted
+                                    <i class="bi bi-check-circle me-1"></i>{{ __('web.accepted') }}
                                 </button>
                                 <button class="nav-link" id="rejected-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#rejected-withdrawals" type="button" role="tab" aria-controls="rejected-withdrawals" aria-selected="false">
-                                    <i class="bi bi-x-circle me-1"></i>Rejected
+                                    <i class="bi bi-x-circle me-1"></i>{{ __('web.rejected') }}
                                 </button>
                             </nav>
                             
@@ -1544,13 +1757,13 @@
                                                         <td class="text-light">${{ number_format($withdrawal->amount, 2) }}</td>
                                                         <td class="text-light">
                                                             @if($withdrawal->usdt)
-                                                                USDT
+                                                                {{ __('web.cryptocurrency') }}
                                                             @else
-                                                                Bank Transfer
+                                                                {{ __('web.bank_transfer') }}
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-warning">{{ ucfirst($withdrawal->status ?? 'Pending') }}</span>
+                                                            <span class="badge bg-warning">{{ ucfirst($withdrawal->status ?? __('web.pending')) }}</span>
                                                         </td>
                                                         <td class="text-light">{{ $withdrawal->created_at->format('M d, Y H:i') }}</td>
                                                     </tr>
@@ -1559,8 +1772,8 @@
                                                         <td colspan="5" class="text-center py-5">
                                                             <div class="empty-state">
                                                                 <i class="bi bi-clock display-4 mb-3 text-light"></i>
-                                                                <p class="text-light">No pending withdrawals found</p>
-                                                                <small class="text-light opacity-75">Pending withdrawals will appear here</small>
+                                                                <p class="text-light">{{ __('web.no_pending_withdrawals') }}</p>
+                                                                <small class="text-light opacity-75">{{ __('web.pending_withdrawals_here') }}</small>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -1699,21 +1912,21 @@
             <div class="modal-header border-secondary">
                 <h4 class="modal-title text-white" id="newWithdrawalModalLabel">
                     <i class="bi bi-arrow-down-circle me-2" style="color: #ffcc02;"></i>
-                    Request New Withdrawal
+                    {{ __('web.request_new_withdrawal') }}
                 </h4>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('web.close') }}"></button>
             </div>
             <div class="modal-body">
                 <!-- Withdrawal Method Tabs -->
                 <ul class="nav nav-pills mb-4" id="withdrawalMethodTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" style="font-size: 1.05rem;" id="bank-tab" data-bs-toggle="pill" data-bs-target="#bank-transfer" type="button" role="tab">
-                            <i class="bi bi-bank me-2"></i>Bank Transfer
+                            <i class="bi bi-bank me-2"></i>{{ __('web.bank_transfer') }}
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" style="font-size: 1.05rem;" id="crypto-tab" data-bs-toggle="pill" data-bs-target="#cryptocurrency" type="button" role="tab">
-                            <i class="bi bi-currency-bitcoin me-2"></i>Cryptocurrency
+                            <i class="bi bi-currency-bitcoin me-2"></i>{{ __('web.cryptocurrency') }}
                         </button>
                     </li>
                 </ul>
@@ -1721,7 +1934,7 @@
                 <!-- Available Balance Alert -->
                 <div class="alert alert-info mb-4">
                     <i class="bi bi-info-circle me-2"></i>
-                    <strong style="font-size: 1.1rem;">Available Balance:</strong> <span style="font-size: 1.1rem;">${{ number_format($finance['balance'], 2) }}</span>
+                    <strong style="font-size: 1.1rem;">{{ __('web.available_balance') }}:</strong> <span style="font-size: 1.1rem;">${{ number_format($finance['balance'], 2) }}</span>
                 </div>
 
                 <!-- Tab Content -->
@@ -1735,15 +1948,15 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">Amount (USD)</label>
+                                        <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
                                         <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
                                                min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-white" style="font-size: 0.95rem;">Minimum: $1.00 | Maximum: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.minimum_amount') }}: $1.00 | {{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="account_holder" class="form-label text-white" style="font-size: 1.05rem;">Account Holder Name</label>
+                                        <label for="account_holder" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.account_holder') }}</label>
                                         <input type="text" name="account_holder" id="account_holder" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
                                     </div>
                                 </div>
@@ -1752,27 +1965,27 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="bank_name" class="form-label text-white" style="font-size: 1.05rem;">Bank Name</label>
+                                        <label for="bank_name" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.bank_name') }}</label>
                                         <input type="text" name="bank_name" id="bank_name" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="account_number" class="form-label text-white" style="font-size: 1.05rem;">Account Number</label>
+                                        <label for="account_number" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.account_number') }}</label>
                                         <input type="text" name="account_number" id="account_number" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="swift_code" class="form-label text-white" style="font-size: 1.05rem;">SWIFT/Routing Code</label>
+                                <label for="swift_code" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.swift_routing_code') }}</label>
                                 <input type="text" name="swift_code" id="swift_code" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-secondary" style="font-size: 1.05rem;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-secondary" style="font-size: 1.05rem;" data-bs-dismiss="modal">{{ __('web.cancel') }}</button>
                                 <button type="submit" class="btn btn-gradient-danger" style="font-size: 1.05rem;">
-                                    <i class="bi bi-send me-2"></i>Submit Withdrawal Request
+                                    <i class="bi bi-send me-2"></i>{{ __('web.submit_withdrawal_request') }}
                                 </button>
                             </div>
                         </form>
@@ -1787,17 +2000,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">Amount (USD)</label>
+                                        <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
                                         <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
                                                min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-white" style="font-size: 0.95rem;">Minimum: $1.00 | Maximum: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.minimum_amount') }}: $1.00 | {{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="crypto_type_withdrawal" class="form-label text-white" style="font-size: 1.05rem;">Cryptocurrency</label>
+                                        <label for="crypto_type_withdrawal" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.cryptocurrency') }}</label>
                                         <select name="crypto_type" id="crypto_type_withdrawal" class="form-select bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
-                                            <option value="">Select Cryptocurrency</option>
+                                            <option value="">{{ __('web.select_cryptocurrency') }}</option>
                                             <option value="BTC">Bitcoin (BTC)</option>
                                             <option value="ETH">Ethereum (ETH)</option>
                                             <option value="USDT">Tether (USDT)</option>
@@ -1808,15 +2021,15 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="wallet_address" class="form-label text-white" style="font-size: 1.05rem;">Wallet Address</label>
+                                <label for="wallet_address" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.wallet_address') }}</label>
                                 <input type="text" name="wallet_address" id="wallet_address" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
-                                <small class="text-white" style="font-size: 0.95rem;">Enter your cryptocurrency wallet address. Double-check this address as transactions cannot be reversed.</small>
+                                <small class="text-white" style="font-size: 0.95rem;">{{ __('web.wallet_address_help') }}</small>
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-secondary" style="font-size: 1.05rem;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-secondary" style="font-size: 1.05rem;" data-bs-dismiss="modal">{{ __('web.cancel') }}</button>
                                 <button type="submit" class="btn btn-gradient-warning" style="font-size: 1.05rem;">
-                                    <i class="bi bi-send me-2"></i>Submit Withdrawal Request
+                                    <i class="bi bi-send me-2"></i>{{ __('web.submit_withdrawal_request') }}
                                 </button>
                             </div>
                         </form>
@@ -1834,9 +2047,9 @@
             <div class="modal-header border-secondary">
                 <h5 class="modal-title text-white" id="editOrderModalLabel">
                     <i class="bi bi-pencil-square me-2" style="color: #4f8cff;"></i>
-                    Edit Order
+                    {{ __('web.edit_order') }}
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('web.close') }}"></button>
             </div>
             <div class="modal-body">
                 <form id="editOrderForm" action="" method="POST">
@@ -1845,23 +2058,23 @@
                     <input type="hidden" id="editOrderId" name="order_id">
                     
                     <div class="mb-3">
-                        <label for="edit_stop_loss" class="form-label text-white">Stop Loss</label>
+                        <label for="edit_stop_loss" class="form-label text-white">{{ __('web.stop_loss') }}</label>
                         <input type="number" id="edit_stop_loss" name="stop_loss" class="form-control bg-dark text-white border-secondary" 
-                               step="0.00001" placeholder="Enter stop loss price">
-                        <small class="text-muted">Optional: Set a stop loss price to limit losses</small>
+                               step="0.00001" placeholder="{{ __('web.enter_stop_loss_price') }}">
+                        <small class="text-muted">{{ __('web.optional_stop_loss_help') }}</small>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="edit_take_profit" class="form-label text-white">Take Profit</label>
+                        <label for="edit_take_profit" class="form-label text-white">{{ __('web.take_profit') }}</label>
                         <input type="number" id="edit_take_profit" name="take_profit" class="form-control bg-dark text-white border-secondary" 
-                               step="0.00001" placeholder="Enter take profit price">
-                        <small class="text-muted">Optional: Set a take profit price to secure gains</small>
+                               step="0.00001" placeholder="{{ __('web.enter_take_profit_price') }}">
+                        <small class="text-muted">{{ __('web.optional_take_profit_help') }}</small>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('web.cancel') }}</button>
                         <button type="submit" class="btn btn-gradient-primary">
-                            <i class="bi bi-check-circle me-2"></i>Update Order
+                            <i class="bi bi-check-circle me-2"></i>{{ __('web.update_order') }}
                         </button>
                     </div>
                 </form>
@@ -1885,14 +2098,14 @@
                     <i class="bi bi-chat-dots"></i>
                 </div>
                 <div class="header-text">
-                    <h1>Live Chat Support</h1>
-                    <p>Get instant help from our support team</p>
+                    <h1>{{ __('web.live_chat_support') }}</h1>
+                    <p>{{ __('web.get_instant_help') }}</p>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="btn btn-modern btn-secondary back-to-trading-btn">
                     <i class="bi bi-arrow-left"></i>
-                    <span>Back to Trading</span>
+                    <span>{{ __('web.back_to_trading') }}</span>
                 </button>
             </div>
         </div>
@@ -1909,7 +2122,7 @@
                             </div>
                             <div class="message-content">
                                 <div class="message-header">
-                                    <span class="message-sender">Support Team</span>
+                                    <span class="message-sender">{{ __('web.support_team') }}</span>
                                     <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
                                 </div>
                                 <div class="message-text">{{ $message->message }}</div>
@@ -1920,7 +2133,7 @@
                         <div class="message user-message">
                             <div class="message-content">
                                 <div class="message-header">
-                                    <span class="message-sender">You</span>
+                                    <span class="message-sender">{{ __('web.you') }}</span>
                                     <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
                                 </div>
                                 <div class="message-text">{{ $message->message }}</div>
@@ -1937,9 +2150,9 @@
                         <div class="welcome-icon">
                             <i class="bi bi-chat-heart"></i>
                         </div>
-                        <h3>Welcome to Live Chat Support!</h3>
-                        <p>Our support team is here to help you with any questions or issues you may have.</p>
-                        <p>Send us a message and we'll get back to you as soon as possible.</p>
+                        <h3>{{ __('web.welcome_live_chat') }}</h3>
+                        <p>{{ __('web.support_team_help') }}</p>
+                        <p>{{ __('web.send_message_prompt') }}</p>
                     </div>
                 @endif
             </div>
@@ -1951,7 +2164,7 @@
                     <div class="chat-input-wrapper">
                         <div class="input-with-icon">
                             <textarea name="message" id="chatMessage" class="chat-input" 
-                                      placeholder="Type your message here..." 
+                                      placeholder="{{ __('web.type_message_here') }}" 
                                       rows="1" required></textarea>
                             <button type="submit" class="send-button">
                                 <i class="bi bi-send-fill"></i>
@@ -1962,17 +2175,17 @@
                 
                 <!-- Quick Actions -->
                 <div class="chat-quick-actions">
-                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('I need help with my account')">
+                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('{{ __('web.need_help_account') }}')">
                         <i class="bi bi-person-gear"></i>
-                        <span>Account Help</span>
+                        <span>{{ __('web.account_help') }}</span>
                     </button>
-                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('I have a question about trading')">
+                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('{{ __('web.question_about_trading') }}')">
                         <i class="bi bi-graph-up"></i>
-                        <span>Trading Question</span>
+                        <span>{{ __('web.trading_question') }}</span>
                     </button>
-                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('I need help with deposits/withdrawals')">
+                    <button type="button" class="quick-action-btn" onclick="insertQuickMessage('{{ __('web.help_deposits_withdrawals') }}')">
                         <i class="bi bi-credit-card"></i>
-                        <span>Payment Help</span>
+                        <span>{{ __('web.payment_help') }}</span>
                     </button>
                 </div>
             </div>
@@ -1980,137 +2193,360 @@
     </div>
 </div>
 
-<!-- Live Chat Overlay -->
-<div id="liveChatOverlay" class="chat-overlay" style="display: none;">
-    <div class="chat-overlay-content">
-        <!-- Chat Header -->
-        <div class="chat-overlay-header">
-            <div class="chat-overlay-title">
-                <i class="bi bi-chat-dots"></i>
-                <span>Live Chat Support</span>
-            </div>
-            <button class="chat-close-btn" onclick="toggleChatOverlay()">
-                <i class="bi bi-x-lg"></i>
-            </button>
-        </div>
-
-        <!-- Chat Input (Moved Higher) -->
-        <div class="chat-input-container">
-            <form id="chatOverlayForm" action="{{ route('chat.store') }}" method="POST">
-                @csrf
-                <div class="chat-input-wrapper">
-                    <div class="input-with-icon">
-                        <textarea name="message" id="chatOverlayMessage" class="chat-input" 
-                                  placeholder="Type your message here..." 
-                                  rows="1" required></textarea>
-                        <button type="submit" class="send-button">
-                            <i class="bi bi-send-fill"></i>
-                        </button>
+<!-- Upload Document Interface -->
+<div id="uploadDocumentInterface" class="main-content" style="display: none;">
+    <div class="document-interface-wrapper">
+        <!-- Modern Header with Glassmorphism -->
+        <div class="document-header-modern">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="header-content-modern">
+                            <div class="header-icon-modern">
+                                <div class="icon-wrapper-modern">
+                                    <i class="bi bi-file-earmark-arrow-up"></i>
+                                </div>
+                            </div>
+                            <div class="header-text-modern">
+                                <h1 class="header-title-modern">{{ __('web.document_management_center') }}</h1>
+                                <p class="header-subtitle-modern">{{ __('web.securely_upload_manage') }}</p>
+                                <div class="header-stats-modern">
+                                    <span class="stat-item-modern">
+                                        <i class="bi bi-shield-check text-success"></i>
+                                        <span>{{ __('web.bank_level_encryption') }}</span>
+                                    </span>
+                                    <span class="stat-item-modern">
+                                        <i class="bi bi-lightning text-warning"></i>
+                                        <span>{{ __('web.instant') }}</span>
+                                    </span>
+                                    <span class="stat-item-modern">
+                                        <i class="bi bi-cloud-check text-info"></i>
+                                        <span>{{ __('web.secure') }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-end">
+                        <div class="header-actions-modern">
+                            <button class="btn-modern-secondary back-to-trading-btn">
+                                <i class="bi bi-arrow-left"></i>
+                                <span>{{ __('web.back_to_trading') }}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </form>
-            
-            <!-- Quick Actions -->
-            <div class="chat-quick-actions">
-                <button type="button" class="quick-action-btn" onclick="insertQuickMessageOverlay('I need help with my account')">
-                    <i class="bi bi-person-gear"></i>
-                    <span>Account Help</span>
-                </button>
-                <button type="button" class="quick-action-btn" onclick="insertQuickMessageOverlay('I have a question about trading')">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Trading Question</span>
-                </button>
-                <button type="button" class="quick-action-btn" onclick="insertQuickMessageOverlay('I need help with deposits/withdrawals')">
-                    <i class="bi bi-credit-card"></i>
-                    <span>Payment Help</span>
-                </button>
             </div>
         </div>
 
-        <!-- Chat Messages -->
-        <div class="chat-overlay-messages" id="chatOverlayMessages">
-            @foreach ($chat ?? [] as $message)
-                @if ($message->user_id)
-                    <!-- Support Message -->
-                    <div class="message support-message">
-                        <div class="message-avatar">
-                            <i class="bi bi-headset"></i>
-                        </div>
-                        <div class="message-content">
-                            <div class="message-header">
-                                <span class="message-sender">Support Team</span>
-                                <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
+        <!-- Main Content Grid -->
+        <div class="document-content-modern">
+            <div class="container-fluid">
+                <div class="row g-4">
+                    <!-- KYC Documents Card -->
+                    <div class="col-lg-6">
+                        <div class="document-card-modern kyc-card-modern">
+                            <div class="card-header-modern">
+                                <div class="header-icon-section">
+                                    <div class="icon-bg-modern kyc-icon-bg">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <div class="header-text-section">
+                                        <h3 class="card-title-modern">{{ __('web.kyc_documents') }}</h3>
+                                        <p class="card-subtitle-modern">{{ __('web.identity_verification') }}</p>
+                                        <div class="requirement-badges">
+                                            <span class="badge-modern required">{{ __('web.required') }}</span>
+                                            <span class="badge-modern one-time">{{ __('web.one_time_upload') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="message-text">{{ $message->message }}</div>
-                        </div>
-                    </div>
-                @else
-                    <!-- User Message -->
-                    <div class="message user-message">
-                        <div class="message-content">
-                            <div class="message-header">
-                                <span class="message-sender">You</span>
-                                <span class="message-time">{{ date('d/m/Y H:i', strtotime($message->created_at)) }}</span>
+
+                            <div class="card-body-modern">
+                                <!-- Upload Zone -->
+                                <div class="upload-zone-modern" id="kycUploadZone">
+                                    <div class="dropzone-modern" id="kycDropzone" ondrop="dropHandler(event, 'kyc')" ondragover="dragOverHandler(event)" ondragenter="dragEnterHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                        <div class="dropzone-content-modern">
+                                            <div class="upload-icon-modern kyc-upload-icon">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                            </div>
+                                            <h4 class="upload-title-modern">{{ __('web.drag_drop_browse') }}</h4>
+                                            <p class="upload-description-modern">{{ __('web.or_click_browse') }}</p>
+                                            <div class="file-types-modern">
+                                                <span class="file-type-badge">PDF</span>
+                                                <span class="file-type-badge">JPG</span>
+                                                <span class="file-type-badge">PNG</span>
+                                            </div>
+                                            <p class="size-limit-modern">{{ __('web.maximum_file_size') }}</p>
+                                            <button type="button" class="btn-upload-modern kyc-btn" onclick="triggerKycFileInput()">
+                                                <i class="bi bi-folder-plus"></i>
+                                                <span>{{ __('web.choose_files') }}</span>
+                                            </button>
+                                            <input type="file" id="kycFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileSelect(event, 'kyc')">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document Requirements -->
+                                <div class="requirements-section-modern">
+                                    <h5 class="requirements-title">{{ __('web.required_documents') }}</h5>
+                                    <div class="requirements-list">
+                                        <div class="requirement-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <span>{{ __('web.government_id') }}</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <span>{{ __('web.proof_address') }}</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <span>{{ __('web.selfie_with_id') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Uploaded Files Display -->
+                                <div class="uploaded-files-modern" id="kycFilesList" style="display: none;">
+                                    <div class="files-header-modern">
+                                        <h5><i class="bi bi-files"></i> Uploaded KYC Documents</h5>
+                                        <span class="files-count" id="kycFilesCount">0 files</span>
+                                    </div>
+                                    <div class="files-grid-modern" id="kycFilesContainer">
+                                        <!-- Files will be populated here -->
+                                    </div>
+                                </div>
                             </div>
-                            <div class="message-text">{{ $message->message }}</div>
-                        </div>
-                        <div class="message-avatar">
-                            <i class="bi bi-person-circle"></i>
                         </div>
                     </div>
-                @endif
-            @endforeach
-            
-            @if(empty($chat) || count($chat) == 0)
-                <div class="welcome-message">
-                    <div class="welcome-icon">
-                        <i class="bi bi-chat-heart"></i>
+
+                    <!-- Additional Documents Card -->
+                    <div class="col-lg-6">
+                        <div class="document-card-modern additional-card-modern">
+                            <div class="card-header-modern">
+                                <div class="header-icon-section">
+                                    <div class="icon-bg-modern additional-icon-bg">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </div>
+                                    <div class="header-text-section">
+                                        <h3 class="card-title-modern">Additional Documents</h3>
+                                        <p class="card-subtitle-modern">Supporting documents and certificates</p>
+                                        <div class="requirement-badges">
+                                            <span class="badge-modern optional">Optional</span>
+                                            <span class="badge-modern multiple">Multiple Uploads</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body-modern">
+                                <!-- Upload Zone -->
+                                <div class="upload-zone-modern" id="additionalUploadZone">
+                                    <div class="dropzone-modern" id="additionalDropzone" ondrop="dropHandler(event, 'additional')" ondragover="dragOverHandler(event)" ondragenter="dragEnterHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                        <div class="dropzone-content-modern">
+                                            <div class="upload-icon-modern additional-upload-icon">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                            </div>
+                                            <h4 class="upload-title-modern">Drop additional documents here</h4>
+                                            <p class="upload-description-modern">or click to browse from your computer</p>
+                                            <div class="file-types-modern">
+                                                <span class="file-type-badge">PDF</span>
+                                                <span class="file-type-badge">DOC</span>
+                                                <span class="file-type-badge">DOCX</span>
+                                                <span class="file-type-badge">JPG</span>
+                                                <span class="file-type-badge">PNG</span>
+                                            </div>
+                                            <p class="size-limit-modern">Maximum file size: 10MB per file</p>
+                                            <button type="button" class="btn-upload-modern additional-btn" onclick="triggerAdditionalFileInput()">
+                                                <i class="bi bi-folder-plus"></i>
+                                                <span>Choose Files</span>
+                                            </button>
+                                            <input type="file" id="additionalFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;" onchange="handleFileSelect(event, 'additional')">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document Types -->
+                                <div class="document-types-section-modern">
+                                    <h5 class="document-types-title">Accepted Document Types:</h5>
+                                    <div class="document-types-grid">
+                                        <div class="document-type-item">
+                                            <i class="bi bi-building text-primary"></i>
+                                            <span>Business Certificates</span>
+                                        </div>
+                                        <div class="document-type-item">
+                                            <i class="bi bi-award text-success"></i>
+                                            <span>Professional Licenses</span>
+                                        </div>
+                                        <div class="document-type-item">
+                                            <i class="bi bi-bank text-warning"></i>
+                                            <span>Financial Statements</span>
+                                        </div>
+                                        <div class="document-type-item">
+                                            <i class="bi bi-file-text text-info"></i>
+                                            <span>Supporting Documents</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Uploaded Files Display -->
+                                <div class="uploaded-files-modern" id="additionalFilesList" style="display: none;">
+                                    <div class="files-header-modern">
+                                        <h5><i class="bi bi-files"></i> Uploaded Additional Documents</h5>
+                                        <span class="files-count" id="additionalFilesCount">0 files</span>
+                                    </div>
+                                    <div class="files-grid-modern" id="additionalFilesContainer">
+                                        <!-- Files will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3>Welcome to Live Chat Support!</h3>
-                    <p>Our support team is here to help you with any questions or issues you may have.</p>
-                    <p>Send us a message and we'll get back to you as soon as possible.</p>
                 </div>
-            @endif
+
+                <!-- Upload Progress Section -->
+                <div class="row mt-4" id="uploadProgressSection" style="display: none;">
+                    <div class="col-12">
+                        <div class="progress-card-modern">
+                            <div class="progress-header-modern">
+                                <div class="progress-icon-modern">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                </div>
+                                <div class="progress-text-modern">
+                                    <h5>Uploading Documents...</h5>
+                                    <p id="progressDescription">Preparing files for upload</p>
+                                </div>
+                                <div class="progress-percentage-modern">
+                                    <span id="progressText">0%</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar-modern">
+                                <div class="progress-fill-modern" id="progressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Status Messages -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="upload-messages-modern" id="uploadMessages">
+                            <!-- Success/Error messages will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Information -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="security-info-modern">
+                            <div class="security-icon-modern">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <div class="security-content-modern">
+                                <h5>Your Documents Are Secure</h5>
+                                <p>All uploads are protected with bank-level encryption. Your personal information is handled in accordance with international privacy standards and regulations.</p>
+                                <div class="security-features">
+                                    <span class="security-feature">
+                                        <i class="bi bi-lock"></i>
+                                        <span>256-bit SSL Encryption</span>
+                                    </span>
+                                    <span class="security-feature">
+                                        <i class="bi bi-eye-slash"></i>
+                                        <span>Privacy Protected</span>
+                                    </span>
+                                    <span class="security-feature">
+                                        <i class="bi bi-check-circle"></i>
+                                        <span>GDPR Compliant</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Notification Popup -->
-<div id="notificationPopup" class="notification-popup" style="display: none;">
-    <div class="notification-popup-content">
-        <div class="notification-popup-header">
-            <div class="notification-popup-title">
-                <i class="bi bi-bell me-2"></i>
-                <span>Notifications</span>
+<!-- Modern Notification Popup -->
+<div id="notificationPopup" class="notification-popup-modern" style="display: none;">
+    <div class="notification-popup-overlay" onclick="closeNotificationPopup()"></div>
+    <div class="notification-popup-container">
+        <div class="notification-popup-header-modern">
+            <div class="notification-popup-title-modern">
+                <div class="notification-icon-modern">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+                <div class="notification-title-text">
+                    <h4>{{ __('web.notifications') }}</h4>
+                    <span class="notification-count-text">{{ count($notifications ?? []) }} {{ __('web.new_notification') }}</span>
+                </div>
             </div>
-            <button class="notification-popup-close" onclick="closeNotificationPopup()">
+            <button class="notification-popup-close-modern" onclick="closeNotificationPopup()">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         
-        <div class="notification-popup-messages" id="notificationPopupMessages">
-            @if(empty($notifications) || count($notifications) == 0)
-                <div class="no-notifications-message">
-                    <div class="no-notifications-icon">
-                        <i class="bi bi-bell-slash"></i>
-                    </div>
-                    <h4>No Notifications</h4>
-                    <p>You don't have any notifications at this time.</p>
-                </div>
-            @else
-                @foreach($notifications as $notification)
-                    <div class="notification-item" data-id="{{ $notification->id }}">
-                        <div class="notification-content">
-                            <div class="notification-text">{{ __('web.'.$notification->text) }}</div>
-                            <div class="notification-time">{{ date('d/m H:i', strtotime($notification->created_at)) }}</div>
+        <div class="notification-popup-body-modern">
+            <div class="notification-popup-messages-modern" id="notificationPopupMessages">
+                @if(empty($notifications) || count($notifications) == 0)
+                    <div class="no-notifications-message-modern">
+                        <div class="no-notifications-illustration">
+                            <div class="notification-bell-empty">
+                                <i class="bi bi-bell-slash"></i>
+                            </div>
+                            <div class="notification-waves">
+                                <span class="wave wave-1"></span>
+                                <span class="wave wave-2"></span>
+                                <span class="wave wave-3"></span>
+                            </div>
                         </div>
-                        <div class="notification-icon">
-                            <i class="bi bi-info-circle"></i>
+                        <div class="no-notifications-content">
+                            <h5>{{ __('web.all_caught_up') }}</h5>
+                            <p>{{ __('web.no_notifications') }}</p>
+                            <small>{{ __('web.notify_important') }}</small>
                         </div>
                     </div>
-                @endforeach
-            @endif
+                @else
+                    @foreach($notifications as $notification)
+                        <div class="notification-item-modern" data-id="{{ $notification->id }}">
+                            <div class="notification-item-icon">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </div>
+                            <div class="notification-item-content">
+                                <div class="notification-item-text">{{ __('web.'.$notification->text) }}</div>
+                                <div class="notification-item-meta">
+                                    <span class="notification-time">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</span>
+                                    <span class="notification-date">{{ date('M d, Y H:i', strtotime($notification->created_at)) }}</span>
+                                </div>
+                            </div>
+                            <div class="notification-item-actions">
+                                <button class="notification-action-btn mark-read" onclick="markNotificationAsRead({{ $notification->id }})" title="Mark as read">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                                <button class="notification-action-btn delete" onclick="deleteNotification({{ $notification->id }})" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
         </div>
+        
+        @if(!empty($notifications) && count($notifications) > 0)
+            <div class="notification-popup-footer-modern">
+                <button class="notification-footer-btn mark-all-read" onclick="markAllNotificationsAsRead()">
+                    <i class="bi bi-check-all me-2"></i>
+                    {{ __('web.mark_all_read') }}
+                </button>
+                <button class="notification-footer-btn clear-all" onclick="clearAllNotifications()">
+                    <i class="bi bi-trash me-2"></i>
+                    {{ __('web.clear_all') }}
+                </button>
+            </div>
+        @endif
     </div>
 </div>
 
@@ -2152,6 +2588,141 @@
     // Add route for toggling favourites
     document.body.setAttribute('data-toggle-favourite-route', '{{ route("toggle.favourite") }}');
 </script>
+
+<!-- Language Switcher JavaScript -->
+<script>
+    // Language Switcher Dropdown Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const languageSwitcherBtn = document.querySelector('.language-switcher-btn');
+        const languageDropdown = document.querySelector('.language-dropdown');
+        let dropdownOverlay = null;
+
+        // Toggle dropdown
+        function toggleDropdown() {
+            const isOpen = languageDropdown.classList.contains('show');
+            
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        }
+
+        // Open dropdown
+        function openDropdown() {
+            languageDropdown.classList.add('show');
+            languageSwitcherBtn.classList.add('active');
+            
+            // Create overlay to close dropdown when clicking outside
+            dropdownOverlay = document.createElement('div');
+            dropdownOverlay.className = 'language-dropdown-overlay';
+            document.body.appendChild(dropdownOverlay);
+            
+            // Close dropdown when clicking overlay
+            dropdownOverlay.addEventListener('click', closeDropdown);
+            
+            // Close dropdown on escape key
+            document.addEventListener('keydown', handleEscapeKey);
+        }
+
+        // Close dropdown
+        function closeDropdown() {
+            languageDropdown.classList.remove('show');
+            languageSwitcherBtn.classList.remove('active');
+            
+            // Remove overlay
+            if (dropdownOverlay) {
+                document.body.removeChild(dropdownOverlay);
+                dropdownOverlay = null;
+            }
+            
+            // Remove escape key listener
+            document.removeEventListener('keydown', handleEscapeKey);
+        }
+
+        // Handle escape key
+        function handleEscapeKey(event) {
+            if (event.key === 'Escape') {
+                closeDropdown();
+            }
+        }
+
+        // Language switcher button click handler
+        if (languageSwitcherBtn) {
+            languageSwitcherBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleDropdown();
+            });
+        }
+
+        // Language option click handlers
+        const languageOptions = document.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(event) {
+                // Close dropdown after selection
+                closeDropdown();
+                
+                // Add loading state (optional)
+                languageSwitcherBtn.style.opacity = '0.7';
+                
+                // The actual language change will be handled by the backend
+                // This is just for UX feedback
+                setTimeout(() => {
+                    languageSwitcherBtn.style.opacity = '1';
+                }, 500);
+            });
+        });
+
+        // Close dropdown if clicking outside language switcher container
+        document.addEventListener('click', function(event) {
+            const languageContainer = document.querySelector('.language-switcher-container');
+            if (languageContainer && !languageContainer.contains(event.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Keyboard navigation for accessibility
+        if (languageSwitcherBtn) {
+            languageSwitcherBtn.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleDropdown();
+                }
+            });
+        }
+
+        // Arrow key navigation in dropdown
+        if (languageDropdown) {
+            languageDropdown.addEventListener('keydown', function(event) {
+                const options = Array.from(languageOptions);
+                const currentIndex = options.findIndex(option => option === document.activeElement);
+                
+                switch (event.key) {
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        const nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+                        options[nextIndex].focus();
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        const prevIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+                        options[prevIndex].focus();
+                        break;
+                    case 'Enter':
+                        event.preventDefault();
+                        if (document.activeElement && document.activeElement.classList.contains('language-option')) {
+                            document.activeElement.click();
+                        }
+                        break;
+                }
+            });
+        }
+    });
+</script>
+
+<!-- Modern Document Upload JavaScript -->
+<script src="{{ asset('assets/js/document-upload-modern.js') }}"></script>
 
 
 </body>
