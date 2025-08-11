@@ -2800,9 +2800,9 @@
         // Set the order ID in the hidden input
         document.getElementById('editOrderId').value = orderId;
         
-        // Set the form action URL
+        // Set the form action URL using the proper Laravel route
         const editForm = document.getElementById('editOrderForm');
-        editForm.action = '/order/' + orderId;
+        editForm.action = window.updateOrderRoute.replace('__ORDER_ID__', orderId);
         
         // Populate the form fields with current values
         const stopLossInput = document.getElementById('edit_stop_loss');
