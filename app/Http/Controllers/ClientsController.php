@@ -311,7 +311,6 @@ class ClientsController extends Controller
             $depositData = [
                 'broker_id'    => $user->broker_id,
                 'bank_id'      => $bank->id,
-                'country'      => $request->input('country'),
                 'receipt'      => url(str_replace('public/', 'storage/', $receiptPath)),
                 'amount'       => $request->input('amount'),
                 'status'       => 'pending',
@@ -333,7 +332,6 @@ class ClientsController extends Controller
             $depositData = [
                 'broker_id'    => $user->broker_id,
                 'bank_id'      => null,
-                'country'      => null,
                 'receipt'      => url(str_replace('public/', 'storage/', $receiptPath)),
                 'amount'       => $request->input('amount'),
                 'status'       => 'pending',
@@ -351,12 +349,33 @@ class ClientsController extends Controller
         // Create the deposit transaction for bank and crypto
         if (isset($depositData)) {
             try {
+                Log::info('=== ATTEMPTING TO CREATE DEPOSIT ===', [
+                    'depositData' => $depositData,
+                    'user_id' => $user->id,
+                    'broker_id' => $user->broker_id
+                ]);
+                
                 $moneyTrx = MoneyTrx::create($depositData);
-                Log::info('Deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id, 'method' => $depositMethod]);
+                
+                Log::info('=== DEPOSIT CREATED SUCCESSFULLY ===', [
+                    'transaction_id' => $moneyTrx->id,
+                    'broker_id' => $user->broker_id,
+                    'method' => $depositMethod,
+                    'amount' => $moneyTrx->amount,
+                    'status' => $moneyTrx->status
+                ]);
+                
                 return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
             } catch (\Exception $e) {
-                Log::error('Deposit creation failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id, 'data' => $depositData]);
-                return redirect()->back()->with('error', 'Failed to process deposit. Please try again.');
+                Log::error('=== DEPOSIT CREATION FAILED ===', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'broker_id' => $user->broker_id,
+                    'data' => $depositData,
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile()
+                ]);
+                return redirect()->back()->with('error', 'Failed to process deposit. Error: ' . $e->getMessage());
             }
         }
     }
