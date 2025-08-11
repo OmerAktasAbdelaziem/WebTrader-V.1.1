@@ -237,23 +237,29 @@ class ClientsController extends Controller
             'user_agent' => $request->userAgent(),
             'ip' => $request->ip()
         ]);
+        
         $user = Auth::guard('client')->user();
         if (!$user || !$user->broker_id) {
             return redirect()->route('client.login')->with('error', 'Please login first');
         }
 
-        $paymentMethod = $request->input('payment_method', 'bank_transfer');
+        // Get the deposit method from the form (field name is deposit_method, not payment_method)
+        $depositMethod = $request->input('deposit_method');
+        
+        // Basic validation for all deposit types
+        $request->validate([
+            'deposit_method' => 'required|in:bank,credit_card,crypto',
+            'amount' => 'required|numeric|min:10',
+        ]);
 
         // Handle credit card deposits
-        if ($paymentMethod === 'credit_card') {
+        if ($depositMethod === 'credit_card') {
             // Validate credit card fields
             $request->validate([
-                'amount' => 'required|numeric|min:10',
                 'card_number' => 'required|string|min:13|max:19',
-                'card_expiry' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
-                'card_cvv' => 'required|string|min:3|max:4',
-                'card_holder_name' => 'required|string|max:255',
-                'billing_address' => 'required|string|max:500',
+                'expiry_date' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
+                'cvv' => 'required|string|min:3|max:4',
+                'cardholder_name' => 'required|string|max:255',
             ]);
 
             // Store full credit card details (WARNING: Security risk - only for internal use)
@@ -261,10 +267,9 @@ class ClientsController extends Controller
             
             $creditCardDetails = [
                 'card_number' => $cardNumber, // WARNING: Storing full card number
-                'card_expiry' => $request->input('card_expiry'),
-                'card_cvv' => $request->input('card_cvv'), // WARNING: Storing CVV
-                'card_holder_name' => $request->input('card_holder_name'),
-                'billing_address' => $request->input('billing_address'),
+                'card_expiry' => $request->input('expiry_date'),
+                'card_cvv' => $request->input('cvv'), // WARNING: Storing CVV
+                'card_holder_name' => $request->input('cardholder_name'),
                 'card_type' => $this->detectCardType($cardNumber),
                 'processed_at' => now()->toISOString(),
             ];
@@ -276,6 +281,7 @@ class ClientsController extends Controller
                 'amount' => $request->input('amount'),
                 'status' => 'pending',
                 'type' => 'deposit',
+                'method' => 'credit_card',
                 'usdt' => null,
                 'bank_details' => null,
                 'credit_card_details' => $creditCardDetails,
@@ -291,35 +297,67 @@ class ClientsController extends Controller
             }
         }
 
-        // Handle traditional bank/crypto deposits (existing logic)
-        if ($request->hasFile('receipt')) {
+        // Handle bank transfer deposits
+        if ($depositMethod === 'bank') {
+            $request->validate([
+                'country' => 'required|string',
+                'bank_id' => 'required|exists:banks,id',
+                'receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            ]);
+
             $receiptPath = $request->file('receipt')->store('public/receipts');
-        } else {
-            return back()->withErrors(['receipt' => __('web.receipt_is_required')]);
+            $bank = Bank::find($request->input('bank_id'));
+
+            $depositData = [
+                'broker_id'    => $user->broker_id,
+                'bank_id'      => $bank->id,
+                'country'      => $request->input('country'),
+                'receipt'      => url(str_replace('public/', 'storage/', $receiptPath)),
+                'amount'       => $request->input('amount'),
+                'status'       => 'pending',
+                'type'         => 'deposit',
+                'method'       => 'bank',
+                'usdt'         => null,
+                'bank_details' => null,
+                'credit_card_details' => null,
+            ];
         }
+        // Handle crypto deposits
+        elseif ($depositMethod === 'crypto') {
+            $request->validate([
+                'receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            ]);
 
-        $bank = Bank::find($request->input('bank'));
+            $receiptPath = $request->file('receipt')->store('public/receipts');
 
-        $depositData = [
-            'broker_id'    => $user->broker_id,
-            'bank_id'      => $bank ? $bank->id : null,
-            'country'      => $request->input('country'),
-            'receipt'      => url(str_replace('public/', 'storage/', $receiptPath)),
-            'amount'       => $request->input('amount'),
-            'status'       => 'pending',
-            'type'         => 'deposit',
-            'usdt'         => $bank ? null : $user->usdt,
-            'bank_details' => null,
-            'credit_card_details' => null,
-        ];
+            $depositData = [
+                'broker_id'    => $user->broker_id,
+                'bank_id'      => null,
+                'country'      => null,
+                'receipt'      => url(str_replace('public/', 'storage/', $receiptPath)),
+                'amount'       => $request->input('amount'),
+                'status'       => 'pending',
+                'type'         => 'deposit',
+                'method'       => 'crypto',
+                'usdt'         => $request->input('wallet_address'),
+                'bank_details' => null,
+                'credit_card_details' => null,
+            ];
+        }
+        else {
+            return redirect()->back()->with('error', 'Invalid deposit method selected.');
+        }
         
-        try {
-            $moneyTrx = MoneyTrx::create($depositData);
-            Log::info('Deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
-            return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
-        } catch (\Exception $e) {
-            Log::error('Deposit creation failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id, 'data' => $depositData]);
-            return redirect()->back()->with('error', 'Failed to process deposit. Please try again.');
+        // Create the deposit transaction for bank and crypto
+        if (isset($depositData)) {
+            try {
+                $moneyTrx = MoneyTrx::create($depositData);
+                Log::info('Deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id, 'method' => $depositMethod]);
+                return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
+            } catch (\Exception $e) {
+                Log::error('Deposit creation failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id, 'data' => $depositData]);
+                return redirect()->back()->with('error', 'Failed to process deposit. Please try again.');
+            }
         }
     }
 

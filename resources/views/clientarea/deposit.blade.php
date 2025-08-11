@@ -127,7 +127,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100" id="submitDepositBtn">
                                 <i class="iconify me-2" data-icon="material-symbols:cloud-upload"></i>
                                 {{__('web.submit_deposit')}}
                             </button>
@@ -417,6 +417,84 @@
     }
 
     $(document).ready(function() {
+        // Debug form submission
+        $('form[action="{{ route('deposit.process') }}"]').on('submit', function(e) {
+            console.log('=== DEPOSIT FORM SUBMISSION DEBUG ===');
+            console.log('Form action:', $(this).attr('action'));
+            console.log('Form method:', $(this).attr('method'));
+            console.log('Form data:', $(this).serialize());
+            console.log('Deposit method:', $('#deposit_method').val());
+            console.log('Amount:', $('#amount').val());
+            
+            // Check required fields based on method
+            var method = $('#deposit_method').val();
+            var isValid = true;
+            var errors = [];
+            
+            if (!method) {
+                errors.push('Deposit method is required');
+                isValid = false;
+            }
+            
+            if (!$('#amount').val() || $('#amount').val() < 10) {
+                errors.push('Amount must be at least $10');
+                isValid = false;
+            }
+            
+            if (method === 'bank') {
+                if (!$('#country').val()) {
+                    errors.push('Country is required for bank transfer');
+                    isValid = false;
+                }
+                if (!$('#bank_id').val()) {
+                    errors.push('Bank selection is required');
+                    isValid = false;
+                }
+                if (!$('#receipt')[0].files.length) {
+                    errors.push('Receipt is required for bank transfer');
+                    isValid = false;
+                }
+            }
+            
+            if (method === 'crypto') {
+                if (!$('#receipt')[0].files.length) {
+                    errors.push('Receipt is required for crypto deposit');
+                    isValid = false;
+                }
+            }
+            
+            if (method === 'credit_card') {
+                if (!$('#card_number').val()) {
+                    errors.push('Card number is required');
+                    isValid = false;
+                }
+                if (!$('#expiry_date').val()) {
+                    errors.push('Expiry date is required');
+                    isValid = false;
+                }
+                if (!$('#cvv').val()) {
+                    errors.push('CVV is required');
+                    isValid = false;
+                }
+                if (!$('#cardholder_name').val()) {
+                    errors.push('Cardholder name is required');
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                console.log('Form validation errors:', errors);
+                alert('Please fix the following errors:\n' + errors.join('\n'));
+                return false;
+            }
+            
+            console.log('Form validation passed, submitting...');
+            
+            // Disable submit button to prevent double submission
+            $('#submitDepositBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+        });
+
         // Show/hide fields based on deposit method
         $('#deposit_method').on('change', function() {
             var method = $(this).val();
@@ -576,6 +654,29 @@
             } else {
                 $('#bankDetails').hide();
             }
+        });
+
+        // Credit card number formatting
+        $('#card_number').on('input', function() {
+            var value = $(this).val().replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            var formattedValue = value.match(/.{1,4}/g)?.join(' ') ?? value;
+            if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
+            $(this).val(formattedValue);
+        });
+
+        // Expiry date formatting
+        $('#expiry_date').on('input', function() {
+            var value = $(this).val().replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substr(0, 2) + '/' + value.substr(2, 2);
+            }
+            $(this).val(value);
+        });
+
+        // CVV validation
+        $('#cvv').on('input', function() {
+            var value = $(this).val().replace(/\D/g, '');
+            $(this).val(value);
         });
 
         // USDT TRC20 logic: get wallet address from backend (pipelines.usdt, fallback to clients.usdt)
