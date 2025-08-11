@@ -943,9 +943,7 @@
                                 <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" 
                                        step="0.01" min="10" placeholder="10.00" required>
                             </div>
-                            <small class="form-text">{{ __('web.minimum_deposit_10') }}</small>
                         </div>
-                        
                         <div class="form-group">
                             <label for="country_select" class="form-label">{{ __('web.select_country') }}</label>
                             <select name="country" id="country_select" class="form-select-modern" required>
