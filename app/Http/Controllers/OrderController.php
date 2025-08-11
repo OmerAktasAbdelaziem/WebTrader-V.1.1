@@ -7,6 +7,7 @@ use App\Models\MoneyHistory;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -149,6 +150,15 @@ class OrderController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Debug: Log all request data to check what's being received
+        Log::info('Order update request received', [
+            'id' => $id,
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'all_data' => $request->all(),
+            'headers' => $request->headers->all()
+        ]);
+        
         $tab = $request->tab ?? 'active';
         $inputs = $request->only(
             's_l',
