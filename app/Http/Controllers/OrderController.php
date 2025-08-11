@@ -191,4 +191,45 @@ class OrderController extends Controller
         }
         return redirect()->back()->with(['success'=> __('web.no_orders_selected'),'tab'=>$tab]);
     }
+
+    public function getPnlData(Request $request)
+    {
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $orders = Order::where('broker_id', $user->broker_id)
+                      ->where('status', 'active')
+                      ->with('asset')
+                      ->get();
+
+        $pnlData = [];
+        foreach ($orders as $order) {
+            $asset = $order->asset;
+            if ($asset) {
+                // Calculate current PnL based on current market price
+                $currentPrice = $order->type == 1 ? $asset->bid_price : $asset->ask_price;
+                $pnl = 0;
+                
+                if ($order->type == 1) { // Buy order
+                    $pnl = ($currentPrice - $order->open_price) * $order->amount;
+                } else { // Sell order
+                    $pnl = ($order->open_price - $currentPrice) * $order->amount;
+                }
+                
+                $pnlData[] = [
+                    'order_id' => $order->id,
+                    'pnl' => number_format($pnl, 2),
+                    'pnl_raw' => $pnl,
+                    'current_price' => $currentPrice,
+                    'open_price' => $order->open_price,
+                    'type' => $order->type,
+                    'amount' => $order->amount
+                ];
+            }
+        }
+
+        return response()->json($pnlData);
+    }
 }

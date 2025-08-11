@@ -61,6 +61,7 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/client/orders',                   [ClientsController::class,         'showOrders'              ])->name('clientarea.orders');
     $router->get   ('/client/charts',                   [ClientsController::class,         'showCharts'              ])->name('clientarea.charts');
     $router->get   ('/api/price-data',                  [ClientsController::class,         'getPriceData'            ])->name('api.price.data');
+    $router->get   ('/api/pnl-data',                    [OrderController::class,           'getPnlData'              ])->name('api.pnl.data');
     $router->get   ('/client/account',                  [ClientsController::class,         'showAccount'             ])->name('clientarea.account');
     $router->put   ('/client/profile',                  [ClientsController::class,         'updateProfile'           ])->name('client.update.profile');
     $router->post  ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');

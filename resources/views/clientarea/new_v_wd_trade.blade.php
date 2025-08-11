@@ -167,6 +167,59 @@
             z-index: 15;
             background: transparent;
         }
+
+        /* Real-time PnL Update Animation */
+        .pnl-updated {
+            background-color: rgba(255, 255, 0, 0.2) !important;
+            transition: background-color 0.3s ease-in-out;
+        }
+        
+        .pnl.active_pnl {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .pnl.active_pnl:hover {
+            transform: scale(1.05);
+        }
+        
+        #pnl-last-update {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        /* PnL Color and Animation Styles */
+        .pnl {
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .pnl.text-success {
+            color: #22c55e !important;
+        }
+        
+        .pnl.text-danger {
+            color: #ef4444 !important;
+        }
+        
+        .pnl-updated {
+            background-color: rgba(79, 140, 255, 0.2) !important;
+            border-radius: 4px;
+            animation: pnlFlash 1s ease-in-out;
+        }
+        
+        @keyframes pnlFlash {
+            0% { 
+                background-color: rgba(79, 140, 255, 0.4);
+                transform: scale(1.02);
+            }
+            50% { 
+                background-color: rgba(79, 140, 255, 0.2);
+            }
+            100% { 
+                background-color: transparent;
+                transform: scale(1);
+            }
+        }
     </style>
 
 </head>
@@ -182,13 +235,8 @@
         
         <div class="language-dropdown" id="languageDropdown">
             @foreach(['en' => 'English', 'ar' => 'العربية'] as $language => $name)
-                <a href="{{ switchUrlLocaleTo($language) }}" 
-                   class="language-option {{ app()->getLocale() == $language ? 'active' : '' }}">
-                    <img src="{{ config('app.flagIconUrlForLocale.' . $language) }}" 
-                         width="18" 
-                         height="13" 
-                         alt="{{ $name }}" 
-                         class="option-flag">
+                <a href="{{ switchUrlLocaleTo($language) }}" class="language-option {{ app()->getLocale() == $language ? 'active' : '' }}">
+                    <img src="{{ config('app.flagIconUrlForLocale.' . $language) }}" width="18" height="13" alt="{{ $name }}" class="option-flag">
                     <span class="option-name">{{ $name }}</span>
                     @if(app()->getLocale() == $language)
                         <i class="bi bi-check-lg active-check"></i>
@@ -2718,6 +2766,163 @@
                 }
             });
         }
+    });
+
+    // Edit Order Modal Function
+    function editOrder(orderId, stopLoss, takeProfit) {
+        // Set the order ID in the hidden input
+        document.getElementById('editOrderId').value = orderId;
+        
+        // Set the form action URL
+        const editForm = document.getElementById('editOrderForm');
+        editForm.action = '/order/' + orderId;
+        
+        // Populate the form fields with current values
+        const stopLossInput = document.getElementById('edit_stop_loss');
+        const takeProfitInput = document.getElementById('edit_take_profit');
+        
+        // Clear any previous values
+        stopLossInput.value = '';
+        takeProfitInput.value = '';
+        
+        // Set current values if they exist and are not null
+        if (stopLoss && stopLoss !== 'null' && stopLoss !== '') {
+            stopLossInput.value = parseFloat(stopLoss);
+        }
+        
+        if (takeProfit && takeProfit !== 'null' && takeProfit !== '') {
+            takeProfitInput.value = parseFloat(takeProfit);
+        }
+        
+        // Enable the input fields
+        stopLossInput.disabled = false;
+        takeProfitInput.disabled = false;
+        
+        // Focus on the first input for better UX
+        setTimeout(function() {
+            stopLossInput.focus();
+        }, 500);
+        
+        console.log('Edit Order Modal initialized for Order ID:', orderId);
+    }
+
+    // Real-time PnL Update System
+    let pnlUpdateInterval;
+    let isUpdatingPnl = false;
+    
+    function updatePnlData() {
+        // Prevent multiple simultaneous requests
+        if (isUpdatingPnl) {
+            return;
+        }
+        
+        isUpdatingPnl = true;
+        
+        $.ajax({
+            url: '{{ route("api.pnl.data") }}',
+            method: 'GET',
+            dataType: 'json',
+            timeout: 10000, // 10 second timeout
+            success: function(response) {
+                if (Array.isArray(response)) {
+                    response.forEach(function(orderData) {
+                        const pnlElement = $('.pnl.active_pnl[data-order-id="' + orderData.order_id + '"]');
+                        if (pnlElement.length > 0) {
+                            const currentValue = pnlElement.text();
+                            const newValue = '$' + orderData.pnl;
+                            
+                            // Only update if value has changed
+                            if (currentValue !== newValue) {
+                                // Update PnL value
+                                pnlElement.text(newValue);
+                                
+                                // Update color based on profit/loss
+                                pnlElement.removeClass('text-success text-danger');
+                                if (orderData.pnl_raw >= 0) {
+                                    pnlElement.addClass('text-success');
+                                } else {
+                                    pnlElement.addClass('text-danger');
+                                }
+                                
+                                // Add a subtle flash animation to indicate update
+                                pnlElement.addClass('pnl-updated');
+                                setTimeout(function() {
+                                    pnlElement.removeClass('pnl-updated');
+                                }, 1000);
+                            }
+                        }
+                    });
+                    
+                    // Update last update time indicator
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString();
+                    $('#pnl-last-update').text('Last updated: ' + timeString);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('PnL update error:', error);
+                // If unauthorized, redirect to login
+                if (xhr.status === 401) {
+                    window.location.href = '{{ route("client.login") }}';
+                } else if (xhr.status >= 500) {
+                    // Server error - pause updates for a bit
+                    clearInterval(pnlUpdateInterval);
+                    setTimeout(function() {
+                        startPnlUpdates();
+                    }, 30000); // Retry after 30 seconds
+                }
+            },
+            complete: function() {
+                isUpdatingPnl = false;
+            }
+        });
+    }
+    
+    function startPnlUpdates() {
+        // Clear any existing interval
+        if (pnlUpdateInterval) {
+            clearInterval(pnlUpdateInterval);
+        }
+        
+        // Update immediately
+        updatePnlData();
+        
+        // Set up automatic updates every 5 seconds
+        pnlUpdateInterval = setInterval(updatePnlData, 5000);
+        
+        console.log('Real-time PnL updates started - updating every 5 seconds');
+    }
+    
+    function stopPnlUpdates() {
+        if (pnlUpdateInterval) {
+            clearInterval(pnlUpdateInterval);
+            pnlUpdateInterval = null;
+            console.log('Real-time PnL updates stopped');
+        }
+    }
+
+    // Start real-time PnL updates when page loads
+    $(document).ready(function() {
+        startPnlUpdates();
+        
+        // Add a small indicator to show updates are working
+        if ($('.active-orders-table').length > 0) {
+            $('.active-orders-table').before('<div class="text-muted small mb-2" id="pnl-last-update">Initializing real-time updates...</div>');
+        }
+        
+        // Stop updates when user leaves the page
+        $(window).on('beforeunload', function() {
+            stopPnlUpdates();
+        });
+        
+        // Pause updates when page is not visible (browser tab is inactive)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopPnlUpdates();
+            } else {
+                startPnlUpdates();
+            }
+        });
     });
 </script>
 

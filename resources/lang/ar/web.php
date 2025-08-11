@@ -31,6 +31,7 @@ return [
     'there_are_no_pending_orders_yet' => 'لا توجد صفقات معلقة حتى الآن',
     'withdraw_accepted_notification'  => 'تم قبول السحب',
     'withdraw_rejected_notification'  => 'تم رفض السحب',
+    'no_orders_found'                 => 'لا توجد طلبات',
     'deposit_accepted_notification'   => 'تم قبول الإيداع',
     'deposit_rejected_notification'   => 'تم رفض الإيداع',
     'please_specify_usdt_address'     => 'يرجى تحديد عنوان USDT',
@@ -467,6 +468,8 @@ return [
     'target_price'                => 'السعر المستهدف',
     'stop_loss_price'             => 'سعر وقف الخسارة',
     'take_profit_price'           => 'سعر جني الربح',
+    'enter_stop_loss_price'       => 'أدخل سعر وقف الخسارة',
+    'enter_take_profit_price'     => 'أدخل سعر جني الربح',
     // Chat interface
     'chat'                        => 'المحادثة',
     'online_support'              => 'الدعم الفني متاح',

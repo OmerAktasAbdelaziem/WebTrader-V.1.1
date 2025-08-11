@@ -482,6 +482,8 @@ return [
     'target_price' => 'Target Price',
     'stop_loss_price' => 'Stop Loss Price',
     'take_profit_price' => 'Take Profit Price',
+    'enter_stop_loss_price' => 'Enter Stop Loss Price',
+    'enter_take_profit_price' => 'Enter Take Profit Price',
     // Chat interface
     'chat' => 'Chat',
     'online_support' => 'Online Support Available',
@@ -786,6 +788,7 @@ return [
     'demo' => 'Demo',
     'save_changes' => 'Save Changes',
     'cancel' => 'Cancel',
+    'no_orders_found' => 'No orders found',
     'not_provided' => 'Not provided',
     'account_type_cannot_change' => 'Account type cannot be changed',
     
