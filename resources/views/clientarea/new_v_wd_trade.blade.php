@@ -533,8 +533,10 @@
                                         <td>{{ $order->s_l ?? '-' }}</td>
                                         <td>{{ $order->s_p ?? '-' }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
-                                        <td class="pnl active_pnl {{ $order->pnl < 0 ? 'text-danger' : 'text-success' }}" data-order-id="{{ $order->id }}">
-                                            ${{ number_format($order->pnl, 2) }}
+                                        <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}">
+                                            <div class="{{$order->pnl < 0 ? 'text-danger' : 'text-success'}}">
+                                                {{ number_format($order->pnl, 2) }}
+                                            </div>
                                         </td>
                                         <td>
                                             <form action="{{ route('order.close', ['id'=>$order->id]) }}" class="d-inline" method="POST">
