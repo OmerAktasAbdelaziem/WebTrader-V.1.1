@@ -33,7 +33,7 @@ function startAjaxPnl() {
 
     $.ajax({
         url:
-            "https://crm.avaxtrades.com/client/get_pnl/" +
+            "https://new.elitexcrm.com/client/get_pnl/" +
             client_id +
             "/" +
             assetId +
