@@ -194,6 +194,7 @@
         .trade-price {
             font-weight: 600;
             font-size: 1.1em;
+            color: #ffffff !important;
             transition: all 0.3s ease;
         }
         
