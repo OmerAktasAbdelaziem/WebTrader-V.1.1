@@ -6,17 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 class AddReadAtToNotificationsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->timestamp('read_at')->nullable()->after('text');
-        });
+        if (!Schema::hasColumn('notifications', 'read_at')) {
+            Schema::table('notifications', function (Blueprint $table) {
+                $table->timestamp('read_at')->nullable()->after('text');
+            });
+        }
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->dropColumn('read_at');
-        });
+        if (Schema::hasColumn('notifications', 'read_at')) {
+            Schema::table('notifications', function (Blueprint $table) {
+                $table->dropColumn('read_at');
+            });
+        }
     }
 }
