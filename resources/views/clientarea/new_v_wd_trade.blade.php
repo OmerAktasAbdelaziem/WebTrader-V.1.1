@@ -2879,21 +2879,42 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get previous prices for comparison
         const prevPrices = previousPrices[assetId] || { bid: newBidPrice, ask: newAskPrice };
         
-        // Update bid prices
+        // Update bid and ask prices in the asset list
         updatePriceElement('.bid_price[data-asset-id="' + assetId + '"]', newBidPrice, prevPrices.bid, 'bid');
-        updatePriceElement('#displayBidPrice', newBidPrice, prevPrices.bid, 'bid');
-        
-        // Update ask prices  
         updatePriceElement('.ask_price[data-asset-id="' + assetId + '"]', newAskPrice, prevPrices.ask, 'ask');
-        updatePriceElement('#displayAskPrice', newAskPrice, prevPrices.ask, 'ask');
         
-        // Update hidden inputs
-        $('#currentBidPrice').val(newBidPrice);
-        $('#currentAskPrice').val(newAskPrice);
+        // Only update the trading buttons if this is the currently selected asset
+        const selectedAssetId = $('#selectedAssetId').val();
+        if (assetId == selectedAssetId) {
+            // Update trading button prices for the current chart asset
+            updatePriceElement('#displayBidPrice', newBidPrice, prevPrices.bid, 'bid');
+            updatePriceElement('#displayAskPrice', newAskPrice, prevPrices.ask, 'ask');
+            
+            // Update hidden inputs for order submission
+            $('#currentBidPrice').val(newBidPrice);
+            $('#currentAskPrice').val(newAskPrice);
+        }
         
         // Store current prices for next comparison
         previousPrices[assetId] = { bid: newBidPrice, ask: newAskPrice };
         
+    }
+    
+    // Helper function to update trading button prices for a specific asset
+    function updateTradingButtonPrices(assetId, bidPrice, askPrice) {
+        const selectedAssetId = $('#selectedAssetId').val();
+        if (assetId == selectedAssetId) {
+            // Update trading button display prices
+            $('#displayBidPrice').text(parseFloat(bidPrice).toFixed(4));
+            $('#displayAskPrice').text(parseFloat(askPrice).toFixed(4));
+            
+            // Update hidden inputs for order submission
+            $('#currentBidPrice').val(bidPrice);
+            $('#currentAskPrice').val(askPrice);
+            
+            // Also update the selected asset info
+            $('#selectedAssetId').val(assetId);
+        }
     }
     
     function updatePriceElement(selector, newPrice, previousPrice, priceType) {
