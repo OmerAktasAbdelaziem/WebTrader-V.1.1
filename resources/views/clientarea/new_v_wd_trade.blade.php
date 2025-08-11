@@ -2109,7 +2109,6 @@
             <div class="modal-body">
                 <form id="editOrderForm" action="" method="POST">
                     @csrf
-                    @method('PUT')
                     <input type="hidden" id="editOrderId" name="order_id">
                     
                     <div class="mb-3">
@@ -2635,7 +2634,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.currentSymbol = '{{ $symbol ?? '' }}';
     
     // Routes for JavaScript
-    window.updateOrderRoute = '{{ route("order.update", ["id" => "__ORDER_ID__"]) }}';
+    window.updateOrderRoute = '{{ route("order.edit", ["id" => "__ORDER_ID__"]) }}';
     
     // Banks data for filtering
     window.banksData = @json($banks ?? []);
@@ -2799,9 +2798,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const editForm = document.getElementById('editOrderForm');
         const actionUrl = window.updateOrderRoute.replace('__ORDER_ID__', orderId);
         editForm.action = actionUrl;
-        
-        // Debug temporarily - will remove after fixing
-        alert('Form action set to: ' + actionUrl + '\nForm method: ' + editForm.method + '\nCSRF token present: ' + !!editForm.querySelector('input[name="_token"]') + '\nMethod spoofing present: ' + !!editForm.querySelector('input[name="_method"]'));
         
         // Populate the form fields with current values
         const stopLossInput = document.getElementById('edit_stop_loss');
