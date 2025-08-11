@@ -516,7 +516,7 @@
                                         <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
                                         <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}">
                                             <div class="{{$order->pnl < 0 ? 'text-danger' : 'text-success'}}">
-                                                {{ number_format($order->pnl, 2) }}
+                                                $ {{ number_format($order->pnl, 2) }}
                                             </div>
                                         </td>
                                         <td>
