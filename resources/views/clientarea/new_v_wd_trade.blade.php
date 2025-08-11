@@ -221,10 +221,6 @@
             z-index: 9999 !important;
         }
         
-        #editOrderModal .modal-backdrop {
-            z-index: 9998 !important;
-        }
-        
         #editOrderModal .modal-dialog {
             z-index: 10000 !important;
             position: relative;
@@ -246,15 +242,6 @@
         .notification-popup-overlay,
         .language-dropdown-overlay {
             z-index: 15 !important;
-        }
-        
-        /* Ensure modal is above everything */
-        .modal.show {
-            z-index: 9999 !important;
-        }
-        
-        .modal-backdrop.show {
-            z-index: 9998 !important;
         }
     </style>
 
@@ -2125,7 +2112,7 @@
 </div>
 
 <!-- Edit Order Modal -->
-<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true" data-bs-backdrop="false" data-bs-keyboard="true">
     <div class="modal-dialog">
         <div class="modal-content bg-dark border-secondary">
             <div class="modal-header border-secondary">
