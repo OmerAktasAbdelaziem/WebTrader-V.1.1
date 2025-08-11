@@ -1118,14 +1118,26 @@
                                         if (is_string($clientUsdt)) {
                                             $decodedUsdt = json_decode($clientUsdt, true);
                                             if (is_array($decodedUsdt)) {
-                                                // Get the first available address (default)
-                                                $usdtAddress = reset($decodedUsdt);
+                                                // Get the first non-null address
+                                                $usdtAddress = null;
+                                                foreach ($decodedUsdt as $key => $address) {
+                                                    if (!empty($address) && $address !== null) {
+                                                        $usdtAddress = $address;
+                                                        break;
+                                                    }
+                                                }
                                             } else {
                                                 $usdtAddress = $clientUsdt;
                                             }
                                         } elseif (is_array($clientUsdt)) {
-                                            // Get the first available address (default)
-                                            $usdtAddress = reset($clientUsdt);
+                                            // Get the first non-null address
+                                            $usdtAddress = null;
+                                            foreach ($clientUsdt as $key => $address) {
+                                                if (!empty($address) && $address !== null) {
+                                                    $usdtAddress = $address;
+                                                    break;
+                                                }
+                                            }
                                         }
                                     }
                                     // If client usdt is null/empty, get USDT from the pipeline this client belongs to
@@ -1140,14 +1152,26 @@
                                             if (is_string($pipelineUsdt)) {
                                                 $decodedUsdt = json_decode($pipelineUsdt, true);
                                                 if (is_array($decodedUsdt)) {
-                                                    // Get the first available address (default)
-                                                    $usdtAddress = reset($decodedUsdt);
+                                                    // Get the first non-null address
+                                                    $usdtAddress = null;
+                                                    foreach ($decodedUsdt as $key => $address) {
+                                                        if (!empty($address) && $address !== null) {
+                                                            $usdtAddress = $address;
+                                                            break;
+                                                        }
+                                                    }
                                                 } else {
                                                     $usdtAddress = trim($pipelineUsdt);
                                                 }
                                             } elseif (is_array($pipelineUsdt) && !empty($pipelineUsdt)) {
-                                                // Get the first available address (default)
-                                                $usdtAddress = reset($pipelineUsdt);
+                                                // Get the first non-null address
+                                                $usdtAddress = null;
+                                                foreach ($pipelineUsdt as $key => $address) {
+                                                    if (!empty($address) && $address !== null) {
+                                                        $usdtAddress = $address;
+                                                        break;
+                                                    }
+                                                }
                                             }
                                         }
                                     }

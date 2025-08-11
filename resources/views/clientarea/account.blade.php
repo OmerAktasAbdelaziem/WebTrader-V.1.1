@@ -1,4 +1,86 @@
 @extends('layouts.mobile')
+
+@php
+    // Process USDT address to handle JSON format properly
+    $client = auth()->guard('client')->user();
+    $usdtAddress = '';
+    
+    if ($client) {
+        // First try client's usdt column
+        if (!empty($client->usdt)) {
+            $clientUsdt = $client->usdt;
+            
+            // Handle JSON format like {"phoenix":"address1","BNC":"address2"}
+            if (is_string($clientUsdt)) {
+                $decodedUsdt = json_decode($clientUsdt, true);
+                if (is_array($decodedUsdt)) {
+                    // Get address based on client source
+                    if ($client->source == 'BNC' && !empty($decodedUsdt['BNC'])) {
+                        $usdtAddress = $decodedUsdt['BNC'];
+                    } elseif (!empty($decodedUsdt['phoenix'])) {
+                        $usdtAddress = $decodedUsdt['phoenix'];
+                    } else {
+                        // Get the first non-null address
+                        foreach ($decodedUsdt as $key => $address) {
+                            if (!empty($address) && $address !== null) {
+                                $usdtAddress = $address;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $usdtAddress = $clientUsdt;
+                }
+            }
+        }
+        // If client usdt is empty, try pipeline
+        elseif (!empty($client->pipeline_id)) {
+            $pipeline = \App\Models\Pipeline::find($client->pipeline_id);
+            
+            if ($pipeline && !empty($pipeline->usdt)) {
+                $pipelineUsdt = $pipeline->usdt;
+                
+                if (is_string($pipelineUsdt)) {
+                    $decodedUsdt = json_decode($pipelineUsdt, true);
+                    if (is_array($decodedUsdt)) {
+                        // Get address based on client source
+                        if ($client->source == 'BNC' && !empty($decodedUsdt['BNC'])) {
+                            $usdtAddress = $decodedUsdt['BNC'];
+                        } elseif (!empty($decodedUsdt['phoenix'])) {
+                            $usdtAddress = $decodedUsdt['phoenix'];
+                        } else {
+                            // Get the first non-null address
+                            foreach ($decodedUsdt as $key => $address) {
+                                if (!empty($address) && $address !== null) {
+                                    $usdtAddress = $address;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $usdtAddress = trim($pipelineUsdt);
+                    }
+                } elseif (is_array($pipelineUsdt)) {
+                    // Get address based on client source
+                    if ($client->source == 'BNC' && !empty($pipelineUsdt['BNC'])) {
+                        $usdtAddress = $pipelineUsdt['BNC'];
+                    } elseif (!empty($pipelineUsdt['phoenix'])) {
+                        $usdtAddress = $pipelineUsdt['phoenix'];
+                    } else {
+                        // Get the first non-null address
+                        foreach ($pipelineUsdt as $key => $address) {
+                            if (!empty($address) && $address !== null) {
+                                $usdtAddress = $address;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+@endphp
+
 <style>
     .account-container {
         background: #fff;
@@ -470,11 +552,7 @@
                                             <div id="usdt-details" class="payment-details" style="display: none;">
                                                 <div class="mb-3">
                                                     <label for="usdt-address" class="form-label">{{__('web.usdt_address')}}</label>
-                                                    @if (auth()->guard('client')->user()->source == 'BNC')
-                                                        <input type="text" class="form-control" id="usdt-address" name="usdt" value="{{auth()->guard('client')->user()->usdt??auth()->guard('client')->user()->pipeline->usdt['BNC']??''}}" readonly>
-                                                    @else
-                                                        <input type="text" class="form-control" id="usdt-address" name="usdt" value="{{auth()->guard('client')->user()->usdt??auth()->guard('client')->user()->pipeline->usdt['phoenix']??''}}" readonly>
-                                                    @endif
+                                                    <input type="text" class="form-control" id="usdt-address" name="usdt" value="{{ $usdtAddress }}" readonly>
                                                 </div>
                                             </div>
 
