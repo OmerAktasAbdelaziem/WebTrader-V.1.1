@@ -929,6 +929,65 @@
     #balanceDropdownBar {
         /* No debug outline */
     }
+    
+    /* Price Color Change Styles for Mobile */
+    .price-up {
+        color: #10B981 !important; /* Green for price increase */
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+    
+    .price-down {
+        color: #EF4444 !important; /* Red for price decrease */
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+    
+    .price-unchanged {
+        color: #6B7280 !important; /* Gray for no change */
+        transition: color 0.3s ease;
+    }
+    
+    .price-updated {
+        animation: priceFlash 0.8s ease-in-out;
+    }
+    
+    @keyframes priceFlash {
+        0% { background-color: rgba(59, 130, 246, 0.3); }
+        50% { background-color: rgba(59, 130, 246, 0.1); }
+        100% { background-color: transparent; }
+    }
+    
+    /* Dark theme price colors */
+    [data-theme="dark"] .price-up {
+        color: #34D399 !important; /* Brighter green for dark mode */
+    }
+    
+    [data-theme="dark"] .price-down {
+        color: #F87171 !important; /* Brighter red for dark mode */
+    }
+    
+    [data-theme="dark"] .price-unchanged {
+        color: #9CA3AF !important; /* Lighter gray for dark mode */
+    }
+    
+    [data-theme="dark"] .price-updated {
+        animation: priceFlashDark 0.8s ease-in-out;
+    }
+    
+    @keyframes priceFlashDark {
+        0% { background-color: rgba(59, 130, 246, 0.4); }
+        50% { background-color: rgba(59, 130, 246, 0.2); }
+        100% { background-color: transparent; }
+    }
+    
+    /* Mobile price display enhancements */
+    #sell-price, #buy-price {
+        transition: all 0.3s ease;
+        display: inline-block;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
 </style>
 
 </head>
@@ -1627,6 +1686,174 @@
         });
     });
 </script>
+
+<script>
+    // Mobile Price Update System with Color Indicators
+    let mobilePreviousPrices = {};
+    let mobilePriceUpdateInterval;
+    
+    // Update mobile prices with color indicators
+    function updateMobilePricesWithColors(priceData) {
+        console.log('📱 === UPDATING MOBILE PRICES WITH COLORS ===');
+        console.log('📊 Mobile price data received:', priceData);
+        
+        if (Array.isArray(priceData)) {
+            priceData.forEach(function(asset) {
+                updateMobileSingleAssetPrice(asset);
+            });
+        } else if (priceData.assets && Array.isArray(priceData.assets)) {
+            priceData.assets.forEach(function(asset) {
+                updateMobileSingleAssetPrice(asset);
+            });
+        } else {
+            console.log('🔍 Unknown mobile price data format, trying to process as single asset');
+            updateMobileSingleAssetPrice(priceData);
+        }
+        
+        console.log('📱 === END MOBILE PRICE UPDATES ===');
+    }
+    
+    function updateMobileSingleAssetPrice(asset) {
+        if (!asset || !asset.id) {
+            console.log('⚠️ Invalid mobile asset data:', asset);
+            return;
+        }
+        
+        const assetId = asset.id;
+        const newBidPrice = parseFloat(asset.bid_price || 0);
+        const newAskPrice = parseFloat(asset.ask_price || 0);
+        
+        console.log(`💰 Updating mobile asset ${assetId}: Bid=${newBidPrice}, Ask=${newAskPrice}`);
+        
+        // Get previous prices for comparison
+        const prevPrices = mobilePreviousPrices[assetId] || { bid: newBidPrice, ask: newAskPrice };
+        
+        // Update bid price (sell button)
+        updateMobilePriceElement('#sell-price', newBidPrice, prevPrices.bid, 'bid');
+        
+        // Update ask price (buy button)
+        updateMobilePriceElement('#buy-price', newAskPrice, prevPrices.ask, 'ask');
+        
+        // Update hidden inputs
+        $('#bid').val(newBidPrice);
+        $('#ask').val(newAskPrice);
+        
+        // Store current prices for next comparison
+        mobilePreviousPrices[assetId] = { bid: newBidPrice, ask: newAskPrice };
+        
+        console.log(`✅ Updated mobile asset ${assetId} prices`);
+    }
+    
+    function updateMobilePriceElement(selector, newPrice, previousPrice, priceType) {
+        const element = $(selector);
+        
+        if (element.length === 0) {
+            console.log(`⚠️ Mobile element not found: ${selector}`);
+            return;
+        }
+        
+        const currentText = element.text().trim();
+        const formattedPrice = parseFloat(newPrice).toFixed(4);
+        
+        console.log(`🎯 Updating mobile ${selector}: ${currentText} → ${formattedPrice}`);
+        
+        // Update the price text
+        element.text(formattedPrice);
+        
+        // Remove previous color classes
+        element.removeClass('price-up price-down price-unchanged text-success text-danger');
+        
+        // Determine color based on price movement
+        if (newPrice > previousPrice) {
+            element.addClass('price-up');
+            console.log(`📈 Mobile ${priceType.toUpperCase()} price increased: ${previousPrice} → ${newPrice}`);
+        } else if (newPrice < previousPrice) {
+            element.addClass('price-down');
+            console.log(`📉 Mobile ${priceType.toUpperCase()} price decreased: ${previousPrice} → ${newPrice}`);
+        } else {
+            element.addClass('price-unchanged');
+            console.log(`➡️ Mobile ${priceType.toUpperCase()} price unchanged: ${newPrice}`);
+        }
+        
+        // Add flash animation
+        element.addClass('price-updated');
+        setTimeout(function() {
+            element.removeClass('price-updated');
+        }, 800);
+    }
+    
+    function startMobilePriceUpdates() {
+        console.log('🚀 Starting mobile real-time price updates...');
+        
+        // Clear any existing interval
+        if (mobilePriceUpdateInterval) {
+            clearInterval(mobilePriceUpdateInterval);
+        }
+        
+        // Update immediately
+        updateMobilePricesFromAPI();
+        
+        // Set up automatic updates every 2 seconds
+        mobilePriceUpdateInterval = setInterval(function() {
+            console.log('⏰ Scheduled mobile price update at:', new Date().toLocaleTimeString());
+            updateMobilePricesFromAPI();
+        }, 2000);
+        
+        console.log('✅ Mobile price updates started - updating every 2 seconds');
+    }
+    
+    function updateMobilePricesFromAPI() {
+        $.ajax({
+            url: '{{ route("api.price.data") }}',
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            beforeSend: function() {
+                console.log('📡 Fetching latest mobile prices...');
+            },
+            success: function(response) {
+                console.log('✅ Mobile price data received successfully');
+                updateMobilePricesWithColors(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('❌ Mobile price update failed:', error);
+            }
+        });
+    }
+    
+    function stopMobilePriceUpdates() {
+        if (mobilePriceUpdateInterval) {
+            clearInterval(mobilePriceUpdateInterval);
+            mobilePriceUpdateInterval = null;
+            console.log('⏹️ Mobile price updates stopped');
+        }
+    }
+    
+    // Start mobile price updates when page loads
+    $(document).ready(function() {
+        console.log('📱 Mobile layout loaded - starting price updates...');
+        startMobilePriceUpdates();
+        
+        // Stop updates when user leaves the page
+        $(window).on('beforeunload', function() {
+            stopMobilePriceUpdates();
+        });
+        
+        // Pause updates when page is not visible (mobile browser tab switching)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopMobilePriceUpdates();
+            } else {
+                startMobilePriceUpdates();
+            }
+        });
+    });
+</script>
+
 <script>
     // Interactive hover/focus effect for nav bar (mobile-friendly)
     document.querySelectorAll('.bottom-nav .nav-link').forEach(link => {

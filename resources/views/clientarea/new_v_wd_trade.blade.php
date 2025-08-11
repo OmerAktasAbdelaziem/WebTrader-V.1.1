@@ -220,6 +220,54 @@
                 transform: scale(1);
             }
         }
+        
+        /* Price Movement Colors */
+        .price-up {
+            color: #22c55e !important; /* Green for price increase */
+            transition: color 0.3s ease;
+        }
+        
+        .price-down {
+            color: #ef4444 !important; /* Red for price decrease */
+            transition: color 0.3s ease;
+        }
+        
+        .price-unchanged {
+            color: #e0e0e0 !important; /* Default color */
+            transition: color 0.3s ease;
+        }
+        
+        /* Price update animation */
+        .price-updated {
+            animation: priceFlash 0.8s ease-in-out;
+        }
+        
+        @keyframes priceFlash {
+            0% { 
+                background-color: rgba(255, 255, 255, 0.2);
+                transform: scale(1.05);
+            }
+            50% { 
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            100% { 
+                background-color: transparent;
+                transform: scale(1);
+            }
+        }
+        
+        /* Bid/Ask specific styling */
+        .bid_price, .ask_price {
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+        
+        .trade-price {
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
     </style>
 
 </head>
@@ -2852,20 +2900,166 @@
     
     function updatePnlFromAssetPrices() {
         // Fallback method: get current asset prices and calculate PnL
+        console.log('🔄 Using fallback method - getting asset prices...');
         $.ajax({
             url: '{{ route("api.price.data") }}',
             method: 'GET',
             dataType: 'json',
             success: function(priceResponse) {
-                console.log('Price data response:', priceResponse);
-                // This would need asset prices to calculate PnL
-                // For now, just log that we tried the fallback
-                console.log('Using fallback price data method');
+                console.log('💰 Price data response:', priceResponse);
+                // Process price updates with color changes
+                updatePricesWithColors(priceResponse);
+                console.log('✅ Fallback price data method attempted');
             },
             error: function() {
-                console.log('Fallback price data method also failed');
+                console.error('❌ Fallback price data method also failed');
             }
         });
+    }
+    
+    // Price tracking for color changes
+    let previousPrices = {};
+    let priceUpdateInterval;
+    
+    // Update prices with color indicators
+    function updatePricesWithColors(priceData) {
+        console.log('🎨 === UPDATING PRICES WITH COLORS ===');
+        console.log('📊 Price data received:', priceData);
+        
+        if (Array.isArray(priceData)) {
+            priceData.forEach(function(asset) {
+                updateSingleAssetPrice(asset);
+            });
+        } else if (priceData.assets && Array.isArray(priceData.assets)) {
+            priceData.assets.forEach(function(asset) {
+                updateSingleAssetPrice(asset);
+            });
+        } else {
+            console.log('🔍 Unknown price data format, trying to process as single asset');
+            updateSingleAssetPrice(priceData);
+        }
+        
+        console.log('🎨 === END PRICE UPDATES ===');
+    }
+    
+    function updateSingleAssetPrice(asset) {
+        if (!asset || !asset.id) {
+            console.log('⚠️ Invalid asset data:', asset);
+            return;
+        }
+        
+        const assetId = asset.id;
+        const newBidPrice = parseFloat(asset.bid_price || 0);
+        const newAskPrice = parseFloat(asset.ask_price || 0);
+        
+        console.log(`💰 Updating asset ${assetId}: Bid=${newBidPrice}, Ask=${newAskPrice}`);
+        
+        // Get previous prices for comparison
+        const prevPrices = previousPrices[assetId] || { bid: newBidPrice, ask: newAskPrice };
+        
+        // Update bid prices
+        updatePriceElement('.bid_price[data-asset-id="' + assetId + '"]', newBidPrice, prevPrices.bid, 'bid');
+        updatePriceElement('#displayBidPrice', newBidPrice, prevPrices.bid, 'bid');
+        
+        // Update ask prices  
+        updatePriceElement('.ask_price[data-asset-id="' + assetId + '"]', newAskPrice, prevPrices.ask, 'ask');
+        updatePriceElement('#displayAskPrice', newAskPrice, prevPrices.ask, 'ask');
+        
+        // Update hidden inputs
+        $('#currentBidPrice').val(newBidPrice);
+        $('#currentAskPrice').val(newAskPrice);
+        
+        // Store current prices for next comparison
+        previousPrices[assetId] = { bid: newBidPrice, ask: newAskPrice };
+        
+        console.log(`✅ Updated asset ${assetId} prices`);
+    }
+    
+    function updatePriceElement(selector, newPrice, previousPrice, priceType) {
+        const elements = $(selector);
+        
+        elements.each(function() {
+            const element = $(this);
+            const currentText = element.text().trim();
+            const formattedPrice = parseFloat(newPrice).toFixed(4);
+            
+            console.log(`🎯 Updating ${selector}: ${currentText} → ${formattedPrice}`);
+            
+            // Update the price text
+            element.text(formattedPrice);
+            
+            // Remove previous color classes
+            element.removeClass('price-up price-down price-unchanged text-success text-danger');
+            
+            // Determine color based on price movement
+            if (newPrice > previousPrice) {
+                element.addClass('price-up');
+                console.log(`📈 ${priceType.toUpperCase()} price increased: ${previousPrice} → ${newPrice}`);
+            } else if (newPrice < previousPrice) {
+                element.addClass('price-down');
+                console.log(`📉 ${priceType.toUpperCase()} price decreased: ${previousPrice} → ${newPrice}`);
+            } else {
+                element.addClass('price-unchanged');
+                console.log(`➡️ ${priceType.toUpperCase()} price unchanged: ${newPrice}`);
+            }
+            
+            // Add flash animation
+            element.addClass('price-updated');
+            setTimeout(function() {
+                element.removeClass('price-updated');
+            }, 800);
+        });
+    }
+    
+    function startPriceUpdates() {
+        console.log('🚀 Starting real-time price updates...');
+        
+        // Clear any existing interval
+        if (priceUpdateInterval) {
+            clearInterval(priceUpdateInterval);
+        }
+        
+        // Update immediately
+        updatePricesFromAPI();
+        
+        // Set up automatic updates every 2 seconds
+        priceUpdateInterval = setInterval(function() {
+            console.log('⏰ Scheduled price update at:', new Date().toLocaleTimeString());
+            updatePricesFromAPI();
+        }, 2000);
+        
+        console.log('✅ Price updates started - updating every 2 seconds');
+    }
+    
+    function updatePricesFromAPI() {
+        $.ajax({
+            url: '{{ route("api.price.data") }}',
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            beforeSend: function() {
+                console.log('📡 Fetching latest prices...');
+            },
+            success: function(response) {
+                console.log('✅ Price data received successfully');
+                updatePricesWithColors(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('❌ Price update failed:', error);
+            }
+        });
+    }
+    
+    function stopPriceUpdates() {
+        if (priceUpdateInterval) {
+            clearInterval(priceUpdateInterval);
+            priceUpdateInterval = null;
+            console.log('⏹️ Price updates stopped');
+        }
     }
     
     function handlePnlResponse(response) {
@@ -2987,6 +3181,9 @@
         
         startPnlUpdates();
         
+        // Start price updates with color indicators
+        startPriceUpdates();
+        
         // Add a small indicator to show updates are working
         if ($('.active-orders-table').length > 0) {
             $('.active-orders-table').before('<div class="text-muted small mb-2" id="pnl-last-update">Initializing real-time updates...</div>');
@@ -2998,14 +3195,17 @@
         // Stop updates when user leaves the page
         $(window).on('beforeunload', function() {
             stopPnlUpdates();
+            stopPriceUpdates();
         });
         
         // Pause updates when page is not visible (browser tab is inactive)
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 stopPnlUpdates();
+                stopPriceUpdates();
             } else {
                 startPnlUpdates();
+                startPriceUpdates();
             }
         });
     });

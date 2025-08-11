@@ -508,40 +508,95 @@ class ClientsController extends Controller
 
     public function getPriceData(Request $request)
     {
-        $symbol = $request->symbol ?? 'XAUUSD';
+        // If a specific symbol is requested, return data for that symbol
+        if ($request->has('symbol')) {
+            $symbol = $request->symbol;
+            
+            // Here you can integrate with your existing price feed
+            // For now, return realistic mock data
+            $priceConfigs = [
+                'XAUUSD' => ['base' => 1950, 'variance' => 30, 'decimals' => 2, 'currency' => '$'],
+                'EURUSD' => ['base' => 1.0800, 'variance' => 0.005, 'decimals' => 5, 'currency' => ''],
+                'GBPUSD' => ['base' => 1.2500, 'variance' => 0.008, 'decimals' => 5, 'currency' => ''],
+                'USDJPY' => ['base' => 148.50, 'variance' => 0.5, 'decimals' => 3, 'currency' => ''],
+                'BTCUSD' => ['base' => 42000, 'variance' => 1000, 'decimals' => 2, 'currency' => '$'],
+                'ETHUSD' => ['base' => 2500, 'variance' => 100, 'decimals' => 2, 'currency' => '$']
+            ];
+            
+            $config = $priceConfigs[$symbol] ?? $priceConfigs['XAUUSD'];
+            
+            $trend = (rand(-50, 50) / 100) * 0.1;
+            $currentPrice = $config['base'] + (rand(-100, 100) / 100) * $config['variance'] + $trend;
+            $previousClose = $config['base'] + (rand(-50, 50) / 100) * $config['variance'] * 0.5;
+            $change = $currentPrice - $previousClose;
+            
+            $dailyRange = $config['variance'] * 0.3;
+            $dayHigh = $currentPrice + (rand(0, 50) / 100) * $dailyRange * 0.5;
+            $dayLow = $currentPrice - (rand(0, 50) / 100) * $dailyRange * 0.5;
+            
+            return response()->json([
+                'symbol' => $symbol,
+                'price' => round($currentPrice, $config['decimals']),
+                'change' => round($change, $config['decimals']),
+                'high' => round($dayHigh, $config['decimals']),
+                'low' => round($dayLow, $config['decimals']),
+                'currency' => $config['currency'],
+                'decimals' => $config['decimals'],
+                'timestamp' => time()
+            ]);
+        }
         
-        // Here you can integrate with your existing price feed
-        // For now, return realistic mock data
-        $priceConfigs = [
-            'XAUUSD' => ['base' => 1950, 'variance' => 30, 'decimals' => 2, 'currency' => '$'],
-            'EURUSD' => ['base' => 1.0800, 'variance' => 0.005, 'decimals' => 5, 'currency' => ''],
-            'GBPUSD' => ['base' => 1.2500, 'variance' => 0.008, 'decimals' => 5, 'currency' => ''],
-            'USDJPY' => ['base' => 148.50, 'variance' => 0.5, 'decimals' => 3, 'currency' => ''],
-            'BTCUSD' => ['base' => 42000, 'variance' => 1000, 'decimals' => 2, 'currency' => '$'],
-            'ETHUSD' => ['base' => 2500, 'variance' => 100, 'decimals' => 2, 'currency' => '$']
-        ];
-        
-        $config = $priceConfigs[$symbol] ?? $priceConfigs['XAUUSD'];
-        
-        $trend = (rand(-50, 50) / 100) * 0.1;
-        $currentPrice = $config['base'] + (rand(-100, 100) / 100) * $config['variance'] + $trend;
-        $previousClose = $config['base'] + (rand(-50, 50) / 100) * $config['variance'] * 0.5;
-        $change = $currentPrice - $previousClose;
-        
-        $dailyRange = $config['variance'] * 0.3;
-        $dayHigh = $currentPrice + (rand(0, 50) / 100) * $dailyRange * 0.5;
-        $dayLow = $currentPrice - (rand(0, 50) / 100) * $dailyRange * 0.5;
-        
-        return response()->json([
-            'symbol' => $symbol,
-            'price' => round($currentPrice, $config['decimals']),
-            'change' => round($change, $config['decimals']),
-            'high' => round($dayHigh, $config['decimals']),
-            'low' => round($dayLow, $config['decimals']),
-            'currency' => $config['currency'],
-            'decimals' => $config['decimals'],
-            'timestamp' => time()
-        ]);
+        // If no specific symbol requested, return all active assets with updated prices
+        try {
+            $assets = Asset::where('bid_price', '!=', 0)
+                ->where('is_active', 1)
+                ->get();
+            
+            $updatedAssets = $assets->map(function ($asset) {
+                // Generate realistic price variations (±1-3% change)
+                $bidVariation = (rand(-300, 300) / 10000); // ±3%
+                $askVariation = (rand(-300, 300) / 10000); // ±3%
+                
+                // Calculate new prices with variations
+                $newBidPrice = $asset->bid_price * (1 + $bidVariation);
+                $newAskPrice = $asset->ask_price * (1 + $askVariation);
+                
+                // Ensure ask price is always higher than bid price
+                if ($newAskPrice <= $newBidPrice) {
+                    $newAskPrice = $newBidPrice + ($newBidPrice * 0.0001); // Add small spread
+                }
+                
+                return [
+                    'id' => $asset->id,
+                    'symbol' => $asset->symbol,
+                    'name' => $asset->name,
+                    'bid_price' => round($newBidPrice, 4),
+                    'ask_price' => round($newAskPrice, 4),
+                    'original_bid' => $asset->bid_price,
+                    'original_ask' => $asset->ask_price,
+                    'change_bid' => round(($newBidPrice - $asset->bid_price), 4),
+                    'change_ask' => round(($newAskPrice - $asset->ask_price), 4),
+                    'category' => $asset->category ?? 'Unknown',
+                    'currency' => $asset->currency ?? 'USD',
+                    'timestamp' => time()
+                ];
+            });
+            
+            return response()->json([
+                'success' => true,
+                'assets' => $updatedAssets,
+                'total_assets' => $updatedAssets->count(),
+                'timestamp' => time()
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to fetch asset prices',
+                'message' => $e->getMessage(),
+                'timestamp' => time()
+            ], 500);
+        }
     }
 
     public function showAccount(Request $request)
