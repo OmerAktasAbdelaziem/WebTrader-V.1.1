@@ -1468,7 +1468,6 @@
             navigator.vibrate(50);
         }
         
-        console.log('Theme switched to:', currentTheme);
     });
 
     // Also mark as read when dropdown is shown via Bootstrap event
@@ -1525,11 +1524,9 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('All notifications marked as read successfully');
             }
         })
         .catch(error => {
-            console.error('Error marking all notifications as read:', error);
         });
     }
 
@@ -1563,7 +1560,6 @@
             }
         })
         .catch(error => {
-            console.error('Error marking notification as read:', error);
         });
     }
 
@@ -1674,8 +1670,6 @@
     
     // Update mobile prices with color indicators
     function updateMobilePricesWithColors(priceData) {
-        console.log('📱 === UPDATING MOBILE PRICES WITH COLORS ===');
-        console.log('📊 Mobile price data received:', priceData);
         
         if (Array.isArray(priceData)) {
             priceData.forEach(function(asset) {
@@ -1686,16 +1680,13 @@
                 updateMobileSingleAssetPrice(asset);
             });
         } else {
-            console.log('🔍 Unknown mobile price data format, trying to process as single asset');
             updateMobileSingleAssetPrice(priceData);
         }
         
-        console.log('📱 === END MOBILE PRICE UPDATES ===');
     }
     
     function updateMobileSingleAssetPrice(asset) {
         if (!asset || !asset.id) {
-            console.log('⚠️ Invalid mobile asset data:', asset);
             return;
         }
         
@@ -1703,7 +1694,6 @@
         const newBidPrice = parseFloat(asset.bid_price || 0);
         const newAskPrice = parseFloat(asset.ask_price || 0);
         
-        console.log(`💰 Updating mobile asset ${assetId}: Bid=${newBidPrice}, Ask=${newAskPrice}`);
         
         // Get previous prices for comparison
         const prevPrices = mobilePreviousPrices[assetId] || { bid: newBidPrice, ask: newAskPrice };
@@ -1721,21 +1711,18 @@
         // Store current prices for next comparison
         mobilePreviousPrices[assetId] = { bid: newBidPrice, ask: newAskPrice };
         
-        console.log(`✅ Updated mobile asset ${assetId} prices`);
     }
     
     function updateMobilePriceElement(selector, newPrice, previousPrice, priceType) {
         const element = $(selector);
         
         if (element.length === 0) {
-            console.log(`⚠️ Mobile element not found: ${selector}`);
             return;
         }
         
         const currentText = element.text().trim();
         const formattedPrice = parseFloat(newPrice).toFixed(4);
         
-        console.log(`🎯 Updating mobile ${selector}: ${currentText} → ${formattedPrice}`);
         
         // Update the price text
         element.text(formattedPrice);
@@ -1746,18 +1733,14 @@
         // Determine color based on price movement
         if (newPrice > previousPrice) {
             element.addClass('price-up');
-            console.log(`📈 Mobile ${priceType.toUpperCase()} price increased: ${previousPrice} → ${newPrice}`);
         } else if (newPrice < previousPrice) {
             element.addClass('price-down');
-            console.log(`📉 Mobile ${priceType.toUpperCase()} price decreased: ${previousPrice} → ${newPrice}`);
         } else {
             element.addClass('price-unchanged');
-            console.log(`➡️ Mobile ${priceType.toUpperCase()} price unchanged: ${newPrice}`);
         }
     }
     
     function startMobilePriceUpdates() {
-        console.log('🚀 Starting mobile real-time price updates...');
         
         // Clear any existing interval
         if (mobilePriceUpdateInterval) {
@@ -1769,11 +1752,9 @@
         
         // Set up automatic updates every 2 seconds
         mobilePriceUpdateInterval = setInterval(function() {
-            console.log('⏰ Scheduled mobile price update at:', new Date().toLocaleTimeString());
             updateMobilePricesFromAPI();
         }, 2000);
         
-        console.log('✅ Mobile price updates started - updating every 2 seconds');
     }
     
     function updateMobilePricesFromAPI() {
@@ -1787,14 +1768,11 @@
                 'Accept': 'application/json'
             },
             beforeSend: function() {
-                console.log('📡 Fetching latest mobile prices...');
             },
             success: function(response) {
-                console.log('✅ Mobile price data received successfully');
                 updateMobilePricesWithColors(response);
             },
             error: function(xhr, status, error) {
-                console.error('❌ Mobile price update failed:', error);
             }
         });
     }
@@ -1803,13 +1781,11 @@
         if (mobilePriceUpdateInterval) {
             clearInterval(mobilePriceUpdateInterval);
             mobilePriceUpdateInterval = null;
-            console.log('⏹️ Mobile price updates stopped');
         }
     }
     
     // Start mobile price updates when page loads
     $(document).ready(function() {
-        console.log('📱 Mobile layout loaded - starting price updates...');
         startMobilePriceUpdates();
         
         // Stop updates when user leaves the page

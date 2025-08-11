@@ -2798,7 +2798,6 @@
             stopLossInput.focus();
         }, 500);
         
-        console.log('Edit Order Modal initialized for Order ID:', orderId);
     }
 
     // Real-time PnL Update System
@@ -2824,13 +2823,11 @@
                 'Accept': 'application/json'
             },
             beforeSend: function() {
-                console.log('Making PnL request to:', '{{ route("api.pnl.data") }}');
             },
             success: function(response) {
                 handlePnlResponse(response);
             },
             error: function(xhr, status, error) {
-                console.log('PnL endpoint error:', error, 'Status:', xhr.status);
                 
                 // Fallback: try to get asset prices and calculate PnL manually
                 if (xhr.status !== 401) {
@@ -2847,19 +2844,15 @@
     
     function updatePnlFromAssetPrices() {
         // Fallback method: get current asset prices and calculate PnL
-        console.log('🔄 Using fallback method - getting asset prices...');
         $.ajax({
             url: '{{ route("api.price.data") }}',
             method: 'GET',
             dataType: 'json',
             success: function(priceResponse) {
-                console.log('💰 Price data response:', priceResponse);
                 // Process price updates with color changes
                 updatePricesWithColors(priceResponse);
-                console.log('✅ Fallback price data method attempted');
             },
             error: function() {
-                console.error('❌ Fallback price data method also failed');
             }
         });
     }
@@ -2870,8 +2863,6 @@
     
     // Update prices with color indicators
     function updatePricesWithColors(priceData) {
-        console.log('🎨 === UPDATING PRICES WITH COLORS ===');
-        console.log('📊 Price data received:', priceData);
         
         if (Array.isArray(priceData)) {
             priceData.forEach(function(asset) {
@@ -2882,16 +2873,13 @@
                 updateSingleAssetPrice(asset);
             });
         } else {
-            console.log('🔍 Unknown price data format, trying to process as single asset');
             updateSingleAssetPrice(priceData);
         }
         
-        console.log('🎨 === END PRICE UPDATES ===');
     }
     
     function updateSingleAssetPrice(asset) {
         if (!asset || !asset.id) {
-            console.log('⚠️ Invalid asset data:', asset);
             return;
         }
         
@@ -2899,7 +2887,6 @@
         const newBidPrice = parseFloat(asset.bid_price || 0);
         const newAskPrice = parseFloat(asset.ask_price || 0);
         
-        console.log(`💰 Updating asset ${assetId}: Bid=${newBidPrice}, Ask=${newAskPrice}`);
         
         // Get previous prices for comparison
         const prevPrices = previousPrices[assetId] || { bid: newBidPrice, ask: newAskPrice };
@@ -2919,7 +2906,6 @@
         // Store current prices for next comparison
         previousPrices[assetId] = { bid: newBidPrice, ask: newAskPrice };
         
-        console.log(`✅ Updated asset ${assetId} prices`);
     }
     
     function updatePriceElement(selector, newPrice, previousPrice, priceType) {
@@ -2930,7 +2916,6 @@
             const currentText = element.text().trim();
             const formattedPrice = parseFloat(newPrice).toFixed(4);
             
-            console.log(`🎯 Updating ${selector}: ${currentText} → ${formattedPrice}`);
             
             // Update the price text
             element.text(formattedPrice);
@@ -2941,19 +2926,15 @@
             // Determine color based on price movement
             if (newPrice > previousPrice) {
                 element.addClass('price-up');
-                console.log(`📈 ${priceType.toUpperCase()} price increased: ${previousPrice} → ${newPrice}`);
             } else if (newPrice < previousPrice) {
                 element.addClass('price-down');
-                console.log(`📉 ${priceType.toUpperCase()} price decreased: ${previousPrice} → ${newPrice}`);
             } else {
                 element.addClass('price-unchanged');
-                console.log(`➡️ ${priceType.toUpperCase()} price unchanged: ${newPrice}`);
             }
         });
     }
     
     function startPriceUpdates() {
-        console.log('🚀 Starting real-time price updates...');
         
         // Clear any existing interval
         if (priceUpdateInterval) {
@@ -2965,11 +2946,9 @@
         
         // Set up automatic updates every 2 seconds
         priceUpdateInterval = setInterval(function() {
-            console.log('⏰ Scheduled price update at:', new Date().toLocaleTimeString());
             updatePricesFromAPI();
         }, 2000);
         
-        console.log('✅ Price updates started - updating every 2 seconds');
     }
     
     function updatePricesFromAPI() {
@@ -2983,14 +2962,11 @@
                 'Accept': 'application/json'
             },
             beforeSend: function() {
-                console.log('📡 Fetching latest prices...');
             },
             success: function(response) {
-                console.log('✅ Price data received successfully');
                 updatePricesWithColors(response);
             },
             error: function(xhr, status, error) {
-                console.error('❌ Price update failed:', error);
             }
         });
     }
@@ -2999,12 +2975,10 @@
         if (priceUpdateInterval) {
             clearInterval(priceUpdateInterval);
             priceUpdateInterval = null;
-            console.log('⏹️ Price updates stopped');
         }
     }
     
     function handlePnlResponse(response) {
-        console.log('PnL Response received:', response);
         
         // Handle different response formats
         let orderDataArray = [];
@@ -3035,7 +3009,6 @@
             });
         }
         
-        console.log('Processed order data:', orderDataArray);
         
         if (orderDataArray.length > 0) {
             orderDataArray.forEach(function(orderData) {
@@ -3047,19 +3020,16 @@
             const timeString = now.toLocaleTimeString();
             $('#pnl-last-update').text('Last updated: ' + timeString);
         } else {
-            console.log('No order data to process');
         }
     }
     
     function updateSinglePnlElement(orderData) {
         const pnlElement = $('.pnl.active_pnl[data-order-id="' + orderData.order_id + '"]');
-        console.log('Looking for order ID:', orderData.order_id, 'Found elements:', pnlElement.length);
         
         if (pnlElement.length > 0) {
             const currentValue = pnlElement.text().trim();
             const newValue = '$' + orderData.pnl;
             
-            console.log('Order', orderData.order_id, '- Current:', currentValue, 'New:', newValue);
             
             // Always update the value and colors (remove the "only if changed" check temporarily for debugging)
             pnlElement.text(newValue);
@@ -3072,13 +3042,9 @@
                 pnlElement.addClass('text-danger');
             }
             
-            console.log('Updated PnL for order', orderData.order_id, 'to', newValue);
         } else {
-            console.log('No PnL element found for order ID:', orderData.order_id);
             // Debug: show all available PnL elements
-            console.log('Available PnL elements:');
             $('.pnl.active_pnl[data-order-id]').each(function() {
-                console.log('- Order ID:', $(this).data('order-id'));
             });
         }
     }
@@ -3095,23 +3061,19 @@
         // Set up automatic updates every 5 seconds
         pnlUpdateInterval = setInterval(updatePnlData, 5000);
         
-        console.log('Real-time PnL updates started - updating every 5 seconds');
     }
     
     function stopPnlUpdates() {
         if (pnlUpdateInterval) {
             clearInterval(pnlUpdateInterval);
             pnlUpdateInterval = null;
-            console.log('Real-time PnL updates stopped');
         }
     }
 
     // Start real-time PnL updates when page loads
     $(document).ready(function() {
         // Debug: Check what PnL elements are available
-        console.log('PnL elements found:', $('.pnl.active_pnl[data-order-id]').length);
         $('.pnl.active_pnl[data-order-id]').each(function() {
-            console.log('PnL element found - Order ID:', $(this).data('order-id'), 'Current value:', $(this).text().trim());
         });
         
         startPnlUpdates();
