@@ -163,6 +163,33 @@ class WebTraderController extends Controller
 
     public function get_financial_data($broker_id)
     {
+        // Check if broker_id is null or invalid
+        if (!$broker_id) {
+            Log::warning('WebTraderController get_financial_data called with null broker_id', [
+                'broker_id' => $broker_id,
+                'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5)
+            ]);
+            
+            // Return default empty finance data
+            return [
+                'last_deposit_amount' => 0.00,
+                'totalWithdrawal' => 0.00,
+                'totalDeposit' => 0.00,
+                'ftd_amount' => 0.00,
+                'usedMargin' => 0.00,
+                'currentPL' => 0.00,
+                'balance' => 0.00,
+                'credit' => 0.00,
+                'bonus' => 0.00,
+                'totalOrders' => 0,
+                'activeOrders' => 0,
+                'closedOrders' => 0,
+                'totalPnL' => 0.00,
+                'equity' => 0.00,
+                'freeMargin' => 0.00,
+            ];
+        }
+        
         try {
             // Get opened orders for margin and PnL calculations
             $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();

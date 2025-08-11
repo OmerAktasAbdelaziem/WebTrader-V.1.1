@@ -630,6 +630,35 @@ class ClientsController extends Controller
 
     public function get_financial_data($broker_id)
     {
+        // Check if broker_id is null or invalid
+        if (!$broker_id) {
+            Log::warning('get_financial_data called with null broker_id', [
+                'broker_id' => $broker_id,
+                'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5)
+            ]);
+            
+            // Return default empty finance data
+            return [
+                'last_deposit_amount' => 0.00,
+                'totalWithdrawal' => 0.00,
+                'pendingWithdrawal' => 0.00,
+                'totalDeposit' => 0.00,
+                'ftd_amount' => 0.00,
+                'usedMargin' => 0.00,
+                'currentPL' => 0.00,
+                'balance' => 0.00,
+                'credit' => 0.00,
+                'bonus' => 0.00,
+                'totalOrders' => 0,
+                'activeOrders' => 0,
+                'closedOrders' => 0,
+                'totalPnL' => 0.00,
+                'winOrders' => 0,
+                'loseOrders' => 0,
+                'equity' => 0.00,
+                'freeMargin' => 0.00,
+            ];
+        }
     
     //TODO: The code in this function should be edited, so curl should be applied by service, service code ready but 
         //first using of Clients controller in code should be handeled
