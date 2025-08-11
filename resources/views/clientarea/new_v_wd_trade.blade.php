@@ -168,20 +168,6 @@
             background: transparent;
         }
 
-        /* Real-time PnL Update Animation */
-        .pnl-updated {
-            background-color: rgba(255, 255, 0, 0.2) !important;
-            transition: background-color 0.3s ease-in-out;
-        }
-        
-        .pnl.active_pnl {
-            transition: all 0.3s ease-in-out;
-        }
-        
-        .pnl.active_pnl:hover {
-            transform: scale(1.05);
-        }
-        
         #pnl-last-update {
             font-size: 0.75rem;
             opacity: 0.7;
@@ -200,27 +186,7 @@
         .pnl.text-danger {
             color: #ef4444 !important;
         }
-        
-        .pnl-updated {
-            background-color: rgba(79, 140, 255, 0.2) !important;
-            border-radius: 4px;
-            animation: pnlFlash 1s ease-in-out;
-        }
-        
-        @keyframes pnlFlash {
-            0% { 
-                background-color: rgba(79, 140, 255, 0.4);
-                transform: scale(1.02);
-            }
-            50% { 
-                background-color: rgba(79, 140, 255, 0.2);
-            }
-            100% { 
-                background-color: transparent;
-                transform: scale(1);
-            }
-        }
-        
+
         /* Price Movement Colors */
         .price-up {
             color: #22c55e !important; /* Green for price increase */
@@ -3105,12 +3071,6 @@
             } else {
                 pnlElement.addClass('text-danger');
             }
-            
-            // Add a subtle flash animation to indicate update
-            pnlElement.addClass('pnl-updated');
-            setTimeout(function() {
-                pnlElement.removeClass('pnl-updated');
-            }, 1000);
             
             console.log('Updated PnL for order', orderData.order_id, 'to', newValue);
         } else {
