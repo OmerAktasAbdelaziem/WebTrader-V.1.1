@@ -10,6 +10,7 @@ use App\Models\MoneyTrx;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -107,14 +108,94 @@ class ClientsController extends Controller
 
         // Get USDT wallet address: pipelines.usdt, fallback to clients.usdt
         $usdtWalletAddress = null;
+        
+        // First try pipeline USDT
         if ($user->pipeline_id) {
-            $pipeline = \DB::table('pipelines')->where('id', $user->pipeline_id)->first();
+            $pipeline = DB::table('pipelines')->where('id', $user->pipeline_id)->first();
             if ($pipeline && !empty($pipeline->usdt)) {
-                $usdtWalletAddress = $pipeline->usdt;
+                $pipelineUsdt = $pipeline->usdt;
+                
+                // Handle JSON format for pipeline USDT
+                if (is_string($pipelineUsdt)) {
+                    $decodedUsdt = json_decode($pipelineUsdt, true);
+                    if (is_array($decodedUsdt)) {
+                        // Get address based on client source or first available
+                        if ($user->source == 'BNC' && !empty($decodedUsdt['BNC'])) {
+                            $usdtWalletAddress = $decodedUsdt['BNC'];
+                        } elseif (!empty($decodedUsdt['phoenix'])) {
+                            $usdtWalletAddress = $decodedUsdt['phoenix'];
+                        } else {
+                            // Get the first non-null address
+                            foreach ($decodedUsdt as $key => $address) {
+                                if (!empty($address) && $address !== null) {
+                                    $usdtWalletAddress = $address;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $usdtWalletAddress = trim($pipelineUsdt);
+                    }
+                } elseif (is_array($pipelineUsdt)) {
+                    // Handle if already decoded array
+                    if ($user->source == 'BNC' && !empty($pipelineUsdt['BNC'])) {
+                        $usdtWalletAddress = $pipelineUsdt['BNC'];
+                    } elseif (!empty($pipelineUsdt['phoenix'])) {
+                        $usdtWalletAddress = $pipelineUsdt['phoenix'];
+                    } else {
+                        // Get the first non-null address
+                        foreach ($pipelineUsdt as $key => $address) {
+                            if (!empty($address) && $address !== null) {
+                                $usdtWalletAddress = $address;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
+        
+        // Fallback to client's own USDT if pipeline doesn't have one
         if (!$usdtWalletAddress && !empty($user->usdt)) {
-            $usdtWalletAddress = $user->usdt;
+            $clientUsdt = $user->usdt;
+            
+            // Handle JSON format for client USDT
+            if (is_string($clientUsdt)) {
+                $decodedUsdt = json_decode($clientUsdt, true);
+                if (is_array($decodedUsdt)) {
+                    // Get address based on client source or first available
+                    if ($user->source == 'BNC' && !empty($decodedUsdt['BNC'])) {
+                        $usdtWalletAddress = $decodedUsdt['BNC'];
+                    } elseif (!empty($decodedUsdt['phoenix'])) {
+                        $usdtWalletAddress = $decodedUsdt['phoenix'];
+                    } else {
+                        // Get the first non-null address
+                        foreach ($decodedUsdt as $key => $address) {
+                            if (!empty($address) && $address !== null) {
+                                $usdtWalletAddress = $address;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $usdtWalletAddress = trim($clientUsdt);
+                }
+            } elseif (is_array($clientUsdt)) {
+                // Handle if already decoded array
+                if ($user->source == 'BNC' && !empty($clientUsdt['BNC'])) {
+                    $usdtWalletAddress = $clientUsdt['BNC'];
+                } elseif (!empty($clientUsdt['phoenix'])) {
+                    $usdtWalletAddress = $clientUsdt['phoenix'];
+                } else {
+                    // Get the first non-null address
+                    foreach ($clientUsdt as $key => $address) {
+                        if (!empty($address) && $address !== null) {
+                            $usdtWalletAddress = $address;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits', 'allDeposits', 'finance', 'usdtWalletAddress'));
