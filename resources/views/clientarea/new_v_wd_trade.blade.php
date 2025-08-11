@@ -1270,7 +1270,6 @@
                                 <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
                                        step="0.01" min="10" placeholder="10.00" required>
                             </div>
-                            <small class="form-text">{{ __('web.minimum_deposit_10') }}</small>
                         </div>
 
                         <!-- Credit Card Details -->
