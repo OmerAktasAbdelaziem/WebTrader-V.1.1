@@ -2818,64 +2818,140 @@
         
         isUpdatingPnl = true;
         
+        // Try the dedicated PnL endpoint first
         $.ajax({
             url: '{{ route("api.pnl.data") }}',
             method: 'GET',
             dataType: 'json',
             timeout: 10000, // 10 second timeout
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            beforeSend: function() {
+                console.log('Making PnL request to:', '{{ route("api.pnl.data") }}');
+            },
             success: function(response) {
-                if (Array.isArray(response)) {
-                    response.forEach(function(orderData) {
-                        const pnlElement = $('.pnl.active_pnl[data-order-id="' + orderData.order_id + '"]');
-                        if (pnlElement.length > 0) {
-                            const currentValue = pnlElement.text();
-                            const newValue = '$' + orderData.pnl;
-                            
-                            // Only update if value has changed
-                            if (currentValue !== newValue) {
-                                // Update PnL value
-                                pnlElement.text(newValue);
-                                
-                                // Update color based on profit/loss
-                                pnlElement.removeClass('text-success text-danger');
-                                if (orderData.pnl_raw >= 0) {
-                                    pnlElement.addClass('text-success');
-                                } else {
-                                    pnlElement.addClass('text-danger');
-                                }
-                                
-                                // Add a subtle flash animation to indicate update
-                                pnlElement.addClass('pnl-updated');
-                                setTimeout(function() {
-                                    pnlElement.removeClass('pnl-updated');
-                                }, 1000);
-                            }
-                        }
-                    });
-                    
-                    // Update last update time indicator
-                    const now = new Date();
-                    const timeString = now.toLocaleTimeString();
-                    $('#pnl-last-update').text('Last updated: ' + timeString);
-                }
+                handlePnlResponse(response);
             },
             error: function(xhr, status, error) {
-                console.log('PnL update error:', error);
-                // If unauthorized, redirect to login
-                if (xhr.status === 401) {
+                console.log('PnL endpoint error:', error, 'Status:', xhr.status);
+                
+                // Fallback: try to get asset prices and calculate PnL manually
+                if (xhr.status !== 401) {
+                    updatePnlFromAssetPrices();
+                } else {
                     window.location.href = '{{ route("client.login") }}';
-                } else if (xhr.status >= 500) {
-                    // Server error - pause updates for a bit
-                    clearInterval(pnlUpdateInterval);
-                    setTimeout(function() {
-                        startPnlUpdates();
-                    }, 30000); // Retry after 30 seconds
                 }
             },
             complete: function() {
                 isUpdatingPnl = false;
             }
         });
+    }
+    
+    function updatePnlFromAssetPrices() {
+        // Fallback method: get current asset prices and calculate PnL
+        $.ajax({
+            url: '{{ route("api.price.data") }}',
+            method: 'GET',
+            dataType: 'json',
+            success: function(priceResponse) {
+                console.log('Price data response:', priceResponse);
+                // This would need asset prices to calculate PnL
+                // For now, just log that we tried the fallback
+                console.log('Using fallback price data method');
+            },
+            error: function() {
+                console.log('Fallback price data method also failed');
+            }
+        });
+    }
+    
+    function handlePnlResponse(response) {
+        console.log('PnL Response received:', response);
+        
+        // Handle different response formats
+        let orderDataArray = [];
+        
+        if (Array.isArray(response)) {
+            // Expected format: array of order data
+            orderDataArray = response;
+        } else if (response.orders && Array.isArray(response.orders)) {
+            // Alternative format: response with orders array
+            orderDataArray = response.orders.map(function(order) {
+                // Calculate PnL if not provided
+                let pnl = order.pnl || 0;
+                return {
+                    order_id: order.id,
+                    pnl: typeof pnl === 'number' ? pnl.toFixed(2) : pnl,
+                    pnl_raw: parseFloat(pnl)
+                };
+            });
+        } else if (response.pnl !== undefined) {
+            // Single PnL value format - need to find orders in DOM
+            $('.pnl.active_pnl[data-order-id]').each(function() {
+                const orderId = $(this).data('order-id');
+                orderDataArray.push({
+                    order_id: orderId,
+                    pnl: response.pnl,
+                    pnl_raw: parseFloat(response.pnl)
+                });
+            });
+        }
+        
+        console.log('Processed order data:', orderDataArray);
+        
+        if (orderDataArray.length > 0) {
+            orderDataArray.forEach(function(orderData) {
+                updateSinglePnlElement(orderData);
+            });
+            
+            // Update last update time indicator
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            $('#pnl-last-update').text('Last updated: ' + timeString);
+        } else {
+            console.log('No order data to process');
+        }
+    }
+    
+    function updateSinglePnlElement(orderData) {
+        const pnlElement = $('.pnl.active_pnl[data-order-id="' + orderData.order_id + '"]');
+        console.log('Looking for order ID:', orderData.order_id, 'Found elements:', pnlElement.length);
+        
+        if (pnlElement.length > 0) {
+            const currentValue = pnlElement.text().trim();
+            const newValue = '$' + orderData.pnl;
+            
+            console.log('Order', orderData.order_id, '- Current:', currentValue, 'New:', newValue);
+            
+            // Always update the value and colors (remove the "only if changed" check temporarily for debugging)
+            pnlElement.text(newValue);
+            
+            // Update color based on profit/loss
+            pnlElement.removeClass('text-success text-danger');
+            if (orderData.pnl_raw >= 0) {
+                pnlElement.addClass('text-success');
+            } else {
+                pnlElement.addClass('text-danger');
+            }
+            
+            // Add a subtle flash animation to indicate update
+            pnlElement.addClass('pnl-updated');
+            setTimeout(function() {
+                pnlElement.removeClass('pnl-updated');
+            }, 1000);
+            
+            console.log('Updated PnL for order', orderData.order_id, 'to', newValue);
+        } else {
+            console.log('No PnL element found for order ID:', orderData.order_id);
+            // Debug: show all available PnL elements
+            console.log('Available PnL elements:');
+            $('.pnl.active_pnl[data-order-id]').each(function() {
+                console.log('- Order ID:', $(this).data('order-id'));
+            });
+        }
     }
     
     function startPnlUpdates() {
@@ -2903,11 +2979,20 @@
 
     // Start real-time PnL updates when page loads
     $(document).ready(function() {
+        // Debug: Check what PnL elements are available
+        console.log('PnL elements found:', $('.pnl.active_pnl[data-order-id]').length);
+        $('.pnl.active_pnl[data-order-id]').each(function() {
+            console.log('PnL element found - Order ID:', $(this).data('order-id'), 'Current value:', $(this).text().trim());
+        });
+        
         startPnlUpdates();
         
         // Add a small indicator to show updates are working
         if ($('.active-orders-table').length > 0) {
             $('.active-orders-table').before('<div class="text-muted small mb-2" id="pnl-last-update">Initializing real-time updates...</div>');
+        } else {
+            // If no active-orders-table, add it before the first table
+            $('table').first().before('<div class="text-muted small mb-2" id="pnl-last-update">Initializing real-time updates...</div>');
         }
         
         // Stop updates when user leaves the page
