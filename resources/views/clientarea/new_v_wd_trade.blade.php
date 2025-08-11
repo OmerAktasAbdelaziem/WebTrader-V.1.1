@@ -237,25 +237,6 @@
             transition: color 0.3s ease;
         }
         
-        /* Price update animation */
-        .price-updated {
-            animation: priceFlash 0.8s ease-in-out;
-        }
-        
-        @keyframes priceFlash {
-            0% { 
-                background-color: rgba(255, 255, 255, 0.2);
-                transform: scale(1.05);
-            }
-            50% { 
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-            100% { 
-                background-color: transparent;
-                transform: scale(1);
-            }
-        }
-        
         /* Bid/Ask specific styling */
         .bid_price, .ask_price {
             font-weight: 600;
@@ -3002,12 +2983,6 @@
                 element.addClass('price-unchanged');
                 console.log(`➡️ ${priceType.toUpperCase()} price unchanged: ${newPrice}`);
             }
-            
-            // Add flash animation
-            element.addClass('price-updated');
-            setTimeout(function() {
-                element.removeClass('price-updated');
-            }, 800);
         });
     }
     

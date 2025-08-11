@@ -948,16 +948,6 @@
         transition: color 0.3s ease;
     }
     
-    .price-updated {
-        animation: priceFlash 0.8s ease-in-out;
-    }
-    
-    @keyframes priceFlash {
-        0% { background-color: rgba(59, 130, 246, 0.3); }
-        50% { background-color: rgba(59, 130, 246, 0.1); }
-        100% { background-color: transparent; }
-    }
-    
     /* Dark theme price colors */
     [data-theme="dark"] .price-up {
         color: #34D399 !important; /* Brighter green for dark mode */
@@ -969,16 +959,6 @@
     
     [data-theme="dark"] .price-unchanged {
         color: #9CA3AF !important; /* Lighter gray for dark mode */
-    }
-    
-    [data-theme="dark"] .price-updated {
-        animation: priceFlashDark 0.8s ease-in-out;
-    }
-    
-    @keyframes priceFlashDark {
-        0% { background-color: rgba(59, 130, 246, 0.4); }
-        50% { background-color: rgba(59, 130, 246, 0.2); }
-        100% { background-color: transparent; }
     }
     
     /* Mobile price display enhancements */
@@ -1774,12 +1754,6 @@
             element.addClass('price-unchanged');
             console.log(`➡️ Mobile ${priceType.toUpperCase()} price unchanged: ${newPrice}`);
         }
-        
-        // Add flash animation
-        element.addClass('price-updated');
-        setTimeout(function() {
-            element.removeClass('price-updated');
-        }, 800);
     }
     
     function startMobilePriceUpdates() {
