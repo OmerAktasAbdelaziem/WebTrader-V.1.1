@@ -2144,7 +2144,7 @@
 
                     <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('web.cancel') }}</button>
-                        <button type="submit" class="btn btn-gradient-primary">
+                        <button type="submit" class="btn btn-gradient-primary" onclick="console.log('Submit button clicked');">
                             <i class="bi bi-check-circle me-2"></i>{{ __('web.update_order') }}
                         </button>
                     </div>
@@ -2153,6 +2153,21 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editOrderForm = document.getElementById('editOrderForm');
+    if (editOrderForm) {
+        editOrderForm.addEventListener('submit', function(e) {
+            console.log('Form submit event triggered');
+            console.log('Form action:', this.action);
+            console.log('Form method:', this.method);
+            console.log('Method input value:', this.querySelector('input[name="_method"]')?.value);
+            console.log('CSRF token:', this.querySelector('input[name="_token"]')?.value);
+        });
+    }
+});
+</script>
 
 <!-- Hidden logout form -->
 <form id="logoutForm" action="{{ route('client.logout') }}" method="POST" style="display: none;">
@@ -2802,7 +2817,13 @@
         
         // Set the form action URL using the proper Laravel route
         const editForm = document.getElementById('editOrderForm');
-        editForm.action = window.updateOrderRoute.replace('__ORDER_ID__', orderId);
+        const actionUrl = window.updateOrderRoute.replace('__ORDER_ID__', orderId);
+        editForm.action = actionUrl;
+        
+        // Debug: Log the action URL being set
+        console.log('Setting form action to:', actionUrl);
+        console.log('Form method:', editForm.method);
+        console.log('Method input:', editForm.querySelector('input[name="_method"]'));
         
         // Populate the form fields with current values
         const stopLossInput = document.getElementById('edit_stop_loss');
