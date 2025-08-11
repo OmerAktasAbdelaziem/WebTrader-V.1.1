@@ -1093,7 +1093,6 @@
                                 <input type="number" name="amount" id="crypto_deposit_amount" class="form-control-modern" 
                                        step="0.01" min="10" placeholder="10.00" required>
                             </div>
-                            <small class="form-text">Minimum deposit: $10</small>
                         </div>
                         
                         <div class="form-group">
@@ -1115,7 +1114,21 @@
                                 if ($client) {
                                     // First try client's usdt column
                                     if (!empty($client->usdt)) {
-                                        $usdtAddress = is_string($client->usdt) ? $client->usdt : (is_array($client->usdt) ? reset($client->usdt) : null);
+                                        $clientUsdt = $client->usdt;
+                                        
+                                        // Handle JSON format like {"phoenix":"address1","BNC":"address2"}
+                                        if (is_string($clientUsdt)) {
+                                            $decodedUsdt = json_decode($clientUsdt, true);
+                                            if (is_array($decodedUsdt)) {
+                                                // Get the first available address (default)
+                                                $usdtAddress = reset($decodedUsdt);
+                                            } else {
+                                                $usdtAddress = $clientUsdt;
+                                            }
+                                        } elseif (is_array($clientUsdt)) {
+                                            // Get the first available address (default)
+                                            $usdtAddress = reset($clientUsdt);
+                                        }
                                     }
                                     // If client usdt is null/empty, get USDT from the pipeline this client belongs to
                                     elseif (!empty($client->pipeline_id)) {
@@ -1126,10 +1139,17 @@
                                             $pipelineUsdt = $pipeline->usdt;
                                             
                                             // Handle different data types for pipeline usdt
-                                            if (is_array($pipelineUsdt) && !empty($pipelineUsdt)) {
+                                            if (is_string($pipelineUsdt)) {
+                                                $decodedUsdt = json_decode($pipelineUsdt, true);
+                                                if (is_array($decodedUsdt)) {
+                                                    // Get the first available address (default)
+                                                    $usdtAddress = reset($decodedUsdt);
+                                                } else {
+                                                    $usdtAddress = trim($pipelineUsdt);
+                                                }
+                                            } elseif (is_array($pipelineUsdt) && !empty($pipelineUsdt)) {
+                                                // Get the first available address (default)
                                                 $usdtAddress = reset($pipelineUsdt);
-                                            } elseif (is_string($pipelineUsdt) && trim($pipelineUsdt) !== '') {
-                                                $usdtAddress = trim($pipelineUsdt);
                                             }
                                         }
                                     }

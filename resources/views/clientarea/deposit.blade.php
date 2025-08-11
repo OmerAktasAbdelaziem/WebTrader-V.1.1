@@ -36,7 +36,7 @@
                                         {{ isset($finance['balance']) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }} USD
                                     </span>
                                 </div>
-                                <small class="form-text text-muted">{{__('web.current_balance')}}: ${{ isset($finance['balance']) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }} | Minimum deposit: $10</small>
+                                <small class="form-text text-muted">{{__('web.current_balance')}}: ${{ isset($finance['balance']) ? number_format($finance['balance'], 2) : (auth()->guard('client')->user()->balance ?? '0.00') }}</small>
                             </div>
 
                             <!-- Bank Transfer Fields -->
