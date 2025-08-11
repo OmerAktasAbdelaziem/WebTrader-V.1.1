@@ -2114,14 +2114,14 @@
                     
                     <div class="mb-3">
                         <label for="edit_stop_loss" class="form-label text-white">{{ __('web.stop_loss') }}</label>
-                        <input type="number" id="edit_stop_loss" name="stop_loss" class="form-control bg-dark text-white border-secondary" 
+                        <input type="number" id="edit_stop_loss" name="s_l" class="form-control bg-dark text-white border-secondary"
                                step="0.00001" placeholder="{{ __('web.enter_stop_loss_price') }}">
                         <small class="text-muted">{{ __('web.optional_stop_loss_help') }}</small>
                     </div>
                     
                     <div class="mb-3">
                         <label for="edit_take_profit" class="form-label text-white">{{ __('web.take_profit') }}</label>
-                        <input type="number" id="edit_take_profit" name="take_profit" class="form-control bg-dark text-white border-secondary" 
+                        <input type="number" id="edit_take_profit" name="s_p" class="form-control bg-dark text-white border-secondary"
                                step="0.00001" placeholder="{{ __('web.enter_take_profit_price') }}">
                         <small class="text-muted">{{ __('web.optional_take_profit_help') }}</small>
                     </div>
