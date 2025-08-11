@@ -22,6 +22,16 @@ class ClientLoginController extends Controller
         return view('clientarea.login');
     }
 
+    protected function authenticated()
+    {
+        if (Auth::check()) {
+            //echo Auth::guard('client')->id();
+    $user = Auth::guard('client')->user();
+    $user->loggedAt = now();
+    $user->save();
+}
+    }
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -32,9 +42,11 @@ class ClientLoginController extends Controller
         $credentials = $request->only('user', 'password');
 
         if (Auth::guard('client')->attempt(['email' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0])) {
+            //$this->authenticated();
             return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
         }
         if (Auth::guard('client')->attempt(['username' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0])) {
+            //$this->authenticated();
             return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
         }
 
@@ -108,6 +120,7 @@ class ClientLoginController extends Controller
         }
     
         if (Auth::guard('client')->attempt(['username' => $request->email, 'password' => $request->password, 'deleted' => 0])) {
+            $this->authenticated();
             return redirect()->route('client.webtrader.loading')->with('success', __('web.registration_successful'));
         }
     
