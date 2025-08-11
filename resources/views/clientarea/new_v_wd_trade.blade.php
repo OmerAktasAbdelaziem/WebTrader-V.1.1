@@ -168,25 +168,6 @@
             background: transparent;
         }
 
-        #pnl-last-update {
-            font-size: 0.75rem;
-            opacity: 0.7;
-        }
-        
-        /* PnL Color and Animation Styles */
-        .pnl {
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .pnl.text-success {
-            color: #22c55e !important;
-        }
-        
-        .pnl.text-danger {
-            color: #ef4444 !important;
-        }
-
         /* Price Movement Colors */
         .price-up {
             color: #22c55e !important; /* Green for price increase */
@@ -2863,63 +2844,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }
 
-    // Real-time PnL Update System
-    let pnlUpdateInterval;
-    let isUpdatingPnl = false;
-    
-    function updatePnlData() {
-        // Prevent multiple simultaneous requests
-        if (isUpdatingPnl) {
-            return;
-        }
-        
-        isUpdatingPnl = true;
-        
-        // Try the dedicated PnL endpoint first
-        $.ajax({
-            url: '{{ route("api.pnl.data") }}',
-            method: 'GET',
-            dataType: 'json',
-            timeout: 10000, // 10 second timeout
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'Accept': 'application/json'
-            },
-            beforeSend: function() {
-            },
-            success: function(response) {
-                handlePnlResponse(response);
-            },
-            error: function(xhr, status, error) {
-                
-                // Fallback: try to get asset prices and calculate PnL manually
-                if (xhr.status !== 401) {
-                    updatePnlFromAssetPrices();
-                } else {
-                    window.location.href = '{{ route("client.login") }}';
-                }
-            },
-            complete: function() {
-                isUpdatingPnl = false;
-            }
-        });
-    }
-    
-    function updatePnlFromAssetPrices() {
-        // Fallback method: get current asset prices and calculate PnL
-        $.ajax({
-            url: '{{ route("api.price.data") }}',
-            method: 'GET',
-            dataType: 'json',
-            success: function(priceResponse) {
-                // Process price updates with color changes
-                updatePricesWithColors(priceResponse);
-            },
-            error: function() {
-            }
-        });
-    }
-    
     // Price tracking for color changes
     let previousPrices = {};
     let priceUpdateInterval;
@@ -3041,105 +2965,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function handlePnlResponse(response) {
-        
-        // Handle different response formats
-        let orderDataArray = [];
-        
-        if (Array.isArray(response)) {
-            // Expected format: array of order data
-            orderDataArray = response;
-        } else if (response.orders && Array.isArray(response.orders)) {
-            // Alternative format: response with orders array
-            orderDataArray = response.orders.map(function(order) {
-                // Calculate PnL if not provided
-                let pnl = order.pnl || 0;
-                return {
-                    order_id: order.id,
-                    pnl: typeof pnl === 'number' ? pnl.toFixed(2) : pnl,
-                    pnl_raw: parseFloat(pnl)
-                };
-            });
-        } else if (response.pnl !== undefined) {
-            // Single PnL value format - need to find orders in DOM
-            $('.pnl.active_pnl[data-order-id]').each(function() {
-                const orderId = $(this).data('order-id');
-                orderDataArray.push({
-                    order_id: orderId,
-                    pnl: response.pnl,
-                    pnl_raw: parseFloat(response.pnl)
-                });
-            });
-        }
-        
-        
-        if (orderDataArray.length > 0) {
-            orderDataArray.forEach(function(orderData) {
-                updateSinglePnlElement(orderData);
-            });
-            
-            // Update last update time indicator
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            $('#pnl-last-update').text('Last updated: ' + timeString);
-        } else {
-        }
-    }
-    
-    function updateSinglePnlElement(orderData) {
-        const pnlElement = $('.pnl.active_pnl[data-order-id="' + orderData.order_id + '"]');
-        
-        if (pnlElement.length > 0) {
-            const currentValue = pnlElement.text().trim();
-            const newValue = '$' + orderData.pnl;
-            
-            
-            // Always update the value and colors (remove the "only if changed" check temporarily for debugging)
-            pnlElement.text(newValue);
-            
-            // Update color based on profit/loss
-            pnlElement.removeClass('text-success text-danger');
-            if (orderData.pnl_raw >= 0) {
-                pnlElement.addClass('text-success');
-            } else {
-                pnlElement.addClass('text-danger');
-            }
-            
-        } else {
-            // Debug: show all available PnL elements
-            $('.pnl.active_pnl[data-order-id]').each(function() {
-            });
-        }
-    }
-    
-    function startPnlUpdates() {
-        // Clear any existing interval
-        if (pnlUpdateInterval) {
-            clearInterval(pnlUpdateInterval);
-        }
-        
-        // Update immediately
-        updatePnlData();
-        
-        // Set up automatic updates every 5 seconds
-        pnlUpdateInterval = setInterval(updatePnlData, 5000);
-        
-    }
-    
-    function stopPnlUpdates() {
-        if (pnlUpdateInterval) {
-            clearInterval(pnlUpdateInterval);
-            pnlUpdateInterval = null;
-        }
-    }
-
-    // Start real-time PnL updates when page loads
+    // Start real-time price updates when page loads
     $(document).ready(function() {
-        // Debug: Check what PnL elements are available
-        $('.pnl.active_pnl[data-order-id]').each(function() {
-        });
-        
-        startPnlUpdates();
         
         // Start price updates with color indicators
         startPriceUpdates();
@@ -3185,10 +3012,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Pause updates when page is not visible (browser tab is inactive)
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                stopPnlUpdates();
                 stopPriceUpdates();
             } else {
-                startPnlUpdates();
                 startPriceUpdates();
             }
         });
