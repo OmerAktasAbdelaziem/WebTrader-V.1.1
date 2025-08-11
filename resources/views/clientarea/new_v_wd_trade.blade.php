@@ -215,6 +215,47 @@
             font-size: 1.1em;
             transition: all 0.3s ease;
         }
+        
+        /* Modal fixes for input interaction */
+        #editOrderModal {
+            z-index: 9999 !important;
+        }
+        
+        #editOrderModal .modal-backdrop {
+            z-index: 9998 !important;
+        }
+        
+        #editOrderModal .modal-dialog {
+            z-index: 10000 !important;
+            position: relative;
+        }
+        
+        #editOrderModal .form-control {
+            pointer-events: auto !important;
+            z-index: 10001 !important;
+            position: relative;
+        }
+        
+        #editOrderModal input[type="number"] {
+            pointer-events: auto !important;
+            user-select: auto !important;
+            cursor: text !important;
+        }
+        
+        /* Ensure no overlays block the modal */
+        .notification-popup-overlay,
+        .language-dropdown-overlay {
+            z-index: 15 !important;
+        }
+        
+        /* Ensure modal is above everything */
+        .modal.show {
+            z-index: 9999 !important;
+        }
+        
+        .modal-backdrop.show {
+            z-index: 9998 !important;
+        }
     </style>
 
 </head>
@@ -2765,6 +2806,10 @@
 
     // Edit Order Modal Function
     function editOrder(orderId, stopLoss, takeProfit) {
+        // Close any open dropdowns or overlays that might interfere
+        closeLanguageDropdown();
+        closeNotificationPopup();
+        
         // Set the order ID in the hidden input
         document.getElementById('editOrderId').value = orderId;
         
@@ -2789,15 +2834,23 @@
             takeProfitInput.value = parseFloat(takeProfit);
         }
         
-        // Enable the input fields
+        // Enable the input fields and ensure they're interactive
         stopLossInput.disabled = false;
         takeProfitInput.disabled = false;
+        stopLossInput.readOnly = false;
+        takeProfitInput.readOnly = false;
+        
+        // Remove any interfering styles
+        stopLossInput.style.pointerEvents = 'auto';
+        takeProfitInput.style.pointerEvents = 'auto';
+        stopLossInput.style.userSelect = 'auto';
+        takeProfitInput.style.userSelect = 'auto';
         
         // Focus on the first input for better UX
         setTimeout(function() {
             stopLossInput.focus();
+            stopLossInput.select();
         }, 500);
-        
     }
 
     // Real-time PnL Update System
@@ -3080,6 +3133,30 @@
         
         // Start price updates with color indicators
         startPriceUpdates();
+        
+        // Add modal event listeners to ensure inputs work
+        $('#editOrderModal').on('shown.bs.modal', function() {
+            // Ensure inputs are interactive when modal opens
+            const stopLossInput = document.getElementById('edit_stop_loss');
+            const takeProfitInput = document.getElementById('edit_take_profit');
+            
+            if (stopLossInput && takeProfitInput) {
+                // Force enable interaction
+                stopLossInput.style.pointerEvents = 'auto';
+                takeProfitInput.style.pointerEvents = 'auto';
+                stopLossInput.style.userSelect = 'auto';
+                takeProfitInput.style.userSelect = 'auto';
+                stopLossInput.disabled = false;
+                takeProfitInput.disabled = false;
+                stopLossInput.readOnly = false;
+                takeProfitInput.readOnly = false;
+                
+                // Focus on first input
+                setTimeout(() => {
+                    stopLossInput.focus();
+                }, 100);
+            }
+        });
         
         // Add a small indicator to show updates are working
         if ($('.active-orders-table').length > 0) {
