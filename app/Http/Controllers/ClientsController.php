@@ -229,6 +229,27 @@ class ClientsController extends Controller
 
     public function processDeposit(Request $request)
     {
+        // Debug dump to see what data is being sent
+        dd([
+            'all_data' => $request->all(),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'files' => $request->allFiles(),
+            'headers' => $request->headers->all(),
+            'user_agent' => $request->userAgent(),
+            'ip' => $request->ip(),
+            'deposit_method' => $request->input('deposit_method'),
+            'amount' => $request->input('amount'),
+            'bank_id' => $request->input('bank_id'),
+            'country' => $request->input('country'),
+            'has_receipt' => $request->hasFile('receipt'),
+            'receipt_info' => $request->hasFile('receipt') ? [
+                'name' => $request->file('receipt')->getClientOriginalName(),
+                'size' => $request->file('receipt')->getSize(),
+                'mime' => $request->file('receipt')->getMimeType()
+            ] : null
+        ]);
+        
         Log::info('=== DEPOSIT FORM SUBMISSION START ===', [
             'all_data' => $request->all(),
             'method' => $request->method(),
