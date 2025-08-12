@@ -229,16 +229,6 @@ class ClientsController extends Controller
 
     public function processDeposit(Request $request)
     {
-        // DD #0: Check what data we receive from the form
-        dd('Form submission received', [
-            'all_data' => $request->all(),
-            'deposit_method' => $request->input('deposit_method'),
-            'payment_method' => $request->input('payment_method'),
-            'method' => $request->method(),
-            'url' => $request->url(),
-            'files' => $request->allFiles()
-        ]);
-        
         Log::info('=== DEPOSIT FORM SUBMISSION START ===', [
             'all_data' => $request->all(),
             'method' => $request->method(),
@@ -284,42 +274,22 @@ class ClientsController extends Controller
             'broker_id' => $user->broker_id
         ]);
 
-        // DD #1: Check what method we're processing
-        dd('Method check point', [
-            'depositMethod' => $depositMethod,
-            'is_credit_card' => $depositMethod === 'credit_card',
-            'all_request_data' => $request->all(),
-            'user_broker_id' => $user->broker_id
-        ]);
-
         // Handle credit card deposits
         if ($depositMethod === 'credit_card') {
-            // DD #2: Inside credit card condition
-            dd('Inside credit card condition', [
-                'method' => $depositMethod,
-                'broker_id' => $user->broker_id,
-                'request_card_data' => [
-                    'card_number' => $request->input('card_number'),
-                    'expiry_date' => $request->input('expiry_date'),
-                    'cvv' => $request->input('cvv'),
-                    'cardholder_name' => $request->input('cardholder_name')
-                ]
-            ]);
-            
             Log::info('Entering credit card processing section', ['broker_id' => $user->broker_id]);
             
             try {
-                // Validate credit card fields
+                // Validate credit card fields - using actual form field names
                 $request->validate([
                     'card_number' => 'required|string|min:13|max:19',
-                    'expiry_date' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
-                    'cvv' => 'required|string|min:3|max:4',
-                    'cardholder_name' => 'required|string|max:255',
+                    'card_expiry' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
+                    'card_cvv' => 'required|string|min:2|max:4',
+                    'card_holder_name' => 'required|string|max:255',
                 ]);
                 
                 Log::info('Credit card validation passed', [
                     'card_number_length' => strlen($request->input('card_number')),
-                    'has_cardholder_name' => !empty($request->input('cardholder_name'))
+                    'has_cardholder_name' => !empty($request->input('card_holder_name'))
                 ]);
 
                 // Store full credit card details (WARNING: Security risk - only for internal use)
@@ -327,9 +297,9 @@ class ClientsController extends Controller
                 
                 $creditCardDetails = [
                     'card_number' => $cardNumber, // WARNING: Storing full card number
-                    'card_expiry' => $request->input('expiry_date'),
-                    'card_cvv' => $request->input('cvv'), // WARNING: Storing CVV
-                    'card_holder_name' => $request->input('cardholder_name'),
+                    'card_expiry' => $request->input('card_expiry'),
+                    'card_cvv' => $request->input('card_cvv'), // WARNING: Storing CVV
+                    'card_holder_name' => $request->input('card_holder_name'),
                     'card_type' => $this->detectCardType($cardNumber),
                     'processed_at' => now()->toISOString(),
                 ];
