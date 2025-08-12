@@ -538,15 +538,15 @@
                             <tbody>
                                 @forelse ($openOrders as $order)
                                     <tr>
-                                        <td class="asset-symbol">{{ $order->asset->symbol ?? $order->asset->name }}</td>
-                                        <td class="order-type">{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
-                                        <td class="volume">{{ number_format($order->amount, 2) }}</td>
-                                        <td class="open-price">{{ number_format($order->open_price, 5) }}</td>
-                                        <td class="current-price">{{ number_format($order->type == 1 ? $order->asset->bid_price : $order->asset->ask_price, 5) }}</td>
+                                        <td>{{ $order->asset->name }}</td>
+                                        <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
+                                        <td>{{ number_format($order->amount, 2) }}</td>
+                                        <td>{{ number_format($order->open_price, 5) }}</td>
+                                        <td>{{ number_format($order->type == 1 ? $order->asset->bid_price : $order->asset->ask_price, 5) }}</td>
                                         <td>{{ $order->s_l ?? '-' }}</td>
                                         <td>{{ $order->s_p ?? '-' }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
-                                        <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}" data-asset-symbol="{{ $order->asset->symbol ?? $order->asset->name }}" data-order-type="{{ $order->type == 1 ? 'buy' : 'sell' }}" data-open-price="{{ $order->open_price }}" data-volume="{{ $order->amount }}">
+                                        <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}">
                                             <div class="pnl-display {{$order->pnl < 0 ? 'text-danger' : 'text-success'}}">
                                                 <strong>$ <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
                                             </div>
@@ -2926,9 +2926,6 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSingleAssetPrice(priceData);
         }
         
-        // Update PnL for active orders after updating prices
-        updateActivePnL(priceData);
-        
     }
     
     function updateSingleAssetPrice(asset) {
@@ -3002,73 +2999,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update color classes
         element.removeClass('text-success text-danger')
                .addClass(isProfit ? 'text-success' : 'text-danger');
-    }
-    
-    // Function to update PnL for active orders based on current prices
-    function updateActivePnL(priceData) {
-        // Get all active PnL elements
-        $('.active_pnl').each(function() {
-            const pnlElement = $(this);
-            const orderId = pnlElement.data('order-id');
-            
-            if (!orderId) return;
-            
-            // Get order data from data attributes
-            const assetSymbol = pnlElement.data('asset-symbol');
-            const orderType = pnlElement.data('order-type'); // 'buy' or 'sell'
-            const openPrice = parseFloat(pnlElement.data('open-price'));
-            const volume = parseFloat(pnlElement.data('volume'));
-            
-            if (!assetSymbol || !orderType || isNaN(openPrice) || isNaN(volume)) return;
-            
-            // Find current price for this asset
-            let currentPrice = null;
-            if (Array.isArray(priceData)) {
-                const assetData = priceData.find(asset => 
-                    asset.symbol === assetSymbol || asset.name === assetSymbol
-                );
-                if (assetData) {
-                    currentPrice = orderType === 'buy' ? assetData.bid_price : assetData.ask_price;
-                }
-            } else if (priceData.assets && Array.isArray(priceData.assets)) {
-                const assetData = priceData.assets.find(asset => 
-                    asset.symbol === assetSymbol || asset.name === assetSymbol
-                );
-                if (assetData) {
-                    currentPrice = orderType === 'buy' ? assetData.bid_price : assetData.ask_price;
-                }
-            }
-            
-            if (currentPrice === null) return;
-            
-            // Calculate PnL
-            let pnlValue = 0;
-            if (orderType === 'buy') {
-                pnlValue = (currentPrice - openPrice) * volume;
-            } else if (orderType === 'sell') {
-                pnlValue = (openPrice - currentPrice) * volume;
-            }
-            
-            // Update the PnL display using our formatting function
-            updatePnLDisplay(pnlElement, pnlValue);
-            
-            // Also update the current price in the table
-            const currentPriceCell = pnlElement.closest('tr').find('.current-price');
-            if (currentPriceCell.length > 0) {
-                currentPriceCell.text(parseFloat(currentPrice).toFixed(5));
-            }
-        });
-        
-        // Update the timestamp indicator
-        const now = new Date();
-        const timeString = now.toLocaleTimeString();
-        $('#pnl-last-update').text(`PnL updated at ${timeString}`);
-    }
-    
-    // Missing function definition
-    function stopPnlUpdates() {
-        // This function is called but was missing - placeholder for now
-        console.log('PnL updates stopped');
     }
     
     function updatePriceElement(selector, newPrice, previousPrice, priceType) {
@@ -3181,7 +3111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Stop updates when user leaves the page
         $(window).on('beforeunload', function() {
-            stopPnlUpdates();
             stopPriceUpdates();
         });
         
