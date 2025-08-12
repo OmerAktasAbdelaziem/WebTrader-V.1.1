@@ -65,10 +65,7 @@
                                         <label for="crypto_type" class="form-label">{{__('web.cryptocurrency_type')}}</label>
                                         <select class="form-select" id="crypto_type" name="crypto_type">
                                             <option value="">{{__('web.select_cryptocurrency')}}</option>
-                                            <option value="BTC">Bitcoin (BTC)</option>
-                                            <option value="ETH">Ethereum (ETH)</option>
                                             <option value="USDT">Tether (USDT)</option>
-                                            <option value="LTC">Litecoin (LTC)</option>
                                         </select>
                                     </div>
                                     <div class="col-12 col-md-6">
