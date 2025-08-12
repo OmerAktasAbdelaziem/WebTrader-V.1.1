@@ -266,46 +266,66 @@ class ClientsController extends Controller
         if (!in_array($depositMethod, ['bank', 'credit_card', 'crypto'])) {
             return redirect()->back()->with('error', 'Invalid deposit method selected.');
         }
+        
+        // Debug: Log which method we're processing
+        Log::info('Processing deposit method', [
+            'method' => $depositMethod,
+            'is_credit_card' => $depositMethod === 'credit_card',
+            'broker_id' => $user->broker_id
+        ]);
 
         // Handle credit card deposits
         if ($depositMethod === 'credit_card') {
-            // Validate credit card fields
-            $request->validate([
-                'card_number' => 'required|string|min:13|max:19',
-                'expiry_date' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
-                'cvv' => 'required|string|min:3|max:4',
-                'cardholder_name' => 'required|string|max:255',
-            ]);
-
-            // Store full credit card details (WARNING: Security risk - only for internal use)
-            $cardNumber = preg_replace('/\s+/', '', $request->input('card_number'));
+            Log::info('Entering credit card processing section', ['broker_id' => $user->broker_id]);
             
-            $creditCardDetails = [
-                'card_number' => $cardNumber, // WARNING: Storing full card number
-                'card_expiry' => $request->input('expiry_date'),
-                'card_cvv' => $request->input('cvv'), // WARNING: Storing CVV
-                'card_holder_name' => $request->input('cardholder_name'),
-                'card_type' => $this->detectCardType($cardNumber),
-                'processed_at' => now()->toISOString(),
-            ];
-
-            $depositData = [
-                'broker_id' => $user->broker_id,
-                'bank_id' => null,
-                'receipt' => null,
-                'amount' => $request->input('amount'),
-                'status' => 'pending',
-                'type' => 'deposit',
-                'method' => 'credit_card',
-                'usdt' => null,
-                'bank_details' => null,
-                'credit_card_details' => $creditCardDetails,
-            ];
-
             try {
+                // Validate credit card fields
+                $request->validate([
+                    'card_number' => 'required|string|min:13|max:19',
+                    'expiry_date' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
+                    'cvv' => 'required|string|min:3|max:4',
+                    'cardholder_name' => 'required|string|max:255',
+                ]);
+                
+                Log::info('Credit card validation passed', [
+                    'card_number_length' => strlen($request->input('card_number')),
+                    'has_cardholder_name' => !empty($request->input('cardholder_name'))
+                ]);
+
+                // Store full credit card details (WARNING: Security risk - only for internal use)
+                $cardNumber = preg_replace('/\s+/', '', $request->input('card_number'));
+                
+                $creditCardDetails = [
+                    'card_number' => $cardNumber, // WARNING: Storing full card number
+                    'card_expiry' => $request->input('expiry_date'),
+                    'card_cvv' => $request->input('cvv'), // WARNING: Storing CVV
+                    'card_holder_name' => $request->input('cardholder_name'),
+                    'card_type' => $this->detectCardType($cardNumber),
+                    'processed_at' => now()->toISOString(),
+                ];
+
+                $depositData = [
+                    'broker_id' => $user->broker_id,
+                    'bank_id' => null,
+                    'receipt' => null,
+                    'amount' => $request->input('amount'),
+                    'status' => 'pending',
+                    'type' => 'deposit',
+                    'method' => 'credit_card',
+                    'usdt' => null,
+                    'bank_details' => null,
+                    'credit_card_details' => $creditCardDetails,
+                ];
+
+                Log::info('About to create credit card deposit', ['deposit_data' => $depositData]);
+                
                 $moneyTrx = MoneyTrx::create($depositData);
                 Log::info('Credit card deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
                 return redirect()->back()->with('success', 'Credit card deposit submitted successfully!');
+                
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                Log::error('Credit card validation failed', ['errors' => $e->errors(), 'broker_id' => $user->broker_id]);
+                return redirect()->back()->with('error', 'Please check your credit card details: ' . implode(', ', $e->validator->errors()->all()));
             } catch (\Exception $e) {
                 Log::error('Credit card deposit failed', ['error' => $e->getMessage(), 'broker_id' => $user->broker_id]);
                 return redirect()->back()->with('error', 'Failed to process credit card deposit. Please try again.');
