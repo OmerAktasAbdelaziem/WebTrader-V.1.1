@@ -359,8 +359,8 @@
     /* Dark Mode Buttons */
     [data-theme="dark"] .btn-primary,
     [data-theme="dark"] .btn[style*="background-color:#424242"] {
-        background-color: var(--gold-primary) !important;
-        border-color: var(--gold-primary) !important;
+        /* background-color: var(--gold-primary) !important; */
+        /* border-color: var(--gold-primary) !important; */
         color: #121624 !important;
         font-weight: 600;
     }
