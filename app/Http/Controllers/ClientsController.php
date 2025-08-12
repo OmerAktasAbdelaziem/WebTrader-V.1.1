@@ -320,6 +320,36 @@ class ClientsController extends Controller
                 'bank_details' => null,
                 'credit_card_details' => null,
             ];
+
+            try {
+                Log::info('=== ATTEMPTING TO CREATE BANK DEPOSIT ===', [
+                    'depositData' => $depositData,
+                    'user_id' => $user->id,
+                    'broker_id' => $user->broker_id
+                ]);
+                
+                $moneyTrx = MoneyTrx::create($depositData);
+                
+                Log::info('=== BANK DEPOSIT CREATED SUCCESSFULLY ===', [
+                    'transaction_id' => $moneyTrx->id,
+                    'broker_id' => $user->broker_id,
+                    'method' => $depositMethod,
+                    'amount' => $moneyTrx->amount,
+                    'status' => $moneyTrx->status
+                ]);
+                
+                return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
+            } catch (\Exception $e) {
+                Log::error('=== BANK DEPOSIT CREATION FAILED ===', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'broker_id' => $user->broker_id,
+                    'data' => $depositData,
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile()
+                ]);
+                return redirect()->back()->with('error', 'Failed to process bank deposit. Error: ' . $e->getMessage());
+            }
         }
         // Handle crypto deposits
         elseif ($depositMethod === 'crypto') {
@@ -341,15 +371,9 @@ class ClientsController extends Controller
                 'bank_details' => null,
                 'credit_card_details' => null,
             ];
-        }
-        else {
-            return redirect()->back()->with('error', 'Invalid deposit method selected.');
-        }
-        
-        // Create the deposit transaction for bank and crypto
-        if (isset($depositData)) {
+
             try {
-                Log::info('=== ATTEMPTING TO CREATE DEPOSIT ===', [
+                Log::info('=== ATTEMPTING TO CREATE CRYPTO DEPOSIT ===', [
                     'depositData' => $depositData,
                     'user_id' => $user->id,
                     'broker_id' => $user->broker_id
@@ -357,7 +381,7 @@ class ClientsController extends Controller
                 
                 $moneyTrx = MoneyTrx::create($depositData);
                 
-                Log::info('=== DEPOSIT CREATED SUCCESSFULLY ===', [
+                Log::info('=== CRYPTO DEPOSIT CREATED SUCCESSFULLY ===', [
                     'transaction_id' => $moneyTrx->id,
                     'broker_id' => $user->broker_id,
                     'method' => $depositMethod,
@@ -367,7 +391,7 @@ class ClientsController extends Controller
                 
                 return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
             } catch (\Exception $e) {
-                Log::error('=== DEPOSIT CREATION FAILED ===', [
+                Log::error('=== CRYPTO DEPOSIT CREATION FAILED ===', [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                     'broker_id' => $user->broker_id,
@@ -375,8 +399,11 @@ class ClientsController extends Controller
                     'line' => $e->getLine(),
                     'file' => $e->getFile()
                 ]);
-                return redirect()->back()->with('error', 'Failed to process deposit. Error: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Failed to process crypto deposit. Error: ' . $e->getMessage());
             }
+        }
+        else {
+            return redirect()->back()->with('error', 'Invalid deposit method selected.');
         }
     }
 
