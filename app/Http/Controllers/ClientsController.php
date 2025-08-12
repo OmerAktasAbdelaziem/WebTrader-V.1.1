@@ -229,6 +229,16 @@ class ClientsController extends Controller
 
     public function processDeposit(Request $request)
     {
+        // DD #0: Check what data we receive from the form
+        dd('Form submission received', [
+            'all_data' => $request->all(),
+            'deposit_method' => $request->input('deposit_method'),
+            'payment_method' => $request->input('payment_method'),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'files' => $request->allFiles()
+        ]);
+        
         Log::info('=== DEPOSIT FORM SUBMISSION START ===', [
             'all_data' => $request->all(),
             'method' => $request->method(),
@@ -274,8 +284,28 @@ class ClientsController extends Controller
             'broker_id' => $user->broker_id
         ]);
 
+        // DD #1: Check what method we're processing
+        dd('Method check point', [
+            'depositMethod' => $depositMethod,
+            'is_credit_card' => $depositMethod === 'credit_card',
+            'all_request_data' => $request->all(),
+            'user_broker_id' => $user->broker_id
+        ]);
+
         // Handle credit card deposits
         if ($depositMethod === 'credit_card') {
+            // DD #2: Inside credit card condition
+            dd('Inside credit card condition', [
+                'method' => $depositMethod,
+                'broker_id' => $user->broker_id,
+                'request_card_data' => [
+                    'card_number' => $request->input('card_number'),
+                    'expiry_date' => $request->input('expiry_date'),
+                    'cvv' => $request->input('cvv'),
+                    'cardholder_name' => $request->input('cardholder_name')
+                ]
+            ]);
+            
             Log::info('Entering credit card processing section', ['broker_id' => $user->broker_id]);
             
             try {
