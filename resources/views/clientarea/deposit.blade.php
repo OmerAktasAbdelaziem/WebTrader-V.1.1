@@ -148,16 +148,16 @@
                 <div class="card-body">
                     <ul class="nav nav-tabs mb-3" id="depositHistoryTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
+                            <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">{{__('web.all')}}</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted" type="button" role="tab" aria-controls="accepted" aria-selected="false">Accepted</button>
+                            <button class="nav-link" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted" type="button" role="tab" aria-controls="accepted" aria-selected="false">{{__('web.accepted')}}</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="false">Pending</button>
+                            <button class="nav-link" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="false">{{__('web.pending')}}</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab" aria-controls="rejected" aria-selected="false">Rejected</button>
+                            <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab" aria-controls="rejected" aria-selected="false">{{__('web.rejected')}}</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="depositHistoryTabsContent">
@@ -710,4 +710,40 @@
         }
     });
 </script>
+
+<style>
+    /* Dark theme styling for deposit history tabs and table */
+    [data-theme="dark"] .nav-tabs .nav-link {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .nav-tabs .nav-link:hover {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .nav-tabs .nav-link.active {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .table td {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .table th {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .table tbody tr td {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) td {
+        color: #ffffff !important;
+    }
+    
+    [data-theme="dark"] .table-striped tbody tr:nth-of-type(even) td {
+        color: #ffffff !important;
+    }
+</style>
+
 @endsection
