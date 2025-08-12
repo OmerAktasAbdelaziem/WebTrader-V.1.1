@@ -1309,7 +1309,7 @@
     
     /* Dark theme price colors */
     [data-theme="dark"] .bid_price {
-        color: #EF4444 !important;
+        /*color: #EF4444 !important;*/
         border-color: rgba(239, 68, 68, 0.3) !important;
     }
     

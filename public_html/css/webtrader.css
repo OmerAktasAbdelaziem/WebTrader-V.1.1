@@ -327,13 +327,13 @@ html {
 }
 
 .asset-button .bid_price {
-    color: #ff6b6b !important;
+    /* color: #ff6b6b !important; */
     font-weight: 600;
     font-size: 0.9rem;
 }
 
 .asset-button .ask_price {
-    color: #51cf66 !important;
+    /* color: #51cf66 !important; */
     font-weight: 600;
     font-size: 0.9rem;
 }
