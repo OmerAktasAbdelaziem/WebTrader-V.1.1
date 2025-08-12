@@ -2625,7 +2625,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Modern Notification Popup -->
 <div id="notificationPopup" class="notification-popup-modern" style="display: none;">
-    <div class="notification-popup-overlay" onclick="closeNotificationPopup()"></div>
     <div class="notification-popup-container">
         <div class="notification-popup-header-modern">
             <div class="notification-popup-title-modern">
@@ -2709,7 +2708,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('assets/plugins/material-date-range-picker/dist/duDatepicker.min.js?v1.599') }}"></script>
 <script src="{{ url('assets/js/form-date-time-pickers.min.js?v1.599') }}"></script>
-<script src="{{ url('assets/js/main_tp.js?v1.600') }}"></script>
+<script src="{{ url('assets/js/main_tp.js') }}"></script>
 <script src="{{ url('assets/js/webtrader2.js?v2.0') }}"></script>
 
 <!-- Add CSRF token and routes for JavaScript -->
