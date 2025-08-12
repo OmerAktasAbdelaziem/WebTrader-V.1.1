@@ -238,6 +238,14 @@ class ClientsController extends Controller
             'ip' => $request->ip()
         ]);
         
+        // DD #1: Check if we're reaching the controller
+        dd('DD #1: Reached processDeposit method', [
+            'request_data' => $request->all(),
+            'request_files' => $request->allFiles(),
+            'deposit_method' => $request->input('deposit_method'),
+            'amount' => $request->input('amount')
+        ]);
+        
         $user = Auth::guard('client')->user();
         if (!$user || !$user->broker_id) {
             return redirect()->route('client.login')->with('error', 'Please login first');
@@ -246,10 +254,27 @@ class ClientsController extends Controller
         // Get the deposit method from the form (field name is deposit_method, not payment_method)
         $depositMethod = $request->input('deposit_method');
         
+        // DD #2: Check deposit method and user data
+        dd('DD #2: After getting deposit method', [
+            'deposit_method' => $depositMethod,
+            'user_id' => $user->id,
+            'broker_id' => $user->broker_id,
+            'amount' => $request->input('amount'),
+            'all_request_data' => $request->all()
+        ]);
+        
         // Basic validation for all deposit types
         $request->validate([
             'deposit_method' => 'required|in:bank,credit_card,crypto',
             'amount' => 'required|numeric|min:10',
+        ]);
+
+        // DD #3: After validation passed
+        dd('DD #3: After validation passed', [
+            'deposit_method' => $depositMethod,
+            'amount' => $request->input('amount'),
+            'validation_passed' => true,
+            'will_process' => $depositMethod
         ]);
 
         // Handle credit card deposits
@@ -299,6 +324,21 @@ class ClientsController extends Controller
 
         // Handle bank transfer deposits
         if ($depositMethod === 'bank') {
+            
+            // DD #4: Entered bank deposit section
+            dd('DD #4: Entered bank deposit section', [
+                'deposit_method' => $depositMethod,
+                'country' => $request->input('country'),
+                'bank_id' => $request->input('bank_id'),
+                'receipt_file' => $request->hasFile('receipt'),
+                'receipt_file_details' => $request->file('receipt') ? [
+                    'name' => $request->file('receipt')->getClientOriginalName(),
+                    'size' => $request->file('receipt')->getSize(),
+                    'mime' => $request->file('receipt')->getMimeType()
+                ] : null,
+                'all_form_data' => $request->all()
+            ]);
+            
             $request->validate([
                 'country' => 'required|string',
                 'bank_id' => 'required|exists:banks,id',
