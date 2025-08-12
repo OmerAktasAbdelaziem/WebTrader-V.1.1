@@ -287,6 +287,75 @@
         color: var(--text-primary) !important;
     }
     
+    /* Dark Mode Reset Password Modal - All text white */
+    [data-theme="dark"] #resetPasswordModal .modal-content {
+        background-color: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .modal-header {
+        background-color: var(--bg-tertiary) !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .modal-title {
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .modal-body {
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .form-label,
+    [data-theme="dark"] #resetPasswordModal label {
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .form-control {
+        background-color: var(--bg-tertiary) !important;
+        border: 1px solid var(--border-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .form-control:focus {
+        background-color: var(--bg-tertiary) !important;
+        border-color: var(--gold-primary) !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .btn {
+        background-color: var(--gold-primary) !important;
+        border-color: var(--gold-primary) !important;
+        color: #121624 !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .btn:hover {
+        background-color: var(--gold-secondary) !important;
+        border-color: var(--gold-secondary) !important;
+        color: #121624 !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal .btn-close {
+        filter: invert(1);
+    }
+    
+    /* All text elements in reset password modal to be white */
+    [data-theme="dark"] #resetPasswordModal * {
+        color: var(--text-primary) !important;
+    }
+    
+    /* Override specific inline styles that might conflict */
+    [data-theme="dark"] #resetPasswordModal .modal-header .text-white {
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] #resetPasswordModal [style*="color"] {
+        color: var(--text-primary) !important;
+    }
+    
     /* Dark Mode Buttons */
     [data-theme="dark"] .btn-primary,
     [data-theme="dark"] .btn[style*="background-color:#424242"] {
