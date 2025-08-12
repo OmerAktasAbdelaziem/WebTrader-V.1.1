@@ -439,7 +439,7 @@
     [data-theme="dark"] .table tbody td,
     [data-theme="dark"] .table-striped > tbody > tr > td,
     [data-theme="dark"] .table-striped > tbody > tr > th {
-        color: var(--text-primary) !important;
+        /*color: var(--text-primary) !important;*/
         background-color: inherit;
     }
     
@@ -461,14 +461,14 @@
     [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td,
     [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > th {
         background-color: var(--bg-tertiary) !important;
-        color: var(--text-primary) !important;
+        /*color: var(--text-primary) !important;*/
     }
     
     /* Dark mode table hover effects */
     [data-theme="dark"] .table-hover > tbody > tr:hover > td,
     [data-theme="dark"] .table-hover > tbody > tr:hover > th {
         background-color: rgba(255, 255, 255, 0.05) !important;
-        color: var(--text-primary) !important;
+        /*color: var(--text-primary) !important;*/
     }
     
     /* Dark Mode Select2 (if used) */
@@ -1591,7 +1591,7 @@
     }
 </script>
 
-<script src="{{ url('assets/js/main_tp.min.js') }}"></script>
+<script src="{{ url('assets/js/main_tp.js') }}"></script>
 <script src="{{ url('js/mobile-style.js?v1.0') }}"></script>
 
 <script>

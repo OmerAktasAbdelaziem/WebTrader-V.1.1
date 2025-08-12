@@ -1314,7 +1314,7 @@
     }
     
     [data-theme="dark"] .ask_price {
-        color: #10B981 !important;
+        /* color: #10B981 !important; */
         border-color: rgba(16, 185, 129, 0.3) !important;
     }
     
