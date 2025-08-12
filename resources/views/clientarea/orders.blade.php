@@ -615,15 +615,15 @@
     }
 
     [data-theme="dark"] .order-type.buy {
-        background: #FFD700 !important;
-        color: #121624 !important;
-        border-color: #FFD700 !important;
+        background: ##03a15b !important;
+        /* color: #121624 !important;
+        border-color: #FFD700 !important; */
     }
 
     [data-theme="dark"] .order-type.sell {
-        background: transparent !important;
-        color: #FFD700 !important;
-        border-color: #FFD700 !important;
+        background: #c30606 !important;
+        color: #ffffff !important
+        /* border-color: #FFD700 !important; */
     }
 
     [data-theme="dark"] .order-amount {
