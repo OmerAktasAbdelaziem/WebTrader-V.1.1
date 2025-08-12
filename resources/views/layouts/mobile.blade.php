@@ -447,7 +447,7 @@
     [data-theme="dark"] .table thead th {
         border-bottom-color: var(--border-color) !important;
         background-color: var(--bg-tertiary) !important;
-        color: var(--text-primary) !important;
+        /* color: var(--text-primary) !important; */
     }
     
     /* Dark mode table borders */
