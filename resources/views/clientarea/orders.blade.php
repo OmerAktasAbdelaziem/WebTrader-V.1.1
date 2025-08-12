@@ -925,7 +925,7 @@
                                 </div>
                                 
                                 <div class="amount-pnl-section">
-                                    <div class="order-amount">${{ number_format($order->amount, 2) }}</div>
+                                    <div class="order-amount">{{ number_format($order->amount, 2) }}</div>
                                     <div class="order-pnl {{$order->pnl < 0 ? 'negative' : 'positive'}} active_pnl" data-order-id="{{$order->id}}">
                                         ${{ number_format($order->pnl, 2) }}
                                     </div>
@@ -998,7 +998,7 @@
                                 </div>
                                 
                                 <div class="amount-pnl-section">
-                                    <div class="order-amount">${{ number_format($order->amount, 2) }}</div>
+                                    <div class="order-amount">{{ number_format($order->amount, 2) }}</div>
                                     <div class="detail-value">${{ number_format($order->open_price, 4) }}</div>
                                 </div>
                                 
@@ -1066,7 +1066,7 @@
                                 </div>
                                 
                                 <div class="amount-pnl-section">
-                                    <div class="order-amount">${{ number_format($order->amount, 2) }}</div>
+                                    <div class="order-amount">{{ number_format($order->amount, 2) }}</div>
                                     <div class="order-pnl {{$order->pnl < 0 ? 'negative' : 'positive'}}">
                                         ${{ number_format($order->pnl, 2) }}
                                     </div>
@@ -1123,7 +1123,7 @@
                                 </div>
                                 
                                 <div class="amount-pnl-section">
-                                    <div class="order-amount">${{ number_format($order->amount, 2) }}</div>
+                                    <div class="order-amount">{{ number_format($order->amount, 2) }}</div>
                                     <div class="detail-value">${{ number_format($order->amount, 2) }}</div>
                                 </div>
                             </div>
