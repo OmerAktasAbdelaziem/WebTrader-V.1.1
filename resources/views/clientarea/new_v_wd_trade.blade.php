@@ -230,13 +230,13 @@
         .pnl-display {
             font-weight: bold !important;
             font-size: 1em !important;
-            display: inline-block;
+            display: inline-block !important;
             transition: color 0.3s ease;
         }
         
         .pnl-value {
             font-weight: bold !important;
-            display: inline;
+            display: inline !important;
         }
         
         .pnl-positive {
@@ -254,7 +254,24 @@
         /* Ensure dollar sign and formatting persist */
         .pnl-display .pnl-currency {
             font-weight: bold !important;
-            display: inline;
+            display: inline !important;
+        }
+        
+        /* Prevent any JavaScript from easily overriding PnL content */
+        .pnl-display strong {
+            font-weight: bold !important;
+            display: inline !important;
+        }
+        
+        /* Force the PnL structure to be protected */
+        .active_pnl .pnl-display {
+            min-height: 1.2em !important;
+            position: relative !important;
+        }
+        
+        .active_pnl .pnl-display strong {
+            position: relative !important;
+            z-index: 10 !important;
         }
     </style>
 
@@ -548,7 +565,7 @@
                                         <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
                                         <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}">
                                             <div class="pnl-display {{$order->pnl < 0 ? 'text-danger' : 'text-success'}}">
-                                                $<strong> <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
+                                                <strong>$ <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
                                             </div>
                                         </td>
                                         <td>
@@ -2979,28 +2996,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to properly format and update PnL values while maintaining styling
-    function updatePnLDisplay(element, pnlValue) {
-        const formattedValue = parseFloat(pnlValue).toFixed(2);
-        const isProfit = pnlValue >= 0;
-        
-        // Find the pnl-value span within the element
-        const pnlValueSpan = element.find('.pnl-value');
-        if (pnlValueSpan.length > 0) {
-            // Update only the numeric value, preserving the $ and <strong> tags
-            pnlValueSpan.text(formattedValue);
-        } else {
-            // Fallback: recreate the entire structure if span is missing
-            element.html(`<div class="pnl-display ${isProfit ? 'text-success' : 'text-danger'}">
-                <strong>$ <span class="pnl-value">${formattedValue}</span></strong>
-            </div>`);
-        }
-        
-        // Update color classes
-        element.removeClass('text-success text-danger')
-               .addClass(isProfit ? 'text-success' : 'text-danger');
-    }
-    
     function updatePriceElement(selector, newPrice, previousPrice, priceType) {
         const elements = $(selector);
         
@@ -3101,13 +3096,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Add a small indicator to show updates are working
-        if ($('.active-orders-table').length > 0) {
-            $('.active-orders-table').before('<div class="text-muted small mb-2" id="pnl-last-update">Initializing real-time updates...</div>');
-        } else {
-            // If no active-orders-table, add it before the first table
-            $('table').first().before('<div class="text-muted small mb-2" id="pnl-last-update">Initializing real-time updates...</div>');
+        // Function to ensure $ symbol is always present in PnL displays
+        function ensurePnLDollarSymbol() {
+            $('.pnl-display strong').each(function() {
+                const $strong = $(this);
+                const text = $strong.text().trim();
+                
+                // If the text doesn't start with $, add it
+                if (!text.startsWith('$')) {
+                    $strong.html('$ <span class="pnl-value">' + text + '</span>');
+                }
+            });
         }
+        
+        // Run the function immediately
+        ensurePnLDollarSymbol();
+        
+        // Run the function every 5 seconds to ensure $ stays
+        setInterval(ensurePnLDollarSymbol, 5000);
         
         // Stop updates when user leaves the page
         $(window).on('beforeunload', function() {
