@@ -615,7 +615,7 @@
     }
 
     [data-theme="dark"] .order-type.buy {
-        background: ##03a15b !important;
+        background: #03a15b !important;
         /* color: #121624 !important;
         border-color: #FFD700 !important; */
     }
