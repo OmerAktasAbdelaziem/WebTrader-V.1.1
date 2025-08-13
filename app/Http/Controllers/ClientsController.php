@@ -609,7 +609,7 @@ class ClientsController extends Controller
         
         // Define validation rules based on withdrawal method
         $rules = [
-            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency,paypal',
+            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency',
             'amount' => 'required|numeric|min:10',
         ];
 
@@ -625,15 +625,9 @@ class ClientsController extends Controller
                 break;
             case 'cryptocurrency':
                 $rules += [
-                    'crypto_type' => 'required|string|in:BTC,ETH,USDT,LTC',
+                    'crypto_type' => 'required|string|in:USDT',
                     'wallet_address' => 'required|string|max:255',
-                    'network_type' => 'nullable|string|in:ERC20,TRC20,BEP20',
-                ];
-                break;
-            case 'paypal':
-                $rules += [
-                    'paypal_email' => 'required|email|max:255',
-                    'paypal_confirm_email' => 'required|email|same:paypal_email',
+                    'network_type' => 'required|string|in:TRC20',
                 ];
                 break;
         }
@@ -700,13 +694,7 @@ class ClientsController extends Controller
                         'wallet_address' => $request->wallet_address,
                         'network_type' => $request->network_type,
                     ];
-                    $method_display = 'Cryptocurrency (' . $request->crypto_type . ')';
-                    break;
-                case 'paypal':
-                    $details = [
-                        'paypal_email' => $request->paypal_email,
-                    ];
-                    $method_display = 'PayPal';
+                    $method_display = 'USDT (TRC20)';
                     break;
             }
 
