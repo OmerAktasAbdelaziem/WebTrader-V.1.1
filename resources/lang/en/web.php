@@ -459,6 +459,7 @@ return [
     ],
     'submit_deposit' => 'Submit Deposit',
     'withdraw_rejected_notification' => 'Withdrawal request was rejected',
+    'withdraw_accepted_notification' => 'Withdrawal request was accepted',
     'deposit_rejected_notification' => 'Deposit request was rejected',
     'deposit_accepted_notification' => 'Deposit request was accepted',
     'notifications' => 'Notifications',

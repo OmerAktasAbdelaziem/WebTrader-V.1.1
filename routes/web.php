@@ -84,7 +84,9 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     
     // New notification routes
     $router->post  ('/notifications/{id}/read',         [NotificationController::class,    'markAsRead'              ])->name('notifications.mark-as-read');
+    $router->post  ('/notifications/{id}/delete',       [NotificationController::class,    'delete'                  ])->name('notifications.delete');
     $router->post  ('/notifications/mark-all-read',     [NotificationController::class,    'markAllAsRead'           ])->name('notifications.mark-all-read');
+    $router->post  ('/notifications/clear-all',         [NotificationController::class,    'clearAll'                ])->name('notifications.clear-all');
     
     // Upload Document Routes
     $router->post  ('/client/upload-documents',         [ClientsController::class,         'uploadDocuments'         ])->name('client.upload.documents');

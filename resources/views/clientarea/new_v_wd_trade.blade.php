@@ -4087,6 +4087,220 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ============= NOTIFICATION FUNCTIONS =============
+
+// Mark all notifications as read
+function markAllNotificationsAsRead() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    fetch('/notifications/mark-all-read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove all notification items from the popup
+            const notificationMessages = document.getElementById('notificationPopupMessages');
+            if (notificationMessages) {
+                notificationMessages.innerHTML = `
+                    <div class="no-notifications-message-modern">
+                        <div class="no-notifications-illustration">
+                            <div class="notification-bell-empty">
+                                <i class="bi bi-bell-slash"></i>
+                            </div>
+                            <div class="notification-waves">
+                                <span class="wave wave-1"></span>
+                                <span class="wave wave-2"></span>
+                                <span class="wave wave-3"></span>
+                            </div>
+                        </div>
+                        <div class="no-notifications-content">
+                            <h5>{{ __('web.all_caught_up') }}</h5>
+                            <p>{{ __('web.no_notifications') }}</p>
+                            <small>{{ __('web.notify_important') }}</small>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Update notification badge
+            updateNotificationBadge(0);
+            
+            // Hide the footer since there are no notifications
+            const footer = document.querySelector('.notification-popup-footer-modern');
+            if (footer) {
+                footer.style.display = 'none';
+            }
+            
+            showNotification('All notifications marked as read', 'success');
+        } else {
+            showNotification(data.message || 'Error marking notifications as read', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error marking notifications as read', 'error');
+    });
+}
+
+// Clear all notifications (delete all)
+function clearAllNotifications() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    if (!confirm('Are you sure you want to clear all notifications? This action cannot be undone.')) {
+        return;
+    }
+    
+    fetch('/notifications/clear-all', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove all notification items from the popup
+            const notificationMessages = document.getElementById('notificationPopupMessages');
+            if (notificationMessages) {
+                notificationMessages.innerHTML = `
+                    <div class="no-notifications-message-modern">
+                        <div class="no-notifications-illustration">
+                            <div class="notification-bell-empty">
+                                <i class="bi bi-bell-slash"></i>
+                            </div>
+                            <div class="notification-waves">
+                                <span class="wave wave-1"></span>
+                                <span class="wave wave-2"></span>
+                                <span class="wave wave-3"></span>
+                            </div>
+                        </div>
+                        <div class="no-notifications-content">
+                            <h5>{{ __('web.all_caught_up') }}</h5>
+                            <p>{{ __('web.no_notifications') }}</p>
+                            <small>{{ __('web.notify_important') }}</small>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Update notification badge
+            updateNotificationBadge(0);
+            
+            // Hide the footer since there are no notifications
+            const footer = document.querySelector('.notification-popup-footer-modern');
+            if (footer) {
+                footer.style.display = 'none';
+            }
+            
+            showNotification('All notifications cleared', 'success');
+        } else {
+            showNotification(data.message || 'Error clearing notifications', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error clearing notifications', 'error');
+    });
+}
+
+// Delete individual notification
+function deleteNotification(notificationId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    fetch(`/notifications/${notificationId}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the notification item from the popup
+            const notificationItem = document.querySelector(`[data-id="${notificationId}"]`);
+            if (notificationItem) {
+                notificationItem.remove();
+            }
+            
+            // Update the notification badge count
+            updateNotificationBadge(data.remaining_count);
+            
+            // If no notifications left, show the "no notifications" message
+            if (data.remaining_count === 0) {
+                const notificationMessages = document.getElementById('notificationPopupMessages');
+                if (notificationMessages) {
+                    notificationMessages.innerHTML = `
+                        <div class="no-notifications-message-modern">
+                            <div class="no-notifications-illustration">
+                                <div class="notification-bell-empty">
+                                    <i class="bi bi-bell-slash"></i>
+                                </div>
+                                <div class="notification-waves">
+                                    <span class="wave wave-1"></span>
+                                    <span class="wave wave-2"></span>
+                                    <span class="wave wave-3"></span>
+                                </div>
+                            </div>
+                            <div class="no-notifications-content">
+                                <h5>{{ __('web.all_caught_up') }}</h5>
+                                <p>{{ __('web.no_notifications') }}</p>
+                                <small>{{ __('web.notify_important') }}</small>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Hide the footer since there are no notifications
+                const footer = document.querySelector('.notification-popup-footer-modern');
+                if (footer) {
+                    footer.style.display = 'none';
+                }
+            }
+            
+            showNotification('Notification deleted', 'success');
+        } else {
+            showNotification(data.message || 'Error deleting notification', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error deleting notification', 'error');
+    });
+}
+
+// Update notification badge function
+function updateNotificationBadge(count) {
+    const notificationIcon = document.querySelector('.notification-icon');
+    const existingBadge = notificationIcon.querySelector('.notification-badge');
+    
+    if (count > 0) {
+        if (existingBadge) {
+            existingBadge.textContent = count;
+        } else {
+            // Create new badge if it doesn't exist
+            const badge = document.createElement('span');
+            badge.className = 'notification-badge';
+            badge.textContent = count;
+            notificationIcon.appendChild(badge);
+        }
+    } else {
+        // Remove badge if count is 0
+        if (existingBadge) {
+            existingBadge.remove();
+        }
+    }
+}
 </script>
 
 <!-- Modern Document Upload JavaScript -->

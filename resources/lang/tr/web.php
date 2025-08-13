@@ -345,6 +345,7 @@ return [
     'ZM'                          => 'Zambiya',
     'ZW'                          => 'Zimbabve',
     'withdraw_rejected_notification' => 'Para çekme talebiniz reddedildi',
+    'withdraw_accepted_notification' => 'Para çekme talebiniz kabul edildi',
     
     // Refresh functionality
     'refresh'                     => 'Yenile',
