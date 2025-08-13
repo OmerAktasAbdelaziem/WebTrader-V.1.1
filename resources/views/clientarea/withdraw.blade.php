@@ -114,27 +114,34 @@
                             <table class="table table-striped align-middle">
                                 <thead>
                                     <tr class="text-white-dark">
-                                        <th class="text-white-dark">{{__('web.amount')}}</th>
-                                        <th class="text-white-dark">{{__('web.method')}}</th>
-                                        <th class="text-white-dark">{{__('web.date')}}</th>
-                                        <th class="text-white-dark">{{__('web.status')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.method')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.date')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.status')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($allWithdrawals as $transaction)
                                     <tr class="text-white-dark">
-                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
-                                        <td class="text-white-dark">
-                                            @if($transaction->payment_method == 'bank_transfer')
+                                        <td class="text-white-dark" style="color: white !important;">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">
+                                            @php
+                                                $method = $transaction->payment_method ?? $transaction->method ?? 'unknown';
+                                            @endphp
+                                            @if($method == 'bank_transfer' || $method == 'bank')
                                                 {{ __('web.bank_transfer') }}
-                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                            @elseif($method == 'cryptocurrency' || $method == 'crypto' || $method == 'USDT')
                                                 {{ __('web.cryptocurrency') }}
+                                            @elseif($method == 'paypal')
+                                                PayPal
+                                            @elseif($method == 'credit_card' || $method == 'card')
+                                                {{ __('web.credit_card') }}
                                             @else
-                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                                {{ $method ?: __('web.not_available') }}
                                             @endif
                                         </td>
-                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
-                                        <td class="text-white-dark">
+                                        <td class="text-white-dark" style="color: white !important;">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">
                                             @if($transaction->status == 'approved')
                                                 <span class="badge bg-success">{{__('web.accepted')}}</span>
                                             @elseif($transaction->status == 'pending')
@@ -158,25 +165,32 @@
                             <table class="table table-striped align-middle">
                                 <thead>
                                     <tr class="text-white-dark">
-                                        <th class="text-white-dark">{{__('web.amount')}}</th>
-                                        <th class="text-white-dark">{{__('web.method')}}</th>
-                                        <th class="text-white-dark">{{__('web.date')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.method')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($acceptedWithdrawals as $transaction)
                                     <tr class="text-white-dark">
-                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
-                                        <td class="text-white-dark">
-                                            @if($transaction->payment_method == 'bank_transfer')
+                                        <td class="text-white-dark" style="color: white !important;">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">
+                                            @php
+                                                $method = $transaction->payment_method ?? $transaction->method ?? 'unknown';
+                                            @endphp
+                                            @if($method == 'bank_transfer' || $method == 'bank')
                                                 {{ __('web.bank_transfer') }}
-                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                            @elseif($method == 'cryptocurrency' || $method == 'crypto' || $method == 'USDT')
                                                 {{ __('web.cryptocurrency') }}
+                                            @elseif($method == 'paypal')
+                                                PayPal
+                                            @elseif($method == 'credit_card' || $method == 'card')
+                                                {{ __('web.credit_card') }}
                                             @else
-                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                                {{ $method ?: __('web.not_available') }}
                                             @endif
                                         </td>
-                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -192,25 +206,32 @@
                             <table class="table table-striped align-middle">
                                 <thead>
                                     <tr class="text-white-dark">
-                                        <th class="text-white-dark">{{__('web.amount')}}</th>
-                                        <th class="text-white-dark">{{__('web.method')}}</th>
-                                        <th class="text-white-dark">{{__('web.date')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.method')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($pendingWithdrawals as $transaction)
                                     <tr class="text-white-dark">
-                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
-                                        <td class="text-white-dark">
-                                            @if($transaction->payment_method == 'bank_transfer')
+                                        <td class="text-white-dark" style="color: white !important;">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">
+                                            @php
+                                                $method = $transaction->payment_method ?? $transaction->method ?? 'unknown';
+                                            @endphp
+                                            @if($method == 'bank_transfer' || $method == 'bank')
                                                 {{ __('web.bank_transfer') }}
-                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                            @elseif($method == 'cryptocurrency' || $method == 'crypto' || $method == 'USDT')
                                                 {{ __('web.cryptocurrency') }}
+                                            @elseif($method == 'paypal')
+                                                PayPal
+                                            @elseif($method == 'credit_card' || $method == 'card')
+                                                {{ __('web.credit_card') }}
                                             @else
-                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                                {{ $method ?: __('web.not_available') }}
                                             @endif
                                         </td>
-                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -226,25 +247,32 @@
                             <table class="table table-striped align-middle">
                                 <thead>
                                     <tr class="text-white-dark">
-                                        <th class="text-white-dark">{{__('web.amount')}}</th>
-                                        <th class="text-white-dark">{{__('web.method')}}</th>
-                                        <th class="text-white-dark">{{__('web.date')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.method')}}</th>
+                                        <th class="text-white-dark" style="color: white !important;">{{__('web.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($rejectedWithdrawals as $transaction)
                                     <tr class="text-white-dark">
-                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
-                                        <td class="text-white-dark">
-                                            @if($transaction->payment_method == 'bank_transfer')
+                                        <td class="text-white-dark" style="color: white !important;">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">
+                                            @php
+                                                $method = $transaction->payment_method ?? $transaction->method ?? 'unknown';
+                                            @endphp
+                                            @if($method == 'bank_transfer' || $method == 'bank')
                                                 {{ __('web.bank_transfer') }}
-                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                            @elseif($method == 'cryptocurrency' || $method == 'crypto' || $method == 'USDT')
                                                 {{ __('web.cryptocurrency') }}
+                                            @elseif($method == 'paypal')
+                                                PayPal
+                                            @elseif($method == 'credit_card' || $method == 'card')
+                                                {{ __('web.credit_card') }}
                                             @else
-                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                                {{ $method ?: __('web.not_available') }}
                                             @endif
                                         </td>
-                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                        <td class="text-white-dark" style="color: white !important;">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -261,17 +289,48 @@
 </div>
 
 <style>
+/* Dark mode text styling */
 @media (prefers-color-scheme: dark) {
     .text-white-dark {
         color: white !important;
     }
+    .table-striped tbody tr:nth-of-type(odd) td {
+        color: white !important;
+    }
+    .table-striped tbody tr:nth-of-type(even) td {
+        color: white !important;
+    }
+    .table thead th {
+        color: white !important;
+    }
 }
 
-[data-bs-theme="dark"] .text-white-dark {
+[data-bs-theme="dark"] .text-white-dark,
+[data-bs-theme="dark"] .table-striped tbody tr td,
+[data-bs-theme="dark"] .table thead th {
     color: white !important;
 }
 
-.dark-mode .text-white-dark {
+.dark-mode .text-white-dark,
+.dark-mode .table-striped tbody tr td,
+.dark-mode .table thead th {
+    color: white !important;
+}
+
+/* Force white text for all table content in dark environments */
+body.dark .text-white-dark,
+body.dark .table-striped tbody tr td,
+body.dark .table thead th,
+html[data-theme="dark"] .text-white-dark,
+html[data-theme="dark"] .table-striped tbody tr td,
+html[data-theme="dark"] .table thead th {
+    color: white !important;
+}
+
+/* Additional dark mode compatibility */
+.table-dark .text-white-dark,
+.table-dark tbody tr td,
+.table-dark thead th {
     color: white !important;
 }
 </style>
