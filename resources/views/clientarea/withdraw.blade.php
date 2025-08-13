@@ -56,6 +56,10 @@
                                         <label for="swift_code" class="form-label">{{__('web.swift')}}</label>
                                         <input type="text" class="form-control" id="swift_code" name="swift_code" placeholder="e.g. HSBCHKHHHKH" required>
                                     </div>
+                                    <div class="col-12 col-md-6">
+                                        <label for="iban" class="form-label">{{__('web.iban')}}</label>
+                                        <input type="text" class="form-control" id="iban" name="iban" placeholder="e.g. GB33BUKB20201555555555" required>
+                                    </div>
                                 </div>
                             </div>
                             <!-- Cryptocurrency Details -->
@@ -342,14 +346,14 @@ $(document).ready(function() {
         $('#bankTransferDetails, #cryptoDetails').hide();
         if (method === 'bank_transfer') {
             $('#bankTransferDetails').show();
-            $('#bank_name, #account_number, #account_name, #swift_code').attr('required', true);
+            $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', true);
             $('#crypto_type, #crypto_address').attr('required', false);
         } else if (method === 'cryptocurrency') {
             $('#cryptoDetails').show();
             $('#crypto_type, #crypto_address').attr('required', true);
-            $('#bank_name, #account_number, #account_name, #swift_code').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', false);
         } else {
-            $('#bank_name, #account_number, #account_name, #swift_code, #crypto_type, #crypto_address').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #swift_code, #crypto_type, #crypto_address, #iban').attr('required', false);
         }
     });
     $('#amount').on('input', function() {
