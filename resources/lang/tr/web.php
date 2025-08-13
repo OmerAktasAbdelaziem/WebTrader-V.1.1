@@ -345,4 +345,12 @@ return [
     'ZM'                          => 'Zambiya',
     'ZW'                          => 'Zimbabve',
     'withdraw_rejected_notification' => 'Para çekme talebiniz reddedildi',
+    
+    // Refresh functionality
+    'refresh'                     => 'Yenile',
+    'refreshing'                  => 'Yenileniyor',
+    'deposits_refreshed_successfully' => 'Yatırımlar başarıyla yenilendi',
+    'withdrawals_refreshed_successfully' => 'Para çekme işlemleri başarıyla yenilendi',
+    'error_refreshing_deposits'   => 'Yatırımları yenilerken hata oluştu',
+    'error_refreshing_withdrawals' => 'Para çekme işlemlerini yenilerken hata oluştu',
 ];

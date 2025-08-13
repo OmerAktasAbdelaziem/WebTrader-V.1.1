@@ -3250,6 +3250,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 $alert.alert('close');
             }, 5000);
         }
+        
+        // Debug: Withdrawal Modal Issue
+        $(document).on('click', '.new-withdrawal-btn', function(e) {
+            console.log('New withdrawal button clicked');
+            console.log('Button element:', this);
+            console.log('Bootstrap version:', bootstrap ? bootstrap.VERSION : 'Not found');
+            
+            // Check if modal exists
+            const modal = document.getElementById('newWithdrawalModal');
+            console.log('Modal element found:', modal);
+            
+            if (modal) {
+                console.log('Modal style display:', modal.style.display);
+                console.log('Modal computed display:', window.getComputedStyle(modal).display);
+                
+                // Try to manually show the modal if Bootstrap automatic trigger fails
+                setTimeout(() => {
+                    try {
+                        const bootstrapModal = new bootstrap.Modal(modal);
+                        bootstrapModal.show();
+                        console.log('Manual modal show attempted');
+                    } catch (error) {
+                        console.error('Error showing modal manually:', error);
+                    }
+                }, 100);
+            }
+        });
+        
+        // Also check modal events
+        $('#newWithdrawalModal').on('show.bs.modal', function (e) {
+            console.log('Modal show event triggered');
+        });
+        
+        $('#newWithdrawalModal').on('shown.bs.modal', function (e) {
+            console.log('Modal shown event triggered');
+        });
+        
+        $('#newWithdrawalModal').on('hide.bs.modal', function (e) {
+            console.log('Modal hide event triggered');
+        });
     });
 </script>
 

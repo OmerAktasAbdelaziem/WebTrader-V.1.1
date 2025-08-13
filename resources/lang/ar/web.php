@@ -626,6 +626,11 @@ return [
     'submit_crypto_deposit'       => 'إرسال إيداع العملة الرقمية',
     'recent_deposits'             => 'الإيداعات الحديثة',
     'refresh'                     => 'تحديث',
+    'refreshing'                  => 'جاري التحديث',
+    'deposits_refreshed_successfully' => 'تم تحديث الإيداعات بنجاح',
+    'withdrawals_refreshed_successfully' => 'تم تحديث السحوبات بنجاح',
+    'error_refreshing_deposits'   => 'خطأ في تحديث الإيداعات',
+    'error_refreshing_withdrawals' => 'خطأ في تحديث السحوبات',
     
     // Confirmation Messages
     'confirm_close_order'         => 'هل أنت متأكد من إغلاق هذه الصفقة؟',

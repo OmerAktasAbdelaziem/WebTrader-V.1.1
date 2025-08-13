@@ -621,6 +621,11 @@ return [
     'submit_crypto_deposit' => 'Submit Crypto Deposit',
     'recent_deposits' => 'Recent Deposits',
     'refresh' => 'Refresh',
+    'refreshing' => 'Refreshing',
+    'deposits_refreshed_successfully' => 'Deposits refreshed successfully',
+    'withdrawals_refreshed_successfully' => 'Withdrawals refreshed successfully',
+    'error_refreshing_deposits' => 'Error refreshing deposits',
+    'error_refreshing_withdrawals' => 'Error refreshing withdrawals',
     
     // Confirmation Messages
     'confirm_close_order' => 'Are you sure you want to close this order?',
