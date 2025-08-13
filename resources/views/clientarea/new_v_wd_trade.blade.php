@@ -3255,7 +3255,11 @@ document.addEventListener('DOMContentLoaded', function() {
         $(document).on('click', '.new-withdrawal-btn', function(e) {
             console.log('New withdrawal button clicked');
             console.log('Button element:', this);
-            console.log('Bootstrap version:', bootstrap ? bootstrap.VERSION : 'Not found');
+            
+            // Check Bootstrap availability in different ways
+            console.log('window.bootstrap:', typeof window.bootstrap);
+            console.log('window.Bootstrap:', typeof window.Bootstrap);
+            console.log('$.fn.modal:', typeof $.fn.modal);
             
             // Check if modal exists
             const modal = document.getElementById('newWithdrawalModal');
@@ -3265,14 +3269,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Modal style display:', modal.style.display);
                 console.log('Modal computed display:', window.getComputedStyle(modal).display);
                 
-                // Try to manually show the modal if Bootstrap automatic trigger fails
+                // Try different methods to show the modal
                 setTimeout(() => {
                     try {
-                        const bootstrapModal = new bootstrap.Modal(modal);
-                        bootstrapModal.show();
-                        console.log('Manual modal show attempted');
+                        // Method 1: Try window.bootstrap
+                        if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
+                            const bootstrapModal = new window.bootstrap.Modal(modal);
+                            bootstrapModal.show();
+                            console.log('Method 1: window.bootstrap.Modal worked');
+                            return;
+                        }
+                        
+                        // Method 2: Try Bootstrap (capital B)
+                        if (typeof window.Bootstrap !== 'undefined' && window.Bootstrap.Modal) {
+                            const bootstrapModal = new window.Bootstrap.Modal(modal);
+                            bootstrapModal.show();
+                            console.log('Method 2: window.Bootstrap.Modal worked');
+                            return;
+                        }
+                        
+                        // Method 3: Try jQuery modal method
+                        if (typeof $.fn.modal !== 'undefined') {
+                            $(modal).modal('show');
+                            console.log('Method 3: jQuery modal worked');
+                            return;
+                        }
+                        
+                        console.log('All methods failed to show modal');
                     } catch (error) {
-                        console.error('Error showing modal manually:', error);
+                        console.error('Error showing modal:', error);
+                        
+                        // Fallback: Force modal to show with CSS
+                        modal.style.display = 'block';
+                        modal.classList.add('show');
+                        modal.setAttribute('aria-hidden', 'false');
+                        document.body.classList.add('modal-open');
+                        
+                        // Add backdrop
+                        const backdrop = document.createElement('div');
+                        backdrop.className = 'modal-backdrop fade show';
+                        backdrop.id = 'manual-modal-backdrop';
+                        document.body.appendChild(backdrop);
+                        
+                        console.log('Fallback: Manual modal display applied');
+                        
+                        // Add close functionality
+                        $(modal).find('[data-bs-dismiss="modal"]').on('click', function() {
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            modal.setAttribute('aria-hidden', 'true');
+                            document.body.classList.remove('modal-open');
+                            const manualBackdrop = document.getElementById('manual-modal-backdrop');
+                            if (manualBackdrop) {
+                                manualBackdrop.remove();
+                            }
+                        });
                     }
                 }, 100);
             }
