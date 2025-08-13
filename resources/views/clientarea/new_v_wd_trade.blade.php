@@ -1209,17 +1209,22 @@
                         @csrf
                         <input type="hidden" name="payment_method" value="bank_transfer">
                         
-                        <div class="form-group">
-                            <label for="bank_deposit_amount" class="form-label">{{ __('web.amount_usd') }}</label>
-                            <div class="input-with-icon">
+                        <div class="form-group-modern mb-3">
+                            <label for="bank_deposit_amount" class="form-label-modern">
                                 <i class="bi bi-currency-dollar"></i>
-                                <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" 
-                                       step="0.01" min="10" placeholder="10.00" required>
-                            </div>
+                                {{ __('web.amount_usd') }}
+                            </label>
+                            <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" 
+                                   step="0.01" min="10" placeholder="10.00" required>
+                            <div class="input-help">{{ __('web.minimum_deposit') }}: $10.00</div>
                         </div>
-                        <div class="form-group">
-                            <label for="country_select" class="form-label">{{ __('web.select_country') }}</label>
-                            <select name="country" id="country_select" class="form-select-modern" required>
+                        
+                        <div class="form-group-modern mb-3">
+                            <label for="country_select" class="form-label-modern">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ __('web.select_country') }}
+                            </label>
+                            <select name="country" id="country_select" class="form-control-modern" required>
                                 <option value="">{{ __('web.choose_country') }}</option>
                                 @php
                                     $countries = [];
@@ -1236,9 +1241,12 @@
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="bank_select" class="form-label">{{ __('web.select_bank') }}</label>
-                            <select name="bank_id" id="bank_select" class="form-select-modern" required disabled>
+                        <div class="form-group-modern mb-3">
+                            <label for="bank_select" class="form-label-modern">
+                                <i class="bi bi-bank"></i>
+                                {{ __('web.select_bank') }}
+                            </label>
+                            <select name="bank_id" id="bank_select" class="form-control-modern" required disabled>
                                 <option value="">{{ __('web.first_select_country') }}</option>
                             </select>
                         </div>
@@ -1357,18 +1365,22 @@
                         @csrf
                         <input type="hidden" name="payment_method" value="cryptocurrency">
                         
-                        <div class="form-group">
-                            <label for="crypto_deposit_amount" class="form-label">Amount (USD)</label>
-                            <div class="input-with-icon">
+                        <div class="form-group-modern mb-3">
+                            <label for="crypto_deposit_amount" class="form-label-modern">
                                 <i class="bi bi-currency-dollar"></i>
-                                <input type="number" name="amount" id="crypto_deposit_amount" class="form-control-modern" 
-                                       step="0.01" min="10" placeholder="10.00" required>
-                            </div>
+                                {{ __('web.amount_usd') }}
+                            </label>
+                            <input type="number" name="amount" id="crypto_deposit_amount" class="form-control-modern" 
+                                   step="0.01" min="10" placeholder="10.00" required>
+                            <div class="input-help">{{ __('web.minimum_deposit') }}: $10.00</div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="crypto_type_select" class="form-label">Cryptocurrency</label>
-                            <select name="crypto_type" id="crypto_type_select" class="form-select-modern" required>
+                        <div class="form-group-modern mb-3">
+                            <label for="crypto_type_select" class="form-label-modern">
+                                <i class="bi bi-coin"></i>
+                                {{ __('web.cryptocurrency') }}
+                            </label>
+                            <select name="crypto_type" id="crypto_type_select" class="form-control-modern" required>
                                 <option value="">Select cryptocurrency...</option>
                                 <option value="USDT">Tether (USDT)</option>
                             </select>
@@ -1560,67 +1572,68 @@
                         @csrf
                         <input type="hidden" name="payment_method" value="credit_card">
                         
-                        <div class="form-group">
-                            <label for="credit_card_deposit_amount" class="form-label">{{ __('web.amount_usd') }}</label>
-                            <div class="input-with-icon">
+                        <div class="form-group-modern mb-3">
+                            <label for="credit_card_deposit_amount" class="form-label-modern">
                                 <i class="bi bi-currency-dollar"></i>
-                                <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
-                                       step="0.01" min="10" placeholder="10.00" required>
-                            </div>
+                                {{ __('web.amount_usd') }}
+                            </label>
+                            <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
+                                   step="0.01" min="10" placeholder="10.00" required>
+                            <div class="input-help">{{ __('web.minimum_deposit') }}: $10.00</div>
                         </div>
 
                         <!-- Credit Card Details -->
                         <div class="credit-card-details">
                             <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>{{ __('web.card_information') }}</h6>
                             
-                            <div class="form-group">
-                                <label for="card_number" class="form-label">{{ __('web.card_number') }}</label>
-                                <div class="input-with-icon">
+                            <div class="form-group-modern mb-3">
+                                <label for="card_number" class="form-label-modern">
                                     <i class="bi bi-credit-card-2-front"></i>
-                                    <input type="text" name="card_number" id="card_number" class="form-control-modern" 
-                                           placeholder="1234 5678 9012 3456" maxlength="19" required>
-                                </div>
+                                    {{ __('web.card_number') }}
+                                </label>
+                                <input type="text" name="card_number" id="card_number" class="form-control-modern" 
+                                       placeholder="1234 5678 9012 3456" maxlength="19" required>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label for="card_expiry" class="form-label">{{ __('web.expiry_date') }}</label>
-                                        <div class="input-with-icon">
+                                    <div class="form-group-modern mb-3">
+                                        <label for="card_expiry" class="form-label-modern">
                                             <i class="bi bi-calendar"></i>
-                                            <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" 
-                                                   placeholder="MM/YY" maxlength="5" required>
-                                        </div>
+                                            {{ __('web.expiry_date') }}
+                                        </label>
+                                        <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" 
+                                               placeholder="MM/YY" maxlength="5" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="card_cvv" class="form-label">{{ __('web.cvv') }}</label>
-                                        <div class="input-with-icon">
+                                    <div class="form-group-modern mb-3">
+                                        <label for="card_cvv" class="form-label-modern">
                                             <i class="bi bi-shield-lock"></i>
-                                            <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" 
-                                                   placeholder="123" maxlength="4" required>
-                                        </div>
+                                            {{ __('web.cvv') }}
+                                        </label>
+                                        <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" 
+                                               placeholder="123" maxlength="4" required>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="card_holder_name" class="form-label">{{ __('web.cardholder_name') }}</label>
-                                <div class="input-with-icon">
+                            <div class="form-group-modern mb-3">
+                                <label for="card_holder_name" class="form-label-modern">
                                     <i class="bi bi-person"></i>
-                                    <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern" 
-                                           placeholder="{{ __('web.name') }}" required>
-                                </div>
+                                    {{ __('web.cardholder_name') }}
+                                </label>
+                                <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern"
+                                       placeholder="{{ __('web.name') }}" required>
                             </div>
 
-                            <div class="form-group">
-                                <label for="billing_address" class="form-label">{{ __('web.billing_address') }}</label>
-                                <div class="input-with-icon">
+                            <div class="form-group-modern mb-3">
+                                <label for="billing_address" class="form-label-modern">
                                     <i class="bi bi-geo-alt"></i>
-                                    <textarea name="billing_address" id="billing_address" class="form-control-modern" 
-                                              rows="3" placeholder="123 Main St, City, State, ZIP" required></textarea>
-                                </div>
+                                    {{ __('web.billing_address') }}
+                                </label>
+                                <textarea name="billing_address" id="billing_address" class="form-control-modern"
+                                          rows="3" placeholder="123 Main St, City, State, ZIP" required></textarea>
                             </div>
 
                             <div class="alert alert-info mt-3">
