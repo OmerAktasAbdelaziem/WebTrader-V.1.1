@@ -1216,7 +1216,6 @@
                             </label>
                             <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" 
                                    step="0.01" min="10" placeholder="10.00" required>
-                            <div class="input-help">{{ __('web.minimum_deposit') }}: $10.00</div>
                         </div>
                         
                         <div class="form-group-modern mb-3">
@@ -1372,7 +1371,6 @@
                             </label>
                             <input type="number" name="amount" id="crypto_deposit_amount" class="form-control-modern" 
                                    step="0.01" min="10" placeholder="10.00" required>
-                            <div class="input-help">{{ __('web.minimum_deposit') }}: $10.00</div>
                         </div>
                         
                         <div class="form-group-modern mb-3">
@@ -1579,7 +1577,6 @@
                             </label>
                             <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
                                    step="0.01" min="10" placeholder="10.00" required>
-                            <div class="input-help">{{ __('web.minimum_deposit') }}: $10.00</div>
                         </div>
 
                         <!-- Credit Card Details -->
@@ -2009,7 +2006,6 @@
                                         </label>
                                         <input type="number" name="amount" id="bank_withdrawal_amount" class="form-control-modern"
                                                placeholder="0.00" min="10" step="0.01" required>
-                                        <div class="input-help">{{ __('web.minimum_withdrawal') }}: $10.00</div>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2084,7 +2080,6 @@
                                         </label>
                                         <input type="number" name="amount" id="crypto_withdrawal_amount" class="form-control-modern"
                                                placeholder="0.00" min="10" step="0.01" required>
-                                        <div class="input-help">{{ __('web.minimum_withdrawal') }}: $10.00</div>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2492,7 +2487,7 @@
                                         <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
                                         <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
                                                min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.minimum_amount') }}: $1.00 | {{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -2544,7 +2539,7 @@
                                         <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
                                         <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
                                                min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.minimum_amount') }}: $1.00 | {{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
