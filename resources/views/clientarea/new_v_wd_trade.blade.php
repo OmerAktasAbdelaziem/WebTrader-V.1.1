@@ -273,6 +273,30 @@
             position: relative !important;
             z-index: 10 !important;
         }
+        
+        /* Refresh Button Animation */
+        .fa-spin {
+            animation: fa-spin 1s infinite linear;
+        }
+        
+        @keyframes fa-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Refresh Button Styles */
+        .refresh-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .refresh-btn .fa-spin {
+            animation: fa-spin 1s infinite linear;
+        }
     </style>
 
 </head>
@@ -3127,6 +3151,105 @@ document.addEventListener('DOMContentLoaded', function() {
                 startPriceUpdates();
             }
         });
+        
+        // Refresh Button Functionality for Deposits and Withdrawals
+        $(document).on('click', '.refresh-btn', function(e) {
+            e.preventDefault();
+            const $refreshBtn = $(this);
+            const originalContent = $refreshBtn.html();
+            
+            // Show loading state
+            $refreshBtn.prop('disabled', true);
+            $refreshBtn.html('<i class="bi bi-arrow-clockwise me-1 fa-spin"></i>{{ __('web.refreshing') }}...');
+            
+            // Determine which interface we're in
+            const isDepositInterface = $('#depositInterface').is(':visible');
+            const isWithdrawalInterface = $('#withdrawalInterface').is(':visible');
+            
+            if (isDepositInterface) {
+                // For deposits, try API refresh first, fallback to page reload
+                refreshDepositData($refreshBtn, originalContent);
+            } else if (isWithdrawalInterface) {
+                // For withdrawals, just reload the page (no specific API endpoint)
+                setTimeout(function() {
+                    location.reload();
+                }, 500);
+            } else {
+                // Default: refresh current page
+                setTimeout(function() {
+                    location.reload();
+                }, 500);
+            }
+        });
+        
+        // Function to refresh deposit data
+        function refreshDepositData($button, originalContent) {
+            $.ajax({
+                url: '{{ route("client.deposits.refresh") }}',
+                method: 'GET',
+                dataType: 'json',
+                timeout: 10000,
+                success: function(response) {
+                    if (response.success) {
+                        // Show success message and reload
+                        showSuccessMessage('{{ __('web.deposits_refreshed_successfully') }}');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showErrorMessage(response.message || '{{ __('web.error_refreshing_deposits') }}');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error refreshing deposits:', error);
+                    // Always fallback to page reload
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                },
+                complete: function() {
+                    // Restore button state after a short delay
+                    setTimeout(function() {
+                        $button.prop('disabled', false);
+                        $button.html(originalContent);
+                    }, 500);
+                }
+            });
+        }
+        
+        // Helper functions for success/error messages
+        function showSuccessMessage(message) {
+            // Create a temporary success alert
+            const $alert = $('<div class="alert alert-success alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">' +
+                '<i class="bi bi-check-circle me-2"></i>' + message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>');
+            
+            $('body').append($alert);
+            
+            // Auto-dismiss after 3 seconds
+            setTimeout(function() {
+                $alert.alert('close');
+            }, 3000);
+        }
+        
+        function showErrorMessage(message) {
+            // Create a temporary error alert
+            const $alert = $('<div class="alert alert-danger alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">' +
+                '<i class="bi bi-exclamation-triangle me-2"></i>' + message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>');
+            
+            $('body').append($alert);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(function() {
+                $alert.alert('close');
+            }, 5000);
+        }
     });
 </script>
 
