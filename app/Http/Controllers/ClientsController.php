@@ -594,6 +594,249 @@ class ClientsController extends Controller
         }
     }
 
+    // New withdrawal methods for modern interface
+    public function processWithdrawal(Request $request)
+    {
+        Log::info('=== NEW WITHDRAWAL SUBMISSION START ===', [
+            'all_data' => $request->all(),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'user_agent' => $request->userAgent(),
+            'ip' => $request->ip()
+        ]);
+
+        $withdrawal_method = $request->input('withdrawal_method');
+        
+        // Define validation rules based on withdrawal method
+        $rules = [
+            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency,paypal',
+            'amount' => 'required|numeric|min:10',
+        ];
+
+        // Add method-specific validation rules
+        switch($withdrawal_method) {
+            case 'bank_transfer':
+                $rules += [
+                    'bank_name' => 'required|string|max:255',
+                    'account_number' => 'required|string|max:255',
+                    'account_holder_name' => 'required|string|max:255',
+                    'swift_code' => 'nullable|string|max:11',
+                ];
+                break;
+            case 'cryptocurrency':
+                $rules += [
+                    'crypto_type' => 'required|string|in:BTC,ETH,USDT,LTC',
+                    'wallet_address' => 'required|string|max:255',
+                    'network_type' => 'nullable|string|in:ERC20,TRC20,BEP20',
+                ];
+                break;
+            case 'paypal':
+                $rules += [
+                    'paypal_email' => 'required|email|max:255',
+                    'paypal_confirm_email' => 'required|email|same:paypal_email',
+                ];
+                break;
+        }
+
+        try {
+            $request->validate($rules);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
+        }
+
+        $user = Auth::guard('client')->user();
+        $options = $user->options ?? [];
+        $finance = $this->get_financial_data($user->broker_id);
+
+        // Check if user has sufficient balance
+        if ($request->amount > ($finance['balance'] ?? 0)) {
+            if (!isset($options['canWithdrawalCredit'])) {
+                if (!isset($options['canWithdrawalBonus'])) {
+                    if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                        return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
+                    }
+                    return redirect()->back()->with('fail', __('web.not_enough_balance'));
+                }
+                if ($request->amount > (($finance['balance'] ?? 0) + ($finance['bonus'] ?? 0))) {
+                    if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                        return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
+                    }
+                    return redirect()->back()->with('fail', __('web.not_enough_balance'));
+                }
+            }
+            if ($request->amount > (($finance['balance'] ?? 0) + ($finance['credit'] ?? 0))) {
+                if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
+                }
+                return redirect()->back()->with('fail', __('web.not_enough_balance'));
+            }
+        }
+
+        try {
+            // Prepare details based on withdrawal method
+            $details = [];
+            $method_display = '';
+
+            switch($withdrawal_method) {
+                case 'bank_transfer':
+                    $details = [
+                        'bank_name' => $request->bank_name,
+                        'account_number' => $request->account_number,
+                        'account_holder_name' => $request->account_holder_name,
+                        'swift_code' => $request->swift_code,
+                    ];
+                    $method_display = 'Bank Transfer';
+                    break;
+                case 'cryptocurrency':
+                    $details = [
+                        'crypto_type' => $request->crypto_type,
+                        'wallet_address' => $request->wallet_address,
+                        'network_type' => $request->network_type,
+                    ];
+                    $method_display = 'Cryptocurrency (' . $request->crypto_type . ')';
+                    break;
+                case 'paypal':
+                    $details = [
+                        'paypal_email' => $request->paypal_email,
+                    ];
+                    $method_display = 'PayPal';
+                    break;
+            }
+
+            // Create withdrawal transaction
+            $moneyTrx = MoneyTrx::create([
+                'broker_id' => $user->broker_id,
+                'amount' => $request->amount,
+                'method' => $withdrawal_method,
+                'type' => 'withdraw',
+                'status' => 'pending',
+                'details' => $details,
+                'method_display' => $method_display,
+            ]);
+
+            Log::info('New withdrawal created successfully', [
+                'transaction_id' => $moneyTrx->id,
+                'broker_id' => $user->broker_id,
+                'method' => $withdrawal_method,
+                'amount' => $request->amount
+            ]);
+
+            // Calculate new balance
+            $newBalance = $finance['balance'] - $request->amount;
+
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => __('web.withdrawal_submitted_successfully'),
+                    'new_balance' => $newBalance,
+                    'transaction_id' => $moneyTrx->id
+                ], 200);
+            }
+            return redirect()->back()->with('success', __('web.withdrawal_submitted_successfully'));
+
+        } catch (\Exception $e) {
+            Log::error('New withdrawal submission failed', [
+                'error' => $e->getMessage(),
+                'broker_id' => $user->broker_id,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('web.withdrawal_submission_failed') . ': ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->with('fail', __('web.withdrawal_submission_failed') . ': ' . $e->getMessage());
+        }
+    }
+
+    public function getWithdrawalHistory(Request $request)
+    {
+        $user = Auth::guard('client')->user();
+        $type = $request->input('type', 'all');
+        
+        $query = MoneyTrx::where('broker_id', $user->broker_id)
+                         ->where('type', 'withdraw')
+                         ->orderBy('created_at', 'desc');
+
+        switch($type) {
+            case 'pending':
+                $query->whereIn('status', ['pending', 'processing']);
+                break;
+            case 'completed':
+                $query->where('status', 'completed');
+                break;
+            case 'all':
+            default:
+                // No additional filter for all withdrawals
+                break;
+        }
+
+        $withdrawals = $query->get()->map(function($withdrawal) {
+            return [
+                'id' => $withdrawal->id,
+                'created_at' => $withdrawal->created_at,
+                'amount' => $withdrawal->amount,
+                'method' => $withdrawal->method,
+                'method_display' => $withdrawal->method_display ?? ucfirst(str_replace('_', ' ', $withdrawal->method)),
+                'status' => $withdrawal->status,
+                'details' => $withdrawal->details,
+                'completion_date' => $withdrawal->updated_at,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $withdrawals
+        ]);
+    }
+
+    public function cancelWithdrawal(Request $request)
+    {
+        $user = Auth::guard('client')->user();
+        $withdrawalId = $request->input('withdrawal_id');
+
+        try {
+            $withdrawal = MoneyTrx::where('id', $withdrawalId)
+                                  ->where('broker_id', $user->broker_id)
+                                  ->where('type', 'withdraw')
+                                  ->whereIn('status', ['pending', 'processing'])
+                                  ->firstOrFail();
+
+            $withdrawal->update(['status' => 'cancelled']);
+
+            Log::info('Withdrawal cancelled successfully', [
+                'transaction_id' => $withdrawalId,
+                'broker_id' => $user->broker_id
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => __('web.withdrawal_cancelled_successfully')
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Withdrawal cancellation failed', [
+                'error' => $e->getMessage(),
+                'withdrawal_id' => $withdrawalId,
+                'broker_id' => $user->broker_id
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => __('web.withdrawal_cancellation_failed')
+            ], 500);
+        }
+    }
+
     public function showQuotes(Request $request)
     {
         $user = Auth::guard('client')->user();

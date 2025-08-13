@@ -72,6 +72,9 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->put   ('/order/{id}',                      [OrderController::class,           'update'                  ])->name('order.update');
     $router->delete('/order/{id}',                      [OrderController::class,           'delete'                  ])->name('order.delete');
     $router->post  ('/withdrawal',                      [ClientsController::class,         'processWithdrawal'       ])->name('client.withdrawal');
+    $router->post  ('/withdrawal/store',                [ClientsController::class,         'processWithdrawal'       ])->name('client.withdrawal.store');
+    $router->get   ('/withdrawals/history',             [ClientsController::class,         'getWithdrawalHistory'    ])->name('client.withdrawals.history');
+    $router->post  ('/withdrawal/cancel',               [ClientsController::class,         'cancelWithdrawal'        ])->name('client.withdrawal.cancel');
     $router->get   ('/transactions/refresh',            [ClientsController::class,         'refreshTransactions'     ])->name('client.transactions.refresh');
     $router->get   ('/deposits/refresh',                [ClientsController::class,         'refreshDepositTransactions'])->name('client.deposits.refresh');
     $router->get   ('/chat',                            [ChatController::class,            'index'                   ])->name('chat.index');

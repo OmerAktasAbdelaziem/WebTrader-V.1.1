@@ -355,6 +355,149 @@
         body.modal-open {
             overflow: hidden !important;
         }
+        
+        /* Withdrawal Methods Grid Styles */
+        .withdrawal-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .withdrawal-method-card {
+            background: rgba(25, 30, 36, 0.8);
+            border: 1px solid rgba(79, 140, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .withdrawal-method-card:hover {
+            border-color: rgba(79, 140, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 140, 255, 0.1);
+        }
+        
+        .method-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .method-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4f8cff, #64b5f6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .method-info h3 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .method-info p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .method-features {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .feature-tag {
+            background: rgba(79, 140, 255, 0.2);
+            color: #4f8cff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .processing-time {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .form-group-modern {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label-modern {
+            display: flex;
+            align-items: center;
+            color: #e0e0e0;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-label-modern i {
+            margin-right: 0.5rem;
+            color: #4f8cff;
+        }
+        
+        .form-control-modern {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control-modern:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #4f8cff;
+            box-shadow: 0 0 0 0.2rem rgba(79, 140, 255, 0.25);
+            color: #ffffff;
+        }
+        
+        .form-control-modern::placeholder {
+            color: #888;
+        }
+        
+        .input-help {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
+        
+        .btn-submit-modern {
+            background: linear-gradient(135deg, #4f8cff, #64b5f6);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-submit-modern:hover {
+            background: linear-gradient(135deg, #3a7bd5, #4f8cff);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 140, 255, 0.3);
+        }
+        
+        .btn-submit-modern:active {
+            transform: translateY(0);
+        }
     </style>
 
 </head>
@@ -1783,26 +1926,375 @@
             <div class="col-12">
                 <div class="panel h-100">
                     <!-- Header Section -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 class="text-white mb-2">
-                                <i class="bi bi-arrow-down-circle me-3" style="color: #ffcc02;"></i>
-                                {{ __('web.withdrawal_management') }}
-                            </h2>
+                    <div class="interface-header">
+                        <div class="header-left">
+                            <div class="interface-icon">
+                                <i class="bi bi-arrow-down-circle"></i>
+                            </div>
+                            <div class="header-text">
+                                <h1>{{ __('web.withdrawal') }}</h1>
+                                <p>{{ __('web.withdraw_funds_from_account') }}</p>
+                            </div>
                         </div>
-                        <div class="d-flex gap-3">
-                            <button class="btn btn-gradient-primary new-withdrawal-btn" data-bs-toggle="modal" data-bs-target="#newWithdrawalModal">
-                                <i class="bi bi-plus-circle me-2"></i>
-                                {{ __('web.new_withdrawal') }}
-                            </button>
-                            <button class="btn btn-gradient-primary back-to-trading-btn">
-                                <i class="bi bi-arrow-left me-2"></i>
-                                {{ __('web.back_to_trading') }}
+                        <div class="header-actions">
+                            <button class="btn btn-modern btn-secondary back-to-trading-btn">
+                                <i class="bi bi-arrow-left"></i>
+                                <span>{{ __('web.back_to_trading') }}</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Balance Summary Cards -->
+                    <!-- Current Balance Display -->
+                    <div class="balance-display-card mb-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="balance-icon">
+                                    <i class="bi bi-wallet2"></i>
+                                </div>
+                                <div class="balance-info">
+                                    <h3>{{ __('web.available_balance') }}</h3>
+                                    <p>{{ __('web.amount_available_withdrawal') }}</p>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="balance-amount">${{ number_format($finance['balance'], 2) }}</div>
+                                <div class="balance-equity">{{ __('web.equity') }}: ${{ number_format($finance['equity'], 2) }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Withdrawal Methods Grid -->
+                    <div class="withdrawal-methods-grid">
+                        <!-- Bank Transfer Method -->
+                        <div class="withdrawal-method-card bank-transfer-card">
+                            <div class="method-header">
+                                <div class="method-icon">
+                                    <i class="bi bi-bank"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h3>{{ __('web.bank_transfer') }}</h3>
+                                    <p>{{ __('web.withdraw_to_bank_account') }}</p>
+                                    <div class="method-features">
+                                        <span class="feature-tag">{{ __('web.secure') }}</span>
+                                        <span class="feature-tag processing-time">1-3 {{ __('web.business_days') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="method-form">
+                                <form id="bankWithdrawalForm" action="{{ route('client.withdrawal.store') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="withdrawal_method" value="bank_transfer">
+                                    
+                                    <div class="form-group-modern mb-3">
+                                        <label for="bank_withdrawal_amount" class="form-label-modern">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            {{ __('web.withdrawal_amount') }}
+                                        </label>
+                                        <input type="number" name="amount" id="bank_withdrawal_amount" class="form-control-modern"
+                                               placeholder="0.00" min="10" step="0.01" required>
+                                        <div class="input-help">{{ __('web.minimum_withdrawal') }}: $10.00</div>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="bank_name" class="form-label-modern">
+                                            <i class="bi bi-building"></i>
+                                            {{ __('web.bank_name') }}
+                                        </label>
+                                        <input type="text" name="bank_name" id="bank_name" class="form-control-modern"
+                                               placeholder="{{ __('web.enter_bank_name') }}" required>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="account_number" class="form-label-modern">
+                                            <i class="bi bi-credit-card-2-front"></i>
+                                            {{ __('web.account_number') }}
+                                        </label>
+                                        <input type="text" name="account_number" id="account_number" class="form-control-modern"
+                                               placeholder="{{ __('web.enter_account_number') }}" required>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="account_holder_name" class="form-label-modern">
+                                            <i class="bi bi-person"></i>
+                                            {{ __('web.account_holder_name') }}
+                                        </label>
+                                        <input type="text" name="account_holder_name" id="account_holder_name" class="form-control-modern"
+                                               placeholder="{{ __('web.enter_account_holder_name') }}" required>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="swift_code" class="form-label-modern">
+                                            <i class="bi bi-globe"></i>
+                                            {{ __('web.swift_code') }}
+                                        </label>
+                                        <input type="text" name="swift_code" id="swift_code" class="form-control-modern"
+                                               placeholder="{{ __('web.enter_swift_code') }}">
+                                    </div>
+
+                                    <button type="submit" class="btn-submit-modern">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ __('web.submit_withdrawal') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Cryptocurrency Method -->
+                        <div class="withdrawal-method-card crypto-card">
+                            <div class="method-header">
+                                <div class="method-icon">
+                                    <i class="bi bi-currency-bitcoin"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h3>{{ __('web.cryptocurrency') }}</h3>
+                                    <p>{{ __('web.withdraw_to_crypto_wallet') }}</p>
+                                    <div class="method-features">
+                                        <span class="feature-tag">{{ __('web.fast') }}</span>
+                                        <span class="feature-tag processing-time">10-60 {{ __('web.minutes') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="method-form">
+                                <form id="cryptoWithdrawalForm" action="{{ route('client.withdrawal.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="withdrawal_method" value="cryptocurrency">
+                                    
+                                    <div class="form-group-modern mb-3">
+                                        <label for="crypto_withdrawal_amount" class="form-label-modern">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            {{ __('web.withdrawal_amount') }}
+                                        </label>
+                                        <input type="number" name="amount" id="crypto_withdrawal_amount" class="form-control-modern"
+                                               placeholder="0.00" min="10" step="0.01" required>
+                                        <div class="input-help">{{ __('web.minimum_withdrawal') }}: $10.00</div>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="crypto_type" class="form-label-modern">
+                                            <i class="bi bi-coin"></i>
+                                            {{ __('web.cryptocurrency_type') }}
+                                        </label>
+                                        <select name="crypto_type" id="crypto_type" class="form-control-modern" required>
+                                            <option value="">{{ __('web.select_cryptocurrency') }}</option>
+                                            <option value="BTC">Bitcoin (BTC)</option>
+                                            <option value="ETH">Ethereum (ETH)</option>
+                                            <option value="USDT">Tether (USDT)</option>
+                                            <option value="LTC">Litecoin (LTC)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="wallet_address" class="form-label-modern">
+                                            <i class="bi bi-wallet"></i>
+                                            {{ __('web.wallet_address') }}
+                                        </label>
+                                        <input type="text" name="wallet_address" id="wallet_address" class="form-control-modern"
+                                               placeholder="{{ __('web.enter_wallet_address') }}" required>
+                                        <div class="input-help">{{ __('web.double_check_wallet_address') }}</div>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="network_type" class="form-label-modern">
+                                            <i class="bi bi-diagram-3"></i>
+                                            {{ __('web.network_type') }}
+                                        </label>
+                                        <select name="network_type" id="network_type" class="form-control-modern">
+                                            <option value="">{{ __('web.select_network') }}</option>
+                                            <option value="ERC20">ERC20</option>
+                                            <option value="TRC20">TRC20</option>
+                                            <option value="BEP20">BEP20</option>
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn-submit-modern">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ __('web.submit_withdrawal') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- PayPal Method -->
+                        <div class="withdrawal-method-card paypal-card">
+                            <div class="method-header">
+                                <div class="method-icon">
+                                    <i class="bi bi-paypal"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h3>{{ __('web.paypal') }}</h3>
+                                    <p>{{ __('web.withdraw_to_paypal_account') }}</p>
+                                    <div class="method-features">
+                                        <span class="feature-tag">{{ __('web.instant') }}</span>
+                                        <span class="feature-tag processing-time">{{ __('web.immediate') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="method-form">
+                                <form id="paypalWithdrawalForm" action="{{ route('client.withdrawal.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="withdrawal_method" value="paypal">
+                                    
+                                    <div class="form-group-modern mb-3">
+                                        <label for="paypal_withdrawal_amount" class="form-label-modern">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            {{ __('web.withdrawal_amount') }}
+                                        </label>
+                                        <input type="number" name="amount" id="paypal_withdrawal_amount" class="form-control-modern"
+                                               placeholder="0.00" min="10" step="0.01" required>
+                                        <div class="input-help">{{ __('web.minimum_withdrawal') }}: $10.00</div>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="paypal_email" class="form-label-modern">
+                                            <i class="bi bi-envelope"></i>
+                                            {{ __('web.paypal_email') }}
+                                        </label>
+                                        <input type="email" name="paypal_email" id="paypal_email" class="form-control-modern"
+                                               placeholder="{{ __('web.enter_paypal_email') }}" required>
+                                        <div class="input-help">{{ __('web.paypal_email_must_be_verified') }}</div>
+                                    </div>
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="paypal_confirm_email" class="form-label-modern">
+                                            <i class="bi bi-envelope-check"></i>
+                                            {{ __('web.confirm_paypal_email') }}
+                                        </label>
+                                        <input type="email" name="paypal_confirm_email" id="paypal_confirm_email" class="form-control-modern"
+                                               placeholder="{{ __('web.confirm_paypal_email') }}" required>
+                                    </div>
+
+                                    <button type="submit" class="btn-submit-modern">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ __('web.submit_withdrawal') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Withdrawal History Section -->
+                    <div class="withdrawal-history-section mt-5">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-clock-history"></i>
+                                {{ __('web.withdrawal_history') }}
+                            </h2>
+                            <button type="button" class="btn-refresh-modern" id="refreshWithdrawals">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                {{ __('web.refresh') }}
+                            </button>
+                        </div>
+
+                        <!-- Withdrawal History Tabs -->
+                        <nav class="nav nav-tabs nav-tabs-modern mb-4" id="withdrawalHistoryTabs" role="tablist" aria-label="Withdrawal History Navigation">
+                            <button class="nav-link active" id="pending-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#pending-withdrawals" type="button" role="tab" aria-controls="pending-withdrawals" aria-selected="true">
+                                <i class="bi bi-hourglass-split"></i>
+                                {{ __('web.pending_withdrawals') }}
+                                <span class="badge bg-warning ms-2" id="pendingWithdrawalsCount">0</span>
+                            </button>
+                            <button class="nav-link" id="completed-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#completed-withdrawals" type="button" role="tab" aria-controls="completed-withdrawals" aria-selected="false">
+                                <i class="bi bi-check-circle"></i>
+                                {{ __('web.completed_withdrawals') }}
+                                <span class="badge bg-success ms-2" id="completedWithdrawalsCount">0</span>
+                            </button>
+                            <button class="nav-link" id="all-withdrawals-tab" data-bs-toggle="tab" data-bs-target="#all-withdrawals" type="button" role="tab" aria-controls="all-withdrawals" aria-selected="false">
+                                <i class="bi bi-list-ul"></i>
+                                {{ __('web.all_withdrawals') }}
+                                <span class="badge bg-info ms-2" id="allWithdrawalsCount">0</span>
+                            </button>
+                        </nav>
+
+                        <!-- Withdrawal History Content -->
+                        <div class="tab-content" id="withdrawalHistoryTabContent">
+                            <!-- Pending Withdrawals -->
+                            <div class="tab-pane fade show active" id="pending-withdrawals" role="tabpanel" aria-labelledby="pending-withdrawals-tab">
+                                <div class="table-responsive-modern">
+                                    <table class="table table-modern" id="pendingWithdrawalsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ __('web.date') }}</th>
+                                                <th>{{ __('web.method') }}</th>
+                                                <th>{{ __('web.amount') }}</th>
+                                                <th>{{ __('web.status') }}</th>
+                                                <th>{{ __('web.details') }}</th>
+                                                <th>{{ __('web.actions') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="pendingWithdrawalsTableBody">
+                                            <!-- Dynamic content will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                    <div class="empty-state-modern" id="pendingWithdrawalsEmpty" style="display: none;">
+                                        <div class="empty-icon">
+                                            <i class="bi bi-inbox"></i>
+                                        </div>
+                                        <h3>{{ __('web.no_pending_withdrawals') }}</h3>
+                                        <p>{{ __('web.no_pending_withdrawals_message') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Completed Withdrawals -->
+                            <div class="tab-pane fade" id="completed-withdrawals" role="tabpanel" aria-labelledby="completed-withdrawals-tab">
+                                <div class="table-responsive-modern">
+                                    <table class="table table-modern" id="completedWithdrawalsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ __('web.date') }}</th>
+                                                <th>{{ __('web.method') }}</th>
+                                                <th>{{ __('web.amount') }}</th>
+                                                <th>{{ __('web.status') }}</th>
+                                                <th>{{ __('web.details') }}</th>
+                                                <th>{{ __('web.completion_date') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="completedWithdrawalsTableBody">
+                                            <!-- Dynamic content will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                    <div class="empty-state-modern" id="completedWithdrawalsEmpty" style="display: none;">
+                                        <div class="empty-icon">
+                                            <i class="bi bi-archive"></i>
+                                        </div>
+                                        <h3>{{ __('web.no_completed_withdrawals') }}</h3>
+                                        <p>{{ __('web.no_completed_withdrawals_message') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- All Withdrawals -->
+                            <div class="tab-pane fade" id="all-withdrawals" role="tabpanel" aria-labelledby="all-withdrawals-tab">
+                                <div class="table-responsive-modern">
+                                    <table class="table table-modern" id="allWithdrawalsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ __('web.date') }}</th>
+                                                <th>{{ __('web.method') }}</th>
+                                                <th>{{ __('web.amount') }}</th>
+                                                <th>{{ __('web.status') }}</th>
+                                                <th>{{ __('web.details') }}</th>
+                                                <th>{{ __('web.completion_date') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="allWithdrawalsTableBody">
+                                            <!-- Dynamic content will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                    <div class="empty-state-modern" id="allWithdrawalsEmpty" style="display: none;">
+                                        <div class="empty-icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                        <h3>{{ __('web.no_withdrawals_found') }}</h3>
+                                        <p>{{ __('web.no_withdrawals_found_message') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="row mb-4">
                         <div class="col-md-4">
                             <div class="summary-card">
@@ -2131,7 +2623,7 @@
     </div>
 </div>
 
-<!-- New Withdrawal Modal -->
+<!-- New Withdrawal Modal - REMOVED - Using direct interface instead -->
 <div class="modal fade" id="newWithdrawalModal" tabindex="-1" aria-labelledby="newWithdrawalModalLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content bg-dark border-secondary">
@@ -3484,6 +3976,311 @@ document.addEventListener('DOMContentLoaded', function() {
             $(this).removeClass('show');
         });
     });
+</script>
+
+<!-- Withdrawal Functionality JavaScript -->
+<script>
+$(document).ready(function() {
+    // Initialize withdrawal functionality
+    initializeWithdrawalFunctionality();
+    
+    // Load withdrawal history on page load
+    loadWithdrawalHistory();
+});
+
+function initializeWithdrawalFunctionality() {
+    // Refresh withdrawals button
+    $('#refreshWithdrawals').on('click', function() {
+        refreshWithdrawals();
+    });
+    
+    // Withdrawal form submissions
+    $('#bankWithdrawalForm').on('submit', function(e) {
+        e.preventDefault();
+        submitWithdrawal(this, 'bank_transfer');
+    });
+    
+    $('#cryptoWithdrawalForm').on('submit', function(e) {
+        e.preventDefault();
+        submitWithdrawal(this, 'cryptocurrency');
+    });
+    
+    $('#paypalWithdrawalForm').on('submit', function(e) {
+        e.preventDefault();
+        submitWithdrawal(this, 'paypal');
+    });
+    
+    // Tab change handlers
+    $('#withdrawalHistoryTabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+        const target = $(e.target).data('bs-target');
+        if (target === '#pending-withdrawals') {
+            loadPendingWithdrawals();
+        } else if (target === '#completed-withdrawals') {
+            loadCompletedWithdrawals();
+        } else if (target === '#all-withdrawals') {
+            loadAllWithdrawals();
+        }
+    });
+}
+
+function submitWithdrawal(form, method) {
+    const $form = $(form);
+    const $submitBtn = $form.find('button[type="submit"]');
+    const originalText = $submitBtn.html();
+    
+    // Show loading state
+    $submitBtn.html('<i class="bi bi-arrow-clockwise spin"></i> {{ __("web.processing") }}...').prop('disabled', true);
+    
+    // Get form data
+    const formData = new FormData(form);
+    
+    $.ajax({
+        url: $form.attr('action'),
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                // Show success message
+                showNotification('{{ __("web.withdrawal_submitted_successfully") }}', 'success');
+                
+                // Reset form
+                form.reset();
+                
+                // Refresh withdrawal history
+                loadWithdrawalHistory();
+                
+                // Update balance if provided
+                if (response.new_balance !== undefined) {
+                    $('.balance-amount').text('$' + parseFloat(response.new_balance).toFixed(2));
+                }
+            } else {
+                showNotification(response.message || '{{ __("web.withdrawal_submission_failed") }}', 'error');
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = '{{ __("web.withdrawal_submission_failed") }}';
+            
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                const errors = xhr.responseJSON.errors;
+                errorMessage = Object.values(errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            
+            showNotification(errorMessage, 'error');
+        },
+        complete: function() {
+            // Restore button
+            $submitBtn.html(originalText).prop('disabled', false);
+        }
+    });
+}
+
+function refreshWithdrawals() {
+    const $refreshBtn = $('#refreshWithdrawals');
+    const originalText = $refreshBtn.html();
+    
+    // Show loading state
+    $refreshBtn.html('<i class="bi bi-arrow-clockwise spin"></i> {{ __("web.refreshing") }}...').prop('disabled', true);
+    
+    // Reload current active tab
+    const activeTab = $('#withdrawalHistoryTabs .nav-link.active').data('bs-target');
+    
+    setTimeout(() => {
+        if (activeTab === '#pending-withdrawals') {
+            loadPendingWithdrawals();
+        } else if (activeTab === '#completed-withdrawals') {
+            loadCompletedWithdrawals();
+        } else if (activeTab === '#all-withdrawals') {
+            loadAllWithdrawals();
+        }
+        
+        // Restore button
+        $refreshBtn.html(originalText).prop('disabled', false);
+        
+        showNotification('{{ __("web.withdrawals_refreshed_successfully") }}', 'success');
+    }, 1000);
+}
+
+function loadWithdrawalHistory() {
+    loadPendingWithdrawals();
+}
+
+function loadPendingWithdrawals() {
+    loadWithdrawalsData('pending', '#pendingWithdrawalsTableBody', '#pendingWithdrawalsEmpty', '#pendingWithdrawalsCount');
+}
+
+function loadCompletedWithdrawals() {
+    loadWithdrawalsData('completed', '#completedWithdrawalsTableBody', '#completedWithdrawalsEmpty', '#completedWithdrawalsCount');
+}
+
+function loadAllWithdrawals() {
+    loadWithdrawalsData('all', '#allWithdrawalsTableBody', '#allWithdrawalsEmpty', '#allWithdrawalsCount');
+}
+
+function loadWithdrawalsData(type, tableBodySelector, emptyStateSelector, countSelector) {
+    const $tableBody = $(tableBodySelector);
+    const $emptyState = $(emptyStateSelector);
+    const $count = $(countSelector);
+    
+    // Show loading
+    $tableBody.html('<tr><td colspan="6" class="text-center"><i class="bi bi-arrow-clockwise spin"></i> {{ __("web.loading") }}...</td></tr>');
+    $emptyState.hide();
+    
+    $.ajax({
+        url: '{{ route("client.withdrawals.history") }}',
+        method: 'GET',
+        data: { type: type },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                let html = '';
+                response.data.forEach(function(withdrawal) {
+                    html += buildWithdrawalRow(withdrawal, type);
+                });
+                $tableBody.html(html);
+                $emptyState.hide();
+                $count.text(response.data.length);
+            } else {
+                $tableBody.empty();
+                $emptyState.show();
+                $count.text('0');
+            }
+        },
+        error: function() {
+            $tableBody.html('<tr><td colspan="6" class="text-center text-danger">{{ __("web.error_loading_withdrawals") }}</td></tr>');
+            $emptyState.hide();
+            $count.text('0');
+        }
+    });
+}
+
+function buildWithdrawalRow(withdrawal, type) {
+    const statusBadge = getStatusBadge(withdrawal.status);
+    const methodIcon = getMethodIcon(withdrawal.method);
+    const actions = type === 'pending' ? 
+        `<button class="btn btn-sm btn-outline-danger" onclick="cancelWithdrawal(${withdrawal.id})">
+            <i class="bi bi-x-circle"></i> {{ __('web.cancel') }}
+         </button>` : 
+        '<span class="text-muted">-</span>';
+    
+    const completionDate = withdrawal.completion_date ? 
+        new Date(withdrawal.completion_date).toLocaleDateString() : 
+        '<span class="text-muted">-</span>';
+    
+    return `
+        <tr>
+            <td>${new Date(withdrawal.created_at).toLocaleDateString()}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <i class="${methodIcon} me-2"></i>
+                    ${withdrawal.method_display}
+                </div>
+            </td>
+            <td class="fw-bold">$${parseFloat(withdrawal.amount).toFixed(2)}</td>
+            <td>${statusBadge}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-info" onclick="showWithdrawalDetails(${withdrawal.id})">
+                    <i class="bi bi-eye"></i> {{ __('web.view') }}
+                </button>
+            </td>
+            ${type === 'pending' ? `<td>${actions}</td>` : `<td>${completionDate}</td>`}
+        </tr>
+    `;
+}
+
+function getStatusBadge(status) {
+    const badges = {
+        'pending': '<span class="badge bg-warning">{{ __("web.pending") }}</span>',
+        'processing': '<span class="badge bg-info">{{ __("web.processing") }}</span>',
+        'completed': '<span class="badge bg-success">{{ __("web.completed") }}</span>',
+        'cancelled': '<span class="badge bg-danger">{{ __("web.cancelled") }}</span>',
+        'rejected': '<span class="badge bg-danger">{{ __("web.rejected") }}</span>'
+    };
+    return badges[status] || '<span class="badge bg-secondary">' + status + '</span>';
+}
+
+function getMethodIcon(method) {
+    const icons = {
+        'bank_transfer': 'bi bi-bank',
+        'cryptocurrency': 'bi bi-currency-bitcoin',
+        'paypal': 'bi bi-paypal'
+    };
+    return icons[method] || 'bi bi-credit-card';
+}
+
+function cancelWithdrawal(withdrawalId) {
+    if (!confirm('{{ __("web.confirm_cancel_withdrawal") }}')) {
+        return;
+    }
+    
+    $.ajax({
+        url: '{{ route("client.withdrawal.cancel") }}',
+        method: 'POST',
+        data: {
+            withdrawal_id: withdrawalId
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('{{ __("web.withdrawal_cancelled_successfully") }}', 'success');
+                loadWithdrawalHistory();
+            } else {
+                showNotification(response.message || '{{ __("web.withdrawal_cancellation_failed") }}', 'error');
+            }
+        },
+        error: function() {
+            showNotification('{{ __("web.withdrawal_cancellation_failed") }}', 'error');
+        }
+    });
+}
+
+function showWithdrawalDetails(withdrawalId) {
+    // Implementation for showing withdrawal details modal
+    console.log('Show withdrawal details for ID:', withdrawalId);
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = $(`
+        <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `);
+    
+    // Add to body
+    $('body').append(notification);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
+}
+
+// Add CSS for spinning animation
+const style = document.createElement('style');
+style.textContent = `
+    .spin {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
 </script>
 
 <!-- Modern Document Upload JavaScript -->
