@@ -1015,6 +1015,7 @@ return [
     'completion_date' => 'Completion Date',
     'amount_available_withdrawal' => 'Amount available for withdrawal',
     'withdraw_funds_from_account' => 'Withdraw funds from your account',
+    'withdrawal' => 'Withdrawal',
     
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.

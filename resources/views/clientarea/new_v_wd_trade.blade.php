@@ -1948,12 +1948,15 @@
                     <div class="balance-display-card mb-4">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <div class="balance-icon">
-                                    <i class="bi bi-wallet2"></i>
-                                </div>
                                 <div class="balance-info">
-                                    <h3>{{ __('web.available_balance') }}</h3>
-                                    <p>{{ __('web.amount_available_withdrawal') }}</p>
+                                    <h3 class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-wallet2 me-2"></i>
+                                        {{ __('web.available_balance') }}
+                                    </h3>
+                                    <p class="d-flex align-items-center mb-0">
+                                        <i class="bi bi-arrow-down-circle me-2"></i>
+                                        {{ __('web.amount_available_withdrawal') }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="text-end">
