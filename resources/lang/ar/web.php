@@ -882,6 +882,7 @@ return [
     'wallet_address_help'         => 'أدخل عنوان محفظة العملة المشفرة الخاص بك. تحقق مرة أخرى من هذا العنوان حيث لا يمكن عكس المعاملات.',
     'minimum_amount'              => 'الحد الأدنى',
     'maximum_amount'              => 'الحد الأقصى',
+    'not_available'               => 'غير متوفر',
     'no_withdrawals_found'        => 'لم يتم العثور على سحوبات',
     'withdrawal_history_here'     => 'سيظهر تاريخ السحب هنا',
     'no_pending_withdrawals'      => 'لا توجد سحوبات معلقة',

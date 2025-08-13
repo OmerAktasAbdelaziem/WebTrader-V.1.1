@@ -42,19 +42,19 @@
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
                                         <label for="bank_name" class="form-label">{{__('web.bank_name')}}</label>
-                                        <input type="text" class="form-control" id="bank_name" name="bank_name" placeholder="e.g. HSBC">
+                                        <input type="text" class="form-control" id="bank_name" name="bank_name" placeholder="e.g. HSBC" required>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label for="account_number" class="form-label">{{__('web.account_number')}}</label>
-                                        <input type="text" class="form-control" id="account_number" name="account_number" placeholder="e.g. 1234567890">
+                                        <input type="text" class="form-control" id="account_number" name="account_number" placeholder="e.g. 1234567890" required>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label for="account_name" class="form-label">{{__('web.account_name')}}</label>
-                                        <input type="text" class="form-control" id="account_name" name="account_name" placeholder="e.g. John Doe">
+                                        <input type="text" class="form-control" id="account_name" name="account_name" placeholder="e.g. John Doe" required>
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label for="swift_code" class="form-label">{{__('web.swift_code')}}</label>
-                                        <input type="text" class="form-control" id="swift_code" name="swift_code" placeholder="e.g. HSBCHKHHHKH">
+                                        <label for="swift_code" class="form-label">{{__('web.swift')}}</label>
+                                        <input type="text" class="form-control" id="swift_code" name="swift_code" placeholder="e.g. HSBCHKHHHKH" required>
                                     </div>
                                 </div>
                             </div>
@@ -113,20 +113,28 @@
                         <div class="table-responsive">
                             <table class="table table-striped align-middle">
                                 <thead>
-                                    <tr>
-                                        <th>{{__('web.amount')}}</th>
-                                        <th>{{__('web.method')}}</th>
-                                        <th>{{__('web.date')}}</th>
-                                        <th>{{__('web.status')}}</th>
+                                    <tr class="text-white-dark">
+                                        <th class="text-white-dark">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark">{{__('web.method')}}</th>
+                                        <th class="text-white-dark">{{__('web.date')}}</th>
+                                        <th class="text-white-dark">{{__('web.status')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($allWithdrawals as $transaction)
-                                    <tr>
-                                        <td>${{ number_format($transaction->amount, 2) }}</td>
-                                        <td>{{ __("web." . ($transaction->payment_method ?? 'N/A')) }}</td>
-                                        <td>{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
-                                        <td>
+                                    <tr class="text-white-dark">
+                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark">
+                                            @if($transaction->payment_method == 'bank_transfer')
+                                                {{ __('web.bank_transfer') }}
+                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                                {{ __('web.cryptocurrency') }}
+                                            @else
+                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                            @endif
+                                        </td>
+                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                        <td class="text-white-dark">
                                             @if($transaction->status == 'approved')
                                                 <span class="badge bg-success">{{__('web.accepted')}}</span>
                                             @elseif($transaction->status == 'pending')
@@ -149,18 +157,26 @@
                         <div class="table-responsive">
                             <table class="table table-striped align-middle">
                                 <thead>
-                                    <tr>
-                                        <th>{{__('web.amount')}}</th>
-                                        <th>{{__('web.method')}}</th>
-                                        <th>{{__('web.date')}}</th>
+                                    <tr class="text-white-dark">
+                                        <th class="text-white-dark">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark">{{__('web.method')}}</th>
+                                        <th class="text-white-dark">{{__('web.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($acceptedWithdrawals as $transaction)
-                                    <tr>
-                                        <td>${{ number_format($transaction->amount, 2) }}</td>
-                                        <td>{{ __("web." . ($transaction->payment_method ?? 'N/A')) }}</td>
-                                        <td>{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                    <tr class="text-white-dark">
+                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark">
+                                            @if($transaction->payment_method == 'bank_transfer')
+                                                {{ __('web.bank_transfer') }}
+                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                                {{ __('web.cryptocurrency') }}
+                                            @else
+                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                            @endif
+                                        </td>
+                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -175,18 +191,26 @@
                         <div class="table-responsive">
                             <table class="table table-striped align-middle">
                                 <thead>
-                                    <tr>
-                                        <th>{{__('web.amount')}}</th>
-                                        <th>{{__('web.method')}}</th>
-                                        <th>{{__('web.date')}}</th>
+                                    <tr class="text-white-dark">
+                                        <th class="text-white-dark">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark">{{__('web.method')}}</th>
+                                        <th class="text-white-dark">{{__('web.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($pendingWithdrawals as $transaction)
-                                    <tr>
-                                        <td>${{ number_format($transaction->amount, 2) }}</td>
-                                        <td>{{ __("web." . ($transaction->payment_method ?? 'N/A')) }}</td>
-                                        <td>{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                    <tr class="text-white-dark">
+                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark">
+                                            @if($transaction->payment_method == 'bank_transfer')
+                                                {{ __('web.bank_transfer') }}
+                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                                {{ __('web.cryptocurrency') }}
+                                            @else
+                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                            @endif
+                                        </td>
+                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -201,18 +225,26 @@
                         <div class="table-responsive">
                             <table class="table table-striped align-middle">
                                 <thead>
-                                    <tr>
-                                        <th>{{__('web.amount')}}</th>
-                                        <th>{{__('web.method')}}</th>
-                                        <th>{{__('web.date')}}</th>
+                                    <tr class="text-white-dark">
+                                        <th class="text-white-dark">{{__('web.amount')}}</th>
+                                        <th class="text-white-dark">{{__('web.method')}}</th>
+                                        <th class="text-white-dark">{{__('web.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($rejectedWithdrawals as $transaction)
-                                    <tr>
-                                        <td>${{ number_format($transaction->amount, 2) }}</td>
-                                        <td>{{ __("web." . ($transaction->payment_method ?? 'N/A')) }}</td>
-                                        <td>{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
+                                    <tr class="text-white-dark">
+                                        <td class="text-white-dark">${{ number_format($transaction->amount, 2) }}</td>
+                                        <td class="text-white-dark">
+                                            @if($transaction->payment_method == 'bank_transfer')
+                                                {{ __('web.bank_transfer') }}
+                                            @elseif($transaction->payment_method == 'cryptocurrency')
+                                                {{ __('web.cryptocurrency') }}
+                                            @else
+                                                {{ $transaction->payment_method ?? __('web.not_available') }}
+                                            @endif
+                                        </td>
+                                        <td class="text-white-dark">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -228,6 +260,22 @@
     </div>
 </div>
 
+<style>
+@media (prefers-color-scheme: dark) {
+    .text-white-dark {
+        color: white !important;
+    }
+}
+
+[data-bs-theme="dark"] .text-white-dark {
+    color: white !important;
+}
+
+.dark-mode .text-white-dark {
+    color: white !important;
+}
+</style>
+
 <script>
 $(document).ready(function() {
     $('#payment_method').on('change', function() {
@@ -235,14 +283,14 @@ $(document).ready(function() {
         $('#bankTransferDetails, #cryptoDetails').hide();
         if (method === 'bank_transfer') {
             $('#bankTransferDetails').show();
-            $('#bank_name, #account_number, #account_name').attr('required', true);
+            $('#bank_name, #account_number, #account_name, #swift_code').attr('required', true);
             $('#crypto_type, #crypto_address').attr('required', false);
         } else if (method === 'cryptocurrency') {
             $('#cryptoDetails').show();
             $('#crypto_type, #crypto_address').attr('required', true);
-            $('#bank_name, #account_number, #account_name').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #swift_code').attr('required', false);
         } else {
-            $('#bank_name, #account_number, #account_name, #crypto_type, #crypto_address').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #swift_code, #crypto_type, #crypto_address').attr('required', false);
         }
     });
     $('#amount').on('input', function() {

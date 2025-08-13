@@ -166,6 +166,7 @@ return [
     'date' => 'Date',
     'status' => 'Status',
     'transaction_id' => 'Transaction ID',
+    'not_available' => 'N/A',
     'no_withdrawals_found' => 'No withdrawals found.',
     'select_deposit_method' => 'Select Deposit Method',
     'bank_transfer' => 'Bank Transfer',

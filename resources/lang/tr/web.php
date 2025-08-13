@@ -179,6 +179,7 @@ return [
     'swift'                       => 'SWIFT',
     'submit_withdrawal'           => 'Çekimi Gönder',
     'double_check_wallet_address' => 'Göndermeden önce cüzdan adresinizi iki kez kontrol edin',
+    'not_available'               => 'Mevcut Değil',
     'item'                        => 'Öğeler',
     'free'                        => 'Mevcut',
     'name'                        => 'Adı',
