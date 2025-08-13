@@ -1984,7 +1984,6 @@
                                     <p>{{ __('web.withdraw_to_bank_account') }}</p>
                                     <div class="method-features">
                                         <span class="feature-tag">{{ __('web.secure') }}</span>
-                                        <span class="feature-tag processing-time">1-3 {{ __('web.business_days') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -2058,7 +2057,6 @@
                                     <p>{{ __('web.withdraw_to_crypto_wallet') }}</p>
                                     <div class="method-features">
                                         <span class="feature-tag">{{ __('web.fast') }}</span>
-                                        <span class="feature-tag processing-time">10-60 {{ __('web.minutes') }}</span>
                                     </div>
                                 </div>
                             </div>
