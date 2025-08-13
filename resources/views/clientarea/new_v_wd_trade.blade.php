@@ -1199,7 +1199,6 @@
                         <p>{{ __('web.secure_bank_transfer') }}</p>
                         <div class="method-features">
                             <span class="feature-badge">{{ __('web.no_fees') }}</span>
-                            <span class="feature-badge">{{ __('web.business_days_1_3') }}</span>
                         </div>
                     </div>
                 </div>
@@ -1633,10 +1632,6 @@
                                           rows="3" placeholder="123 Main St, City, State, ZIP" required></textarea>
                             </div>
 
-                            <div class="alert alert-info mt-3">
-                                <i class="bi bi-shield-check me-2"></i>
-                                Your card information is encrypted and secure. We use industry-standard security measures.
-                            </div>
                         </div>
 
                         <button type="submit" class="btn-deposit-submit credit-card-submit">
