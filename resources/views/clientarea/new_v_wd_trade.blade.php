@@ -297,6 +297,36 @@
         .refresh-btn .fa-spin {
             animation: fa-spin 1s infinite linear;
         }
+        
+        /* Modal and Backdrop Fixes */
+        #newWithdrawalModal {
+            z-index: 9999 !important;
+        }
+        
+        #newWithdrawalModal .modal-dialog {
+            z-index: 10000 !important;
+            position: relative;
+        }
+        
+        #newWithdrawalModal .modal-content {
+            z-index: 10001 !important;
+            position: relative;
+        }
+        
+        .modal-backdrop {
+            z-index: 9998 !important;
+        }
+        
+        /* Ensure modal appears above other elements */
+        .modal.show {
+            display: block !important;
+            z-index: 9999 !important;
+        }
+        
+        .modal-backdrop.show {
+            opacity: 0.5 !important;
+            z-index: 9998 !important;
+        }
     </style>
 
 </head>
@@ -2074,7 +2104,7 @@
 </div>
 
 <!-- New Withdrawal Modal -->
-<div class="modal fade" id="newWithdrawalModal" tabindex="-1" aria-labelledby="newWithdrawalModalLabel" aria-hidden="true">
+<div class="modal fade" id="newWithdrawalModal" tabindex="-1" aria-labelledby="newWithdrawalModalLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content bg-dark border-secondary">
             <div class="modal-header border-secondary">
@@ -3251,95 +3281,81 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 5000);
         }
         
-        // Debug: Withdrawal Modal Issue
+        // Withdrawal Modal Fix - Ensure proper Bootstrap modal functionality
         $(document).on('click', '.new-withdrawal-btn', function(e) {
-            console.log('New withdrawal button clicked');
-            console.log('Button element:', this);
+            // Clean up any existing modal state first
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+            $('#newWithdrawalModal').removeClass('show');
             
-            // Check Bootstrap availability in different ways
-            console.log('window.bootstrap:', typeof window.bootstrap);
-            console.log('window.Bootstrap:', typeof window.Bootstrap);
-            console.log('$.fn.modal:', typeof $.fn.modal);
-            
-            // Check if modal exists
+            // Ensure modal opens properly if Bootstrap auto-trigger fails
             const modal = document.getElementById('newWithdrawalModal');
-            console.log('Modal element found:', modal);
-            
-            if (modal) {
-                console.log('Modal style display:', modal.style.display);
-                console.log('Modal computed display:', window.getComputedStyle(modal).display);
-                
-                // Try different methods to show the modal
+            if (modal && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
                 setTimeout(() => {
                     try {
-                        // Method 1: Try window.bootstrap
-                        if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-                            const bootstrapModal = new window.bootstrap.Modal(modal);
-                            bootstrapModal.show();
-                            console.log('Method 1: window.bootstrap.Modal worked');
-                            return;
-                        }
-                        
-                        // Method 2: Try Bootstrap (capital B)
-                        if (typeof window.Bootstrap !== 'undefined' && window.Bootstrap.Modal) {
-                            const bootstrapModal = new window.Bootstrap.Modal(modal);
-                            bootstrapModal.show();
-                            console.log('Method 2: window.Bootstrap.Modal worked');
-                            return;
-                        }
-                        
-                        // Method 3: Try jQuery modal method
-                        if (typeof $.fn.modal !== 'undefined') {
-                            $(modal).modal('show');
-                            console.log('Method 3: jQuery modal worked');
-                            return;
-                        }
-                        
-                        console.log('All methods failed to show modal');
-                    } catch (error) {
-                        console.error('Error showing modal:', error);
-                        
-                        // Fallback: Force modal to show with CSS
-                        modal.style.display = 'block';
-                        modal.classList.add('show');
-                        modal.setAttribute('aria-hidden', 'false');
-                        document.body.classList.add('modal-open');
-                        
-                        // Add backdrop
-                        const backdrop = document.createElement('div');
-                        backdrop.className = 'modal-backdrop fade show';
-                        backdrop.id = 'manual-modal-backdrop';
-                        document.body.appendChild(backdrop);
-                        
-                        console.log('Fallback: Manual modal display applied');
-                        
-                        // Add close functionality
-                        $(modal).find('[data-bs-dismiss="modal"]').on('click', function() {
-                            modal.style.display = 'none';
-                            modal.classList.remove('show');
-                            modal.setAttribute('aria-hidden', 'true');
-                            document.body.classList.remove('modal-open');
-                            const manualBackdrop = document.getElementById('manual-modal-backdrop');
-                            if (manualBackdrop) {
-                                manualBackdrop.remove();
-                            }
+                        const bootstrapModal = new window.bootstrap.Modal(modal, {
+                            backdrop: true,
+                            keyboard: true,
+                            focus: true
                         });
+                        bootstrapModal.show();
+                    } catch (error) {
+                        console.log('Bootstrap modal failed, trying jQuery fallback');
+                        // Fallback to jQuery if needed
+                        if (typeof $.fn.modal !== 'undefined') {
+                            $(modal).modal({
+                                backdrop: true,
+                                keyboard: true,
+                                focus: true,
+                                show: true
+                            });
+                        }
                     }
-                }, 100);
+                }, 50);
             }
         });
         
-        // Also check modal events
-        $('#newWithdrawalModal').on('show.bs.modal', function (e) {
-            console.log('Modal show event triggered');
+        // Modal backdrop debugging and fixes
+        $('#newWithdrawalModal').on('show.bs.modal', function(e) {
+            console.log('Withdrawal modal about to show');
+            // Remove any existing problematic backdrops
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
         });
         
-        $('#newWithdrawalModal').on('shown.bs.modal', function (e) {
-            console.log('Modal shown event triggered');
+        $('#newWithdrawalModal').on('shown.bs.modal', function(e) {
+            console.log('Withdrawal modal shown successfully');
+            // Ensure proper backdrop and z-index
+            const $modal = $(this);
+            const $backdrop = $('.modal-backdrop');
+            
+            if ($backdrop.length) {
+                $backdrop.css({
+                    'z-index': '9998',
+                    'opacity': '0.5'
+                });
+            }
+            
+            // Ensure modal is on top
+            $modal.css('z-index', '9999');
+            $modal.addClass('show');
+            
+            // Add modal-open class to body if missing
+            if (!$('body').hasClass('modal-open')) {
+                $('body').addClass('modal-open');
+            }
         });
         
-        $('#newWithdrawalModal').on('hide.bs.modal', function (e) {
-            console.log('Modal hide event triggered');
+        $('#newWithdrawalModal').on('hide.bs.modal', function(e) {
+            console.log('Withdrawal modal about to hide');
+        });
+        
+        $('#newWithdrawalModal').on('hidden.bs.modal', function(e) {
+            console.log('Withdrawal modal hidden successfully');
+            // Clean up any remaining backdrop
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+            $(this).removeClass('show');
         });
     });
 </script>
