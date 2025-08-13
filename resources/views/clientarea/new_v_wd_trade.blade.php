@@ -298,34 +298,62 @@
             animation: fa-spin 1s infinite linear;
         }
         
-        /* Modal and Backdrop Fixes */
+        /* Modal and Backdrop Fixes - Force to Front */
         #newWithdrawalModal {
-            z-index: 9999 !important;
+            z-index: 99999 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+        }
+        
+        #newWithdrawalModal.show {
+            z-index: 99999 !important;
+            display: block !important;
         }
         
         #newWithdrawalModal .modal-dialog {
-            z-index: 10000 !important;
-            position: relative;
+            z-index: 100000 !important;
+            position: relative !important;
+            margin: 1.75rem auto !important;
+            max-width: 500px !important;
         }
         
         #newWithdrawalModal .modal-content {
-            z-index: 10001 !important;
-            position: relative;
+            z-index: 100001 !important;
+            position: relative !important;
+            background: white !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 0.375rem !important;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
         }
         
         .modal-backdrop {
-            z-index: 9998 !important;
-        }
-        
-        /* Ensure modal appears above other elements */
-        .modal.show {
-            display: block !important;
-            z-index: 9999 !important;
+            z-index: 99998 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
         }
         
         .modal-backdrop.show {
             opacity: 0.5 !important;
-            z-index: 9998 !important;
+            z-index: 99998 !important;
+        }
+        
+        /* Force modal to be visible */
+        .modal.show {
+            display: block !important;
+            z-index: 99999 !important;
+        }
+        
+        /* Override any conflicting styles */
+        body.modal-open {
+            overflow: hidden !important;
         }
     </style>
 
@@ -3283,67 +3311,165 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Withdrawal Modal Fix - Ensure proper Bootstrap modal functionality
         $(document).on('click', '.new-withdrawal-btn', function(e) {
+            console.log('Withdrawal button clicked');
+            
             // Clean up any existing modal state first
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open');
             $('#newWithdrawalModal').removeClass('show');
             
+            // Add emergency CSS override
+            if (!$('#emergency-modal-css').length) {
+                $('head').append(`
+                    <style id="emergency-modal-css">
+                        #newWithdrawalModal {
+                            z-index: 999999 !important;
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            width: 100% !important;
+                            height: 100% !important;
+                            display: block !important;
+                            background: rgba(0, 0, 0, 0.5) !important;
+                        }
+                        #newWithdrawalModal.show {
+                            display: block !important;
+                        }
+                        #newWithdrawalModal .modal-dialog {
+                            z-index: 1000000 !important;
+                            position: relative !important;
+                            margin: 50px auto !important;
+                            max-width: 500px !important;
+                        }
+                        #newWithdrawalModal .modal-content {
+                            z-index: 1000001 !important;
+                            background: white !important;
+                            border-radius: 8px !important;
+                            padding: 20px !important;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+                        }
+                    </style>
+                `);
+            }
+            
             // Ensure modal opens properly if Bootstrap auto-trigger fails
             const modal = document.getElementById('newWithdrawalModal');
-            if (modal && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
+            if (modal) {
+                // Force show the modal directly
                 setTimeout(() => {
-                    try {
-                        const bootstrapModal = new window.bootstrap.Modal(modal, {
-                            backdrop: true,
-                            keyboard: true,
-                            focus: true
-                        });
-                        bootstrapModal.show();
-                    } catch (error) {
-                        console.log('Bootstrap modal failed, trying jQuery fallback');
-                        // Fallback to jQuery if needed
-                        if (typeof $.fn.modal !== 'undefined') {
-                            $(modal).modal({
+                    $(modal).addClass('show').css({
+                        'display': 'block',
+                        'z-index': '999999',
+                        'position': 'fixed',
+                        'top': '0',
+                        'left': '0',
+                        'width': '100%',
+                        'height': '100%',
+                        'background': 'rgba(0, 0, 0, 0.5)'
+                    });
+                    
+                    $('body').addClass('modal-open').css('overflow', 'hidden');
+                    
+                    console.log('Modal forced to show');
+                    console.log('Modal element:', modal);
+                    console.log('Modal jQuery object:', $(modal));
+                    console.log('Modal classes:', $(modal).attr('class'));
+                    console.log('Modal styles:', $(modal).attr('style'));
+                    
+                    // Try Bootstrap method as well
+                    if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
+                        try {
+                            const bootstrapModal = new window.bootstrap.Modal(modal, {
                                 backdrop: true,
                                 keyboard: true,
-                                focus: true,
-                                show: true
+                                focus: true
                             });
+                            bootstrapModal.show();
+                        } catch (error) {
+                            console.log('Bootstrap modal failed:', error);
                         }
                     }
-                }, 50);
+                }, 100);
             }
         });
         
-        // Modal backdrop debugging and fixes
+        // Modal backdrop debugging and fixes - FORCE VISIBILITY
         $('#newWithdrawalModal').on('show.bs.modal', function(e) {
             console.log('Withdrawal modal about to show');
             // Remove any existing problematic backdrops
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open');
+            
+            // Force modal to be visible
+            const $modal = $(this);
+            $modal.css({
+                'z-index': '99999',
+                'display': 'block',
+                'position': 'fixed',
+                'top': '0',
+                'left': '0',
+                'width': '100%',
+                'height': '100%'
+            });
         });
         
         $('#newWithdrawalModal').on('shown.bs.modal', function(e) {
             console.log('Withdrawal modal shown successfully');
-            // Ensure proper backdrop and z-index
+            // Force everything to be visible
             const $modal = $(this);
             const $backdrop = $('.modal-backdrop');
             
+            // Force backdrop styling
             if ($backdrop.length) {
                 $backdrop.css({
-                    'z-index': '9998',
-                    'opacity': '0.5'
+                    'z-index': '99998',
+                    'opacity': '0.5',
+                    'position': 'fixed',
+                    'top': '0',
+                    'left': '0',
+                    'width': '100vw',
+                    'height': '100vh',
+                    'background-color': 'rgba(0, 0, 0, 0.5)'
                 });
             }
             
-            // Ensure modal is on top
-            $modal.css('z-index', '9999');
+            // Force modal to be on top and visible
+            $modal.css({
+                'z-index': '99999',
+                'display': 'block !important',
+                'position': 'fixed',
+                'top': '0',
+                'left': '0',
+                'width': '100%',
+                'height': '100%'
+            });
+            
+            // Force modal dialog to be centered and visible
+            $modal.find('.modal-dialog').css({
+                'z-index': '100000',
+                'position': 'relative',
+                'margin': '1.75rem auto',
+                'max-width': '500px'
+            });
+            
+            // Force modal content to be visible
+            $modal.find('.modal-content').css({
+                'z-index': '100001',
+                'position': 'relative',
+                'background': 'white',
+                'border': '1px solid #dee2e6',
+                'border-radius': '0.375rem',
+                'box-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)'
+            });
+            
             $modal.addClass('show');
             
-            // Add modal-open class to body if missing
-            if (!$('body').hasClass('modal-open')) {
-                $('body').addClass('modal-open');
-            }
+            // Add modal-open class to body
+            $('body').addClass('modal-open').css('overflow', 'hidden');
+            
+            console.log('Modal z-index:', $modal.css('z-index'));
+            console.log('Modal display:', $modal.css('display'));
+            console.log('Modal position:', $modal.css('position'));
         });
         
         $('#newWithdrawalModal').on('hide.bs.modal', function(e) {
