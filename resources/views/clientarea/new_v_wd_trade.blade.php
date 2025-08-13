@@ -2032,10 +2032,10 @@
                                     <div class="form-group-modern mb-3">
                                         <label for="swift_code" class="form-label-modern">
                                             <i class="bi bi-globe"></i>
-                                            {{ __('web.swift_code') }}
+                                            {{ __('web.swift') }}
                                         </label>
                                         <input type="text" name="swift_code" id="swift_code" class="form-control-modern"
-                                               placeholder="{{ __('web.enter_swift_code') }}">
+                                               placeholder="{{ __('web.enter_swift_code') }}" required>
                                     </div>
 
                                     <button type="submit" class="btn-submit-modern">
