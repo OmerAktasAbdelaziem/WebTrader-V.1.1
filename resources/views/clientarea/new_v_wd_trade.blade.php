@@ -2616,7 +2616,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const editOrderForm = document.getElementById('editOrderForm');
     if (editOrderForm) {
         editOrderForm.addEventListener('submit', function(e) {
-            // Form submission handling
+            e.preventDefault();
+            
+            console.log('Form submission attempted');
+            console.log('Form action:', this.action);
+            console.log('Form method:', this.method);
+            
+            // Get form data
+            const formData = new FormData(this);
+            const orderId = document.getElementById('editOrderId').value;
+            
+            console.log('Order ID from form:', orderId);
+            console.log('Form data entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key, ':', value);
+            }
+            
+            // Validate that we have an order ID
+            if (!orderId) {
+                alert('{{ __("web.order_id_required") }}');
+                return;
+            }
+            
+            // Submit the form normally since we have the action URL set
+            console.log('Submitting form to:', this.action);
+            this.submit();
         });
     }
 });
@@ -3270,6 +3294,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set the form action URL using the proper Laravel route
         const editForm = document.getElementById('editOrderForm');
         const actionUrl = window.updateOrderRoute.replace('__ORDER_ID__', orderId);
+        console.log('Order ID:', orderId);
+        console.log('Base route template:', window.updateOrderRoute);
+        console.log('Final action URL:', actionUrl);
+        console.log('Form method:', editForm.method);
         editForm.action = actionUrl;
         
         // Populate the form fields with current values
