@@ -2618,19 +2618,9 @@ document.addEventListener('DOMContentLoaded', function() {
         editOrderForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            console.log('Form submission attempted');
-            console.log('Form action:', this.action);
-            console.log('Form method:', this.method);
-            
             // Get form data
             const formData = new FormData(this);
             const orderId = document.getElementById('editOrderId').value;
-            
-            console.log('Order ID from form:', orderId);
-            console.log('Form data entries:');
-            for (let [key, value] of formData.entries()) {
-                console.log(key, ':', value);
-            }
             
             // Validate that we have an order ID
             if (!orderId) {
@@ -2639,7 +2629,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Submit the form normally since we have the action URL set
-            console.log('Submitting form to:', this.action);
             this.submit();
         });
     }
@@ -3284,15 +3273,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Edit Order Modal Function
     function editOrder(orderId, stopLoss, takeProfit) {
-        console.log('editOrder function called with:', { orderId, stopLoss, takeProfit });
-        
         // Close any open dropdowns or overlays that might interfere (safely)
         try {
             if (typeof closeLanguageDropdown === 'function') {
                 closeLanguageDropdown();
             }
         } catch (e) {
-            console.log('closeLanguageDropdown not available:', e.message);
+            // Silently handle missing function
         }
         
         try {
@@ -3300,22 +3287,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeNotificationPopup();
             }
         } catch (e) {
-            console.log('closeNotificationPopup not available:', e.message);
+            // Silently handle missing function
         }
         
         // Set the order ID in the hidden input
         const orderIdInput = document.getElementById('editOrderId');
-        console.log('Order ID input element:', orderIdInput);
         orderIdInput.value = orderId;
-        console.log('Set order ID to:', orderIdInput.value);
         
         // Set the form action URL using the proper Laravel route
         const editForm = document.getElementById('editOrderForm');
         const actionUrl = window.updateOrderRoute.replace('__ORDER_ID__', orderId);
-        console.log('Order ID:', orderId);
-        console.log('Base route template:', window.updateOrderRoute);
-        console.log('Final action URL:', actionUrl);
-        console.log('Form method:', editForm.method);
         editForm.action = actionUrl;
         
         // Populate the form fields with current values
@@ -3352,17 +3333,6 @@ document.addEventListener('DOMContentLoaded', function() {
             stopLossInput.focus();
             stopLossInput.select();
         }, 500);
-        
-        // Final check to ensure order ID is set
-        setTimeout(function() {
-            const finalOrderId = document.getElementById('editOrderId').value;
-            console.log('Final order ID check:', finalOrderId);
-            if (!finalOrderId) {
-                console.error('Order ID is still empty! Setting it again...');
-                document.getElementById('editOrderId').value = orderId;
-                console.log('Re-set order ID to:', document.getElementById('editOrderId').value);
-            }
-        }, 100);
     }
 
     // Price tracking for color changes
