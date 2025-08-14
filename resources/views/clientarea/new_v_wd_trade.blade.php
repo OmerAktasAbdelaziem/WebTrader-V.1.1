@@ -468,6 +468,26 @@
             color: #888;
         }
         
+        /* Specific styling for select elements */
+        select.form-control-modern {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+        
+        select.form-control-modern option {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+        }
+        
+        select.form-control-modern:focus {
+            background: #2d2d2d;
+            border-color: #4f8cff;
+            box-shadow: 0 0 0 0.2rem rgba(79, 140, 255, 0.25);
+            color: #ffffff;
+        }
+        
         .input-help {
             font-size: 0.8rem;
             color: #888;
