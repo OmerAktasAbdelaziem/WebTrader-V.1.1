@@ -556,7 +556,8 @@
             align-items: center;
             justify-content: center;
             gap: 0.3rem;
-            align-self: flex-start;
+            align-self: center;
+            margin: 0 auto;
         }
         
         .copy-btn-modern:hover {
