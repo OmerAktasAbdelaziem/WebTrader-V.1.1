@@ -3284,12 +3284,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Edit Order Modal Function
     function editOrder(orderId, stopLoss, takeProfit) {
+        console.log('editOrder function called with:', { orderId, stopLoss, takeProfit });
+        
         // Close any open dropdowns or overlays that might interfere
         closeLanguageDropdown();
         closeNotificationPopup();
         
         // Set the order ID in the hidden input
-        document.getElementById('editOrderId').value = orderId;
+        const orderIdInput = document.getElementById('editOrderId');
+        console.log('Order ID input element:', orderIdInput);
+        orderIdInput.value = orderId;
+        console.log('Set order ID to:', orderIdInput.value);
         
         // Set the form action URL using the proper Laravel route
         const editForm = document.getElementById('editOrderForm');
@@ -3334,6 +3339,17 @@ document.addEventListener('DOMContentLoaded', function() {
             stopLossInput.focus();
             stopLossInput.select();
         }, 500);
+        
+        // Final check to ensure order ID is set
+        setTimeout(function() {
+            const finalOrderId = document.getElementById('editOrderId').value;
+            console.log('Final order ID check:', finalOrderId);
+            if (!finalOrderId) {
+                console.error('Order ID is still empty! Setting it again...');
+                document.getElementById('editOrderId').value = orderId;
+                console.log('Re-set order ID to:', document.getElementById('editOrderId').value);
+            }
+        }, 100);
     }
 
     // Price tracking for color changes
