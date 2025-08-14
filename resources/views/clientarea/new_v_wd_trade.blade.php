@@ -488,6 +488,91 @@
             color: #ffffff;
         }
         
+        /* Bank Details Styling */
+        .bank-details-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .details-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .detail-label {
+            display: block;
+            color: #4f8cff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .detail-value {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            min-height: 2.5rem;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+        
+        .copy-btn-modern {
+            background: linear-gradient(135deg, #4f8cff, #64b5f6);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            align-self: flex-start;
+        }
+        
+        .copy-btn-modern:hover {
+            background: linear-gradient(135deg, #3d7cff, #52a3f3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 140, 255, 0.3);
+        }
+        
+        .copy-btn-modern:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn-modern i {
+            font-size: 0.75rem;
+        }
+        
         .input-help {
             font-size: 0.8rem;
             color: #888;
@@ -1275,64 +1360,84 @@
                             <div class="details-grid">
                                 <div class="detail-item">
                                     <span class="detail-label">Bank Name:</span>
-                                    <span class="detail-value" id="displayBankName">-</span>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayBankName">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayBankName').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Beneficiary Name:</span>
-                                    <div class="detail-value-copy">
-                                        <span class="detail-value" id="displayAccountName">-</span>
-                                        <button type="button" class="copy-btn" onclick="copyToClipboard(document.getElementById('displayAccountName').textContent)">
-                                            <i class="bi bi-copy"></i>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayAccountName">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayAccountName').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
                                         </button>
                                     </div>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Account Number:</span>
-                                    <div class="detail-value-copy">
-                                        <span class="detail-value" id="displayAccountNumber">-</span>
-                                        <button type="button" class="copy-btn" onclick="copyToClipboard(document.getElementById('displayAccountNumber').textContent)">
-                                            <i class="bi bi-copy"></i>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayAccountNumber">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayAccountNumber').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
                                         </button>
                                     </div>
                                 </div>
                                 <div class="detail-item" id="ibanRow" style="display: none;">
                                     <span class="detail-label">IBAN:</span>
-                                    <div class="detail-value-copy">
-                                        <span class="detail-value" id="displayIban">-</span>
-                                        <button type="button" class="copy-btn" onclick="copyToClipboard(document.getElementById('displayIban').textContent)">
-                                            <i class="bi bi-copy"></i>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayIban">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayIban').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
                                         </button>
                                     </div>
                                 </div>
                                 <div class="detail-item" id="swiftCodeRow" style="display: none;">
                                     <span class="detail-label">SWIFT Code:</span>
-                                    <div class="detail-value-copy">
-                                        <span class="detail-value" id="displaySwiftCode">-</span>
-                                        <button type="button" class="copy-btn" onclick="copyToClipboard(document.getElementById('displaySwiftCode').textContent)">
-                                            <i class="bi bi-copy"></i>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displaySwiftCode">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displaySwiftCode').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
                                         </button>
                                     </div>
                                 </div>
                                 <div class="detail-item" id="abaRoutingRow" style="display: none;">
                                     <span class="detail-label">ABA Routing Number:</span>
-                                    <div class="detail-value-copy">
-                                        <span class="detail-value" id="displayAbaRouting">-</span>
-                                        <button type="button" class="copy-btn" onclick="copyToClipboard(document.getElementById('displayAbaRouting').textContent)">
-                                            <i class="bi bi-copy"></i>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayAbaRouting">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayAbaRouting').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
                                         </button>
                                     </div>
                                 </div>
                                 <div class="detail-item" id="beneficiaryAddressRow" style="display: none;">
                                     <span class="detail-label">Beneficiary Address:</span>
-                                    <span class="detail-value" id="displayBeneficiaryAddress">-</span>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayBeneficiaryAddress">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayBeneficiaryAddress').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="detail-item" id="beneficiaryCountryRow" style="display: none;">
                                     <span class="detail-label">Beneficiary Country:</span>
-                                    <span class="detail-value" id="displayBeneficiaryCountry">-</span>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayBeneficiaryCountry">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayBeneficiaryCountry').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="detail-item" id="bankAddressRow" style="display: none;">
                                     <span class="detail-label">Bank Address:</span>
-                                    <span class="detail-value" id="displayBankAddress">-</span>
+                                    <div class="detail-value-container">
+                                        <div class="detail-value" id="displayBankAddress">-</div>
+                                        <button type="button" class="copy-btn-modern" onclick="copyToClipboard(document.getElementById('displayBankAddress').textContent)">
+                                            <i class="bi bi-copy"></i> Copy
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="alert alert-info mt-3">
