@@ -3286,9 +3286,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function editOrder(orderId, stopLoss, takeProfit) {
         console.log('editOrder function called with:', { orderId, stopLoss, takeProfit });
         
-        // Close any open dropdowns or overlays that might interfere
-        closeLanguageDropdown();
-        closeNotificationPopup();
+        // Close any open dropdowns or overlays that might interfere (safely)
+        try {
+            if (typeof closeLanguageDropdown === 'function') {
+                closeLanguageDropdown();
+            }
+        } catch (e) {
+            console.log('closeLanguageDropdown not available:', e.message);
+        }
+        
+        try {
+            if (typeof closeNotificationPopup === 'function') {
+                closeNotificationPopup();
+            }
+        } catch (e) {
+            console.log('closeNotificationPopup not available:', e.message);
+        }
         
         // Set the order ID in the hidden input
         const orderIdInput = document.getElementById('editOrderId');
