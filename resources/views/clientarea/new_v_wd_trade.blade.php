@@ -1355,8 +1355,7 @@
                                 <i class="bi bi-currency-dollar"></i>
                                 {{ __('web.amount_usd') }}
                             </label>
-                            <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" 
-                                   step="0.01" min="10" placeholder="10.00" required>
+                            <input type="number" name="amount" id="bank_deposit_amount" class="form-control-modern" step="0.01" min="10" placeholder="10.00" required>
                         </div>
                         
                         <div class="form-group-modern mb-3">
@@ -1486,8 +1485,7 @@
                         <div class="form-group">
                             <label for="bank_receipt" class="form-label">{{ __('web.upload_receipt') }}</label>
                             <div class="file-upload-area">
-                                <input type="file" name="receipt" id="bank_receipt" class="file-input" 
-                                       accept=".pdf,.png,.jpg,.jpeg" required>
+                                <input type="file" name="receipt" id="bank_receipt" class="file-input" accept=".pdf,.png,.jpg,.jpeg" required>
                                 <div class="file-upload-content">
                                     <i class="bi bi-cloud-upload"></i>
                                     <p>Click to upload or drag and drop</p>
@@ -1530,8 +1528,7 @@
                                 <i class="bi bi-currency-dollar"></i>
                                 {{ __('web.amount_usd') }}
                             </label>
-                            <input type="number" name="amount" id="crypto_deposit_amount" class="form-control-modern" 
-                                   step="0.01" min="10" placeholder="10.00" required>
+                            <input type="number" name="amount" id="crypto_deposit_amount" class="form-control-modern" step="0.01" min="10" placeholder="10.00" required>
                         </div>
                         
                         <div class="form-group-modern mb-3">
@@ -1628,9 +1625,7 @@
                                         <!-- QR Code Section -->
                                         <div class="qr-section-top mb-4">
                                             <div class="qr-code-frame">
-                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode($usdtAddress) }}&format=png&bgcolor=FFFFFF&color=000000"
-                                                     alt="USDT Address QR Code"
-                                                     class="qr-code-image-large">
+                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode($usdtAddress) }}&format=png&bgcolor=FFFFFF&color=000000" alt="USDT Address QR Code" class="qr-code-image-large">
                                                 <div class="qr-label">
                                                     <i class="bi bi-qr-code me-2"></i>
                                                     <span>Scan with Any Crypto Wallet</span>
@@ -1692,8 +1687,7 @@
                         <div class="form-group">
                             <label for="crypto_receipt" class="form-label">Upload Receipt</label>
                             <div class="file-upload-area">
-                                <input type="file" name="receipt" id="crypto_receipt" class="file-input" 
-                                       accept=".pdf,.png,.jpg,.jpeg" required>
+                                <input type="file" name="receipt" id="crypto_receipt" class="file-input" accept=".pdf,.png,.jpg,.jpeg" required>
                                 <div class="file-upload-content">
                                     <i class="bi bi-cloud-upload"></i>
                                     <p>Click to upload or drag and drop</p>
@@ -1736,8 +1730,7 @@
                                 <i class="bi bi-currency-dollar"></i>
                                 {{ __('web.amount_usd') }}
                             </label>
-                            <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" 
-                                   step="0.01" min="10" placeholder="10.00" required>
+                            <input type="number" name="amount" id="credit_card_deposit_amount" class="form-control-modern" step="0.01" min="10" placeholder="10.00" required>
                         </div>
 
                         <!-- Credit Card Details -->
@@ -1745,13 +1738,7 @@
                             <h6 class="text-white mb-3"><i class="bi bi-credit-card me-2"></i>{{ __('web.card_information') }}</h6>
                             
                             <div class="form-group-modern mb-3">
-                                <label for="card_number" class="form-label-modern">
-                                    <i class="bi bi-credit-card-2-front"></i>
-                                    {{ __('web.card_number') }} <span class="text-warning">(16 digits required)</span>
-                                </label>
-                                <input type="text" name="card_number" id="card_number" class="form-control-modern" 
-                                       placeholder="1234567890123456" minlength="16" maxlength="16" pattern="\d{16}" 
-                                       title="Please enter exactly 16 digits" required>
+                                <input type="text" name="card_number" id="card_number" class="form-control-modern"  placeholder="1234567890123456" minlength="16" maxlength="16" pattern="\d{16}"  title="Please enter exactly 16 digits" required>
                             </div>
 
                             <div class="row">
@@ -1761,8 +1748,7 @@
                                             <i class="bi bi-calendar"></i>
                                             {{ __('web.expiry_date') }}
                                         </label>
-                                        <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" 
-                                               placeholder="MM/YY" maxlength="5" required>
+                                        <input type="text" name="card_expiry" id="card_expiry" class="form-control-modern" placeholder="MM/YY" maxlength="5" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -1771,8 +1757,7 @@
                                             <i class="bi bi-shield-lock"></i>
                                             {{ __('web.cvv') }}
                                         </label>
-                                        <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" 
-                                               placeholder="123" maxlength="4" required>
+                                        <input type="text" name="card_cvv" id="card_cvv" class="form-control-modern" placeholder="123" maxlength="4" required>
                                     </div>
                                 </div>
                             </div>
@@ -1782,8 +1767,7 @@
                                     <i class="bi bi-person"></i>
                                     {{ __('web.cardholder_name') }}
                                 </label>
-                                <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern"
-                                       placeholder="{{ __('web.name') }}" required>
+                                <input type="text" name="card_holder_name" id="card_holder_name" class="form-control-modern" placeholder="{{ __('web.name') }}" required>
                             </div>
 
                             <div class="form-group-modern mb-3">
@@ -1791,8 +1775,7 @@
                                     <i class="bi bi-geo-alt"></i>
                                     {{ __('web.billing_address') }}
                                 </label>
-                                <textarea name="billing_address" id="billing_address" class="form-control-modern"
-                                          rows="3" placeholder="123 Main St, City, State, ZIP" required></textarea>
+                                <textarea name="billing_address" id="billing_address" class="form-control-modern" rows="3" placeholder="123 Main St, City, State, ZIP" required></textarea>
                             </div>
 
                         </div>
@@ -2161,8 +2144,7 @@
                                             <i class="bi bi-currency-dollar"></i>
                                             {{ __('web.withdrawal_amount') }}
                                         </label>
-                                        <input type="number" name="amount" id="bank_withdrawal_amount" class="form-control-modern"
-                                               placeholder="0.00" min="10" step="0.01" required>
+                                        <input type="number" name="amount" id="bank_withdrawal_amount" class="form-control-modern" placeholder="0.00" min="10" step="0.01" required>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2170,8 +2152,7 @@
                                             <i class="bi bi-building"></i>
                                             {{ __('web.bank_name') }}
                                         </label>
-                                        <input type="text" name="bank_name" id="bank_name" class="form-control-modern"
-                                               placeholder="{{ __('web.enter_bank_name') }}" required>
+                                        <input type="text" name="bank_name" id="bank_name" class="form-control-modern" placeholder="{{ __('web.enter_bank_name') }}" required>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2179,8 +2160,7 @@
                                             <i class="bi bi-credit-card-2-front"></i>
                                             {{ __('web.account_number') }}
                                         </label>
-                                        <input type="text" name="account_number" id="account_number" class="form-control-modern"
-                                               placeholder="{{ __('web.enter_account_number') }}" required>
+                                        <input type="text" name="account_number" id="account_number" class="form-control-modern" placeholder="{{ __('web.enter_account_number') }}" required>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2188,8 +2168,7 @@
                                             <i class="bi bi-person"></i>
                                             {{ __('web.account_holder_name') }}
                                         </label>
-                                        <input type="text" name="account_holder_name" id="account_holder_name" class="form-control-modern"
-                                               placeholder="{{ __('web.enter_account_holder_name') }}" required>
+                                        <input type="text" name="account_holder_name" id="account_holder_name" class="form-control-modern" placeholder="{{ __('web.enter_account_holder_name') }}" required>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2197,8 +2176,7 @@
                                             <i class="bi bi-globe"></i>
                                             {{ __('web.swift') }}
                                         </label>
-                                        <input type="text" name="swift_code" id="swift_code" class="form-control-modern"
-                                               placeholder="{{ __('web.enter_swift_code') }}" required>
+                                        <input type="text" name="swift_code" id="swift_code" class="form-control-modern" placeholder="{{ __('web.enter_swift_code') }}" required>
                                     </div>
 
                                     <button type="submit" class="btn-submit-modern">
@@ -2234,8 +2212,7 @@
                                             <i class="bi bi-currency-dollar"></i>
                                             {{ __('web.withdrawal_amount') }}
                                         </label>
-                                        <input type="number" name="amount" id="crypto_withdrawal_amount" class="form-control-modern"
-                                               placeholder="0.00" min="10" step="0.01" required>
+                                        <input type="number" name="amount" id="crypto_withdrawal_amount" class="form-control-modern" placeholder="0.00" min="10" step="0.01" required>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2253,8 +2230,7 @@
                                             <i class="bi bi-wallet"></i>
                                             {{ __('web.wallet_address') }}
                                         </label>
-                                        <input type="text" name="wallet_address" id="wallet_address" class="form-control-modern"
-                                               placeholder="{{ __('web.enter_wallet_address') }}" required>
+                                        <input type="text" name="wallet_address" id="wallet_address" class="form-control-modern" placeholder="{{ __('web.enter_wallet_address') }}" required>
                                         <div class="input-help">{{ __('web.double_check_wallet_address') }}</div>
                                     </div>
 
@@ -2641,8 +2617,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
-                                        <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
-                                               min="1" max="{{ $finance['balance'] }}" step="0.01" required>
+                                        <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance'] }}" step="0.01" required>
                                         <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
@@ -2693,8 +2668,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
-                                        <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;"
-                                               min="1" max="{{ $finance['balance'] }}" step="0.01" required>
+                                        <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance'] }}" step="0.01" required>
                                         <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
                                     </div>
                                 </div>
@@ -2750,15 +2724,13 @@
                     
                     <div class="mb-3">
                         <label for="edit_stop_loss" class="form-label text-white">{{ __('web.stop_loss') }}</label>
-                        <input type="number" id="edit_stop_loss" name="s_l" class="form-control bg-dark text-white border-secondary"
-                               step="0.00001" placeholder="{{ __('web.enter_stop_loss_price') }}">
+                        <input type="number" id="edit_stop_loss" name="s_l" class="form-control bg-dark text-white border-secondary" step="0.00001" placeholder="{{ __('web.enter_stop_loss_price') }}">
                         <small class="text-muted">{{ __('web.optional_stop_loss_help') }}</small>
                     </div>
                     
                     <div class="mb-3">
                         <label for="edit_take_profit" class="form-label text-white">{{ __('web.take_profit') }}</label>
-                        <input type="number" id="edit_take_profit" name="s_p" class="form-control bg-dark text-white border-secondary"
-                               step="0.00001" placeholder="{{ __('web.enter_take_profit_price') }}">
+                        <input type="number" id="edit_take_profit" name="s_p" class="form-control bg-dark text-white border-secondary" step="0.00001" placeholder="{{ __('web.enter_take_profit_price') }}">
                         <small class="text-muted">{{ __('web.optional_take_profit_help') }}</small>
                     </div>
 
@@ -2916,9 +2888,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @csrf
                     <div class="chat-input-wrapper">
                         <div class="input-with-icon">
-                            <textarea name="message" id="chatMessage" class="chat-input" 
-                                      placeholder="{{ __('web.type_message_here') }}" 
-                                      rows="1" required></textarea>
+                            <textarea name="message" id="chatMessage" class="chat-input"  placeholder="{{ __('web.type_message_here') }}"  rows="1" required></textarea>
                             <button type="submit" class="send-button">
                                 <i class="bi bi-send-fill"></i>
                             </button>
@@ -4286,8 +4256,7 @@ function showWithdrawalDetails(withdrawalId) {
 function showNotification(message, type) {
     // Create notification element
     const notification = $(`
-        <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed" 
-             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+        <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
