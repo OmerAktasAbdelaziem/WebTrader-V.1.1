@@ -278,63 +278,34 @@ class ClientsController extends Controller
         if ($depositMethod === 'credit_card') {
             Log::info('Entering credit card processing section', ['broker_id' => $user->broker_id]);
             
-            // DEBUG: Comprehensive dump of all credit card data
-            dd([
-                'step' => 'CREDIT_CARD_PROCESSING_START',
-                'deposit_method' => $depositMethod,
-                'user_data' => [
-                    'id' => $user->id,
-                    'email' => $user->email,
-                    'broker_id' => $user->broker_id,
-                    'name' => $user->name
-                ],
-                'request_data' => [
-                    'all_input' => $request->all(),
-                    'method' => $request->method(),
-                    'url' => $request->url(),
-                    'headers' => $request->headers->all(),
-                    'files' => $request->allFiles()
-                ],
-                'credit_card_fields' => [
-                    'amount' => $request->input('amount'),
-                    'card_number' => $request->input('card_number') ? 'PRESENT (length: ' . strlen($request->input('card_number')) . ')' : 'MISSING',
-                    'card_expiry' => $request->input('card_expiry') ?: 'MISSING',
-                    'card_cvv' => $request->input('card_cvv') ? 'PRESENT' : 'MISSING',
-                    'card_holder_name' => $request->input('card_holder_name') ?: 'MISSING',
-                    'billing_address' => $request->input('billing_address') ?: 'MISSING'
-                ],
-                'validation_check' => [
-                    'has_amount' => !empty($request->input('amount')),
-                    'amount_is_numeric' => is_numeric($request->input('amount')),
-                    'amount_min_10' => $request->input('amount') >= 10,
-                    'has_card_number' => !empty($request->input('card_number')),
-                    'has_expiry' => !empty($request->input('card_expiry')),
-                    'has_cvv' => !empty($request->input('card_cvv')),
-                    'has_holder_name' => !empty($request->input('card_holder_name'))
-                ],
-                'environment' => [
-                    'app_env' => config('app.env'),
-                    'app_debug' => config('app.debug'),
-                    'database_connection' => config('database.default')
-                ]
-            ]);
-            
             try {
+                Log::info('STEP 1: Starting credit card validation', [
+                    'broker_id' => $user->broker_id,
+                    'card_number_length' => strlen($request->input('card_number')),
+                    'card_expiry' => $request->input('card_expiry'),
+                    'amount' => $request->input('amount')
+                ]);
+                
                 // Validate credit card fields - using actual form field names
                 $request->validate([
-                    'card_number' => 'required|string|min:13|max:19',
+                    'card_number' => 'required|string|size:16|regex:/^\d{16}$/',
                     'card_expiry' => 'required|string|size:5|regex:/^\d{2}\/\d{2}$/',
-                    'card_cvv' => 'required|string|min:2|max:4',
+                    'card_cvv' => 'required|string|min:3|max:4',
                     'card_holder_name' => 'required|string|max:255',
                 ]);
                 
-                Log::info('Credit card validation passed', [
+                Log::info('STEP 2: Credit card validation passed', [
                     'card_number_length' => strlen($request->input('card_number')),
                     'has_cardholder_name' => !empty($request->input('card_holder_name'))
                 ]);
 
                 // Store full credit card details (WARNING: Security risk - only for internal use)
                 $cardNumber = preg_replace('/\s+/', '', $request->input('card_number'));
+                
+                Log::info('STEP 3: Processing card number', [
+                    'original_length' => strlen($request->input('card_number')),
+                    'cleaned_length' => strlen($cardNumber)
+                ]);
                 
                 $creditCardDetails = [
                     'card_number' => $cardNumber, // WARNING: Storing full card number
@@ -344,6 +315,10 @@ class ClientsController extends Controller
                     'card_type' => $this->detectCardType($cardNumber),
                     'processed_at' => now()->toISOString(),
                 ];
+
+                Log::info('STEP 4: Created credit card details array', [
+                    'card_type' => $creditCardDetails['card_type']
+                ]);
 
                 $depositData = [
                     'broker_id' => $user->broker_id,
@@ -358,10 +333,15 @@ class ClientsController extends Controller
                     'credit_card_details' => $creditCardDetails,
                 ];
 
-                Log::info('About to create credit card deposit', ['deposit_data' => $depositData]);
+                Log::info('STEP 5: About to create credit card deposit', ['deposit_data' => $depositData]);
                 
                 $moneyTrx = MoneyTrx::create($depositData);
-                Log::info('Credit card deposit created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
+                
+                Log::info('STEP 6: Credit card deposit created successfully', [
+                    'transaction_id' => $moneyTrx->id, 
+                    'broker_id' => $user->broker_id
+                ]);
+                
                 return redirect()->back()->with('success', 'Credit card deposit submitted successfully!');
                 
             } catch (\Illuminate\Validation\ValidationException $e) {

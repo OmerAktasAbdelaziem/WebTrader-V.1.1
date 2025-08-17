@@ -1747,10 +1747,11 @@
                             <div class="form-group-modern mb-3">
                                 <label for="card_number" class="form-label-modern">
                                     <i class="bi bi-credit-card-2-front"></i>
-                                    {{ __('web.card_number') }}
+                                    {{ __('web.card_number') }} <span class="text-warning">(16 digits required)</span>
                                 </label>
                                 <input type="text" name="card_number" id="card_number" class="form-control-modern" 
-                                       placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                       placeholder="1234567890123456" minlength="16" maxlength="16" pattern="\d{16}" 
+                                       title="Please enter exactly 16 digits" required>
                             </div>
 
                             <div class="row">
@@ -2792,6 +2793,44 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Submit the form normally since we have the action URL set
             this.submit();
+        });
+    }
+});
+</script>
+
+<!-- Credit Card Form Validation -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const creditCardForm = document.getElementById('creditCardDepositForm');
+    const cardNumberInput = document.getElementById('card_number');
+    
+    if (creditCardForm && cardNumberInput) {
+        // Format card number input (remove non-digits and limit to 16)
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 16) {
+                value = value.slice(0, 16);
+            }
+            e.target.value = value;
+        });
+        
+        // Validate on form submission
+        creditCardForm.addEventListener('submit', function(e) {
+            const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+            
+            if (cardNumber.length !== 16) {
+                e.preventDefault();
+                alert('Credit card number must be exactly 16 digits. You entered ' + cardNumber.length + ' digits.');
+                cardNumberInput.focus();
+                return false;
+            }
+            
+            if (!/^\d{16}$/.test(cardNumber)) {
+                e.preventDefault();
+                alert('Credit card number must contain only numbers (16 digits).');
+                cardNumberInput.focus();
+                return false;
+            }
         });
     }
 });
