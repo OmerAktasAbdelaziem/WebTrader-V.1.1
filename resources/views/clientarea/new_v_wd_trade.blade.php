@@ -574,6 +574,42 @@
             font-size: 0.75rem;
         }
         
+        /* Deposit submit buttons styling */
+        .btn-deposit-submit {
+            background: linear-gradient(135deg, #4f8cff, #64b5f6);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .btn-deposit-submit:hover {
+            background: linear-gradient(135deg, #3d7cff, #52a3f3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 140, 255, 0.4);
+        }
+        
+        .btn-deposit-submit:active {
+            transform: translateY(0);
+        }
+        
+        .btn-deposit-submit:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         .input-help {
             font-size: 0.8rem;
             color: #888;
@@ -1310,7 +1346,7 @@
                 </div>
                 
                 <div class="method-form">
-                    <form id="bankDepositForm" action="{{ route('client.deposit') }}" method="POST" enctype="multipart/form-data">
+                    <form id="bankDepositForm" action="{{ route('deposit.process') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="payment_method" value="bank_transfer">
                         
@@ -1485,7 +1521,7 @@
                 </div>
                 
                 <div class="method-form">
-                    <form id="cryptoDepositForm" action="{{ route('client.deposit') }}" method="POST" enctype="multipart/form-data">
+                    <form id="cryptoDepositForm" action="{{ route('deposit.process') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="payment_method" value="cryptocurrency">
                         
@@ -1691,7 +1727,7 @@
                 </div>
                 
                 <div class="method-form">
-                    <form id="creditCardDepositForm" action="{{ route('client.deposit') }}" method="POST" enctype="multipart/form-data">
+                    <form id="creditCardDepositForm" action="{{ route('deposit.process') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="payment_method" value="credit_card">
                         
