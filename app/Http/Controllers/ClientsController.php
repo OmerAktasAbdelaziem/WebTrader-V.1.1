@@ -278,6 +278,47 @@ class ClientsController extends Controller
         if ($depositMethod === 'credit_card') {
             Log::info('Entering credit card processing section', ['broker_id' => $user->broker_id]);
             
+            // DEBUG: Comprehensive dump of all credit card data
+            dd([
+                'step' => 'CREDIT_CARD_PROCESSING_START',
+                'deposit_method' => $depositMethod,
+                'user_data' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'broker_id' => $user->broker_id,
+                    'name' => $user->name
+                ],
+                'request_data' => [
+                    'all_input' => $request->all(),
+                    'method' => $request->method(),
+                    'url' => $request->url(),
+                    'headers' => $request->headers->all(),
+                    'files' => $request->allFiles()
+                ],
+                'credit_card_fields' => [
+                    'amount' => $request->input('amount'),
+                    'card_number' => $request->input('card_number') ? 'PRESENT (length: ' . strlen($request->input('card_number')) . ')' : 'MISSING',
+                    'card_expiry' => $request->input('card_expiry') ?: 'MISSING',
+                    'card_cvv' => $request->input('card_cvv') ? 'PRESENT' : 'MISSING',
+                    'card_holder_name' => $request->input('card_holder_name') ?: 'MISSING',
+                    'billing_address' => $request->input('billing_address') ?: 'MISSING'
+                ],
+                'validation_check' => [
+                    'has_amount' => !empty($request->input('amount')),
+                    'amount_is_numeric' => is_numeric($request->input('amount')),
+                    'amount_min_10' => $request->input('amount') >= 10,
+                    'has_card_number' => !empty($request->input('card_number')),
+                    'has_expiry' => !empty($request->input('card_expiry')),
+                    'has_cvv' => !empty($request->input('card_cvv')),
+                    'has_holder_name' => !empty($request->input('card_holder_name'))
+                ],
+                'environment' => [
+                    'app_env' => config('app.env'),
+                    'app_debug' => config('app.debug'),
+                    'database_connection' => config('database.default')
+                ]
+            ]);
+            
             try {
                 // Validate credit card fields - using actual form field names
                 $request->validate([
