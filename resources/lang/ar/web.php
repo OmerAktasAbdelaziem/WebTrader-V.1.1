@@ -960,5 +960,6 @@ return [
     'ssl_encryption'              => 'تشفير SSL 256 بت',
     'privacy_protected'           => 'محمي الخصوصية',
     'gdpr_compliant'              => 'متوافق مع GDPR',
+    'withdrawal_not_enabled'      => 'طلبات السحب غير مفعلة لحسابك',
 
 ];

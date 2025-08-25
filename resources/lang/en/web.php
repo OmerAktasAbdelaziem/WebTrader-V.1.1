@@ -1020,6 +1020,7 @@ return [
     'amount_available_withdrawal' => 'Amount available for withdrawal',
     'withdraw_funds_from_account' => 'Withdraw funds from your account',
     'withdrawal' => 'Withdrawal',
+    'withdrawal_not_enabled' => 'Withdrawal requests are not enabled for your account',
     
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.

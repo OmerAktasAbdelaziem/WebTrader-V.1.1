@@ -490,6 +490,11 @@ class ClientsController extends Controller
             return redirect()->route('client.login')->with('error', 'Please login first');
         }
 
+        // Check if withdrawal requests are enabled for this client
+        if (!isset($user->options['enableWithdrawalRequest']) || $user->options['enableWithdrawalRequest'] != 1) {
+            return redirect()->route('client.webtrader')->with('error', __('web.withdrawal_not_enabled'));
+        }
+
         $finance = $this->get_financial_data($user->broker_id);
         $allWithdrawals = MoneyTrx::where('broker_id', $user->broker_id)
             ->where('type', 'withdraw')
@@ -511,6 +516,17 @@ class ClientsController extends Controller
             'user_agent' => $request->userAgent(),
             'ip' => $request->ip()
         ]);
+        
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+
+        // Check if withdrawal requests are enabled for this client
+        if (!isset($user->options['enableWithdrawalRequest']) || $user->options['enableWithdrawalRequest'] != 1) {
+            return redirect()->route('client.webtrader')->with('error', __('web.withdrawal_not_enabled'));
+        }
+
         $bankTransferRule = 'nullable|string|required_if:payment_method,bank_transfer';
         $cryptoRule = 'nullable|string|required_if:payment_method,cryptocurrency';
         
@@ -625,6 +641,22 @@ class ClientsController extends Controller
             'user_agent' => $request->userAgent(),
             'ip' => $request->ip()
         ]);
+
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return redirect()->route('client.login')->with('error', 'Please login first');
+        }
+
+        // Check if withdrawal requests are enabled for this client
+        if (!isset($user->options['enableWithdrawalRequest']) || $user->options['enableWithdrawalRequest'] != 1) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('web.withdrawal_not_enabled')
+                ], 403);
+            }
+            return redirect()->route('client.webtrader')->with('error', __('web.withdrawal_not_enabled'));
+        }
 
         $withdrawal_method = $request->input('withdrawal_method');
         
@@ -770,6 +802,15 @@ class ClientsController extends Controller
     public function getWithdrawalHistory(Request $request)
     {
         $user = Auth::guard('client')->user();
+        
+        // Check if withdrawal requests are enabled for this client
+        if (!isset($user->options['enableWithdrawalRequest']) || $user->options['enableWithdrawalRequest'] != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => __('web.withdrawal_not_enabled')
+            ], 403);
+        }
+        
         $type = $request->input('type', 'all');
         
         $query = MoneyTrx::where('broker_id', $user->broker_id)
@@ -811,6 +852,15 @@ class ClientsController extends Controller
     public function cancelWithdrawal(Request $request)
     {
         $user = Auth::guard('client')->user();
+        
+        // Check if withdrawal requests are enabled for this client
+        if (!isset($user->options['enableWithdrawalRequest']) || $user->options['enableWithdrawalRequest'] != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => __('web.withdrawal_not_enabled')
+            ], 403);
+        }
+        
         $withdrawalId = $request->input('withdrawal_id');
 
         try {

@@ -678,7 +678,9 @@
     <i class="bi bi-bar-chart nav-icon markets-icon active" title="{{ __('web.markets') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
     <i class="bi bi-person nav-icon account-icon" title="{{ __('web.account') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
     <i class="bi bi-arrow-up-circle nav-icon deposit-icon" title="{{ __('web.deposit') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
-    <i class="bi bi-arrow-down-circle nav-icon withdrawal-icon" title="{{ __('web.withdrawal') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
+    @if(isset(auth()->guard('client')->user()->options['enableWithdrawalRequest']) && auth()->guard('client')->user()->options['enableWithdrawalRequest'] == 1)
+        <i class="bi bi-arrow-down-circle nav-icon withdrawal-icon" title="{{ __('web.withdrawal') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
+    @endif
     <i class="bi bi-box-arrow-right nav-icon logout-icon" title="{{ __('web.logout') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
 </div>
 
@@ -1271,10 +1273,12 @@
                 <i class="bi bi-arrow-up-circle"></i>
                 <span>{{ __('web.make_deposit') }}</span>
             </button>
-            <button class="action-btn withdrawal-action" onclick="showWithdrawalInterface()">
-                <i class="bi bi-arrow-down-circle"></i>
-                <span>{{ __('web.withdraw_funds') }}</span>
-            </button>
+            @if(isset(auth()->guard('client')->user()->options['enableWithdrawalRequest']) && auth()->guard('client')->user()->options['enableWithdrawalRequest'] == 1)
+                <button class="action-btn withdrawal-action" onclick="showWithdrawalInterface()">
+                    <i class="bi bi-arrow-down-circle"></i>
+                    <span>{{ __('web.withdraw_funds') }}</span>
+                </button>
+            @endif
             <button class="action-btn trading-action" onclick="showMainContent()">
                 <i class="bi bi-graph-up"></i>
                 <span>{{ __('web.start_trading') }}</span>

@@ -1231,10 +1231,12 @@
             <span class="iconify" data-icon="material-symbols:arrow-upward" data-inline="false"></span>
             {{__('web.deposit')}}
         </a>
-        <a href="{{route('client.withdraw')}}" class="sidebar-menu-item">
-            <span class="iconify" data-icon="material-symbols:arrow-downward" data-inline="false"></span>
-            {{__('web.withdraw')}}
-        </a>
+        @if(isset(auth()->guard('client')->user()->options['enableWithdrawalRequest']) && auth()->guard('client')->user()->options['enableWithdrawalRequest'] == 1)
+            <a href="{{route('client.withdraw')}}" class="sidebar-menu-item">
+                <span class="iconify" data-icon="material-symbols:arrow-downward" data-inline="false"></span>
+                {{__('web.withdraw')}}
+            </a>
+        @endif
         <a href="{{route('clientarea.orders')}}" class="sidebar-menu-item">
             <span class="iconify" data-icon="material-symbols:receipt-long" data-inline="false"></span>
             {{__('web.orders')}}

@@ -296,11 +296,13 @@
                                 <i class="fas fa-money-bill-wave parent-icon"></i> <span class="menu-title">{{__('web.deposit')}}</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ route('client.withdraw') }}" class="{{ request()->is('client/withdraw') ? 'active' : '' }}">
-                                <i class="fas fa-hand-holding-usd parent-icon"></i> <span class="menu-title">{{__('web.withdraw')}}</span>
-                            </a>
-                        </li>
+                        @if(isset(auth()->guard('client')->user()->options['enableWithdrawalRequest']) && auth()->guard('client')->user()->options['enableWithdrawalRequest'] == 1)
+                            <li>
+                                <a href="{{ route('client.withdraw') }}" class="{{ request()->is('client/withdraw') ? 'active' : '' }}">
+                                    <i class="fas fa-hand-holding-usd parent-icon"></i> <span class="menu-title">{{__('web.withdraw')}}</span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
 

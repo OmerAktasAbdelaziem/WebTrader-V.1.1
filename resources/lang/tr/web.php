@@ -367,4 +367,5 @@ return [
     'withdrawals_refreshed_successfully' => 'Para çekme işlemleri başarıyla yenilendi',
     'error_refreshing_deposits'   => 'Yatırımları yenilerken hata oluştu',
     'error_refreshing_withdrawals' => 'Para çekme işlemlerini yenilerken hata oluştu',
+    'withdrawal_not_enabled'      => 'Hesabınız için para çekme talepleri etkin değil',
 ];
