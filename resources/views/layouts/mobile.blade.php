@@ -34,8 +34,8 @@
     <!-- Theme Initialization Script - Must be in head to prevent FOUC -->
     <script>
         (function() {
-            // Get theme from localStorage immediately
-            const savedTheme = localStorage.getItem('theme') || 'light';
+            // Get theme from localStorage immediately - default to dark
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             // Apply theme to html element before page renders
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();
@@ -1486,8 +1486,8 @@
     const darkIcon = themeSwitcher.querySelector('.theme-icon-dark');
     const htmlElement = document.documentElement;
     
-    // Get current theme from localStorage or default to light
-    let currentTheme = localStorage.getItem('theme') || 'light';
+    // Get current theme from localStorage or default to dark
+    let currentTheme = localStorage.getItem('theme') || 'dark';
     
     // Apply theme function (for UI updates only, theme already applied in head)
     function updateThemeUI(theme) {
