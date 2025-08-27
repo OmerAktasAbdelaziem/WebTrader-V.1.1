@@ -566,20 +566,24 @@ class ClientsController extends Controller
         $credit = $finance['credit'] ?? 0;
         $bonus = $finance['bonus'] ?? 0;
         
-        $totalAvailable = $balance;
+        // Calculate actual withdrawable balance (excluding credit and bonus if not allowed)
+        $withdrawableBalance = $balance;
         
-        // Add credit to available amount if canWithdrawalCredit is enabled
-        if (isset($options['canWithdrawalCredit']) && $options['canWithdrawalCredit'] == 1) {
-            $totalAvailable += $credit;
+        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
+        if (!isset($options['canWithdrawalCredit']) || $options['canWithdrawalCredit'] != 1) {
+            $withdrawableBalance -= $credit;
         }
         
-        // Add bonus to available amount if canWithdrawalBonus is enabled
-        if (isset($options['canWithdrawalBonus']) && $options['canWithdrawalBonus'] == 1) {
-            $totalAvailable += $bonus;
+        // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
+        if (!isset($options['canWithdrawalBonus']) || $options['canWithdrawalBonus'] != 1) {
+            $withdrawableBalance -= $bonus;
         }
+        
+        // Ensure withdrawable balance is not negative
+        $withdrawableBalance = max(0, $withdrawableBalance);
 
-        // Check if user has sufficient total available funds
-        if ($request->amount > $totalAvailable) {
+        // Check if user has sufficient withdrawable funds
+        if ($request->amount > $withdrawableBalance) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
             }
@@ -710,20 +714,24 @@ class ClientsController extends Controller
         $credit = $finance['credit'] ?? 0;
         $bonus = $finance['bonus'] ?? 0;
         
-        $totalAvailable = $balance;
+        // Calculate actual withdrawable balance (excluding credit and bonus if not allowed)
+        $withdrawableBalance = $balance;
         
-        // Add credit to available amount if canWithdrawalCredit is enabled
-        if (isset($options['canWithdrawalCredit']) && $options['canWithdrawalCredit'] == 1) {
-            $totalAvailable += $credit;
+        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
+        if (!isset($options['canWithdrawalCredit']) || $options['canWithdrawalCredit'] != 1) {
+            $withdrawableBalance -= $credit;
         }
         
-        // Add bonus to available amount if canWithdrawalBonus is enabled
-        if (isset($options['canWithdrawalBonus']) && $options['canWithdrawalBonus'] == 1) {
-            $totalAvailable += $bonus;
+        // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
+        if (!isset($options['canWithdrawalBonus']) || $options['canWithdrawalBonus'] != 1) {
+            $withdrawableBalance -= $bonus;
         }
+        
+        // Ensure withdrawable balance is not negative
+        $withdrawableBalance = max(0, $withdrawableBalance);
 
-        // Check if user has sufficient total available funds
-        if ($request->amount > $totalAvailable) {
+        // Check if user has sufficient withdrawable funds
+        if ($request->amount > $withdrawableBalance) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false, 
@@ -773,17 +781,18 @@ class ClientsController extends Controller
                 'transaction_id' => $moneyTrx->id,
                 'broker_id' => $user->broker_id,
                 'method' => $withdrawal_method,
-                'amount' => $request->amount
+                'amount' => $request->amount,
+                'withdrawable_balance' => $withdrawableBalance
             ]);
 
-            // Calculate new balance (deducted from available total)
-            $newBalance = $balance - $request->amount;
+            // Calculate new withdrawable balance after withdrawal
+            $newWithdrawableBalance = $withdrawableBalance - $request->amount;
 
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => __('web.withdrawal_submitted_successfully'),
-                    'new_balance' => $newBalance,
+                    'new_withdrawable_balance' => $newWithdrawableBalance,
                     'transaction_id' => $moneyTrx->id
                 ], 200);
             }
