@@ -1166,7 +1166,6 @@ class ClientsController extends Controller
         //first using of Clients controller in code should be handeled
    
             $apiUrl = config('services.crm_api.url')."/api/getFinancialData?broker_id=".$broker_id;
-            echo $apiUrl;die;
             $apiKey = config('services.crm_api.key');
 
             $ch = curl_init();
