@@ -368,4 +368,7 @@ return [
     'error_refreshing_deposits'   => 'Yatırımları yenilerken hata oluştu',
     'error_refreshing_withdrawals' => 'Para çekme işlemlerini yenilerken hata oluştu',
     'withdrawal_not_enabled'      => 'Hesabınız için para çekme talepleri etkin değil',
+    'credit_withdrawal_not_enabled' => 'Hesabınız için kredi çekme etkin değil',
+    'bonus_withdrawal_not_enabled'  => 'Hesabınız için bonus çekme etkin değil',
+    'insufficient_funds_for_withdrawal_type' => ':type çekme için yetersiz bakiye',
 ];

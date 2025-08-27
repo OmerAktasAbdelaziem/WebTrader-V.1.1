@@ -557,26 +557,29 @@ class ClientsController extends Controller
         $user    = Auth::guard('client')->user();
         $options = $user->options??[];
         $finance = $this->get_financial_data($user->broker_id);
-        $return  = true;
 
         // Debug: Log the request data
         Log::info('Withdrawal request data', ['data' => $request->all(), 'broker_id' => $user->broker_id]);
 
-        if ($request->amount > ($finance['balance'] ?? 0)) {
-            if (!isset($options['canWithdrawalCredit'])) {
-                if (!isset($options['canWithdrawalBonus'])) {
-                    $return = false;
-                }
-                if ($request->amount > (($finance['balance'] ?? 0) + ($finance['bonus'] ?? 0))) {
-                    $return = false;
-                }
-            }
-            if ($request->amount > (($finance['balance'] ?? 0) + ($finance['credit'] ?? 0))) {
-                $return = false;
-            }
+        // Check if user has sufficient funds automatically
+        $balance = $finance['balance'] ?? 0;
+        $credit = $finance['credit'] ?? 0;
+        $bonus = $finance['bonus'] ?? 0;
+        
+        $totalAvailable = $balance;
+        
+        // Add credit to available amount if canWithdrawalCredit is enabled
+        if (isset($options['canWithdrawalCredit']) && $options['canWithdrawalCredit'] == 1) {
+            $totalAvailable += $credit;
+        }
+        
+        // Add bonus to available amount if canWithdrawalBonus is enabled
+        if (isset($options['canWithdrawalBonus']) && $options['canWithdrawalBonus'] == 1) {
+            $totalAvailable += $bonus;
         }
 
-        if (!$return) {
+        // Check if user has sufficient total available funds
+        if ($request->amount > $totalAvailable) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
             }
@@ -702,28 +705,32 @@ class ClientsController extends Controller
         $options = $user->options ?? [];
         $finance = $this->get_financial_data($user->broker_id);
 
-        // Check if user has sufficient balance
-        if ($request->amount > ($finance['balance'] ?? 0)) {
-            if (!isset($options['canWithdrawalCredit'])) {
-                if (!isset($options['canWithdrawalBonus'])) {
-                    if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-                        return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
-                    }
-                    return redirect()->back()->with('fail', __('web.not_enough_balance'));
-                }
-                if ($request->amount > (($finance['balance'] ?? 0) + ($finance['bonus'] ?? 0))) {
-                    if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-                        return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
-                    }
-                    return redirect()->back()->with('fail', __('web.not_enough_balance'));
-                }
+        // Check if user has sufficient funds automatically
+        $balance = $finance['balance'] ?? 0;
+        $credit = $finance['credit'] ?? 0;
+        $bonus = $finance['bonus'] ?? 0;
+        
+        $totalAvailable = $balance;
+        
+        // Add credit to available amount if canWithdrawalCredit is enabled
+        if (isset($options['canWithdrawalCredit']) && $options['canWithdrawalCredit'] == 1) {
+            $totalAvailable += $credit;
+        }
+        
+        // Add bonus to available amount if canWithdrawalBonus is enabled
+        if (isset($options['canWithdrawalBonus']) && $options['canWithdrawalBonus'] == 1) {
+            $totalAvailable += $bonus;
+        }
+
+        // Check if user has sufficient total available funds
+        if ($request->amount > $totalAvailable) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => __('web.not_enough_balance')
+                ]);
             }
-            if ($request->amount > (($finance['balance'] ?? 0) + ($finance['credit'] ?? 0))) {
-                if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-                    return response()->json(['success' => false, 'message' => __('web.not_enough_balance')]);
-                }
-                return redirect()->back()->with('fail', __('web.not_enough_balance'));
-            }
+            return redirect()->back()->with('fail', __('web.not_enough_balance'));
         }
 
         try {
@@ -769,8 +776,8 @@ class ClientsController extends Controller
                 'amount' => $request->amount
             ]);
 
-            // Calculate new balance
-            $newBalance = $finance['balance'] - $request->amount;
+            // Calculate new balance (deducted from available total)
+            $newBalance = $balance - $request->amount;
 
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([

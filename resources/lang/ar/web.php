@@ -961,5 +961,8 @@ return [
     'privacy_protected'           => 'محمي الخصوصية',
     'gdpr_compliant'              => 'متوافق مع GDPR',
     'withdrawal_not_enabled'      => 'طلبات السحب غير مفعلة لحسابك',
+    'credit_withdrawal_not_enabled' => 'سحب الائتمان غير مفعل لحسابك',
+    'bonus_withdrawal_not_enabled'  => 'سحب المكافأة غير مفعل لحسابك',
+    'insufficient_funds_for_withdrawal_type' => 'أموال :type غير كافية للسحب',
 
 ];
