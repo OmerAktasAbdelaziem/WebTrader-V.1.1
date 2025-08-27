@@ -1188,7 +1188,8 @@ class ClientsController extends Controller
             }
 
             curl_close($ch);
-                
+            echo 'a';
+                dd($finance);
                 return $finance;
     //    $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
     //     $finance = [];

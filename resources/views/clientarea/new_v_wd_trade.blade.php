@@ -894,7 +894,7 @@
                     <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'summary') ? 'active' : '' }}" data-bs-toggle="tab" href="#summary" role="tab">{{ __('web.pending') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'history') ? 'active' : '' }}" data-bs-toggle="tab" href="#history" role="tab">{{ __('web.history') }}</a></li>
                 </ul>
-                <div class="account-summary-inline d-flex flex-wrap">{{dd($finance)}}
+                <div class="account-summary-inline d-flex flex-wrap">
                     <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance'], 2) }}</span></div>
                     <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin'], 2) }}</span></div>
                     <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity'], 2) }}</span></div>
