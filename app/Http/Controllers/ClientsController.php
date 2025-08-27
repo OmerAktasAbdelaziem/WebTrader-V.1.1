@@ -1166,6 +1166,7 @@ class ClientsController extends Controller
         //first using of Clients controller in code should be handeled
    
             $apiUrl = config('services.crm.url')."/api/getFinancialData?broker_id=".$broker_id;
+            echo $apiUrl;die;
             $apiKey = config('services.crm.key');
 
             $ch = curl_init();
@@ -1188,8 +1189,7 @@ class ClientsController extends Controller
             }
 
             curl_close($ch);
-            echo 'a';
-                dd($finance);
+            
                 return $finance;
     //    $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
     //     $finance = [];
