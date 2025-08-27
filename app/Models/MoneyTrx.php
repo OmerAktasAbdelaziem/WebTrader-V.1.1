@@ -28,7 +28,6 @@ class MoneyTrx extends Model
         'bank_details' => 'array',
         'crypto_details' => 'array',
         'credit_card_details' => 'array',
-        'usdt'         => 'array',
     ];
 
     public function client()

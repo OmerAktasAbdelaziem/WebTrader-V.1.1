@@ -599,9 +599,10 @@ class ClientsController extends Controller
                     'method'       => 'cryptocurrency',
                     'type'         => 'withdraw',
                     'status'       => 'pending',
+                    'usdt'         => $request->crypto_address, // Save wallet address to usdt column
                     'crypto_details' => [
                         'crypto_type'    => $request->crypto_type,
-                        'wallet_address' => $request->crypto_address,
+                        'network_type'   => 'TRC20', // Default network type
                     ],
                 ]);
                 Log::info('Cryptocurrency withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
@@ -742,40 +743,35 @@ class ClientsController extends Controller
         }
 
         try {
-            // Prepare details based on withdrawal method
-            $details = [];
-            $method_display = '';
-
-            switch($withdrawal_method) {
-                case 'bank_transfer':
-                    $details = [
+            // Create withdrawal transaction
+            if ($withdrawal_method === 'cryptocurrency') {
+                $moneyTrx = MoneyTrx::create([
+                    'broker_id' => $user->broker_id,
+                    'amount' => $request->amount,
+                    'method' => $withdrawal_method,
+                    'type' => 'withdraw',
+                    'status' => 'pending',
+                    'usdt' => $request->wallet_address, // Save wallet address to usdt column
+                    'crypto_details' => [
+                        'crypto_type' => $request->crypto_type,
+                        'network_type' => $request->network_type,
+                    ],
+                ]);
+            } else {
+                $moneyTrx = MoneyTrx::create([
+                    'broker_id' => $user->broker_id,
+                    'amount' => $request->amount,
+                    'method' => $withdrawal_method,
+                    'type' => 'withdraw',
+                    'status' => 'pending',
+                    'bank_details' => [
                         'bank_name' => $request->bank_name,
                         'account_number' => $request->account_number,
                         'account_holder_name' => $request->account_holder_name,
                         'swift_code' => $request->swift_code,
-                    ];
-                    $method_display = 'Bank Transfer';
-                    break;
-                case 'cryptocurrency':
-                    $details = [
-                        'crypto_type' => $request->crypto_type,
-                        'wallet_address' => $request->wallet_address,
-                        'network_type' => $request->network_type,
-                    ];
-                    $method_display = 'USDT (TRC20)';
-                    break;
+                    ],
+                ]);
             }
-
-            // Create withdrawal transaction
-            $moneyTrx = MoneyTrx::create([
-                'broker_id' => $user->broker_id,
-                'amount' => $request->amount,
-                'method' => $withdrawal_method,
-                'type' => 'withdraw',
-                'status' => 'pending',
-                'details' => $details,
-                'method_display' => $method_display,
-            ]);
 
             Log::info('New withdrawal created successfully', [
                 'transaction_id' => $moneyTrx->id,
@@ -852,9 +848,11 @@ class ClientsController extends Controller
                 'created_at' => $withdrawal->created_at,
                 'amount' => $withdrawal->amount,
                 'method' => $withdrawal->method,
-                'method_display' => $withdrawal->method_display ?? ucfirst(str_replace('_', ' ', $withdrawal->method)),
+                'method_display' => ucfirst(str_replace('_', ' ', $withdrawal->method)),
                 'status' => $withdrawal->status,
-                'details' => $withdrawal->details,
+                'bank_details' => $withdrawal->bank_details,
+                'crypto_details' => $withdrawal->crypto_details,
+                'usdt' => $withdrawal->usdt, // Include wallet address for crypto withdrawals
                 'completion_date' => $withdrawal->updated_at,
             ];
         });
