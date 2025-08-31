@@ -500,11 +500,65 @@ class ClientsController extends Controller
             ->where('type', 'withdraw')
             ->orderByDesc('created_at')
             ->get();
-        $acceptedWithdrawals = $allWithdrawals->where('status', 'approved');
-        $pendingWithdrawals = $allWithdrawals->where('status', 'pending');
-        $rejectedWithdrawals = $allWithdrawals->where('status', 'rejected');
+        
+        // Filter withdrawals using normalized status
+        $acceptedWithdrawals = $allWithdrawals->filter(function($withdrawal) {
+            return $withdrawal->normalized_status === 'approved';
+        });
+        
+        $pendingWithdrawals = $allWithdrawals->filter(function($withdrawal) {
+            return $withdrawal->normalized_status === 'pending';
+        });
+        
+        $rejectedWithdrawals = $allWithdrawals->filter(function($withdrawal) {
+            return $withdrawal->normalized_status === 'rejected';
+        });
 
         return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance'));
+    }
+
+    /**
+     * Debug method to check withdrawal statuses
+     */
+    public function debugWithdrawalStatuses()
+    {
+        $user = auth()->guard('client')->user();
+        if (!$user || !$user->broker_id) {
+            return response()->json(['error' => 'Not authenticated']);
+        }
+
+        $withdrawals = MoneyTrx::where('broker_id', $user->broker_id)
+            ->where('type', 'withdraw')
+            ->select('id', 'status', 'amount', 'created_at')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
+
+        $statusSummary = [];
+        foreach ($withdrawals as $withdrawal) {
+            $originalStatus = $withdrawal->status;
+            $normalizedStatus = $withdrawal->normalized_status;
+            
+            if (!isset($statusSummary[$originalStatus])) {
+                $statusSummary[$originalStatus] = [
+                    'count' => 0,
+                    'normalized_to' => $normalizedStatus,
+                    'examples' => []
+                ];
+            }
+            $statusSummary[$originalStatus]['count']++;
+            $statusSummary[$originalStatus]['examples'][] = [
+                'id' => $withdrawal->id,
+                'amount' => $withdrawal->amount,
+                'date' => $withdrawal->created_at
+            ];
+        }
+
+        return response()->json([
+            'total_withdrawals' => $withdrawals->count(),
+            'withdrawals' => $withdrawals,
+            'status_summary' => $statusSummary
+        ]);
     }
 
     public function submitWithdrawForm(Request $request)

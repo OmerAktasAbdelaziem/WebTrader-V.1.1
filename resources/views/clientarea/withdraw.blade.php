@@ -146,13 +146,7 @@
                                         </td>
                                         <td class="text-white-dark" style="color: white !important;">{{ date('M d, Y', strtotime($transaction->created_at)) }}</td>
                                         <td class="text-white-dark" style="color: white !important;">
-                                            @if($transaction->status == 'approved')
-                                                <span class="badge bg-success">{{__('web.accepted')}}</span>
-                                            @elseif($transaction->status == 'pending')
-                                                <span class="badge bg-warning text-dark">{{__('web.pending')}}</span>
-                                            @else
-                                                <span class="badge bg-danger">{{__('web.rejected')}}</span>
-                                            @endif
+                                            <span class="badge {{ $transaction->status_badge_class }}">{{ $transaction->status_display }}</span>
                                         </td>
                                     </tr>
                                     @endforeach
