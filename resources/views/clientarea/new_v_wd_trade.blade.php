@@ -1103,7 +1103,7 @@
                     <i class="bi bi-wallet2"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>${{ number_format($finance['balance'], 2) }}</h3>
+                    <h3>${{ number_format($finance['balance']??0, 2) }}</h3>
                     <p>{{ __('web.account_balance') }}</p>
                 </div>
                 <div class="stat-trend positive">
@@ -1322,12 +1322,12 @@
                     </div>
                     <div>
                         <h6 class="text-white mb-1">{{ __('web.current_balance') }}</h6>
-                        <h3 class="text-white mb-0">${{ number_format($finance['balance'], 2) }}</h3>
+                        <h3 class="text-white mb-0">${{ number_format($finance['balance']??0, 2) }}</h3>
                     </div>
                 </div>
                 <div class="text-end">
                     <small class="text-white">{{ __('web.available_withdrawal') }}</small>
-                    <div class="text-success font-weight-bold">${{ number_format($finance['balance'], 2) }}</div>
+                    <div class="text-success font-weight-bold">${{ number_format($finance['balance']??0, 2) }}</div>
                 </div>
             </div>
         </div>
@@ -2115,7 +2115,7 @@
                                 </div>
                             </div>
                             <div class="text-end">
-                                <div class="balance-amount">${{ number_format($finance['balance'], 2) }}</div>
+                                <div class="balance-amount">${{ number_format($finance['balance']??0, 2) }}</div>
                                 <div class="balance-equity">{{ __('web.equity') }}: ${{ number_format($finance['equity'], 2) }}</div>
                             </div>
                         </div>
@@ -2259,7 +2259,7 @@
                                         </div>
                                         <div>
                                             <h6 class="text-white mb-1">{{ __('web.available_balance') }}</h6>
-                                            <h4 class="text-white mb-0">${{ number_format($finance['balance'], 2) }}</h4>
+                                            <h4 class="text-white mb-0">${{ number_format($finance['balance']??0, 2) }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -2606,7 +2606,7 @@
                 <!-- Available Balance Alert -->
                 <div class="alert alert-info mb-4">
                     <i class="bi bi-info-circle me-2"></i>
-                    <strong style="font-size: 1.1rem;">{{ __('web.available_balance') }}:</strong> <span style="font-size: 1.1rem;">${{ number_format($finance['balance'], 2) }}</span>
+                    <strong style="font-size: 1.1rem;">{{ __('web.available_balance') }}:</strong> <span style="font-size: 1.1rem;">${{ number_format($finance['balance']??0, 2) }}</span>
                 </div>
 
                 <!-- Tab Content -->
@@ -2622,7 +2622,7 @@
                                     <div class="mb-3">
                                         <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
                                         <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance']??0, 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -2673,7 +2673,7 @@
                                     <div class="mb-3">
                                         <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
                                         <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance'] }}" step="0.01" required>
-                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance'], 2) }}</small>
+                                        <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance']??0, 2) }}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
