@@ -2289,7 +2289,7 @@
                                         </div>
                                         <div>
                                             <h6 class="text-white mb-1">{{ __('web.total_withdrawn') }}</h6>
-                                            <h4 class="text-white mb-0">${{ number_format($finance['totalWithdrawal'], 2) }}</h4>
+                                            <h4 class="text-white mb-0">${{ number_format($finance['totalWithdrawal']??0, 2) }}</h4>
                                         </div>
                                     </div>
                                 </div>
