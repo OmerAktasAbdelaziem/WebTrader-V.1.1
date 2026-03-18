@@ -1252,7 +1252,7 @@ class ClientsController extends Controller
                 echo 'cURL Error: ' . curl_error($ch);
             } else {
                 $data = json_decode($response, true);
-                $finance = $data['finance'];
+                $finance = $data['finance']??0;
             }
 
             curl_close($ch);
