@@ -2621,7 +2621,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="bank_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
-                                        <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance'] }}" step="0.01" required>
+                                        <input type="number" id="bank_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance']??0 }}" step="0.01" required>
                                         <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance']??0, 2) }}</small>
                                     </div>
                                 </div>
@@ -2672,7 +2672,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="crypto_amount" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.amount_usd') }}</label>
-                                        <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance'] }}" step="0.01" required>
+                                        <input type="number" id="crypto_amount" name="amount" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" min="1" max="{{ $finance['balance']??0 }}" step="0.01" required>
                                         <small class="text-white" style="font-size: 0.95rem;">{{ __('web.maximum_amount') }}: ${{ number_format($finance['balance']??0, 2) }}</small>
                                     </div>
                                 </div>
