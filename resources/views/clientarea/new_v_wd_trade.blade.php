@@ -1116,7 +1116,7 @@
                     <i class="bi bi-graph-up"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>${{ number_format($finance['equity'], 2) }}</h3>
+                    <h3>${{ number_format($finance['equity'] ?? 0, 2) }}</h3>
                     <p>{{ __('web.total_equity') }}</p>
                 </div>
                 <div class="stat-trend positive">
@@ -1129,7 +1129,7 @@
                     <i class="bi bi-shield-check"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>${{ number_format($finance['freeMargin'], 2) }}</h3>
+                    <h3>${{ number_format($finance['freeMargin'] ?? 0, 2) }}</h3>
                     <p>{{ __('web.free_margin') }}</p>
                 </div>
                 <div class="stat-trend neutral">
@@ -1142,7 +1142,7 @@
                     <i class="bi bi-lightning"></i>
                 </div>
                 <div class="stat-content">
-                    <h3 class="{{ $finance['currentPL'] >= 0 ? 'text-success' : 'text-danger' }}">${{ number_format($finance['currentPL'], 2) }}</h3>
+                    <h3 class="{{ $finance['currentPL'] >= 0 ? 'text-success' : 'text-danger' }}">${{ number_format($finance['currentPL'] ?? 0, 2) }}</h3>
                     <p>{{ __('web.current_pnl') }}</p>
                 </div>
                 <div class="stat-trend {{ $finance['currentPL'] >= 0 ? 'positive' : 'negative' }}">
@@ -2116,7 +2116,7 @@
                             </div>
                             <div class="text-end">
                                 <div class="balance-amount">${{ number_format($finance['balance']??0, 2) }}</div>
-                                <div class="balance-equity">{{ __('web.equity') }}: ${{ number_format($finance['equity'], 2) }}</div>
+                                <div class="balance-equity">{{ __('web.equity') }}: ${{ number_format($finance['equity'] ?? 0, 2) }}</div>
                             </div>
                         </div>
                     </div>
