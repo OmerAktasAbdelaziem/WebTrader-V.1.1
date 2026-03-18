@@ -896,10 +896,10 @@
                 </ul>
                 <div class="account-summary-inline d-flex flex-wrap">
                     <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance']??0, 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin'], 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity'], 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.credit') }}:</span> <span class="text-light">${{ number_format($finance['credit'], 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.bonus') }}:</span> <span class="text-light">${{ number_format($finance['bonus'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin']??0, 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity']??0, 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.credit') }}:</span> <span class="text-light">${{ number_format($finance['credit']??0, 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.bonus') }}:</span> <span class="text-light">${{ number_format($finance['bonus']??0, 2) }}</span></div>
                 </div>
             </div>
             <div class="tab-content">
