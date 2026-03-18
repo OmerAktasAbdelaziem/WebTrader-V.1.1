@@ -895,7 +895,7 @@
                     <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'history') ? 'active' : '' }}" data-bs-toggle="tab" href="#history" role="tab">{{ __('web.history') }}</a></li>
                 </ul>
                 <div class="account-summary-inline d-flex flex-wrap">
-                    <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance'], 2) }}</span></div>
+                    <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance']??0, 2) }}</span></div>
                     <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin'], 2) }}</span></div>
                     <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity'], 2) }}</span></div>
                     <div><span class="text-secondary">{{ __('web.credit') }}:</span> <span class="text-light">${{ number_format($finance['credit'], 2) }}</span></div>
@@ -2274,7 +2274,7 @@
                                         </div>
                                         <div>
                                             <h6 class="text-white mb-1">{{ __('web.pending_withdrawals') }}</h6>
-                                            <h4 class="text-white mb-0">${{ number_format($finance['pendingWithdrawal'], 2) }}</h4>
+                                            <h4 class="text-white mb-0">${{ number_format($finance['pendingWithdrawal']??0, 2) }}</h4>
                                         </div>
                                     </div>
                                 </div>

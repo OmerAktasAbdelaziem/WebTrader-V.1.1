@@ -27,7 +27,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-
+'pipeline_id' => env('PIPELINE_ID', 1),
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

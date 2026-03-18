@@ -110,6 +110,7 @@ class ClientLoginController extends Controller
         $inputs['source']                   = 'BNC';
         $inputs['favourite_assets']         = ["1", "2", "3", "4", "5", "6", "20", "22", "10", "73", "74"];
         $inputs['asset_group_id']           = 1;
+        $inputs['pipeline_id'] = config('app.pipeline_id');
         $inputs['registeration_ip']         = ClientHelper::getClientIp();
 
     
