@@ -1142,11 +1142,11 @@
                     <i class="bi bi-lightning"></i>
                 </div>
                 <div class="stat-content">
-                    <h3 class="{{ $finance['currentPL'] >= 0 ? 'text-success' : 'text-danger' }}">${{ number_format($finance['currentPL'] ?? 0, 2) }}</h3>
+                    <h3 class="{{ (isset($finance['currentPL']) && $finance['currentPL'] >= 0) ? 'text-success' : 'text-danger' }}">${{ number_format($finance['currentPL'] ?? 0, 2) }}</h3>
                     <p>{{ __('web.current_pnl') }}</p>
                 </div>
-                <div class="stat-trend {{ $finance['currentPL'] >= 0 ? 'positive' : 'negative' }}">
-                    <i class="bi bi-{{ $finance['currentPL'] >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
+                <div class="stat-trend {{ (isset($finance['currentPL']) && $finance['currentPL'] >= 0) ? 'positive' : 'negative' }}">
+                    <i class="bi bi-{{ (isset($finance['currentPL']) && $finance['currentPL'] >= 0) ? 'arrow-up' : 'arrow-down' }}"></i>
                 </div>
             </div>
         </div>
