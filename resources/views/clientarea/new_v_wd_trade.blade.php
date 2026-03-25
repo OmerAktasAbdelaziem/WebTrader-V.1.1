@@ -300,7 +300,7 @@
         
         /* Modal and Backdrop Fixes - Force to Front */
         #newWithdrawalModal {
-            z-index: 99999 !important;
+            z-index: -1 !important;
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -310,19 +310,19 @@
         }
         
         #newWithdrawalModal.show {
-            z-index: 99999 !important;
+            z-index: -1 !important;
             display: block !important;
         }
         
         #newWithdrawalModal .modal-dialog {
-            z-index: 100000 !important;
+            z-index: -1 !important;
             position: relative !important;
             margin: 1.75rem auto !important;
             max-width: 500px !important;
         }
         
         #newWithdrawalModal .modal-content {
-            z-index: 100001 !important;
+            z-index: -1 !important;
             position: relative !important;
             background: white !important;
             border: 1px solid #dee2e6 !important;
@@ -331,7 +331,7 @@
         }
         
         .modal-backdrop {
-            z-index: 99998 !important;
+            z-index: -1 !important;
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -342,13 +342,13 @@
         
         .modal-backdrop.show {
             opacity: 0.5 !important;
-            z-index: 99998 !important;
+            z-index: -1 !important;
         }
         
         /* Force modal to be visible */
         .modal.show {
             display: block !important;
-            z-index: 99999 !important;
+            z-index: -1 !important;
         }
         
         /* Override any conflicting styles */
@@ -3828,7 +3828,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('head').append(`
                     <style id="emergency-modal-css">
                         #newWithdrawalModal {
-                            z-index: 999999 !important;
+                            z-index: -1 !important;
                             position: fixed !important;
                             top: 0 !important;
                             left: 0 !important;
@@ -3841,13 +3841,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             display: block !important;
                         }
                         #newWithdrawalModal .modal-dialog {
-                            z-index: 1000000 !important;
+                            z-index: -1 !important;
                             position: relative !important;
                             margin: 50px auto !important;
                             max-width: 500px !important;
                         }
                         #newWithdrawalModal .modal-content {
-                            z-index: 1000001 !important;
+                            z-index: -1 !important;
                             background: white !important;
                             border-radius: 8px !important;
                             padding: 20px !important;
@@ -3864,7 +3864,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     $(modal).addClass('show').css({
                         'display': 'block',
-                        'z-index': '999999',
+                        'z-index': '-1',
                         'position': 'fixed',
                         'top': '0',
                         'left': '0',
@@ -3908,7 +3908,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Force modal to be visible
             const $modal = $(this);
             $modal.css({
-                'z-index': '99999',
+                'z-index': '-1',
                 'display': 'block',
                 'position': 'fixed',
                 'top': '0',
@@ -3927,7 +3927,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Force backdrop styling
             if ($backdrop.length) {
                 $backdrop.css({
-                    'z-index': '99998',
+                    'z-index': '-1',
                     'opacity': '0.5',
                     'position': 'fixed',
                     'top': '0',

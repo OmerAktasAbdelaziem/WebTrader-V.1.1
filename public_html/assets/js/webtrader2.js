@@ -2370,7 +2370,7 @@ function initializeNotificationPopup() {
     }
 
     // Ensure the close-on-outside-click is only added once globally
-    if (!document.hasAttribute("data-notification-outside-click-initialized")) {
+    if (!document.body.hasAttribute("data-notification-outside-click-initialized")) {
         document.addEventListener("click", function (event) {
             const popup = document.getElementById("notificationPopup");
             const notificationIcon =
@@ -2387,7 +2387,7 @@ function initializeNotificationPopup() {
                 closeNotificationPopup();
             }
         });
-        document.setAttribute(
+        document.body.setAttribute(
             "data-notification-outside-click-initialized",
             "true"
         );
