@@ -38,14 +38,14 @@ class ClientLoginController extends Controller
             'user' => 'required|string',
             'password' => 'required|string',
         ]);
-
+        $pipelineId = config('app.pipeline_id');
         $credentials = $request->only('user', 'password');
 
-        if (Auth::guard('client')->attempt(['email' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0])) {
+        if (Auth::guard('client')->attempt(['email' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0, 'pipeline_id' => $pipelineId])) {
             //$this->authenticated();
             return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
         }
-        if (Auth::guard('client')->attempt(['username' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0])) {
+        if (Auth::guard('client')->attempt(['username' => $credentials['user'], 'password' => $credentials['password'], 'deleted' => 0, 'pipeline_id' => $pipelineId])) {
             //$this->authenticated();
             return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
         }
