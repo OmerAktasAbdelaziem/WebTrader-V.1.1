@@ -1251,12 +1251,13 @@ class ClientsController extends Controller
             if (curl_errno($ch)) {
                 echo 'cURL Error: ' . curl_error($ch);
             } else {
+                
                 $data = json_decode($response, true);
                 $finance = $data['finance']??0;
             }
 
             curl_close($ch);
-            
+            //dd($broker_id);
                 return $finance;
     //    $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
     //     $finance = [];

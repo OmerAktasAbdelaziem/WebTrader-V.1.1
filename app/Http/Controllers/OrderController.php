@@ -41,6 +41,7 @@ class OrderController extends Controller
         
         $broker_id = $user->broker_id;
         $finance = (new \App\Http\Controllers\ClientsController)->get_financial_data($broker_id);
+        
         $inputs['required_margin'] = 0;
         $inputs['ref_currency'] = $asset->currency;
         
@@ -59,7 +60,7 @@ class OrderController extends Controller
 
         if (str_starts_with($order->asset->symbol, 'USD') || (!strpos($order->asset->symbol, 'USD') && $order->asset->currency !== "USD")) {
             $reqMargin = (($request->amount * $inputs['open_price'] * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$inputs['open_price']);
-        } else {
+        } else {//dd($order->asset->size[$group_id]);
             $reqMargin = (($request->amount * $inputs['open_price'] * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$inputs['open_price']);
         }
         if (($order->asset->is_percentage[$group_id]??0)==1) {

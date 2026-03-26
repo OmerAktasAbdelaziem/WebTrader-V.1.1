@@ -24,9 +24,43 @@ class Asset extends Model
         'size',
     ];
 
-    protected $casts=[
-        'is_percentage' => 'array',
-        'leverage'      =>'array',
-        'size'          =>'array',
+    // حذفنا casts الخاصة بالقيم القادمة من assignments
+    protected $casts = [
+        // اترك فقط ما هو فعلاً JSON داخل جدول assets
     ];
+
+    public function assignments()
+    {
+        return $this->hasMany(AssetGroupAssignment::class, 'asset', 'id');
+    }
+
+    /**
+     * Leverage per group
+     */
+    public function getLeverageAttribute()
+    {
+        return $this->relationLoaded('assignments')
+            ? $this->assignments->pluck('leverage', 'asset_group')
+            : $this->assignments()->pluck('leverage', 'asset_group');
+    }
+
+    /**
+     * Size per group
+     */
+    public function getSizeAttribute()
+    {
+        return $this->relationLoaded('assignments')
+            ? $this->assignments->pluck('size', 'asset_group')
+            : $this->assignments()->pluck('size', 'asset_group');
+    }
+
+    /**
+     * is_percentage per group
+     */
+    public function getIsPercentageAttribute()
+    {
+        return $this->relationLoaded('assignments')
+            ? $this->assignments->pluck('is_percentage', 'asset_group')
+            : $this->assignments()->pluck('is_percentage', 'asset_group');
+    }
 }
