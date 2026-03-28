@@ -1,5 +1,7 @@
 @extends('layouts.mobile')
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+<link href="{{ url('css/webtrader.css') }}" rel="stylesheet" />
+<link href="{{ url('css/webtrader2.css') }}" rel="stylesheet" />
 @php
     // Process USDT address to handle JSON format properly
     $client = auth()->guard('client')->user();
@@ -495,6 +497,232 @@
     </form>
 </div>
 
+<div class="document-content-modern">
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- KYC Documents Card -->
+            <div class="col-lg-6">
+                <div class="document-card-modern kyc-card-modern">
+                    <div class="card-header-modern">
+                        <div class="header-icon-section">
+                            <div class="icon-bg-modern kyc-icon-bg">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="header-text-section">
+                                <h3 class="card-title-modern">{{ __('web.kyc_documents') }}</h3>
+                                <p class="card-subtitle-modern">{{ __('web.identity_verification') }}</p>
+                                <div class="requirement-badges">
+                                    <span class="badge-modern required">{{ __('web.required') }}</span>
+                                    <span class="badge-modern one-time">{{ __('web.one_time_upload') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body-modern">
+                        <!-- Upload Zone -->
+                        <div class="upload-zone-modern" id="kycUploadZone">
+                            <div class="dropzone-modern" id="kycDropzone" ondrop="dropHandler(event, 'kyc')" ondragover="dragOverHandler(event)" ondragenter="dragEnterHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                <div class="dropzone-content-modern">
+                                    <div class="upload-icon-modern kyc-upload-icon">
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                    </div>
+                                    <h4 class="upload-title-modern">{{ __('web.drag_drop_browse') }}</h4>
+                                    <p class="upload-description-modern">{{ __('web.or_click_browse') }}</p>
+                                    <div class="file-types-modern">
+                                        <span class="file-type-badge">PDF</span>
+                                        <span class="file-type-badge">JPG</span>
+                                        <span class="file-type-badge">PNG</span>
+                                    </div>
+                                    <p class="size-limit-modern">{{ __('web.maximum_file_size') }}</p>
+                                    <button type="button" class="btn-upload-modern kyc-btn" onclick="triggerKycFileInput()">
+                                        <i class="bi bi-folder-plus"></i>
+                                        <span>{{ __('web.choose_files') }}</span>
+                                    </button>
+                                    <input type="file" id="kycFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileSelect(event, 'kyc')">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Requirements -->
+                        <div class="requirements-section-modern">
+                            <h5 class="requirements-title">{{ __('web.required_documents') }}</h5>
+                            <div class="requirements-list">
+                                <div class="requirement-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span>{{ __('web.government_id') }}</span>
+                                </div>
+                                <div class="requirement-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span>{{ __('web.proof_address') }}</span>
+                                </div>
+                                <div class="requirement-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span>{{ __('web.selfie_with_id') }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded Files Display -->
+                        <div class="uploaded-files-modern" id="kycFilesList" style="display: none;">
+                            <div class="files-header-modern">
+                                <h5><i class="bi bi-files"></i> Uploaded KYC Documents</h5>
+                                <span class="files-count" id="kycFilesCount">0 files</span>
+                            </div>
+                            <div class="files-grid-modern" id="kycFilesContainer">
+                                <!-- Files will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Documents Card -->
+            <div class="col-lg-6">
+                <div class="document-card-modern additional-card-modern">
+                    <div class="card-header-modern">
+                        <div class="header-icon-section">
+                            <div class="icon-bg-modern additional-icon-bg">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <div class="header-text-section">
+                                <h3 class="card-title-modern">Additional Documents</h3>
+                                <p class="card-subtitle-modern">Supporting documents and certificates</p>
+                                <div class="requirement-badges">
+                                    <span class="badge-modern optional">Optional</span>
+                                    <span class="badge-modern multiple">Multiple Uploads</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body-modern">
+                        <!-- Upload Zone -->
+                        <div class="upload-zone-modern" id="additionalUploadZone">
+                            <div class="dropzone-modern" id="additionalDropzone" ondrop="dropHandler(event, 'additional')" ondragover="dragOverHandler(event)" ondragenter="dragEnterHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                <div class="dropzone-content-modern">
+                                    <div class="upload-icon-modern additional-upload-icon">
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                    </div>
+                                    <h4 class="upload-title-modern">Drop additional documents here</h4>
+                                    <p class="upload-description-modern">or click to browse from your computer</p>
+                                    <div class="file-types-modern">
+                                        <span class="file-type-badge">PDF</span>
+                                        <span class="file-type-badge">DOC</span>
+                                        <span class="file-type-badge">DOCX</span>
+                                        <span class="file-type-badge">JPG</span>
+                                        <span class="file-type-badge">PNG</span>
+                                    </div>
+                                    <p class="size-limit-modern">Maximum file size: 10MB per file</p>
+                                    <button type="button" class="btn-upload-modern additional-btn" onclick="triggerAdditionalFileInput()">
+                                        <i class="bi bi-folder-plus"></i>
+                                        <span>Choose Files</span>
+                                    </button>
+                                    <input type="file" id="additionalFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;" onchange="handleFileSelect(event, 'additional')">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Types -->
+                        <div class="document-types-section-modern">
+                            <h5 class="document-types-title">Accepted Document Types:</h5>
+                            <div class="document-types-grid">
+                                <div class="document-type-item">
+                                    <i class="bi bi-building text-primary"></i>
+                                    <span>Business Certificates</span>
+                                </div>
+                                <div class="document-type-item">
+                                    <i class="bi bi-award text-success"></i>
+                                    <span>Professional Licenses</span>
+                                </div>
+                                <div class="document-type-item">
+                                    <i class="bi bi-bank text-warning"></i>
+                                    <span>Financial Statements</span>
+                                </div>
+                                <div class="document-type-item">
+                                    <i class="bi bi-file-text text-info"></i>
+                                    <span>Supporting Documents</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded Files Display -->
+                        <div class="uploaded-files-modern" id="additionalFilesList" style="display: none;">
+                            <div class="files-header-modern">
+                                <h5><i class="bi bi-files"></i> Uploaded Additional Documents</h5>
+                                <span class="files-count" id="additionalFilesCount">0 files</span>
+                            </div>
+                            <div class="files-grid-modern" id="additionalFilesContainer">
+                                <!-- Files will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Progress Section -->
+        <div class="row mt-4" id="uploadProgressSection" style="display: none;">
+            <div class="col-12">
+                <div class="progress-card-modern">
+                    <div class="progress-header-modern">
+                        <div class="progress-icon-modern">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+                        <div class="progress-text-modern">
+                            <h5>Uploading Documents...</h5>
+                            <p id="progressDescription">Preparing files for upload</p>
+                        </div>
+                        <div class="progress-percentage-modern">
+                            <span id="progressText">0%</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-modern">
+                        <div class="progress-fill-modern" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Status Messages -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="upload-messages-modern" id="uploadMessages">
+                    <!-- Success/Error messages will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Information -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="security-info-modern">
+                    <div class="security-icon-modern">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div class="security-content-modern">
+                        <h5>Your Documents Are Secure</h5>
+                        <p>All uploads are protected with bank-level encryption. Your personal information is handled in accordance with international privacy standards and regulations.</p>
+                        <div class="security-features">
+                            <span class="security-feature">
+                                <i class="bi bi-lock"></i>
+                                <span>256-bit SSL Encryption</span>
+                            </span>
+                            <span class="security-feature">
+                                <i class="bi bi-eye-slash"></i>
+                                <span>Privacy Protected</span>
+                            </span>
+                            <span class="security-feature">
+                                <i class="bi bi-check-circle"></i>
+                                <span>GDPR Compliant</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @isset(auth()->guard('client')->user()->options['enableDepositRequest'])
     <div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
@@ -770,6 +998,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        loadExistingFiles();
+        
         window.stepper1 = new Stepper(document.querySelector('#stepper1'));
 
         document.getElementById('payment-method').addEventListener('change', function () {
@@ -810,3 +1040,19 @@
     });
 </script>
 @endsection
+
+<style>
+    .file-item-modern{
+        flex-direction: column;
+    }
+    .file-info{
+        flex-direction: column;
+    }
+    .file-name{
+        white-space: unset !important;
+    }
+</style>
+<script src="{{ url('assets/js/webtrader2.js') }}"></script>
+
+<!-- Modern Document Upload JavaScript -->
+<script src="{{ asset('assets/js/document-upload-modern.js') }}"></script>

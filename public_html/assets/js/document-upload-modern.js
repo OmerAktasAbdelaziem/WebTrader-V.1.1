@@ -46,15 +46,15 @@ function setupDropzone(dropzone, type) {
 // Drag and drop event handlers
 function dragEnterHandler(e) {
     e.preventDefault();
-    e.currentTarget.classList.add("drag-enter");
+    e.currentTarget?.classList.add("drag-enter");
 }
 
 function dragLeaveHandler(e) {
     e.preventDefault();
-    e.currentTarget.classList.remove("drag-enter");
-    e.currentTarget.classList.add("drag-leave");
+    e.currentTarget?.classList.remove("drag-enter");
+    e.currentTarget?.classList.add("drag-leave");
     setTimeout(() => {
-        e.currentTarget.classList.remove("drag-leave");
+        e.currentTarget?.classList.remove("drag-leave");
     }, 300);
 }
 
@@ -71,9 +71,11 @@ function dropHandler(e, type) {
 }
 
 // Handle file selection
-function handleFileSelect(event, type) {
-    const files = event.target.files;
-    handleFiles(files, type);
+function handleFileSelect(event, type) {    
+    const files = event.target?.files;
+    if(files){
+        handleFiles(files, type);
+    }
 }
 
 // Process files
@@ -90,11 +92,29 @@ function handleFiles(files, type) {
 
     // Add files to appropriate array
     if (type === "kyc") {
-        kycFiles = [...kycFiles, ...validFiles];
-        updateFilesList("kyc");
+        const maxFiles = 5; // Limit KYC files
+
+        if (fileArray.length > maxFiles) {
+            showUploadMessage(
+                "error",
+                `You can only upload up to ${maxFiles} KYC documents.`
+            );
+            return;
+        }
+
+        if (validFiles.length > 0) {
+            uploadFiles(validFiles, "kyc");
+
+            kycFiles = [...kycFiles, ...validFiles];
+            updateFilesList("kyc");
+        }
     } else {
-        additionalFiles = [...additionalFiles, ...validFiles];
-        updateFilesList("additional");
+        if (validFiles.length > 0) {
+            uploadFiles(validFiles, "other");
+            
+            additionalFiles = [...additionalFiles, ...validFiles];
+            updateFilesList("additional");
+        }
     }
 
     showNotification(
@@ -176,6 +196,19 @@ function updateFilesList(type) {
 
 // Create file item element
 function createFileItem(file, index, type) {
+    if (type == null) {
+        type = index
+        removeFunc = `deleteFile('${file.id}', '${type}')`;
+        downloadBtn = `<button class="btn-download-file" onclick="downloadFile('${
+                file.id
+            }')">
+                <i class="bi bi-download"></i>
+            </button>`;
+        
+    }else{
+        removeFunc = `removeFile(${index}, '${type}')`;
+        downloadBtn = ``;
+    }
     const fileItem = document.createElement("div");
     fileItem.className = "file-item-modern";
     fileItem.innerHTML = `
@@ -186,7 +219,8 @@ function createFileItem(file, index, type) {
             <div class="file-name">${file.name}</div>
             <div class="file-size">${formatFileSize(file.size)}</div>
         </div>
-        <button type="button" class="btn-remove-file" onclick="removeFile(${index}, '${type}')">
+        ${downloadBtn}
+        <button type="button" class="btn-remove-file" onclick="${removeFunc}">
             <i class="bi bi-x"></i>
         </button>
     `;
@@ -277,7 +311,94 @@ function getNotificationIcon(type) {
             return "info-circle";
     }
 }
+function uploadFiles(files, type) {
+    const formData = new FormData();
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const uploadProgress = document.getElementById("uploadProgress");
 
+    // Show progress bar
+    if (uploadProgress) {
+        uploadProgress.style.display = "block";
+    }
+
+    // Add files to form data
+    files.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+    });
+    formData.append("type", type);
+    formData.append(
+        "_token",
+        document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content")
+    );
+
+    // Create XMLHttpRequest to track upload progress
+    const xhr = new XMLHttpRequest();
+
+    // Upload progress tracking
+    xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            if (progressBar) {
+                progressBar.style.width = percentComplete + "%";
+            }
+            if (progressText) {
+                progressText.textContent = Math.round(percentComplete) + "%";
+            }
+        }
+    });
+
+    // Upload complete
+    xhr.addEventListener("load", () => {
+        if (uploadProgress) {
+            uploadProgress.style.display = "none";
+        }
+
+        try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                showUploadMessage(
+                    "success",
+                    response.message || "Files uploaded successfully!"
+                );
+                displayUploadedFiles(response.files, type);
+
+                // Clear file inputs
+                const kycFileInput = document.getElementById("kycFileInput");
+                const otherDocsFileInput =
+                    document.getElementById("otherDocsFileInput");
+                if (kycFileInput) kycFileInput.value = "";
+                if (otherDocsFileInput) otherDocsFileInput.value = "";
+            } else {
+                showUploadMessage(
+                    "error",
+                    response.message || "Upload failed. Please try again."
+                );
+            }
+        } catch (error) {
+            showUploadMessage("error", "Upload failed. Please try again.");
+        }
+    });
+
+    // Upload error
+    xhr.addEventListener("error", () => {
+        if (uploadProgress) {
+            uploadProgress.style.display = "none";
+        }
+        showUploadMessage(
+            "error",
+            "Upload failed. Please check your connection and try again."
+        );
+    });
+
+    // Send the request
+    xhr.open("POST", "/client/upload-documents", true);
+    xhr.send(formData);
+}
+
+/*
 // Upload files (mock function - integrate with your backend)
 function uploadFiles() {
     if (kycFiles.length === 0 && additionalFiles.length === 0) {
@@ -286,7 +407,6 @@ function uploadFiles() {
     }
 
     showUploadProgress();
-
     // Mock upload process
     simulateUpload(() => {
         hideUploadProgress();
@@ -299,7 +419,7 @@ function uploadFiles() {
         updateFilesList("additional");
     });
 }
-
+*/
 // Show upload progress
 function showUploadProgress() {
     const progressSection = document.getElementById("uploadProgressSection");
@@ -476,6 +596,27 @@ const fileItemStyles = `
     background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.5);
     color: #dc2626;
+}
+
+.btn-download-file {
+    background: rgba(13, 110, 253, 0.1);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    color: #0d6efd;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.btn-download-file:hover {
+    background: rgba(13, 110, 253, 0.2);
+    border-color: rgba(13, 110, 253, 0.5);
+    color: #0b52bd;
 }
 </style>
 `;

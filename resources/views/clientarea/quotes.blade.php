@@ -1528,6 +1528,20 @@
 
 @section('content')
 <div class="container p-0">
+    <div class="container-fluid px-3 py-2">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show py-2 mb-2" role="alert">
+                <small>{{ session('success') }}</small>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if(session('fail'))
+            <div class="alert alert-danger alert-dismissible fade show py-2 mb-2" role="alert">
+                <small>{{ session('fail') }}</small>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+    </div>
     <!-- Market Status Indicator (Hidden for favorites tab, visible for others) -->
     <div class="market-status-bar" id="marketStatusBar" style="display: none;">
         <div class="market-status">

@@ -702,6 +702,20 @@
 
 <!-- Main Trading Interface -->
 <div id="mainContent" class="main-content">
+    <div class="row">
+        <div class="col">
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('fail'))
+                <div class="alert alert-danger">
+                    {{ session('fail') }}
+                </div>
+            @endif
+        </div>
+    </div>
     <div class="row g-3 align-items-start">
 
         <!-- Chart & Tabs -->

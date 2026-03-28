@@ -924,8 +924,8 @@ function uploadFiles(files, type) {
 
 function displayUploadedFiles(files, type) {
     const containerId =
-        type === "kyc" ? "kycFilesContainer" : "otherDocsFilesContainer";
-    const listId = type === "kyc" ? "kycFilesList" : "otherDocsFilesList";
+        type === "kyc" ? "kycFilesContainer" : "additionalFilesContainer";
+    const listId = type === "kyc" ? "kycFilesList" : "additionalFilesList";
 
     const container = document.getElementById(containerId);
     const list = document.getElementById(listId);
@@ -943,6 +943,15 @@ function displayUploadedFiles(files, type) {
         const fileItem = createFileItem(file, type);
         container.appendChild(fileItem);
     });
+
+    const countId = type === "kyc" ? "kycFilesCount" : "additionalFilesCount";
+    const countElement = document.getElementById(countId);
+    if (countElement) {
+        countElement.textContent = `${files.length} file${
+            files.length !== 1 ? "s" : ""
+        }`;
+    }
+
 }
 
 function createFileItem(file, type) {
