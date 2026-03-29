@@ -16,6 +16,8 @@ return [
     'instrument' => 'Instrument',
     'sell' => 'Sell',
     'buy' => 'Buy',
+    'withdraw_request_submitted_successfully' => 'Withdraw request submitted successfully',
+    'deposit_request_submitted_successfully' => 'Deposit request submitted successfully',
     'search_fav_assets' => 'Search Favourite Assets',
     'search_forex_assets' => 'Search Forex Assets...',
     'search_crypto_assets' => 'Search Crypto Assets...',

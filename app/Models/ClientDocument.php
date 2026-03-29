@@ -14,6 +14,8 @@ class ClientDocument extends Model
         'type',
         'original_name',
         'file_path',
+        'path',
+        'status',
         'file_size',
         'mime_type',
         'uploaded_at'

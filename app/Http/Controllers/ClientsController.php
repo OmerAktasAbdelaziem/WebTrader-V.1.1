@@ -1493,6 +1493,7 @@ class ClientsController extends Controller
                 $document->type = $type;
                 $document->original_name = $originalName;
                 $document->file_path = $path;
+                $document->path = url('storage/' . $path);
                 $document->file_size = $file->getSize();
                 $document->mime_type = $file->getMimeType();
                 $document->uploaded_at = now();
@@ -1602,11 +1603,15 @@ class ClientsController extends Controller
 
             $request->validate([
                 'file_id' => 'required|integer'
-            ]);
+            ]);            
 
             $document = \App\Models\ClientDocument::where('id', $request->file_id)
                 ->where('client_id', $client->id)
                 ->first();
+
+            if ($document->type === 'kyc' && $document->status !== 'pending') {
+                return response()->json(['success' => false, 'message' => 'you can\'t delete KYC Document after it is verified.']);
+            }
 
             if (!$document) {
                 return response()->json(['success' => false, 'message' => 'Document not found']);
