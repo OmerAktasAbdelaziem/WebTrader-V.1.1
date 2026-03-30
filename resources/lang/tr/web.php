@@ -371,4 +371,6 @@ return [
     'credit_withdrawal_not_enabled' => 'Hesabınız için kredi çekme etkin değil',
     'bonus_withdrawal_not_enabled'  => 'Hesabınız için bonus çekme etkin değil',
     'insufficient_funds_for_withdrawal_type' => ':type çekme için yetersiz bakiye',
+    'withdraw_request_submitted_successfully' => 'Para çekme isteği başarıyla gönderildi',
+    'deposit_request_submitted_successfully' => 'Para yatırma isteği başarıyla gönderildi',
 ];

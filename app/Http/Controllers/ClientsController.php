@@ -1331,7 +1331,7 @@ class ClientsController extends Controller
         }
 
         // Handle both URL parameter and request body for AJAX compatibility
-        $assetId = $id ?? $request->input('asset_id');
+        $assetId = $id ?? $request->input('asset_id') ?? $request->query('asset_id') ?? $request->query('id');
         $action = $request->input('action'); // 'add' or 'remove'
         $tab = $request->input('tab') ?? $request->tab ?? 'fav';
         

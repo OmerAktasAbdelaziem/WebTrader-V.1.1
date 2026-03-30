@@ -65,6 +65,7 @@ Route::middleware(['clientAuth','role:isEnabled'])->group(function (Router $rout
     $router->get   ('/client/account',                  [ClientsController::class,         'showAccount'             ])->name('clientarea.account');
     $router->put   ('/client/profile',                  [ClientsController::class,         'updateProfile'           ])->name('client.update.profile');
     $router->post  ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
+    $router->get   ('/toggle-favourite',                [ClientsController::class,         'toggleFavourite'         ])->name('toggle.favourite');
     $router->post  ('/order',                           [OrderController::class,           'store'                   ])->name('order.store');
     $router->post  ('/order/multiClose',                [OrderController::class,           'multiClose'              ])->name('order.multiClose');
     $router->post  ('/order/edit/{id}',                 [OrderController::class,           'update'                  ])->name('order.edit');
