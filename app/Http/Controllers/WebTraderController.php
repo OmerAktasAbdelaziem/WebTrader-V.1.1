@@ -125,6 +125,18 @@ class WebTraderController extends Controller
             ->limit(10)
             ->get();
 
+        $balance = $finance['balance'] ?? 0;
+        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
+        if (!isset($client->options['canWithdrawalCredit']) || $client->options['canWithdrawalCredit'] != 1) {
+            $balance -= $finance['credit'] ?? 0;
+        }
+        // // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
+        // if (!isset($client->options['canWithdrawalBonus']) || $client->options['canWithdrawalBonus'] != 1) {
+        //     $balance -= $finance['bonus'] ?? 0;
+        // }
+        // Ensure withdrawable balance is not negative
+        $balance = max(0, $balance);
+
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
         } else {
@@ -146,7 +158,8 @@ class WebTraderController extends Controller
                 'asset',
                 'tab',
                 'chat',
-                'notifications'
+                'notifications',
+                'balance'
             ));
         }
     }

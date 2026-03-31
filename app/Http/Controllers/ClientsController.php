@@ -494,8 +494,24 @@ class ClientsController extends Controller
         if (!isset($user->options['enableWithdrawalRequest']) || $user->options['enableWithdrawalRequest'] != 1) {
             return redirect()->route('client.webtrader')->with('error', __('web.withdrawal_not_enabled'));
         }
-
+        
         $finance = $this->get_financial_data($user->broker_id);
+
+        $balance = $finance['balance'] ?? 0;
+
+        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
+        if (!isset($user->options['canWithdrawalCredit']) || $user->options['canWithdrawalCredit'] != 1) {
+            $balance -= $finance['credit'] ?? 0;
+        }
+        
+        // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
+        if (!isset($user->options['canWithdrawalBonus']) || $user->options['canWithdrawalBonus'] != 1) {
+            $balance -= $finance['bonus'] ?? 0;
+        }
+
+        // Ensure withdrawable balance is not negative
+        $balance = max(0, $balance);
+
         $allWithdrawals = MoneyTrx::where('broker_id', $user->broker_id)
             ->where('type', 'withdraw')
             ->orderByDesc('created_at')
@@ -514,7 +530,7 @@ class ClientsController extends Controller
             return $withdrawal->normalized_status === 'rejected';
         });
 
-        return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance'));
+        return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance', 'balance'));
     }
 
     /**
