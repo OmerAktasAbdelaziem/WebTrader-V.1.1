@@ -125,17 +125,7 @@ class WebTraderController extends Controller
             ->limit(10)
             ->get();
 
-        $balance = $finance['balance'] ?? 0;
-        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
-        if (!isset($client->options['canWithdrawalCredit']) || $client->options['canWithdrawalCredit'] != 1) {
-            $balance -= $finance['credit'] ?? 0;
-        }
-        // // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
-        // if (!isset($client->options['canWithdrawalBonus']) || $client->options['canWithdrawalBonus'] != 1) {
-        //     $balance -= $finance['bonus'] ?? 0;
-        // }
-        // Ensure withdrawable balance is not negative
-        $balance = max(0, $balance);
+        $balance = max(0, $finance['withdraw_balance'] ?? 0);
 
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
@@ -174,6 +164,7 @@ class WebTraderController extends Controller
         return view('clientarea.webtrader_loading');
     }
 
+    /*
     public function get_financial_data($broker_id)
     {
         // Check if broker_id is null or invalid
@@ -272,6 +263,69 @@ class WebTraderController extends Controller
         $finance['equity']  = $finance['balance'] +  $finance['currentPL'];
         $finance['freeMargin'] = ($finance['balance']-$finance['usedMargin'])+$finance['bonus'];
 
+        return $finance;
+    }
+    */
+    
+    public function get_financial_data($broker_id)
+    {
+        // Check if broker_id is null or invalid
+        if (!$broker_id) {
+            Log::warning('get_financial_data called with null broker_id', [
+                'broker_id' => $broker_id,
+                'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5)
+            ]);
+            
+            // Return default empty finance data
+            return [
+                'last_deposit_amount' => 0.00,
+                'totalWithdrawal' => 0.00,
+                'pendingWithdrawal' => 0.00,
+                'totalDeposit' => 0.00,
+                'ftd_amount' => 0.00,
+                'usedMargin' => 0.00,
+                'currentPL' => 0.00,
+                'balance' => 0.00,
+                'credit' => 0.00,
+                'bonus' => 0.00,
+                'totalOrders' => 0,
+                'activeOrders' => 0,
+                'closedOrders' => 0,
+                'totalPnL' => 0.00,
+                'winOrders' => 0,
+                'loseOrders' => 0,
+                'equity' => 0.00,
+                'freeMargin' => 0.00,
+            ];
+        }
+    
+        //TODO: The code in this function should be edited, so curl should be applied by service, service code ready
+
+        $apiUrl = config('services.crm_api.url')."/api/getFinancialData?broker_id=".$broker_id;
+        $apiKey = config('services.crm_api.key');
+
+        $ch = curl_init();
+
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $apiUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "X-API-KEY: $apiKey"
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $finance = [];
+        if (curl_errno($ch)) {
+            echo 'cURL Error: ' . curl_error($ch);
+        } else {
+            
+            $data = json_decode($response, true);
+            $finance = $data['finance']??0;
+        }
+
+        curl_close($ch);
+            
         return $finance;
     }
 

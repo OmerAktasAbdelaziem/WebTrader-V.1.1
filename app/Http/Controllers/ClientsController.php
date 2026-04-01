@@ -497,20 +497,7 @@ class ClientsController extends Controller
         
         $finance = $this->get_financial_data($user->broker_id);
 
-        $balance = $finance['balance'] ?? 0;
-
-        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
-        if (!isset($user->options['canWithdrawalCredit']) || $user->options['canWithdrawalCredit'] != 1) {
-            $balance -= $finance['credit'] ?? 0;
-        }
-        
-        // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
-        if (!isset($user->options['canWithdrawalBonus']) || $user->options['canWithdrawalBonus'] != 1) {
-            $balance -= $finance['bonus'] ?? 0;
-        }
-
-        // Ensure withdrawable balance is not negative
-        $balance = max(0, $balance);
+        $balance = max(0, $finance['withdraw_balance'] ?? 0);
 
         $allWithdrawals = MoneyTrx::where('broker_id', $user->broker_id)
             ->where('type', 'withdraw')
@@ -631,26 +618,28 @@ class ClientsController extends Controller
         // Debug: Log the request data
         Log::info('Withdrawal request data', ['data' => $request->all(), 'broker_id' => $user->broker_id]);
 
-        // Check if user has sufficient funds automatically
-        $balance = $finance['balance'] ?? 0;
-        $credit = $finance['credit'] ?? 0;
-        $bonus = $finance['bonus'] ?? 0;
+        // // Check if user has sufficient funds automatically
+        // $balance = $finance['balance'] ?? 0;
+        // $credit = $finance['credit'] ?? 0;
+        // $bonus = $finance['bonus'] ?? 0;
         
-        // Calculate actual withdrawable balance (excluding credit and bonus if not allowed)
-        $withdrawableBalance = $balance;
+        // // Calculate actual withdrawable balance (excluding credit and bonus if not allowed)
+        // $withdrawableBalance = $balance;
         
-        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
-        if (!isset($options['canWithdrawalCredit']) || $options['canWithdrawalCredit'] != 1) {
-            $withdrawableBalance -= $credit;
-        }
+        // // If credit withdrawal is not enabled, subtract credit from withdrawable balance
+        // if (!isset($options['canWithdrawalCredit']) || $options['canWithdrawalCredit'] != 1) {
+        //     $withdrawableBalance -= $credit;
+        // }
         
-        // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
-        if (!isset($options['canWithdrawalBonus']) || $options['canWithdrawalBonus'] != 1) {
-            $withdrawableBalance -= $bonus;
-        }
+        // // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
+        // if (!isset($options['canWithdrawalBonus']) || $options['canWithdrawalBonus'] != 1) {
+        //     $withdrawableBalance -= $bonus;
+        // }
         
-        // Ensure withdrawable balance is not negative
-        $withdrawableBalance = max(0, $withdrawableBalance);
+        // // Ensure withdrawable balance is not negative
+        // $withdrawableBalance = max(0, $withdrawableBalance);
+        $withdrawableBalance = max(0, $finance['withdraw_balance'] ?? 0);
+
 
         // Check if user has sufficient withdrawable funds
         if ($request->amount > $withdrawableBalance) {
@@ -780,26 +769,28 @@ class ClientsController extends Controller
         $options = $user->options ?? [];
         $finance = $this->get_financial_data($user->broker_id);
 
-        // Check if user has sufficient funds automatically
-        $balance = $finance['balance'] ?? 0;
-        $credit = $finance['credit'] ?? 0;
-        $bonus = $finance['bonus'] ?? 0;
+        // // Check if user has sufficient funds automatically
+        // $balance = $finance['balance'] ?? 0;
+        // $credit = $finance['credit'] ?? 0;
+        // $bonus = $finance['bonus'] ?? 0;
         
-        // Calculate actual withdrawable balance (excluding credit and bonus if not allowed)
-        $withdrawableBalance = $balance;
+        // // Calculate actual withdrawable balance (excluding credit and bonus if not allowed)
+        // $withdrawableBalance = $balance;
         
-        // If credit withdrawal is not enabled, subtract credit from withdrawable balance
-        if (!isset($options['canWithdrawalCredit']) || $options['canWithdrawalCredit'] != 1) {
-            $withdrawableBalance -= $credit;
-        }
+        // // If credit withdrawal is not enabled, subtract credit from withdrawable balance
+        // if (!isset($options['canWithdrawalCredit']) || $options['canWithdrawalCredit'] != 1) {
+        //     $withdrawableBalance -= $credit;
+        // }
         
-        // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
-        if (!isset($options['canWithdrawalBonus']) || $options['canWithdrawalBonus'] != 1) {
-            $withdrawableBalance -= $bonus;
-        }
+        // // If bonus withdrawal is not enabled, subtract bonus from withdrawable balance  
+        // if (!isset($options['canWithdrawalBonus']) || $options['canWithdrawalBonus'] != 1) {
+        //     $withdrawableBalance -= $bonus;
+        // }
         
-        // Ensure withdrawable balance is not negative
-        $withdrawableBalance = max(0, $withdrawableBalance);
+        // // Ensure withdrawable balance is not negative
+        // $withdrawableBalance = max(0, $withdrawableBalance);
+        $withdrawableBalance = max(0, $finance['withdraw_balance'] ?? 0);
+
 
         // Check if user has sufficient withdrawable funds
         if ($request->amount > $withdrawableBalance) {
