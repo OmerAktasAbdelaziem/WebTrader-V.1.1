@@ -1543,6 +1543,7 @@ class ClientsController extends Controller
                         'name' => $doc->original_name,
                         'size' => $doc->file_size,
                         'type' => $doc->mime_type,
+                        'status' => $doc->status,
                         'uploaded_at' => $doc->uploaded_at->toISOString()
                     ];
                 });
@@ -1556,6 +1557,7 @@ class ClientsController extends Controller
                         'name' => $doc->original_name,
                         'size' => $doc->file_size,
                         'type' => $doc->mime_type,
+                        'status' => $doc->status,
                         'uploaded_at' => $doc->uploaded_at->toISOString()
                     ];
                 });

@@ -198,7 +198,13 @@ function updateFilesList(type) {
 function createFileItem(file, index, type) {
     if (type == null) {
         type = index
-        removeFunc = `deleteFile('${file.id}', '${type}')`;
+        
+        if (type === 'kyc' && file.status !== 'pending') {
+            removeFunc = null;
+        }else{
+            removeFunc = `deleteFile('${file.id}', '${type}')`;
+        }
+
         downloadBtn = `<button class="btn-download-file" onclick="downloadFile('${
                 file.id
             }')">
@@ -220,10 +226,14 @@ function createFileItem(file, index, type) {
             <div class="file-size">${formatFileSize(file.size)}</div>
         </div>
         ${downloadBtn}
-        <button type="button" class="btn-remove-file" onclick="${removeFunc}">
-            <i class="bi bi-x"></i>
-        </button>
     `;
+    if(removeFunc){        
+        fileItem.innerHTML += `
+            <button type="button" class="btn-remove-file" onclick="${removeFunc}">
+                <i class="bi bi-x"></i>
+            </button>
+        `;
+    }
     return fileItem;
 }
 

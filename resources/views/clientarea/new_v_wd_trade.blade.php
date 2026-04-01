@@ -2234,12 +2234,21 @@
                                     @csrf
                                     <input type="hidden" name="withdrawal_method" value="cryptocurrency">
                                     
-                                    <div class="form-group-modern mb-3">
+                                    {{-- <div class="form-group-modern mb-3">
                                         <label for="crypto_withdrawal_amount" class="form-label-modern">
                                             <i class="bi bi-currency-dollar"></i>
                                             {{ __('web.withdrawal_amount') }}
                                         </label>
                                         <input type="number" name="amount" id="crypto_withdrawal_amount" class="form-control-modern" placeholder="0.00" min="10" step="0.01" required>
+                                    </div> --}}
+                                    
+                                    <div class="form-group-modern mb-3">
+                                        <label for="crypto_withdrawal_amount" class="form-label-modern">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            {{ __('web.withdrawal_amount') }}
+                                        </label>     
+                                        <input type="number" class="form-control-modern" id="crypto_withdrawal_amount" name="amount" min="1" max="{{ $balance ?? (isset($finance['balance']) ? $finance['balance'] : 0) }}" step="0.01" required placeholder="0.00">
+                                        <small class="form-text text-white">{{__('web.max')}}: ${{ number_format($balance ?? (isset($finance['balance']) ? $finance['balance'] : 0), 2) }}</small>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -4054,6 +4063,14 @@ function initializeWithdrawalFunctionality() {
     });
 
     $('#bank_withdrawal_amount').on('input', function() {
+        const amount = parseFloat($(this).val());
+        const maxAmount = parseFloat('{{ $balance ?? (isset($finance['balance']) ? $finance['balance'] : 0) }}');
+        if (amount > maxAmount) {
+            $(this).val(maxAmount);
+        }
+    });
+
+    $('#crypto_withdrawal_amount').on('input', function() {
         const amount = parseFloat($(this).val());
         const maxAmount = parseFloat('{{ $balance ?? (isset($finance['balance']) ? $finance['balance'] : 0) }}');
         if (amount > maxAmount) {
