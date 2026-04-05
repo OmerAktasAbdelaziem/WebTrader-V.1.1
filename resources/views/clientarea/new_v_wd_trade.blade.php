@@ -640,6 +640,9 @@
         .btn-submit-modern:active {
             transform: translateY(0);
         }
+        .sidebar>*{
+            margin-block: 0 !important;
+        }
     </style>
 
 </head>
@@ -673,7 +676,7 @@
     </i>
     <i class="bi bi-chat-dots nav-icon chat-icon" title="{{ __('web.live_chat') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
 
-    <div style="height: 20px; border-bottom: 2px solid #4f8cff; margin: 0 10px 20px 10px; opacity: 0.7;"></div>
+    <div style="width: 20px; border-bottom: 2px solid #4f8cff; margin: 0 10px 20px 10px; opacity: 0.7;"></div>
 
     <i class="bi bi-bar-chart nav-icon markets-icon active" title="{{ __('web.markets') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
     <i class="bi bi-person nav-icon account-icon" title="{{ __('web.account') }}" style="font-size:1.2rem; padding:0.3rem;"></i>
@@ -902,186 +905,187 @@
         <!-- Tabs and Account Summary Row -->
         <div class="col-12">
             <div class="details-panel">
-            <div class="d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-center">
-                <ul class="nav nav-tabs border-0 mb-0" id="tradeTabs" role="tablist">
-                    <li class="nav-item"><a class="nav-link {{ (!isset($tab) || $tab == 'openedOrder') ? 'active' : '' }}" data-bs-toggle="tab" href="#openOrders" role="tab">{{ __('web.orders') }}</a></li>
-                    <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'summary') ? 'active' : '' }}" data-bs-toggle="tab" href="#summary" role="tab">{{ __('web.pending') }}</a></li>
-                    <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'history') ? 'active' : '' }}" data-bs-toggle="tab" href="#history" role="tab">{{ __('web.history') }}</a></li>
-                </ul>
-                <div class="account-summary-inline d-flex flex-wrap">
-                    <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance']??0, 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin']??0, 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity']??0, 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.credit') }}:</span> <span class="text-light">${{ number_format($finance['credit']??0, 2) }}</span></div>
-                    <div><span class="text-secondary">{{ __('web.bonus') }}:</span> <span class="text-light">${{ number_format($finance['bonus']??0, 2) }}</span></div>
+                <div class="d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-center">
+                    <ul class="nav nav-tabs border-0 mb-0" id="tradeTabs" role="tablist">
+                        <li class="nav-item"><a class="nav-link {{ (!isset($tab) || $tab == 'openedOrder') ? 'active' : '' }}" data-bs-toggle="tab" href="#openOrders" role="tab">{{ __('web.orders') }}</a></li>
+                        <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'summary') ? 'active' : '' }}" data-bs-toggle="tab" href="#summary" role="tab">{{ __('web.pending') }}</a></li>
+                        <li class="nav-item"><a class="nav-link {{ (isset($tab) && $tab == 'history') ? 'active' : '' }}" data-bs-toggle="tab" href="#history" role="tab">{{ __('web.history') }}</a></li>
+                    </ul>
+                    <div class="account-summary-inline d-flex flex-wrap">
+                        <div><span class="text-secondary">{{ __('web.balance') }}:</span> <span class="text-light">${{ number_format($finance['balance']??0, 2) }}</span></div>
+                        <div><span class="text-secondary">{{ __('web.margin') }}:</span> <span class="text-light">${{ number_format($finance['freeMargin']??0, 2) }}</span></div>
+                        <div><span class="text-secondary">{{ __('web.equity') }}:</span> <span class="text-light">${{ number_format($finance['equity']??0, 2) }}</span></div>
+                        <div><span class="text-secondary">{{ __('web.credit') }}:</span> <span class="text-light">${{ number_format($finance['credit']??0, 2) }}</span></div>
+                        <div><span class="text-secondary">{{ __('web.bonus') }}:</span> <span class="text-light">${{ number_format($finance['bonus']??0, 2) }}</span></div>
+                    </div>
                 </div>
-            </div>
-            <div class="tab-content">
-                <!-- Open Orders Tab -->
-                <div class="tab-pane fade {{ (!isset($tab) || $tab == 'openedOrder') ? 'show active' : '' }}" id="openOrders" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-sm align-middle mb-0">
-                            <thead>
-                            <tr>
-                                <th>{{ __('web.instrument') }}</th>
-                                <th>{{ __('web.type') }}</th>
-                                <th>{{ __('web.size') }}</th>
-                                <th>{{ __('web.entry_price') }}</th>
-                                <th>{{ __('web.current_price') }}</th>
-                                <th>{{ __('web.stop_loss') }}</th>
-                                <th>{{ __('web.take_profit') }}</th>
-                                <th>{{ __('web.created_at') }}</th>
-                                <th>{{ __('web.profit_loss') }}</th>
-                                <th>{{ __('web.actions') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($openOrders as $order)
-                                    <tr>
-                                        <td>{{ $order->asset->name }}</td>
-                                        <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
-                                        <td>{{ number_format($order->amount, 2) }}</td>
-                                        <td>{{ number_format($order->open_price, 5) }}</td>
-                                        <td>{{ number_format($order->type == 1 ? $order->asset->bid_price : $order->asset->ask_price, 5) }}</td>
-                                        <td>{{ $order->s_l ?? '-' }}</td>
-                                        <td>{{ $order->s_p ?? '-' }}</td>
-                                        <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
-                                        <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}">
-                                            <div class="pnl-display {{$order->pnl < 0 ? 'text-danger' : 'text-success'}}">
-                                                <strong>$ <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <form action="{{ route('order.close', ['id'=>$order->id]) }}" class="d-inline" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('web.confirm_close_order') }}')">
-                                                    {{ __('web.close') }}
+                <div class="tab-content">
+                    <!-- Open Orders Tab -->
+                    <div class="tab-pane fade {{ (!isset($tab) || $tab == 'openedOrder') ? 'show active' : '' }}" id="openOrders" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-sm align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th>{{ __('web.instrument') }}</th>
+                                    <th>{{ __('web.type') }}</th>
+                                    <th>{{ __('web.size') }}</th>
+                                    <th>{{ __('web.entry_price') }}</th>
+                                    <th>{{ __('web.current_price') }}</th>
+                                    <th>{{ __('web.stop_loss') }}</th>
+                                    <th>{{ __('web.take_profit') }}</th>
+                                    <th>{{ __('web.created_at') }}</th>
+                                    <th>{{ __('web.profit_loss') }}</th>
+                                    <th>{{ __('web.actions') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($openOrders as $order)
+                                        <tr>
+                                            <td>{{ $order->asset->name }}</td>
+                                            <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
+                                            <td>{{ number_format($order->amount, 2) }}</td>
+                                            <td>{{ number_format($order->open_price, 5) }}</td>
+                                            <td>{{ number_format($order->type == 1 ? $order->asset->bid_price : $order->asset->ask_price, 5) }}</td>
+                                            <td>{{ $order->s_l ?? '-' }}</td>
+                                            <td>{{ $order->s_p ?? '-' }}</td>
+                                            <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
+                                            <td class="pnl @if($order->closed_at == null && $order->status == 'active' && $order->pnl) active_pnl @endif" data-order-id="{{$order->id}}">
+                                                <div class="pnl-display {{$order->pnl < 0 ? 'text-danger' : 'text-success'}}">
+                                                    <strong>$ <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('order.close', ['id'=>$order->id]) }}" class="d-inline" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('web.confirm_close_order') }}')">
+                                                        {{ __('web.close') }}
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-warning btn-sm ms-1" onclick="editOrder({{ $order->id }}, '{{ $order->s_l }}', '{{ $order->s_p }}')" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                                    {{ __('web.edit') }}
                                                 </button>
-                                            </form>
-                                            <button type="button" class="btn btn-warning btn-sm ms-1" onclick="editOrder({{ $order->id }}, '{{ $order->s_l }}', '{{ $order->s_p }}')" data-bs-toggle="modal" data-bs-target="#editOrderModal">
-                                                {{ __('web.edit') }}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="10" class="text-center text-muted">
-                                        {{ __('web.no_orders_found') }}
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <!-- History Tab -->
-                <div class="tab-pane fade {{ (isset($tab) && $tab == 'history') ? 'show active' : '' }}" id="history" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-sm align-middle mb-0">
-                            <thead>
-                            <tr>
-                                <th>{{ __('web.instrument') }}</th>
-                                <th>{{ __('web.type') }}</th>
-                                <th>{{ __('web.size') }}</th>
-                                <th>{{ __('web.open_price') }}</th>
-                                <th>{{ __('web.close_price') }}</th>
-                                <th>{{ __('web.stop_loss') }}</th>
-                                <th>{{ __('web.take_profit') }}</th>
-                                <th>{{ __('web.opened') }}</th>
-                                <th>{{ __('web.closed') }}</th>
-                                <th>{{ __('web.profit_loss') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($closedOrders as $order)
+                                            </td>
+                                        </tr>
+                                    @empty
                                     <tr>
-                                        <td>{{ $order->asset->name }}</td>
-                                        <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
-                                        <td>{{ number_format($order->amount, 2) }}</td>
-                                        <td>{{ number_format($order->open_price, 5) }}</td>
-                                        <td>{{ number_format($order->close_price, 5) }}</td>
-                                        <td>{{ $order->s_l ?? '-' }}</td>
-                                        <td>{{ $order->s_p ?? '-' }}</td>
-                                        <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
-                                        <td>{{ date('d/m/Y H:i', strtotime($order->closed_at)) }}</td>
-                                        <td class="pnl-display {{ $order->pnl < 0 ? 'text-danger' : 'text-success' }}">
-                                            <strong>$ <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
+                                        <td colspan="10" class="text-center text-muted">
+                                            {{ __('web.no_orders_found') }}
                                         </td>
                                     </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="10" class="text-center text-muted">
-                                        {{ __('web.no_orders_found') }}
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    @if($closedOrders->hasPages())
-                        <div class="mt-3 d-flex justify-content-center">
-                            {{ $closedOrders->appends(request()->query())->links() }}
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                    @endif
-                </div>
-                
-                <!-- Pending Orders Tab -->
-                <div class="tab-pane fade {{ (isset($tab) && $tab == 'summary') ? 'show active' : '' }}" id="summary" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-sm align-middle mb-0">
-                            <thead>
-                            <tr>
-                                <th>Instrument</th>
-                                <th>Type</th>
-                                <th>Size</th>
-                                <th>Order Price</th>
-                                <th>Current Price</th>
-                                <th>Stop Loss</th>
-                                <th>Take Profit</th>
-                                <th>Created at</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($pendingOrders as $order)
+                    </div>
+                    
+                    <!-- History Tab -->
+                    <div class="tab-pane fade {{ (isset($tab) && $tab == 'history') ? 'show active' : '' }}" id="history" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-sm align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th>{{ __('web.instrument') }}</th>
+                                    <th>{{ __('web.type') }}</th>
+                                    <th>{{ __('web.size') }}</th>
+                                    <th>{{ __('web.open_price') }}</th>
+                                    <th>{{ __('web.close_price') }}</th>
+                                    <th>{{ __('web.stop_loss') }}</th>
+                                    <th>{{ __('web.take_profit') }}</th>
+                                    <th>{{ __('web.opened') }}</th>
+                                    <th>{{ __('web.closed') }}</th>
+                                    <th>{{ __('web.profit_loss') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($closedOrders as $order)
+                                        <tr>
+                                            <td>{{ $order->asset->name }}</td>
+                                            <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
+                                            <td>{{ number_format($order->amount, 2) }}</td>
+                                            <td>{{ number_format($order->open_price, 5) }}</td>
+                                            <td>{{ number_format($order->close_price, 5) }}</td>
+                                            <td>{{ $order->s_l ?? '-' }}</td>
+                                            <td>{{ $order->s_p ?? '-' }}</td>
+                                            <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
+                                            <td>{{ date('d/m/Y H:i', strtotime($order->closed_at)) }}</td>
+                                            <td class="pnl-display {{ $order->pnl < 0 ? 'text-danger' : 'text-success' }}">
+                                                <strong>$ <span class="pnl-value">{{ number_format($order->pnl, 2) }}</span></strong>
+                                            </td>
+                                        </tr>
+                                    @empty
                                     <tr>
-                                        <td>{{ $order->asset->name }}</td>
-                                        <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
-                                        <td>{{ number_format($order->amount, 2) }}</td>
-                                        <td>{{ number_format($order->open_price, 5) }}</td>
-                                        <td>{{ number_format($order->type == 1 ? $order->asset->ask_price : $order->asset->bid_price, 5) }}</td>
-                                        <td>{{ $order->s_l ?? '-' }}</td>
-                                        <td>{{ $order->s_p ?? '-' }}</td>
-                                        <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
-                                        <td>
-                                            <span class="badge bg-warning text-dark">
-                                                {{ ucfirst(str_replace('_', ' ', $order->status)) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <form action="{{ route('order.delete', ['id'=>$order->id]) }}" class="d-inline" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('web.confirm_cancel_pending_order') }}')">
-                                                    {{ __('web.cancel') }}
-                                                </button>
-                                            </form>
-                                            <button type="button" class="btn btn-warning btn-sm ms-1" onclick="editOrder({{ $order->id }}, '{{ $order->s_l }}', '{{ $order->s_p }}')" data-bs-toggle="modal" data-bs-target="#editOrderModal">
-                                                {{ __('web.edit') }}
-                                            </button>
+                                        <td colspan="10" class="text-center text-muted">
+                                            {{ __('web.no_orders_found') }}
                                         </td>
                                     </tr>
-                                @empty
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        @if($closedOrders->hasPages())
+                            <div class="mt-3 d-flex justify-content-center">
+                                {{ $closedOrders->appends(request()->query())->links() }}
+                            </div>
+                        @endif
+                    </div>
+                    
+                    <!-- Pending Orders Tab -->
+                    <div class="tab-pane fade {{ (isset($tab) && $tab == 'summary') ? 'show active' : '' }}" id="summary" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-sm align-middle mb-0">
+                                <thead>
                                 <tr>
-                                    <td colspan="10" class="text-center text-muted">
-                                        {{ __('web.no_pending_orders') }}
-                                    </td>
+                                    <th>Instrument</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th>Order Price</th>
+                                    <th>Current Price</th>
+                                    <th>Stop Loss</th>
+                                    <th>Take Profit</th>
+                                    <th>Created at</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @forelse ($pendingOrders as $order)
+                                        <tr>
+                                            <td>{{ $order->asset->name }}</td>
+                                            <td>{{ $order->type == 1 ? __('web.buy') : __('web.sell') }}</td>
+                                            <td>{{ number_format($order->amount, 2) }}</td>
+                                            <td>{{ number_format($order->open_price, 5) }}</td>
+                                            <td>{{ number_format($order->type == 1 ? $order->asset->ask_price : $order->asset->bid_price, 5) }}</td>
+                                            <td>{{ $order->s_l ?? '-' }}</td>
+                                            <td>{{ $order->s_p ?? '-' }}</td>
+                                            <td>{{ date('d/m/Y H:i', strtotime($order->created_at)) }}</td>
+                                            <td>
+                                                <span class="badge bg-warning text-dark">
+                                                    {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('order.delete', ['id'=>$order->id]) }}" class="d-inline" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('web.confirm_cancel_pending_order') }}')">
+                                                        {{ __('web.cancel') }}
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-warning btn-sm ms-1" onclick="editOrder({{ $order->id }}, '{{ $order->s_l }}', '{{ $order->s_p }}')" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                                    {{ __('web.edit') }}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="10" class="text-center text-muted">
+                                            {{ __('web.no_pending_orders') }}
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3358,6 +3362,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Toggle dropdown
         function toggleDropdown() {
             const isOpen = languageDropdown.classList.contains('show');
+            closeNotificationPopup();
             
             if (isOpen) {
                 closeDropdown();

@@ -409,18 +409,19 @@ function showAccountInterface() {
         "important"
     );
     interfaces.accountInterface.style.setProperty("opacity", "1", "important");
-    interfaces.accountInterface.style.setProperty(
-        "z-index",
-        "9999",
-        "important"
-    );
-    interfaces.accountInterface.style.setProperty(
-        "position",
-        "fixed",
-        "important"
-    );
-    interfaces.accountInterface.style.setProperty("top", "0", "important");
-    interfaces.accountInterface.style.setProperty("left", "0", "important");
+    interfaces.accountInterface.style.setProperty("z-index", "1", "important");
+    // interfaces.accountInterface.style.setProperty(
+    //     "z-index",
+    //     "9999",
+    //     "important"
+    // );
+    // interfaces.accountInterface.style.setProperty(
+    //     "position",
+    //     "fixed",
+    //     "important"
+    // );
+    // interfaces.accountInterface.style.setProperty("top", "0", "important");
+    // interfaces.accountInterface.style.setProperty("left", "0", "important");
     interfaces.accountInterface.style.setProperty("width", "100%", "important");
     interfaces.accountInterface.style.setProperty(
         "height",
@@ -466,18 +467,19 @@ function showDepositInterface() {
         "important"
     );
     interfaces.depositInterface.style.setProperty("opacity", "1", "important");
-    interfaces.depositInterface.style.setProperty(
-        "z-index",
-        "9999",
-        "important"
-    );
-    interfaces.depositInterface.style.setProperty(
-        "position",
-        "fixed",
-        "important"
-    );
-    interfaces.depositInterface.style.setProperty("top", "0", "important");
-    interfaces.depositInterface.style.setProperty("left", "0", "important");
+    interfaces.depositInterface.style.setProperty("z-index", "1", "important");
+    // interfaces.depositInterface.style.setProperty(
+    //     "z-index",
+    //     "9999",
+    //     "important"
+    // );
+    // interfaces.depositInterface.style.setProperty(
+    //     "position",
+    //     "fixed",
+    //     "important"
+    // );
+    // interfaces.depositInterface.style.setProperty("top", "0", "important");
+    // interfaces.depositInterface.style.setProperty("left", "0", "important");
     interfaces.depositInterface.style.setProperty("width", "100%", "important");
     interfaces.depositInterface.style.setProperty(
         "height",
@@ -527,18 +529,20 @@ function showWithdrawalInterface() {
         "1",
         "important"
     );
-    interfaces.withdrawalInterface.style.setProperty(
-        "z-index",
-        "9999",
-        "important"
-    );
-    interfaces.withdrawalInterface.style.setProperty(
-        "position",
-        "fixed",
-        "important"
-    );
-    interfaces.withdrawalInterface.style.setProperty("top", "0", "important");
-    interfaces.withdrawalInterface.style.setProperty("left", "0", "important");
+    interfaces.withdrawalInterface.style.setProperty("z-index", "1", "important");
+
+    // interfaces.withdrawalInterface.style.setProperty(
+    //     "z-index",
+    //     "9999",
+    //     "important"
+    // );
+    // interfaces.withdrawalInterface.style.setProperty(
+    //     "position",
+    //     "fixed",
+    //     "important"
+    // );
+    // interfaces.withdrawalInterface.style.setProperty("top", "0", "important");
+    // interfaces.withdrawalInterface.style.setProperty("left", "0", "important");
     interfaces.withdrawalInterface.style.setProperty(
         "width",
         "100%",
@@ -581,13 +585,14 @@ function showChatInterface() {
         "important"
     );
     interfaces.chatInterface.style.setProperty("opacity", "1", "important");
-    interfaces.chatInterface.style.setProperty("z-index", "9999", "important");
-    interfaces.chatInterface.style.setProperty(
-        "position",
-        "fixed",
-        "important"
-    );
-    interfaces.chatInterface.style.setProperty("top", "0", "important");
+    interfaces.chatInterface.style.setProperty("z-index", "1", "important");
+    // interfaces.chatInterface.style.setProperty("z-index", "9999", "important");
+    // interfaces.chatInterface.style.setProperty(
+    //     "position",
+    //     "fixed",
+    //     "important"
+    // );
+    // interfaces.chatInterface.style.setProperty("top", "0", "important");
     interfaces.chatInterface.style.setProperty("left", "0", "important");
     interfaces.chatInterface.style.setProperty("width", "100%", "important");
     interfaces.chatInterface.style.setProperty("height", "100vh", "important");
@@ -639,24 +644,29 @@ function showUploadDocumentInterface() {
     );
     interfaces.uploadDocumentInterface.style.setProperty(
         "z-index",
-        "9999",
+        "1",
         "important"
     );
-    interfaces.uploadDocumentInterface.style.setProperty(
-        "position",
-        "fixed",
-        "important"
-    );
-    interfaces.uploadDocumentInterface.style.setProperty(
-        "top",
-        "0",
-        "important"
-    );
-    interfaces.uploadDocumentInterface.style.setProperty(
-        "left",
-        "0",
-        "important"
-    );
+    // interfaces.uploadDocumentInterface.style.setProperty(
+    //     "z-index",
+    //     "9999",
+    //     "important"
+    // );
+    // interfaces.uploadDocumentInterface.style.setProperty(
+    //     "position",
+    //     "fixed",
+    //     "important"
+    // );
+    // interfaces.uploadDocumentInterface.style.setProperty(
+    //     "top",
+    //     "0",
+    //     "important"
+    // );
+    // interfaces.uploadDocumentInterface.style.setProperty(
+    //     "left",
+    //     "0",
+    //     "important"
+    // );
     interfaces.uploadDocumentInterface.style.setProperty(
         "width",
         "100%",
@@ -2286,6 +2296,13 @@ function showNotificationPopup() {
     const popup = document.getElementById("notificationPopup");
     const notificationIcon = document.querySelector(".notification-icon");
 
+    const languageSwitcherBtn = document.querySelector('.language-switcher-btn');
+    const languageDropdown = document.querySelector('.language-dropdown');
+
+    languageDropdown.classList.remove('show');
+    languageSwitcherBtn.classList.remove('active');
+
+
     if (!popup || !notificationIcon) {
         return;
     }
@@ -2527,7 +2544,7 @@ function updateURLParameter(key, value) {
 // Function to update sidebar active state
 function updateSidebarActive(selector) {
     // شيل الـ active class من كل العناصر الأساسية في الـ sidebar
-    document.querySelectorAll(".sidebar .nav-link").forEach((item) => {
+    document.querySelectorAll(".sidebar .nav-icon").forEach((item) => {
         item.classList.remove("active");
         item.style.removeProperty("background-color");
         item.style.removeProperty("color");

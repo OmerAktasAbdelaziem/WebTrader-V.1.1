@@ -78,8 +78,8 @@ body {
         box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
     }
     .sidebar img {
-        width: 48px;
-        margin-bottom: 2.5rem;
+        /* width: 48px;
+        margin-bottom: 2.5rem; */
         border-radius: 12px;
         box-shadow: 0 2px 8px #0004;
     }
