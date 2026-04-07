@@ -1744,11 +1744,15 @@
         
         if (Array.isArray(priceData)) {
             priceData.forEach(function(asset) {
-                updateMobileSingleAssetPrice(asset);
+                if(asset.id == $('#asset-select').find(':selected').val()){
+                    updateMobileSingleAssetPrice(asset);
+                }
             });
         } else if (priceData.assets && Array.isArray(priceData.assets)) {
             priceData.assets.forEach(function(asset) {
-                updateMobileSingleAssetPrice(asset);
+                if(asset.id == $('#asset-select').find(':selected').val()){
+                    updateMobileSingleAssetPrice(asset);
+                }
             });
         } else {
             updateMobileSingleAssetPrice(priceData);

@@ -373,4 +373,8 @@ return [
     'insufficient_funds_for_withdrawal_type' => ':type çekme için yetersiz bakiye',
     'withdraw_request_submitted_successfully' => 'Para çekme isteği başarıyla gönderildi',
     'deposit_request_submitted_successfully' => 'Para yatırma isteği başarıyla gönderildi',
+    'order_closedsl_notification'     => 'İşlem stop loss seviyesinde kapatıldı.',
+    'order_closedtp_notification'     => 'İşlem kârla kapatıldı.',
+    'estimated_profit'                => 'Tahmini kar',
+    'estimated_loss'                  => 'Tahmini kayıp',
 ];

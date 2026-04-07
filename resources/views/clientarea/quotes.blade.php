@@ -1995,6 +1995,10 @@
                                     </div>
                                     <div id="stopLossContainer" class="mt-3" style="display: none;">
                                         <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l" placeholder="{{__('web.stop_loss_price')}}">
+                                        <label class="text-danger">
+                                            {{__('web.estimated_loss')}}
+                                            <strong id="expectedLoss">0</strong>
+                                        </label>
                                     </div>
                                 </div>
                                 
@@ -2008,6 +2012,10 @@
                                     </div>
                                     <div id="takeProfitContainer" class="mt-3" style="display: none;">
                                         <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p" placeholder="{{__('web.take_profit_price')}}">
+                                        <label class="text-success">
+                                            {{__('web.estimated_profit')}}
+                                            <strong id="expectedProfit">0</strong>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -2913,6 +2921,21 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.show();
     };
 
+    const stopLossInput = document.getElementById('stopLossInput');
+    const takeProfitInput = document.getElementById('takeProfitInput');
+    
+    function calcExpectedLoss() {
+        let loss = (document.getElementById('bid').value - stopLossInput.value) / document.getElementById('newAmount').value;
+        loss = Math.abs(loss);
+        expectedLoss.textContent = parseFloat(loss).toFixed(4);
+    }
+
+    function calcExpectedProfit() {
+        let profit = (takeProfitInput.value - document.getElementById('bid').value) / document.getElementById('newAmount').value;
+        profit = Math.abs(profit);
+        expectedProfit.textContent = parseFloat(profit).toFixed(4);
+    }
+
     // Function to update prices in the new order modal
     function updatePrices() {
         const assetSelect = document.getElementById('asset-select');
@@ -2929,6 +2952,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update hidden inputs
             document.getElementById('bid').value = bidPrice;
             document.getElementById('ask').value = askPrice;
+
+            calcExpectedLoss();
+            calcExpectedProfit();
         }
     }
 
@@ -2957,6 +2983,32 @@ document.addEventListener('DOMContentLoaded', function() {
             takeProfitContainer.style.display = this.checked ? 'block' : 'none';
         });
     }
+
+    if (stopLossInput) {
+        stopLossInput.addEventListener('change', function(e) {
+            calcExpectedLoss()
+        });
+    }
+
+    if (takeProfitInput) {
+        takeProfitInput.addEventListener('change', function() {            
+            calcExpectedProfit()
+        });
+    }
+
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === "attributes" && mutation.attributeName === "value") {
+                calcExpectedLoss()
+                calcExpectedProfit()
+            }
+        });
+    });
+
+    observer.observe(document.getElementById('bid'), {
+        attributes: true // Listen for attribute changes
+    });
+
 
     // Handle stop loss and take profit toggles for pending order modal
     const stopLossSwitchPending = document.getElementById('stopLossSwitchPending');

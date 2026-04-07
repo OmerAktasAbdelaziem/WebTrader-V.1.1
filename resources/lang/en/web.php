@@ -1026,7 +1026,11 @@ return [
     'credit_withdrawal_not_enabled' => 'Credit withdrawal is not enabled for your account',
     'bonus_withdrawal_not_enabled' => 'Bonus withdrawal is not enabled for your account',
     'insufficient_funds_for_withdrawal_type' => 'Insufficient :type funds for withdrawal',
-    
+    'order_closedsl_notification'     => 'The trade has been closed at the stop loss.',
+    'order_closedtp_notification'     => 'The trade was closed at a profit.',
+    'estimated_profit'                => 'Estimated profit',
+    'estimated_loss'                  => 'Estimated loss',
+
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];
