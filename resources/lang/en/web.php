@@ -1030,7 +1030,7 @@ return [
     'order_closedtp_notification'     => 'The trade was closed at a profit.',
     'estimated_profit'                => 'Estimated profit',
     'estimated_loss'                  => 'Estimated loss',
-
+    'submit'                          => 'Submit',
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

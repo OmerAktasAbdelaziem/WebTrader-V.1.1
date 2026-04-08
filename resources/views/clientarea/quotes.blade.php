@@ -1258,7 +1258,12 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
     }
-    
+    .btn-success.active{
+        box-shadow: 0 0 0 .25rem rgba(23, 160, 14, 0.52);
+    }
+    .btn-danger.active{
+        box-shadow: 0 0 0 .25rem rgba(225, 83, 97, .5);
+    }
     /* Dark theme nav tabs */
     [data-theme="dark"] .nav-tabs {
         border-bottom-color: var(--border-light) !important;
@@ -2019,20 +2024,33 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="btn-group-modern">
-                                <button type="submit" class="btn btn-success" formaction="{{route('order.store',['type' => 1])}}">
+                                <label>
+                                    {{__('web.required_margin')}}
+                                    <strong id="required_margin">-</strong>
+                                </label>
+                            </div>
+
+                            <div class="btn-group-modern">
+                                <button type="button" class="btn btn-success active" id="buy-btn">
                                     <i class="fas fa-arrow-up me-2"></i>
                                     {{__('web.buy')}} <strong id="buy-price">0</strong>
                                 </button>
-                                <button type="submit" class="btn btn-danger" formaction="{{route('order.store',['type' => 2])}}">
+                                <button type="button" class="btn btn-danger" id="sell-btn">
                                     <i class="fas fa-arrow-down me-2"></i>
                                     {{__('web.sell')}} <strong id="sell-price">0</strong>
+                                </button>
+                            </div>
+
+                            <div class="btn-group-modern">
+                                <button type="submit" class="btn btn-secondary">
+                                    {{__('web.submit')}}
                                 </button>
                             </div>
                             
                             <input type="hidden" class="form-control" name="bid" id="bid" value="0" readonly>
                             <input type="hidden" class="form-control" name="ask" id="ask" value="0" readonly>
+                            <input type="hidden" class="form-control" name="type" id="type-input" value="1" readonly>
                         </form>
                     </div>
                 </div>
@@ -2923,17 +2941,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const stopLossInput = document.getElementById('stopLossInput');
     const takeProfitInput = document.getElementById('takeProfitInput');
-    
+    const buyBtn = document.getElementById('buy-btn');
+    const sellBtn = document.getElementById('sell-btn');
+    const typeInput = document.getElementById('type-input');
+    const newAmount = document.getElementById('newAmount');
+    const requiredMargin = document.getElementById('required_margin');
+
     function calcExpectedLoss() {
-        let loss = (document.getElementById('bid').value - stopLossInput.value) / document.getElementById('newAmount').value;
-        loss = Math.abs(loss);
-        expectedLoss.textContent = parseFloat(loss).toFixed(4);
+        if(!document.getElementById('newAmount').value || !stopLossInput.value){
+            expectedLoss.textContent = parseFloat(0).toFixed(4);
+            return;
+        }
+        if(typeInput.value == 1){
+            let openPrice = document.getElementById('ask').value;
+            let loss = (openPrice - stopLossInput.value) / document.getElementById('newAmount').value;
+            loss = Math.abs(loss);
+            expectedLoss.textContent = parseFloat(loss).toFixed(4);
+        }else{
+            let openPrice = document.getElementById('bid').value;
+            let loss = (stopLossInput.value - openPrice) / document.getElementById('newAmount').value;
+            loss = Math.abs(loss);
+            expectedLoss.textContent = parseFloat(loss).toFixed(4);
+        }
+
     }
 
     function calcExpectedProfit() {
-        let profit = (takeProfitInput.value - document.getElementById('bid').value) / document.getElementById('newAmount').value;
-        profit = Math.abs(profit);
-        expectedProfit.textContent = parseFloat(profit).toFixed(4);
+        if(!document.getElementById('newAmount').value || !takeProfitInput.value){
+            expectedProfit.textContent = parseFloat(0).toFixed(4);
+            return;
+        }
+        if(typeInput.value == 1){
+            let openPrice = document.getElementById('ask').value;
+            let profit = (takeProfitInput.value - openPrice) / document.getElementById('newAmount').value;
+            profit = Math.abs(profit);
+            expectedProfit.textContent = parseFloat(profit).toFixed(4);
+        }else{
+            let openPrice = document.getElementById('bid').value;
+            let profit = (openPrice - takeProfitInput.value) / document.getElementById('newAmount').value;
+            profit = Math.abs(profit);
+            expectedProfit.textContent = parseFloat(profit).toFixed(4);
+        }
     }
 
     // Function to update prices in the new order modal
@@ -2955,6 +3003,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             calcExpectedLoss();
             calcExpectedProfit();
+            getRequiredMarginFromApi();
         }
     }
 
@@ -2986,12 +3035,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (stopLossInput) {
         stopLossInput.addEventListener('change', function(e) {
+            const ask = parseFloat(document.getElementById('ask').value);
+            const bid = parseFloat(document.getElementById('bid').value);
+            const val = parseFloat(this.value);
+
+            if(typeInput.value == 1){
+                if(val >= ask){
+                    this.value = ask
+                    return;
+                }
+            }else{
+                if(val <= bid){
+                    this.value = bid
+                    return;
+                }
+            }
+
             calcExpectedLoss()
         });
     }
 
     if (takeProfitInput) {
-        takeProfitInput.addEventListener('change', function() {            
+        takeProfitInput.addEventListener('change', function() {
+            const ask = parseFloat(document.getElementById('ask').value);
+            const bid = parseFloat(document.getElementById('bid').value);
+            const val = parseFloat(this.value);
+            if(typeInput.value == 1){
+                if(val <= ask){
+                    this.value = ask
+                    return;
+                }
+            }else{
+                if(val >= bid){
+                    this.value = bid
+                    return;
+                }
+            }     
             calcExpectedProfit()
         });
     }
@@ -3009,6 +3088,78 @@ document.addEventListener('DOMContentLoaded', function() {
         attributes: true // Listen for attribute changes
     });
 
+
+    if (buyBtn) {
+        buyBtn.addEventListener('click', function() {
+            typeInput.value = 1;
+            const event = new Event('change', { bubbles: true });
+            typeInput.dispatchEvent(event);
+
+            sellBtn.classList.remove('active');
+            this.classList.add('active');
+            takeProfitInput.value = '';
+            stopLossInput.value = '';
+
+        });
+    }
+    
+    if (sellBtn) {
+        sellBtn.addEventListener('click', function() {
+            typeInput.value = 2;
+            const event = new Event('change', { bubbles: true });
+            typeInput.dispatchEvent(event);
+
+            buyBtn.classList.remove('active');
+            this.classList.add('active');  
+            takeProfitInput.value = '';
+            stopLossInput.value = '';
+        });
+    }
+
+    if (typeInput) {
+        typeInput.addEventListener('change', function() {
+            calcExpectedLoss();
+            calcExpectedProfit();
+        });
+    }
+    
+    if (typeInput) {
+        newAmount.addEventListener('change', function() {
+            calcExpectedLoss();
+            calcExpectedProfit();
+            getRequiredMarginFromApi();
+        });
+    }
+    
+    function getRequiredMarginFromApi() {
+        const assetSelect = document.getElementById('asset-select');
+
+        const assetId = assetSelect.value;
+        const amount = newAmount.value;
+        const open_price = typeInput.value == 1 ? document.getElementById('ask').value : document.getElementById('bid').value;
+        if(!assetId || !amount || !open_price){
+            return;
+        }
+
+        $.ajax({
+            url: `{{config('services.crm_api.url')}}/api/getRequiredMargin/${assetId}?amount=${amount}&open_price=${open_price}`,
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000,
+            headers: {
+                'X-API-KEY': "{{config('services.crm_api.key')}}",
+                'Accept': 'application/json'
+            },
+            beforeSend: function() {
+                requiredMargin.textContent = '-';
+            },
+            success: function(response) {
+                requiredMargin.textContent = response.required_margin;
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+    }
 
     // Handle stop loss and take profit toggles for pending order modal
     const stopLossSwitchPending = document.getElementById('stopLossSwitchPending');
