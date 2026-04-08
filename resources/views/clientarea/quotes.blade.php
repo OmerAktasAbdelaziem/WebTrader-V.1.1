@@ -2995,21 +2995,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calcExpectedProfit() {
+        let openPrice;
         if(!document.getElementById('newAmount').value || !takeProfitInput.value){
             expectedProfit.textContent = parseFloat(0).toFixed(4);
             return;
         }
         if(typeInput.value == 1){
             let openPrice = document.getElementById('ask').value;
-            let profit = (takeProfitInput.value - openPrice) * document.getElementById('newAmount').value;
-            profit = Math.abs(profit);
-            expectedProfit.textContent = parseFloat(profit).toFixed(4);
+            //let profit = (takeProfitInput.value - openPrice) * document.getElementById('newAmount').value;
+            //profit = Math.abs(profit);
+            //expectedProfit.textContent = parseFloat(profit).toFixed(4);
         }else{
             let openPrice = document.getElementById('bid').value;
-            let profit = (openPrice - takeProfitInput.value) * document.getElementById('newAmount').value;
-            profit = Math.abs(profit);
-            expectedProfit.textContent = parseFloat(profit).toFixed(4);
+            //let profit = (openPrice - takeProfitInput.value) * document.getElementById('newAmount').value;
+            //profit = Math.abs(profit);
+            //expectedProfit.textContent = parseFloat(profit).toFixed(4);
         }
+
+        $.ajax({
+            //url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder/${clientId}/${assetId}/${typeInput.value}/${openPrice}/${stopLossInput.value}/${document.getElementById('newAmount').value}`,
+            url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder?clientId=${clientId}&asset=${assetId}&orderType=${typeInput.value}&openPrice=${openPrice}&currentPrice=${stopLossInput.value}&amount=${document.getElementById('newAmount').value}`,
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000,
+            headers: {
+                'X-API-KEY': "{{config('services.crm_api.key')}}",
+                'Accept': 'application/json'
+            },
+            beforeSend: function() {
+                requiredMargin.textContent = '-';
+            },
+            success: function(response) {
+                requiredMargin.textContent = response.required_margin;
+                profit = Math.abs(response.pnl);
+                expectedProfit.textContent = parseFloat(profit).toFixed(4);
+            },
+            error: function(xhr, status, error) {
+            }
+        });
     }
 
     // Function to update prices in the new order modal
