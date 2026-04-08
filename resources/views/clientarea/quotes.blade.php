@@ -2946,23 +2946,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeInput = document.getElementById('type-input');
     const newAmount = document.getElementById('newAmount');
     const requiredMargin = document.getElementById('required_margin');
+    const clientId = {{auth()->guard('client')->user()->id}};
 
     function calcExpectedLoss() {
+        let openPrice;
+
         if(!document.getElementById('newAmount').value || !stopLossInput.value){
             expectedLoss.textContent = parseFloat(0).toFixed(4);
             return;
         }
+        let assetId = document.getElementById('asset-select').value;
+
+        
         if(typeInput.value == 1){
-            let openPrice = document.getElementById('ask').value;
-            let loss = (openPrice - stopLossInput.value) / document.getElementById('newAmount').value;
-            loss = Math.abs(loss);
-            expectedLoss.textContent = parseFloat(loss).toFixed(4);
+            openPrice = document.getElementById('ask').value;
+            //let loss = (openPrice - stopLossInput.value) / document.getElementById('newAmount').value;
+            //loss = Math.abs(loss);
+            //expectedLoss.textContent = parseFloat(loss).toFixed(4);
         }else{
-            let openPrice = document.getElementById('bid').value;
-            let loss = (stopLossInput.value - openPrice) / document.getElementById('newAmount').value;
-            loss = Math.abs(loss);
-            expectedLoss.textContent = parseFloat(loss).toFixed(4);
+            openPrice = document.getElementById('bid').value;
+            //let loss = (stopLossInput.value - openPrice) / document.getElementById('newAmount').value;
+            //loss = Math.abs(loss);
+            //expectedLoss.textContent = parseFloat(loss).toFixed(4);
         }
+
+        $.ajax({
+            //url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder/${clientId}/${assetId}/${typeInput.value}/${openPrice}/${stopLossInput.value}/${document.getElementById('newAmount').value}`,
+            url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder?clientId=${clientId}&asset=${assetId}&orderType=${typeInput.value}&openPrice=${openPrice}&currentPrice=${stopLossInput.value}&amount=${document.getElementById('newAmount').value}`,
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000,
+            headers: {
+                'X-API-KEY': "{{config('services.crm_api.key')}}",
+                'Accept': 'application/json'
+            },
+            beforeSend: function() {
+                requiredMargin.textContent = '-';
+            },
+            success: function(response) {
+                requiredMargin.textContent = response.required_margin;
+                loss = Math.abs(response.pnl);
+            expectedLoss.textContent = parseFloat(loss).toFixed(4);
+            },
+            error: function(xhr, status, error) {
+            }
+        });
 
     }
 
@@ -2973,12 +3001,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if(typeInput.value == 1){
             let openPrice = document.getElementById('ask').value;
-            let profit = (takeProfitInput.value - openPrice) / document.getElementById('newAmount').value;
+            let profit = (takeProfitInput.value - openPrice) * document.getElementById('newAmount').value;
             profit = Math.abs(profit);
             expectedProfit.textContent = parseFloat(profit).toFixed(4);
         }else{
             let openPrice = document.getElementById('bid').value;
-            let profit = (openPrice - takeProfitInput.value) / document.getElementById('newAmount').value;
+            let profit = (openPrice - takeProfitInput.value) * document.getElementById('newAmount').value;
             profit = Math.abs(profit);
             expectedProfit.textContent = parseFloat(profit).toFixed(4);
         }
