@@ -1083,7 +1083,7 @@ class ClientsController extends Controller
         return view('clientarea.charts', compact('symbol', 'interval', 'style'));
     }
 
-    public function getPriceData(Request $request)
+   /* public function getPriceData(Request $request)
     {
         // If a specific symbol is requested, return data for that symbol
         if ($request->has('symbol')) {
@@ -1174,7 +1174,83 @@ class ClientsController extends Controller
                 'timestamp' => time()
             ], 500);
         }
+    }*/
+
+    public function getPriceData(Request $request)
+{
+    // إذا تم طلب رمز محدد
+    if ($request->has('symbol')) {
+        $symbol = $request->symbol;
+
+        // جلب الأصل من قاعدة البيانات
+        $asset = Asset::where('symbol', $symbol)->first();
+
+        if (!$asset) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Symbol not found',
+                'timestamp' => time()
+            ], 404);
+        }
+
+        // إعادة البيانات الحقيقية بدون أي عشوائية
+        return response()->json([
+            'success' => true,
+            'symbol' => $asset->symbol,
+            'name' => $asset->name,
+            'bid_price' => $asset->bid_price,
+            'ask_price' => $asset->ask_price,
+            'previous_close' => $asset->previous_close ?? $asset->bid_price,
+            'high' => $asset->high_price ?? $asset->bid_price,
+            'low' => $asset->low_price ?? $asset->bid_price,
+            'change_bid' => $asset->bid_price - ($asset->previous_bid ?? $asset->bid_price),
+            'change_ask' => $asset->ask_price - ($asset->previous_ask ?? $asset->ask_price),
+            'currency' => $asset->currency ?? 'USD',
+            'category' => $asset->category ?? 'Unknown',
+            'timestamp' => time()
+        ]);
     }
+
+    // إذا لم يتم طلب رمز محدد، إرجاع جميع الأصول النشطة
+    try {
+        $assets = Asset::where('bid_price', '!=', 0)
+            ->where('is_active', 1)
+            ->get();
+
+        $updatedAssets = $assets->map(function ($asset) {
+            return [
+                'id' => $asset->id,
+                'symbol' => $asset->symbol,
+                'name' => $asset->name,
+                'bid_price' => $asset->bid_price,
+                'ask_price' => $asset->ask_price,
+                'previous_close' => $asset->previous_close ?? $asset->bid_price,
+                'high' => $asset->high_price ?? $asset->bid_price,
+                'low' => $asset->low_price ?? $asset->bid_price,
+                'change_bid' => $asset->bid_price - ($asset->previous_bid ?? $asset->bid_price),
+                'change_ask' => $asset->ask_price - ($asset->previous_ask ?? $asset->ask_price),
+                'category' => $asset->category ?? 'Unknown',
+                'currency' => $asset->currency ?? 'USD',
+                'timestamp' => time()
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'assets' => $updatedAssets,
+            'total_assets' => $updatedAssets->count(),
+            'timestamp' => time()
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => 'Failed to fetch asset prices',
+            'message' => $e->getMessage(),
+            'timestamp' => time()
+        ], 500);
+    }
+}
 
     public function showAccount(Request $request)
     {
