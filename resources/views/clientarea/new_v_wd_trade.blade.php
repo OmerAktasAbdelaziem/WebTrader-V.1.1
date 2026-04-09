@@ -3143,7 +3143,8 @@
         const expectedLoss = document.getElementById('newExpectedLoss');
         const expectedProfit = document.getElementById('newExpectedProfit');
         const typeInput = document.getElementById('type-input');
-
+        const sellBtn = document.getElementById('sellBtn'); 
+        const buyBtn = document.getElementById('buyBtn'); 
 
         function calcExpectedLoss() {
             let openPrice;
@@ -3174,7 +3175,7 @@
                 },
                 success: function(response) {
                     loss = Math.abs(response.pnl);
-                    expectedLoss.textContent = parseFloat(loss).toFixed(4);
+                    expectedLoss.textContent =  - parseFloat(loss).toFixed(4);
                 },
                 error: function(xhr, status, error) {
                 }
@@ -3242,16 +3243,34 @@
             });
         } 
 
+        function cleanModal() {            
+            stopLossInput.value = 0;
+            takeProfitInput.value = 0;
+            stopLossSwitch.checked = false;
+            takeProfitSwitch.checked = false;
+            stopLossContainer.style.display = 'none';
+            takeProfitContainer.style.display = 'none';
+            expectedLoss.textContent = 0;
+            expectedProfit.textContent = 0;
+            calcExpectedLoss();
+            calcExpectedProfit();
+            getRequiredMarginFromApi();
+        }
+
         // Handle stop loss and take profit toggles for new order modal
         if (stopLossSwitch) {
             stopLossSwitch.addEventListener('change', function() {
                 stopLossContainer.style.display = this.checked ? 'block' : 'none';
+                stopLossInput.value = 0;
+                expectedLoss.textContent = 0;
             });
         }
 
         if (takeProfitSwitch) {
             takeProfitSwitch.addEventListener('change', function() {
                 takeProfitContainer.style.display = this.checked ? 'block' : 'none';
+                takeProfitInput.value = 0;
+                expectedProfit.textContent = 0;
             });
         }
 
@@ -3324,6 +3343,17 @@
         observer.observe(document.getElementById('currentBidPrice'), {
             attributes: true // Listen for attribute changes
         });
+
+        if (sellBtn) {
+            sellBtn.addEventListener('click', function() {
+                cleanModal();
+            });
+        }
+        if (buyBtn) {
+            buyBtn.addEventListener('click', function() {
+                cleanModal();
+            });
+        }
 
 
         calcExpectedLoss();
