@@ -2879,7 +2879,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set the selected asset in the dropdown
         const assetSelect = document.getElementById('asset-select');
         assetSelect.value = assetId;
-        
+
+        stopLossInput.value = 0;
+        takeProfitInput.value = 0;
+        newAmount.value = 0;
+        stopLossSwitch.checked = false;
+        takeProfitSwitch.checked = false;
+        stopLossContainer.style.display = 'none';
+        takeProfitContainer.style.display = 'none';
+
         // Update prices based on selected asset
         updatePrices();
         
@@ -2984,7 +2992,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 loss = Math.abs(response.pnl);
-                expectedLoss.textContent = parseFloat(loss).toFixed(4);
+                expectedLoss.textContent = - parseFloat(loss).toFixed(4);
             },
             error: function(xhr, status, error) {
             }
