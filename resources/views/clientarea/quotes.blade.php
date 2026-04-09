@@ -3001,12 +3001,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         if(typeInput.value == 1){
-            let openPrice = document.getElementById('ask').value;
+            openPrice = document.getElementById('ask').value;
             //let profit = (takeProfitInput.value - openPrice) * document.getElementById('newAmount').value;
             //profit = Math.abs(profit);
             //expectedProfit.textContent = parseFloat(profit).toFixed(4);
         }else{
-            let openPrice = document.getElementById('bid').value;
+            openPrice = document.getElementById('bid').value;
             //let profit = (openPrice - takeProfitInput.value) * document.getElementById('newAmount').value;
             //profit = Math.abs(profit);
             //expectedProfit.textContent = parseFloat(profit).toFixed(4);
@@ -3014,7 +3014,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         $.ajax({
             //url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder/${clientId}/${assetId}/${typeInput.value}/${openPrice}/${stopLossInput.value}/${document.getElementById('newAmount').value}`,
-            url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder?clientId=${clientId}&asset=${assetId}&orderType=${typeInput.value}&openPrice=${openPrice}&currentPrice=${stopLossInput.value}&amount=${document.getElementById('newAmount').value}`,
+            url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder?clientId=${clientId}&asset=${assetId}&orderType=${typeInput.value}&openPrice=${openPrice}&currentPrice=${takeProfitInput.value}&amount=${document.getElementById('newAmount').value}`,
             method: 'GET',
             dataType: 'json',
             timeout: 5000,
