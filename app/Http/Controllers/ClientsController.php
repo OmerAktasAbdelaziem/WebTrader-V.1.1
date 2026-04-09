@@ -790,7 +790,7 @@ class ClientsController extends Controller
         // // Ensure withdrawable balance is not negative
         // $withdrawableBalance = max(0, $withdrawableBalance);
         $withdrawableBalance = max(0, $finance['withdraw_balance'] ?? 0);
-
+        
 
         // Check if user has sufficient withdrawable funds
         if ($request->amount > $withdrawableBalance) {
@@ -1341,6 +1341,7 @@ class ClientsController extends Controller
 
             curl_close($ch);
             //dd($broker_id);
+            //dd($finance);
                 return $finance;
     //    $openedOrders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
     //     $finance = [];
