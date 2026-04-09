@@ -25,12 +25,24 @@ function changeAmount(amount) {
     let current = parseFloat(input.value) || 0;
     current = Math.max(0.01, (current + amount).toFixed(2));
     input.value = current;
+
+    const newAmount = document.getElementById('newAmount');
+    if(newAmount){
+        newAmount.value = current;
+    }
+
 }
 
 // Set amount function for quick amount buttons
 function setAmount(amount) {
     const input = document.getElementById("amount");
     input.value = amount.toFixed(2);
+
+    const newAmount = document.getElementById('newAmount');
+    if(newAmount){
+        newAmount.value = amount.toFixed(2);;
+    }
+
 }
 
 // Copy to clipboard function
@@ -1696,7 +1708,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
             document.getElementById("orderType").value = "1"; // 1 = buy
-            document.getElementById("orderForm").submit();
+            document.getElementById("type-input").value = "1";
+            // document.getElementById("orderForm").submit();
         });
     }
 
@@ -1709,7 +1722,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
             document.getElementById("orderType").value = "2"; // 2 = sell
-            document.getElementById("orderForm").submit();
+            document.getElementById("type-input").value = "2";
+            // document.getElementById("orderForm").submit();
         });
     }
 

@@ -2981,12 +2981,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Accept': 'application/json'
             },
             beforeSend: function() {
-                requiredMargin.textContent = '-';
             },
             success: function(response) {
-                requiredMargin.textContent = response.required_margin;
                 loss = Math.abs(response.pnl);
-            expectedLoss.textContent = parseFloat(loss).toFixed(4);
+                expectedLoss.textContent = parseFloat(loss).toFixed(4);
             },
             error: function(xhr, status, error) {
             }
@@ -3023,10 +3021,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Accept': 'application/json'
             },
             beforeSend: function() {
-                requiredMargin.textContent = '-';
             },
             success: function(response) {
-                requiredMargin.textContent = response.required_margin;
                 profit = Math.abs(response.pnl);
                 expectedProfit.textContent = parseFloat(profit).toFixed(4);
             },

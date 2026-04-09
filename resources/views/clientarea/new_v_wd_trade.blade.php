@@ -7,6 +7,7 @@
     <title>Qtrade - Trading Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="{{ url('css/webtrader.css') }}" rel="stylesheet" />
     <link href="{{ url('css/webtrader2.css') }}" rel="stylesheet" />
     
@@ -199,22 +200,22 @@
         }
         
         /* Modal fixes for input interaction */
-        #editOrderModal {
+        #editOrderModal, #newOrderModal {
             z-index: 9999 !important;
         }
         
-        #editOrderModal .modal-dialog {
+        #editOrderModal .modal-dialog, #newOrderModal .modal-dialog {
             z-index: 10000 !important;
             position: relative;
         }
         
-        #editOrderModal .form-control {
+        #editOrderModal .form-control, #newOrderModal .form-control {
             pointer-events: auto !important;
             z-index: 10001 !important;
             position: relative;
         }
         
-        #editOrderModal input[type="number"] {
+        #editOrderModal input[type="number"], #newOrderModal input[type="number"] {
             pointer-events: auto !important;
             user-select: auto !important;
             cursor: text !important;
@@ -643,6 +644,262 @@
         .sidebar>*{
             margin-block: 0 !important;
         }
+
+
+
+
+
+        
+    /* Enhanced Form Controls for Modals */
+    .modal .form-control, 
+    .modal .form-select {
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
+        background: var(--bg-secondary);
+        font-size: 15px;
+        font-weight: 500;
+        padding: 16px 20px;
+        transition: all 0.3s ease;
+        color: var(--text-primary);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .modal .form-control:focus, 
+    .modal .form-select:focus {
+        border-color: var(--text-primary);
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+        background: var(--bg-card);
+        transform: translateY(-1px);
+    }
+
+    .modal .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .modal .form-label::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: var(--text-primary);
+        border-radius: 50%;
+        opacity: 0.6;
+    }
+
+    /* Enhanced Button Styling for Modals */
+    .modal .btn {
+        border-radius: 12px !important;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 16px 24px;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        position: relative;
+        overflow: hidden;
+        min-width: 120px;
+    }
+
+    .modal .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .modal .btn:hover::before {
+        left: 100%;
+    }
+
+    .modal .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal .btn-success:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    .modal .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .modal .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        color: white;
+    }
+
+    .modal .btn-primary {
+        background: linear-gradient(135deg, var(--text-secondary) 0%, var(--text-primary) 100%);
+        color: var(--bg-card);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal .btn-primary:hover {
+        background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-dark) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        color: var(--bg-card);
+    }
+
+    /* Modern Toggle Switches */
+    .modal .form-check {
+        margin-bottom: 16px;
+    }
+
+    .modal .form-check-input {
+        width: 56px;
+        height: 28px;
+        border-radius: 14px;
+        background: var(--border-medium);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .modal .form-check-input:checked {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal .form-check-input:focus {
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    .modal .form-check-input::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal .form-check-input:checked::before {
+        transform: translateX(28px);
+    }
+
+    .modal .form-check-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        font-size: 15px;
+        margin-left: 12px;
+        cursor: pointer;
+    }
+
+    /* Modern Modal Design */
+    .modal {
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-dialog {
+        margin: 1rem auto;
+        max-width: 95vw;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 2rem);
+    }
+
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        background: var(--bg-card);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        animation: modalSlideUp 0.3s ease-out;
+    }
+
+       /* Modal Action Button Groups */
+        .modal .btn-group-modern {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .modal .btn-group-modern .btn {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        /* Modal Form Grid */
+        .modal-form-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .modal-form-grid .row {
+            margin: 0;
+        }
+
+        .modal-form-grid .col-6,
+        .modal-form-grid .col-12 {
+            padding: 0;
+        }
+        .modal .form-control:focus, 
+        .modal .form-select:focus {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+            background: var(--bg-card);
+            transform: translateY(-1px);
+        }
+
+        .modal .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal .form-label::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        
+        .modal .form-control,
+        .modal .form-select {
+            padding: 14px 16px;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+    
     </style>
 
 </head>
@@ -869,7 +1126,7 @@
 
                         <!-- Trade Buttons with Amount in Center -->
                         <div class="trade-buttons-with-amount">
-                            <button type="button" id="sellBtn" class="trade-btn sell-btn">
+                            <button type="button" id="sellBtn" class="trade-btn sell-btn" data-bs-toggle="modal" data-bs-target="#newOrderModal">
                                 <div class="trade-btn-content">
                                     <span class="trade-action">{{ __('web.sell') }}</span>
                                     <span class="trade-price" id="displayBidPrice">{{ $asset && $asset->bid_price ? number_format($asset->bid_price, 4) : '0.0000' }}</span>
@@ -889,7 +1146,7 @@
                                 </div>
                             </div>
 
-                            <button type="button" id="buyBtn" class="trade-btn buy-btn">
+                            <button type="button" id="buyBtn" class="trade-btn buy-btn" data-bs-toggle="modal" data-bs-target="#newOrderModal">
                                 <div class="trade-btn-content">
                                     <span class="trade-action">{{ __('web.buy') }}</span>
                                     <span class="trade-price" id="displayAskPrice">{{ $asset && $asset->ask_price ? number_format($asset->ask_price, 4) : '0.0000' }}</span>
@@ -2785,6 +3042,295 @@
         </div>
     </div>
 </div>
+
+
+<!-- New Order Modal -->
+<div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true" data-bs-backdrop="false" data-bs-keyboard="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newOrderModalLabel">
+                    <i class="fas fa-chart-line me-2"></i>
+                    {{__('web.new_order')}}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="display: flex;justify-content: center;align-content: center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-form-grid">
+                    <form action="{{ route('order.store') }}" method="POST">
+                        @csrf
+                        
+                        <div class="row g-4">                            
+                            <div class="col-12">
+                                <label for="newAmount" class="form-label">
+                                    <i class="fas fa-dollar-sign me-1"></i>
+                                    {{__('web.amount')}}
+                                </label>
+                                <input type="number" class="form-control-modern" id="newAmount" name="amount" min="0.01" step="any" value="0.01" placeholder="0.01">
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-check form-switch d-flex align-items-center">
+                                    <input class="form-check-input me-3" type="checkbox" id="newStopLossSwitch">
+                                    <label class="form-check-label" for="stopLossSwitch">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        {{__('web.set_stop_loss')}}
+                                    </label>
+                                </div>
+                                <div id="newStopLossContainer" class="mt-3" style="display: none;">
+                                    <input type="number" class="form-control-modern" id="newStopLossInput" step="any" name="s_l" placeholder="{{__('web.stop_loss_price')}}">
+                                    <label class="text-danger">
+                                        {{__('web.estimated_loss')}}
+                                        <strong id="newExpectedLoss">0</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-check form-switch d-flex align-items-center">
+                                    <input class="form-check-input me-3" type="checkbox" id="newTakeProfitSwitch">
+                                    <label class="form-check-label" for="takeProfitSwitch">
+                                        <i class="fas fa-target me-2"></i>
+                                        {{__('web.set_take_profit')}}
+                                    </label>
+                                </div>
+                                <div id="newTakeProfitContainer" class="mt-3" style="display: none;">
+                                    <input type="number" class="form-control-modern" id="newTakeProfitInput" step="any" name="s_p" placeholder="{{__('web.take_profit_price')}}">
+                                    <label class="text-success">
+                                        {{__('web.estimated_profit')}}
+                                        <strong id="newExpectedProfit">0</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-group-modern">
+                            <label>
+                                {{__('web.required_margin')}}
+                                <strong id="new_required_margin">-</strong>
+                            </label>
+                        </div>
+
+                        <div class="btn-group-modern">
+                            <button type="submit" class="btn btn-success">
+                                {{__('web.submit')}}
+                            </button>
+                        </div>
+                        
+                        <input type="hidden" class="form-control" name="bid" id="bid" value="0" readonly>
+                        <input type="hidden" class="form-control" name="ask" id="ask" value="0" readonly>
+                        <input type="hidden" class="form-control" name="type" id="type-input" value="0" readonly>
+                        <input type="hidden" id="newSelectedAssetId" name="currency" value="{{ $asset && $asset->id ? $asset->id : '' }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const stopLossSwitch = document.getElementById('newStopLossSwitch');
+        const stopLossContainer = document.getElementById('newStopLossContainer');
+        const takeProfitSwitch = document.getElementById('newTakeProfitSwitch');
+        const takeProfitContainer = document.getElementById('newTakeProfitContainer');
+        const stopLossInput = document.getElementById('newStopLossInput');
+        const takeProfitInput = document.getElementById('newTakeProfitInput');
+        const newAmount = document.getElementById('newAmount');
+        const requiredMargin = document.getElementById('new_required_margin');
+        const clientId = {{auth()->guard('client')->user()->id}};
+        const expectedLoss = document.getElementById('newExpectedLoss');
+        const expectedProfit = document.getElementById('newExpectedProfit');
+        const typeInput = document.getElementById('type-input');
+
+
+        function calcExpectedLoss() {
+            let openPrice;
+
+            if(!document.getElementById('newAmount').value || !stopLossInput.value){
+                expectedLoss.textContent = parseFloat(0).toFixed(4);
+                return;
+            }
+            let assetId = {{$asset->id}};
+
+            
+            if(typeInput.value == 1){
+                openPrice = document.getElementById('ask').value;
+            }else{
+                openPrice = document.getElementById('bid').value;
+            }
+
+            $.ajax({
+                url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder?clientId=${clientId}&asset=${assetId}&orderType=${typeInput.value}&openPrice=${openPrice}&currentPrice=${stopLossInput.value}&amount=${document.getElementById('newAmount').value}`,
+                method: 'GET',
+                dataType: 'json',
+                timeout: 5000,
+                headers: {
+                    'X-API-KEY': "{{config('services.crm_api.key')}}",
+                    'Accept': 'application/json'
+                },
+                beforeSend: function() {
+                },
+                success: function(response) {
+                    loss = Math.abs(response.pnl);
+                    expectedLoss.textContent = parseFloat(loss).toFixed(4);
+                },
+                error: function(xhr, status, error) {
+                }
+            });
+
+        }
+
+        function calcExpectedProfit() {
+            let openPrice;
+            if(!document.getElementById('newAmount').value || !takeProfitInput.value){
+                expectedProfit.textContent = parseFloat(0).toFixed(4);
+                return;
+            }
+            if(typeInput.value == 1){
+                openPrice = document.getElementById('ask').value;
+            }else{
+                openPrice = document.getElementById('bid').value;
+            }
+
+            $.ajax({
+                url: `{{config('services.crm_api.url')}}/api/calculatePnlWithoutOrder?clientId=${clientId}&asset=${assetId}&orderType=${typeInput.value}&openPrice=${openPrice}&currentPrice=${takeProfitInput.value}&amount=${document.getElementById('newAmount').value}`,
+                method: 'GET',
+                dataType: 'json',
+                timeout: 5000,
+                headers: {
+                    'X-API-KEY': "{{config('services.crm_api.key')}}",
+                    'Accept': 'application/json'
+                },
+                beforeSend: function() {
+                },
+                success: function(response) {
+                    profit = Math.abs(response.pnl);
+                    expectedProfit.textContent = parseFloat(profit).toFixed(4);
+                },
+                error: function(xhr, status, error) {
+                }
+            });
+        }
+
+        function getRequiredMarginFromApi() {
+            const assetId = {{$asset->id}};
+            const amount = newAmount.value;
+            const open_price = typeInput.value == 1 ? document.getElementById('ask').value : document.getElementById('bid').value;
+            if(!assetId || !amount || !open_price){
+                return;
+            }
+
+            $.ajax({
+                url: `{{config('services.crm_api.url')}}/api/getRequiredMargin/${assetId}?amount=${amount}&open_price=${open_price}`,
+                method: 'GET',
+                dataType: 'json',
+                timeout: 5000,
+                headers: {
+                    'X-API-KEY': "{{config('services.crm_api.key')}}",
+                    'Accept': 'application/json'
+                },
+                beforeSend: function() {
+                    requiredMargin.textContent = '-';
+                },
+                success: function(response) {
+                    requiredMargin.textContent = response.required_margin;
+                },
+                error: function(xhr, status, error) {
+                }
+            });
+        } 
+
+        // Handle stop loss and take profit toggles for new order modal
+        if (stopLossSwitch) {
+            stopLossSwitch.addEventListener('change', function() {
+                stopLossContainer.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+
+        if (takeProfitSwitch) {
+            takeProfitSwitch.addEventListener('change', function() {
+                takeProfitContainer.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+
+        if (stopLossInput) {
+            stopLossInput.addEventListener('change', function(e) {
+                const ask = parseFloat(document.getElementById('ask').value);
+                const bid = parseFloat(document.getElementById('bid').value);
+                const val = parseFloat(this.value);
+
+                if(typeInput.value == 1){
+                    if(val >= ask){
+                        this.value = ask
+                        return;
+                    }
+                }else{
+                    if(val <= bid){
+                        this.value = bid
+                        return;
+                    }
+                }
+
+                calcExpectedLoss()
+            });
+        }
+
+        if (takeProfitInput) {
+            takeProfitInput.addEventListener('change', function() {
+                const ask = parseFloat(document.getElementById('ask').value);
+                const bid = parseFloat(document.getElementById('bid').value);
+                const val = parseFloat(this.value);
+                if(typeInput.value == 1){
+                    if(val <= ask){
+                        this.value = ask
+                        return;
+                    }
+                }else{
+                    if(val >= bid){
+                        this.value = bid
+                        return;
+                    }
+                }     
+                calcExpectedProfit()
+            });
+        }
+
+        if (newAmount) {
+            newAmount.addEventListener('change', function() {
+                calcExpectedLoss();
+                calcExpectedProfit();
+                getRequiredMarginFromApi();
+                const amount = document.getElementById("amount");
+                if (amount) {
+                    amount.value = this.value
+                }
+
+            });
+        }
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === "attributes" && mutation.attributeName === "value") {
+                    $('#bid').val($('#currentBidPrice').val());
+                    $('#ask').val($('#currentAskPrice').val());
+                    // calcExpectedLoss();
+                    // calcExpectedProfit();
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('currentBidPrice'), {
+            attributes: true // Listen for attribute changes
+        });
+
+
+        calcExpectedLoss();
+        calcExpectedProfit();
+        getRequiredMarginFromApi();
+    });
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
