@@ -1031,6 +1031,12 @@ return [
     'estimated_profit'                => 'Estimated profit',
     'estimated_loss'                  => 'Estimated loss',
     'submit'                          => 'Submit',
+
+    'stop_loss_should_be_more_than_ask' => 'Stop loss should be more than ask price',
+    'stop_loss_should_be_less_than_bid' => 'Stop loss should be less than bid price',
+    'take_profit_should_be_more_than_ask' => 'Take profit should be more than ask price',
+    'take_profit_should_be_less_than_bid' => 'Take profit should be less than bid price',
+
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

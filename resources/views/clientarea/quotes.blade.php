@@ -2000,6 +2000,7 @@
                                     </div>
                                     <div id="stopLossContainer" class="mt-3" style="display: none;">
                                         <input type="number" class="form-control" id="stopLossInput" step="any" name="s_l" placeholder="{{__('web.stop_loss_price')}}">
+                                        <label class="text-danger d-block" id="newExpectedLossError"></label>
                                         <label class="text-danger">
                                             {{__('web.estimated_loss')}}
                                             <strong id="expectedLoss">0</strong>
@@ -2017,6 +2018,7 @@
                                     </div>
                                     <div id="takeProfitContainer" class="mt-3" style="display: none;">
                                         <input type="number" class="form-control" id="takeProfitInput" step="any" name="s_p" placeholder="{{__('web.take_profit_price')}}">
+                                        <label class="text-danger d-block" id="newExpectedProfitError"></label>
                                         <label class="text-success">
                                             {{__('web.estimated_profit')}}
                                             <strong id="expectedProfit">0</strong>
@@ -2880,8 +2882,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const assetSelect = document.getElementById('asset-select');
         assetSelect.value = assetId;
 
-        stopLossInput.value = 0;
-        takeProfitInput.value = 0;
+        stopLossInput.value = '';
+        takeProfitInput.value = '';
         newAmount.value = 0;
         stopLossSwitch.checked = false;
         takeProfitSwitch.checked = false;
@@ -2954,6 +2956,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeInput = document.getElementById('type-input');
     const newAmount = document.getElementById('newAmount');
     const requiredMargin = document.getElementById('required_margin');
+    const expectedLossError = document.getElementById('newExpectedLossError');
+    const expectedProfitError = document.getElementById('newExpectedProfitError');
     const clientId = {{auth()->guard('client')->user()->id}};
 
     function calcExpectedLoss() {
@@ -3079,12 +3083,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (stopLossSwitch) {
         stopLossSwitch.addEventListener('change', function() {
             stopLossContainer.style.display = this.checked ? 'block' : 'none';
+            stopLossInput.value = '';
+            expectedLoss.textContent = 0;
+            expectedLossError.textContent = '';
         });
     }
 
     if (takeProfitSwitch) {
         takeProfitSwitch.addEventListener('change', function() {
             takeProfitContainer.style.display = this.checked ? 'block' : 'none';
+            takeProfitInput.value = '';
+            expectedProfit.textContent = 0;
+            expectedProfitError.textContent = '';
         });
     }
 
@@ -3096,17 +3106,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if(typeInput.value == 1){
                 if(val >= ask){
-                    this.value = ask
-                    return;
+                    this.value = '';
                 }
             }else{
                 if(val <= bid){
-                    this.value = bid
-                    return;
+                    this.value = '';
                 }
             }
 
             calcExpectedLoss()
+        });
+        stopLossInput.addEventListener('input', function(e) {
+            const ask = parseFloat(document.getElementById('ask').value);
+            const bid = parseFloat(document.getElementById('bid').value);
+            const val = parseFloat(this.value);
+
+            if(typeInput.value == 1){
+                if(val >= ask){
+                    expectedLossError.textContent = "{{__('web.stop_loss_should_be_less_than_bid')}}";
+                    return;
+                }
+            }else{
+                if(val <= bid){
+                    expectedLossError.textContent = "{{__('web.stop_loss_should_be_more_than_ask')}}";
+                    return;
+                }
+            }
+            expectedLossError.textContent = '';
         });
     }
 
@@ -3117,16 +3143,31 @@ document.addEventListener('DOMContentLoaded', function() {
             const val = parseFloat(this.value);
             if(typeInput.value == 1){
                 if(val <= ask){
-                    this.value = ask
+                    this.value = '';
+                }
+            }else{
+                if(val >= bid){
+                    this.value = '';
+                }
+            }     
+            calcExpectedProfit()
+        });
+        takeProfitInput.addEventListener('input', function() {
+            const ask = parseFloat(document.getElementById('ask').value);
+            const bid = parseFloat(document.getElementById('bid').value);
+            const val = parseFloat(this.value);
+            if(typeInput.value == 1){
+                if(val <= ask){
+                    expectedProfitError.textContent = "{{__('web.take_profit_should_be_more_than_ask')}}";
                     return;
                 }
             }else{
                 if(val >= bid){
-                    this.value = bid
+                    expectedProfitError.textContent = "{{__('web.take_profit_should_be_less_than_bid')}}";
                     return;
                 }
-            }     
-            calcExpectedProfit()
+            }
+            expectedProfitError.textContent = '';
         });
     }
 

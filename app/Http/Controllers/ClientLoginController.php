@@ -80,8 +80,8 @@ class ClientLoginController extends Controller
             'phone1',
             'email',
         ]);
-    
-        $existingClient = Client::where('email', $request->email)->first();
+        $pipelineId = config('app.pipeline_id');
+        $existingClient = Client::where('email', $request->email)->where('pipeline_id', $pipelineId)->first();
     
         if ($existingClient) {
             if ($existingClient->broker_id) {
@@ -121,7 +121,7 @@ class ClientLoginController extends Controller
             $client = Client::create($inputs);
         }
     
-        if (Auth::guard('client')->attempt(['username' => $request->email, 'password' => $request->password, 'deleted' => 0])) {
+        if (Auth::guard('client')->attempt(['username' => $request->email, 'password' => $request->password, 'deleted' => 0, 'pipeline_id' => $pipelineId])) {
             $this->authenticated();
             return redirect()->route('client.webtrader.loading')->with('success', __('web.registration_successful'));
         }
