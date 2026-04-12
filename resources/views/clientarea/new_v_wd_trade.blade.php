@@ -2431,8 +2431,8 @@
                                             <i class="bi bi-currency-dollar"></i>
                                             {{ __('web.withdrawal_amount') }}
                                         </label>     
-                                        <input type="number" class="form-control-modern" id="bank_withdrawal_amount" name="amount" min="1" max="{{ $finance['balance'] ??  0 }}" step="0.01" required placeholder="0.00">
-                                        <small class="form-text text-white">{{ __('web.max') }}: ${{ number_format($finance['balance'] ?? 0, 2) }}</small>
+                                        <input type="number" class="form-control-modern" id="bank_withdrawal_amount" name="amount" min="1" max="{{ $finance['withdraw_balance'] ??  0 }}" step="0.01" required placeholder="0.00">
+                                        <small class="form-text text-white">{{ __('web.max') }}: ${{ number_format($finance['withdraw_balance'] ?? 0, 2) }}</small>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -2508,8 +2508,8 @@
                                             <i class="bi bi-currency-dollar"></i>
                                             {{ __('web.withdrawal_amount') }}
                                         </label>     
-                                        <input type="number" class="form-control-modern" id="crypto_withdrawal_amount" name="amount" min="1" max="{{ $balance ?? (isset($finance['balance']) ? $finance['balance'] : 0) }}" step="0.01" required placeholder="0.00">
-                                        <small class="form-text text-white">{{__('web.max')}}: ${{ number_format($balance ?? (isset($finance['balance']) ? $finance['balance'] : 0), 2) }}</small>
+                                        <input type="number" class="form-control-modern" id="crypto_withdrawal_amount" name="amount" min="1" max="{{ number_format($finance['withdraw_balance'] ?? 0, 2) }}" step="0.01" required placeholder="0.00">
+                                        <small class="form-text text-white">{{__('web.max')}}: ${{ number_format($finance['withdraw_balance'] ?? 0, 2) }}</small>
                                     </div>
 
                                     <div class="form-group-modern mb-3">
@@ -4646,7 +4646,7 @@ function initializeWithdrawalFunctionality() {
     $('#bank_withdrawal_amount').on('input', function() {
     const amount = parseFloat($(this).val()) || 0;
 
-    const maxAmount = parseFloat('{{ $finance['balance'] ?? 0 }}');
+    const maxAmount = parseFloat('{{ $finance['withdraw_balance'] ?? 0 }}');
 
     const roundedMax = Number(maxAmount.toFixed(2));
 
@@ -4658,7 +4658,7 @@ function initializeWithdrawalFunctionality() {
     $('#crypto_withdrawal_amount').on('input', function() {
         const amount = parseFloat($(this).val()) || 0;
 
-    const maxAmount = parseFloat('{{ $finance['balance'] ?? 0 }}');
+    const maxAmount = parseFloat('{{ $finance['withdraw_balance'] ?? 0 }}');
 
     const roundedMax = Number(maxAmount.toFixed(2));
 

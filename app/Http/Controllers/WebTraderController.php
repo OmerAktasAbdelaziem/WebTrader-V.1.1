@@ -105,6 +105,7 @@ class WebTraderController extends Controller
         // Load static data that doesn't change often - these could be cached
         $countries = Bank::distinct('country')->pluck('country');
         $finance = $this->get_financial_data($client->broker_id);
+        
       
         $banks = Bank::where('is_active', 1)->latest()->limit(20)->get(); // Add limit
         

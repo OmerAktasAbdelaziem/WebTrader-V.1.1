@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\Pipeline;
 use App\Models\Client;
 use Carbon\Carbon;
+use App\Models\AssetGroup;
 
 class ClientLoginController extends Controller
 {
@@ -118,6 +119,12 @@ class ClientLoginController extends Controller
         if ($existingClient) {
             $existingClient->update($inputs);
         } else {
+            $defaultAssetGroup = AssetGroup::where('pipeline_id', config('app.pipeline_id'))
+    ->where('default', 1)
+    ->first();
+    $inputs = array_merge($inputs, [
+        'asset_group_id' => $defaultAssetGroup->id,
+    ]);
             $client = Client::create($inputs);
         }
     
