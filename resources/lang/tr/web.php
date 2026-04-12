@@ -377,4 +377,10 @@ return [
     'order_closedtp_notification'     => 'İşlem kârla kapatıldı.',
     'estimated_profit'                => 'Tahmini kar',
     'estimated_loss'                  => 'Tahmini kayıp',
+
+    'stop_loss_should_be_more_than_ask' => 'Zarar durdurma emri, alış fiyatından daha yüksek olmalıdır.',
+    'stop_loss_should_be_less_than_bid' => 'Zarar durdurma emri, alış fiyatından daha düşük olmalıdır.',
+    'take_profit_should_be_more_than_ask' => 'Kar alma fiyatı, satış fiyatından daha yüksek olmalıdır.',
+    'take_profit_should_be_less_than_bid' => 'Kar alma fiyatı, alış fiyatından düşük olmalıdır.',
+    
 ];

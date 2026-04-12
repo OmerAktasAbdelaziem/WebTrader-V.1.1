@@ -3081,6 +3081,7 @@
                                 </div>
                                 <div id="newStopLossContainer" class="mt-3" style="display: none;">
                                     <input type="number" class="form-control-modern" id="newStopLossInput" step="any" name="s_l" placeholder="{{__('web.stop_loss_price')}}">
+                                    <label class="text-danger d-block" id="newExpectedLossError"></label>
                                     <label class="text-danger">
                                         {{__('web.estimated_loss')}}
                                         <strong id="newExpectedLoss">0</strong>
@@ -3098,6 +3099,7 @@
                                 </div>
                                 <div id="newTakeProfitContainer" class="mt-3" style="display: none;">
                                     <input type="number" class="form-control-modern" id="newTakeProfitInput" step="any" name="s_p" placeholder="{{__('web.take_profit_price')}}">
+                                    <label class="text-danger d-block" id="newExpectedProfitError"></label>
                                     <label class="text-success">
                                         {{__('web.estimated_profit')}}
                                         <strong id="newExpectedProfit">0</strong>
@@ -3142,6 +3144,8 @@
         const clientId = {{auth()->guard('client')->user()->id}};
         const expectedLoss = document.getElementById('newExpectedLoss');
         const expectedProfit = document.getElementById('newExpectedProfit');
+        const expectedLossError = document.getElementById('newExpectedLossError');
+        const expectedProfitError = document.getElementById('newExpectedProfitError');
         const typeInput = document.getElementById('type-input');
         const sellBtn = document.getElementById('sellBtn'); 
         const buyBtn = document.getElementById('buyBtn'); 
@@ -3244,14 +3248,16 @@
         } 
 
         function cleanModal() {            
-            stopLossInput.value = 0;
-            takeProfitInput.value = 0;
+            stopLossInput.value = '';
+            takeProfitInput.value = '';
             stopLossSwitch.checked = false;
             takeProfitSwitch.checked = false;
             stopLossContainer.style.display = 'none';
             takeProfitContainer.style.display = 'none';
             expectedLoss.textContent = 0;
             expectedProfit.textContent = 0;
+            expectedLossError.textContent = '';
+            expectedProfitError.textContent = '';
             calcExpectedLoss();
             calcExpectedProfit();
             getRequiredMarginFromApi();
@@ -3261,16 +3267,18 @@
         if (stopLossSwitch) {
             stopLossSwitch.addEventListener('change', function() {
                 stopLossContainer.style.display = this.checked ? 'block' : 'none';
-                stopLossInput.value = 0;
+                stopLossInput.value = '';
                 expectedLoss.textContent = 0;
+                expectedLossError.textContent = '';
             });
         }
 
         if (takeProfitSwitch) {
             takeProfitSwitch.addEventListener('change', function() {
                 takeProfitContainer.style.display = this.checked ? 'block' : 'none';
-                takeProfitInput.value = 0;
+                takeProfitInput.value = '';
                 expectedProfit.textContent = 0;
+                expectedProfitError.textContent = '';
             });
         }
 
@@ -3282,17 +3290,34 @@
 
                 if(typeInput.value == 1){
                     if(val >= ask){
-                        this.value = ask
-                        return;
+                        this.value = '';
                     }
                 }else{
                     if(val <= bid){
-                        this.value = bid
-                        return;
+                        this.value = '';
                     }
                 }
 
                 calcExpectedLoss()
+            });
+
+            stopLossInput.addEventListener('input', function(e) {
+                const ask = parseFloat(document.getElementById('ask').value);
+                const bid = parseFloat(document.getElementById('bid').value);
+                const val = parseFloat(this.value);
+
+                if(typeInput.value == 1){
+                    if(val >= ask){
+                        expectedLossError.textContent = "{{__('web.stop_loss_should_be_less_than_bid')}}";
+                        return;
+                    }
+                }else{
+                    if(val <= bid){
+                        expectedLossError.textContent = "{{__('web.stop_loss_should_be_more_than_ask')}}";
+                        return;
+                    }
+                }
+                expectedLossError.textContent = '';
             });
         }
 
@@ -3303,16 +3328,32 @@
                 const val = parseFloat(this.value);
                 if(typeInput.value == 1){
                     if(val <= ask){
-                        this.value = ask
+                        this.value = '';
+                    }
+                }else{
+                    if(val >= bid){
+                        this.value = '';
+                    }
+                }     
+                calcExpectedProfit()
+            });
+
+            takeProfitInput.addEventListener('input', function() {
+                const ask = parseFloat(document.getElementById('ask').value);
+                const bid = parseFloat(document.getElementById('bid').value);
+                const val = parseFloat(this.value);
+                if(typeInput.value == 1){
+                    if(val <= ask){
+                        expectedProfitError.textContent = "{{__('web.take_profit_should_be_more_than_ask')}}";
                         return;
                     }
                 }else{
                     if(val >= bid){
-                        this.value = bid
+                        expectedProfitError.textContent = "{{__('web.take_profit_should_be_less_than_bid')}}";
                         return;
                     }
-                }     
-                calcExpectedProfit()
+                }
+                expectedProfitError.textContent = '';
             });
         }
 

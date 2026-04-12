@@ -965,4 +965,8 @@ return [
     'bonus_withdrawal_not_enabled'  => 'سحب المكافأة غير مفعل لحسابك',
     'insufficient_funds_for_withdrawal_type' => 'أموال :type غير كافية للسحب',
 
+    'stop_loss_should_be_more_than_ask' => 'يجب أن يكون مستوى وقف الخسارة أعلى من سعر الطلب',
+    'stop_loss_should_be_less_than_bid' => 'يجب أن يكون مستوى وقف الخسارة أقل من سعر الشراء.',
+    'take_profit_should_be_more_than_ask' => 'يجب أن يكون جني الربح أعلى من سعر الطلب',
+    'take_profit_should_be_less_than_bid' => 'يجب أن يكون جني الربح أقل من سعر الشراء',
 ];
