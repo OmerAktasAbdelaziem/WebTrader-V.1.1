@@ -131,7 +131,7 @@ class ClientLoginController extends Controller
     private function createBrokerId() {
         //$lastBrokerId = Client::max('broker_id');
         $lastBrokerId = Client::where('pipeline_id', config('app.pipeline_id'))->max('broker_id');
-        dd($lastBrokerId);
+        //dd($lastBrokerId);
         return $lastBrokerId + 1;
     }
 
