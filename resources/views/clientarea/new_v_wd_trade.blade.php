@@ -3223,7 +3223,7 @@
             const assetId = {{$asset->id}};
             const amount = newAmount.value;
             const open_price = typeInput.value == 1 ? document.getElementById('ask').value : document.getElementById('bid').value;
-            const assetGroupId = auth()->guard('client')->user()->asset_group_id;
+            const assetGroupId = {{auth()->guard('client')->user()->asset_group_id}};
             if(!assetId || !amount || !open_price){
                 return;
             }
