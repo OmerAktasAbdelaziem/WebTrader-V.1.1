@@ -3241,7 +3241,7 @@
                     requiredMargin.textContent = '-';
                 },
                 success: function(response) {
-                    requiredMargin.textContent = response.required_margin;
+                    requiredMargin.textContent = parseFloat(response.required_margin).toFixed(3);
                 },
                 error: function(xhr, status, error) {
                 }
