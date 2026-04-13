@@ -3223,12 +3223,13 @@
             const assetId = {{$asset->id}};
             const amount = newAmount.value;
             const open_price = typeInput.value == 1 ? document.getElementById('ask').value : document.getElementById('bid').value;
+            const assetGroupId = auth()->guard('client')->user()->asset_group_id;
             if(!assetId || !amount || !open_price){
                 return;
             }
 
             $.ajax({
-                url: `{{config('services.crm_api.url')}}/api/getRequiredMargin/${assetId}?amount=${amount}&open_price=${open_price}`,
+                url: `{{config('services.crm_api.url')}}/api/getRequiredMargin/${assetId}?amount=${amount}&open_price=${open_price}&asset_group_id=${assetGroupId}`,
                 method: 'GET',
                 dataType: 'json',
                 timeout: 5000,

@@ -1,3 +1,0 @@
-$defaultAssetGroup = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
-    ->where('default', 1)
-    ->first();
