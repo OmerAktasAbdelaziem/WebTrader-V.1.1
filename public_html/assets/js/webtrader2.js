@@ -311,7 +311,7 @@ function initializeOrderForm() {
     if (plusBtn) plusBtn.addEventListener("click", () => changeAmount(0.01));
 }
 
-function submitOrder(type) {
+/*function submitOrder(type) {
     const assetId = document.getElementById("selectedAssetId").value;
 
     if (!assetId || assetId === "null" || assetId === "") {
@@ -327,7 +327,7 @@ function submitOrder(type) {
     if (orderForm) {
         orderForm.submit();
     }
-}
+}*/
 
 // Interface navigation functions with URL parameter updates
 function getAllInterfaces() {
