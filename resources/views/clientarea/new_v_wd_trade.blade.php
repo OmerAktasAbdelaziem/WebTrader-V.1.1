@@ -1104,7 +1104,7 @@
                 
                 <!-- Order Form -->
                 <div class="mt-3">
-                    <form id="orderForm" action="{{ route('order.store') }}" method="POST">
+                    <form id="orderFormmm" action="{{ route('order.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="orderType" name="type" value="1">
                     <input type="hidden" id="selectedAssetId" name="currency" value="{{ $asset && $asset->id ? $asset->id : '' }}">
