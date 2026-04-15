@@ -3066,7 +3066,7 @@
                             <div class="col-12">
                                 <label for="newAmount" class="form-label">
                                     <i class="fas fa-dollar-sign me-1"></i>
-                                    {{__('web.amount')}}
+                                    {{__('web.lot_amount')}}
                                 </label>
                                 <input type="number" class="form-control-modern" id="newAmount" name="amount" min="0.01" step="any" value="0.01" placeholder="0.01">
                             </div>

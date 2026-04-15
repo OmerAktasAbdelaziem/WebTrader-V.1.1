@@ -143,6 +143,7 @@ return [
     'available_balance' => 'Available Balance',
     'instant_withdrawal' => 'Instant Withdrawal',
     'amount' => 'Amount',
+    'lot_amount'                          => 'Amount',
     'max' => 'Max',
     'payment_method' => 'Payment Method',
     'choose_payment_method' => 'Choose Payment Method',
