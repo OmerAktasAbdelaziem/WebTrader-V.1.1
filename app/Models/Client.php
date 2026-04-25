@@ -96,7 +96,7 @@ class Client extends Authenticatable
         static::creating(function ($client) {
             if (empty($client->favourite_assets)) {
                 $client->favourite_assets = Asset::whereIn('currency', ['AUD', 'EUR'])
-                    ->orWhereIn('symbol', ['GOLD', 'Oil', 'SILVER'])
+                    ->orWhereIn('name', ['GBPAUD', 'Gold', 'Brent crude oil', 'Silver'])
                     ->pluck('id')
                     ->unique()
                     ->values()
