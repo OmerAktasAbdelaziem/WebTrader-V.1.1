@@ -382,5 +382,8 @@ return [
     'stop_loss_should_be_less_than_bid' => 'Zarar durdurma emri, alış fiyatından daha düşük olmalıdır.',
     'take_profit_should_be_more_than_ask' => 'Kar alma fiyatı, satış fiyatından daha yüksek olmalıdır.',
     'take_profit_should_be_less_than_bid' => 'Kar alma fiyatı, alış fiyatından düşük olmalıdır.',
+    'note' => 'Not',
+    'other' => 'Diğer',
+    'withdraw_other' => 'Diğer yöntemle para çekme işlemi',
     
 ];

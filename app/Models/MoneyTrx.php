@@ -21,7 +21,8 @@ class MoneyTrx extends Model
         'usdt',
         'receipt',
         'crypto_details',
-        'credit_card_details'
+        'credit_card_details',
+        'note',
     ];
 
     protected $casts = [

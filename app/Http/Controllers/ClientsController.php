@@ -589,7 +589,7 @@ class ClientsController extends Controller
         
         try {
             $request->validate([
-                'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency',
+                'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency,other',
                 'amount'              => 'required|numeric|min:1',
                 // Bank transfer fields
                 'account_name'        => $bankTransferRule,  // Changed from account_holder to account_name
@@ -599,6 +599,7 @@ class ClientsController extends Controller
                 // Cryptocurrency fields
                 'crypto_type'         => $cryptoRule,
                 'crypto_address'      => $cryptoRule,
+                'note'      => 'nullable|string|required_if:payment_method,other',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
@@ -665,6 +666,16 @@ class ClientsController extends Controller
                     ],
                 ]);
                 Log::info('Cryptocurrency withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
+            } elseif($request->payment_method === 'other'){
+                $moneyTrx = MoneyTrx::create([
+                    'broker_id' => $user->broker_id,
+                    'amount' => $request->amount,
+                    'method' => $request->payment_method,
+                    'type' => 'withdraw',
+                    'status' => 'pending',
+                    'note' => $request->note,
+                ]);
+                Log::info('other withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
             } else {
                 $moneyTrx = MoneyTrx::create([
                     'broker_id'    => $user->broker_id,
@@ -729,7 +740,7 @@ class ClientsController extends Controller
         
         // Define validation rules based on withdrawal method
         $rules = [
-            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency',
+            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency,other',
             'amount' => 'required|numeric|min:10',
         ];
 
@@ -748,6 +759,11 @@ class ClientsController extends Controller
                     'crypto_type' => 'required|string|in:USDT',
                     'wallet_address' => 'required|string|max:255',
                     'network_type' => 'required|string|in:TRC20',
+                ];
+                break;
+            case 'other':
+                $rules += [
+                    'note' => 'required|string',
                 ];
                 break;
         }
@@ -817,6 +833,15 @@ class ClientsController extends Controller
                         'crypto_type' => $request->crypto_type,
                         'network_type' => $request->network_type,
                     ],
+                ]);
+            } elseif($withdrawal_method === 'other'){
+                $moneyTrx = MoneyTrx::create([
+                    'broker_id' => $user->broker_id,
+                    'amount' => $request->amount,
+                    'method' => $withdrawal_method,
+                    'type' => 'withdraw',
+                    'status' => 'pending',
+                    'note' => $request->note,
                 ]);
             } else {
                 $moneyTrx = MoneyTrx::create([

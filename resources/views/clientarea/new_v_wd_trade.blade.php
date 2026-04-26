@@ -2540,6 +2540,54 @@
                                 </form>
                             </div>
                         </div>
+
+
+                        <!-- other Method -->
+                        <div class="withdrawal-method-card crypto-card">
+                            <div class="method-header">
+                                <div class="method-icon">
+                                    <i class="bi bi-bank"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h3>{{ __('web.other') }}</h3>
+                                    <p>{{ __('web.withdraw_other') }}</p>
+                                    <div class="method-features">
+                                        <span class="feature-tag">{{ __('web.fast') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="method-form">
+                                <form id="otherWithdrawalForm" action="{{ route('client.withdrawal.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="withdrawal_method" value="other">
+                                    <div class="form-group-modern mb-3">
+                                        <label for="other_withdrawal_amount" class="form-label-modern">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            {{ __('web.withdrawal_amount') }}
+                                        </label>     
+                                        <input type="number" class="form-control-modern" id="other_withdrawal_amount" name="amount" min="1" max="{{ number_format($finance['withdraw_balance'] ?? 0, 2) }}" step="0.01" required placeholder="0.00">
+                                        <small class="form-text text-white">{{__('web.max')}}: ${{ number_format($finance['withdraw_balance'] ?? 0, 2) }}</small>
+                                    </div>
+
+                                                      
+                                    <div class="form-group-modern mb-3">
+                                        <label for="other_note" class="form-label-modern">
+                                            {{ __('web.note') }}
+                                        </label>
+                                        <textarea type="number" name="note" id="other_note" class="form-control-modern" required> </textarea>
+                                    </div>
+             
+
+                                    <input type="hidden" name="network_type" value="TRC20">
+
+                                    <button type="submit" class="btn-submit-modern">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ __('web.submit_withdrawal') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="row mb-4">
@@ -2653,6 +2701,8 @@
                                                         <td class="text-light">
                                                             @if($withdrawal->usdt)
                                                                 USDT
+                                                            @elseif ($withdrawal->method === 'other')
+                                                                Other
                                                             @else
                                                                 Bank Transfer
                                                             @endif
@@ -4696,6 +4746,18 @@ function initializeWithdrawalFunctionality() {
         $(this).val(roundedMax);
     }
 });
+
+    $('#other_withdrawal_amount').on('input', function() {
+        const amount = parseFloat($(this).val()) || 0;
+
+        const maxAmount = parseFloat('{{ $finance['withdraw_balance'] ?? 0 }}');
+
+        const roundedMax = Number(maxAmount.toFixed(2));
+
+        if (amount > roundedMax) {
+            $(this).val(roundedMax);
+        }
+    });
 
     $('#crypto_withdrawal_amount').on('input', function() {
         const amount = parseFloat($(this).val()) || 0;

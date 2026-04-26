@@ -35,6 +35,7 @@
                                     <option value="">{{__('web.choose_payment_method')}}</option>
                                     <option value="bank_transfer">{{__('web.bank_transfer')}}</option>
                                     <option value="cryptocurrency">{{__('web.cryptocurrency')}}</option>
+                                    <option value="other">{{__('web.other')}}</option>
                                 </select>
                             </div>
                             <!-- Bank Transfer Details -->
@@ -80,7 +81,7 @@
                             </div>
                             <div class="col-12">
                                 <label for="notes" class="form-label">{{__('web.notes')}} <span class="text-muted">({{__('web.optional')}})</span></label>
-                                <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="{{__('web.additional_notes')}}"></textarea>
+                                <textarea class="form-control" id="notes" name="note" rows="2" placeholder="{{__('web.additional_notes')}}"></textarea>
                             </div>
                             <div class="col-12 text-center">
                                 <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm mx-auto">

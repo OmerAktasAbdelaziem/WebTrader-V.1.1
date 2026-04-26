@@ -17,10 +17,15 @@ class ClientLoginController extends Controller
 {
     public function showLoginForm(Request $request)
     {
+        $pipelineId = config('app.pipeline_id');
+        $crmbaseUrl = config('services.crm_api.url');
+        $pipeline = Pipeline::find($pipelineId);
+        $logoUrl = "$crmbaseUrl/storage/$pipeline->logo";
+
         if ($lang = $request->lang) {
             Session::put('locale', $lang);
         }
-        return view('clientarea.login');
+        return view('clientarea.login', compact('logoUrl'));
     }
 
     protected function authenticated()
@@ -60,10 +65,16 @@ class ClientLoginController extends Controller
 
     public function showSignupForm(Request $request)
     {
+        
+        $pipelineId = config('app.pipeline_id');
+        $crmbaseUrl = config('services.crm_api.url');
+        $pipeline = Pipeline::find($pipelineId);
+        $logoUrl = "$crmbaseUrl/storage/$pipeline->logo";
+        
         if ($lang = $request->lang) {
             Session::put('locale', $lang);
         }
-        return view('clientarea.signup');
+        return view('clientarea.signup', compact('logoUrl'));
     }
 
     public function signup(Request $request)

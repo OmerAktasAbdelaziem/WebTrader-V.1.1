@@ -970,4 +970,7 @@ return [
     'stop_loss_should_be_less_than_bid' => 'يجب أن يكون مستوى وقف الخسارة أقل من سعر الشراء.',
     'take_profit_should_be_more_than_ask' => 'يجب أن يكون جني الربح أعلى من سعر الطلب',
     'take_profit_should_be_less_than_bid' => 'يجب أن يكون جني الربح أقل من سعر الشراء',
+    'note' => 'ملاحظة',
+    'other' => 'اخرى',
+    'withdraw_other' => 'اسحب بطريقة اخرى',
 ];
