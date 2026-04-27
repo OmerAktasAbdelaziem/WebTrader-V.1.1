@@ -1455,11 +1455,14 @@
                             <span class="label">{{ __('web.country') }}</span>
                             <input type="text" name="country" class="form-control-modern" value="{{ auth()->guard('client')->user()->country ?? '' }}" placeholder="Enter your country">
                         </div>
-                        <div class="info-row">
-                            <span class="label">{{ __('web.account_type') }}</span>
-                            <span class="value badge-premium">{{ auth()->guard('client')->user()->account_type ?? 'Standard' }}</span>
-                            <small class="text-muted">{{ __('web.account_type_cannot_change') }}</small>
-                        </div>
+                        
+                        @if(auth()->guard('client')->user()->account_type != 'Demo')
+                            <div class="info-row">
+                                <span class="label">{{ __('web.account_type') }}</span>
+                                <span class="value badge-premium">{{ auth()->guard('client')->user()->account_type ?? 'Standard' }}</span>
+                                <small class="text-muted">{{ __('web.account_type_cannot_change') }}</small>
+                            </div>
+                        @endif
                         <div class="form-actions mt-3">
                             <button type="submit" class="btn btn-gradient-primary me-2">
                                 <i class="bi bi-check-lg"></i> {{ __('web.save_changes') }}
@@ -1487,10 +1490,12 @@
                             <span class="label">{{ __('web.country') }}</span>
                             <span class="value enhanced">{{ auth()->guard('client')->user()->country ?? __('web.not_provided') }}</span>
                         </div>
-                        <div class="info-row">
-                            <span class="label">{{ __('web.account_type') }}</span>
-                            <span class="value badge-premium enhanced">{{ auth()->guard('client')->user()->account_type ?? 'Standard' }}</span>
-                        </div>
+                        @if(auth()->guard('client')->user()->account_type != 'Demo')
+                            <div class="info-row">
+                                <span class="label">{{ __('web.account_type') }}</span>
+                                <span class="value badge-premium enhanced">{{ auth()->guard('client')->user()->account_type ?? 'Standard' }}</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

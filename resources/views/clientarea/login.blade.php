@@ -331,7 +331,7 @@
                     </div>
                 </div>
             @endif
-            <img src="{{$logoUrl}}" class="rounded mx-auto d-block" alt="logo">
+            <img src="{{$logoUrl}}" class="rounded mx-auto d-block mt-5" style="width: 250px;" alt="logo">
             <div class="px-6 sm:px-8 lg:px-10 py-8 sm:py-10">
                 <!-- Language Switcher -->
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-2 mb-8 sm:mb-10">

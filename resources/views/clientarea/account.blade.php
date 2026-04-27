@@ -470,7 +470,9 @@
         </div>
         <div class="account-title">{{ $user->first_name }} {{ $user->last_name }}</div>
         <div class="account-id">ID: {{ $user->id }}</div>
-        <div class="account-type">{{__('web.'.$user->account_type??'Demo')}}</div>
+        @if(auth()->guard('client')->user()->account_type != 'Demo')
+            <div class="account-type">{{__('web.'.$user->account_type??'Standard')}}</div>
+        @endif
         <div class="account-balance" style="font-size:1.1rem;color:#1EBC74;font-weight:600;margin-bottom:0.5rem;">
             $ {{ number_format($finance['balance'] ?? 0, 2, '.', ',') }} USD
         </div>
@@ -480,7 +482,9 @@
     <ul class="info-list">
         <li><span class="info-label">{{__('web.name')}}</span><span class="info-value">{{ $user->first_name }} {{ $user->last_name }}</span></li>
         <li><span class="info-label">{{__('web.id')}}</span><span class="info-value">{{ $user->id }}</span></li>
-        <li><span class="info-label">{{__('web.account_type')}}</span><span class="info-value">{{__('web.'.$user->account_type??'Demo')}}</span></li>
+        @if(auth()->guard('client')->user()->account_type != 'Demo')
+            <li><span class="info-label">{{__('web.account_type')}}</span><span class="info-value">{{__('web.'.$user->account_type??'Standard')}}</span></li>
+        @endif
         <li><span class="info-label">{{__('web.registration_date')}}</span><span class="info-value">{{ $user->reg_date->format('m/d/Y') }}</span></li>
     </ul>
 
