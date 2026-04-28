@@ -386,4 +386,6 @@ return [
     'other' => 'Diğer',
     'withdraw_other' => 'Diğer yöntemle para çekme işlemi',
     
+    'you_have_no_access_to_this_account' => 'Bu hesaba erişiminiz yok.',
+    'please_contact_us' => 'Lütfen bizimle iletişime geçin.',
 ];

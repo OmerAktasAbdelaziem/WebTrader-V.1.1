@@ -1041,6 +1041,9 @@ return [
     'take_profit_should_be_more_than_ask' => 'Take profit should be more than ask price',
     'take_profit_should_be_less_than_bid' => 'Take profit should be less than bid price',
 
+    'you_have_no_access_to_this_account' => 'You have no access to this account',
+    'please_contact_us' => 'Please contact us',
+
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.
 ];

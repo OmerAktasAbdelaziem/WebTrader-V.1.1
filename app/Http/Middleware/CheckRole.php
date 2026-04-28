@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Pipeline;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,11 @@ class CheckRole
         }
 
         if (!isset($options[$option])) {
-            return response()->view('clientarea.no_access');
+            $pipelineId = config('app.pipeline_id');
+            $crmbaseUrl = config('services.crm_api.url');
+            $pipeline = Pipeline::find($pipelineId);
+            $logoUrl = "$crmbaseUrl/storage/$pipeline->logo";
+            return response()->view('clientarea.no_access', compact('logoUrl'));
         }
 
         if (isset($options['forceChangePassword'])) {

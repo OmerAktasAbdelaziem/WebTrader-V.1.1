@@ -27,7 +27,8 @@
     <div class="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
         <div class="px-6 py-4">
             <div class="mb-4 text-center">
-                <img src="{{ url('assets/images/logo-icon1.png') }}" class="logo mx-auto" alt="BNC Logo">
+                {{-- <img src="{{ url('assets/images/logo-icon1.png') }}" class="logo mx-auto" alt="BNC Logo"> --}}
+                <img src="{{$logoUrl}}" class="logo mx-auto" alt="logo">
             </div>
             <form method="POST" action="{{ route('client.logout') }}">
                 @csrf
@@ -40,7 +41,7 @@
                 </div>
             </form>
         </div>
-        <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container" style="position: relative;">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
                 {
@@ -81,6 +82,16 @@
                     "locale": "en"
                 }
             </script>
+
+            <!-- invisible blocker -->
+            <div style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+            "></div>
         </div>
     </div>
 </body>
