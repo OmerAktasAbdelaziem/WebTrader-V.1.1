@@ -2472,6 +2472,21 @@
                                         <input type="text" name="swift_code" id="swift_code" class="form-control-modern" placeholder="{{ __('web.enter_swift_code') }}" required>
                                     </div>
 
+                                    <div class="form-group-modern mb-3">
+                                        <label for="iban" class="form-label-modern">
+                                            {{-- <i class="bi bi-globe"></i> --}}
+                                            {{ __('web.iban') }}
+                                        </label>
+                                        <input type="text" name="iban" id="iban" class="form-control-modern" placeholder="{{ __('web.iban') }}" required>
+                                    </div>
+     
+                                    <div class="form-group-modern mb-3">
+                                        <label for="bank_transfer_note" class="form-label-modern">
+                                            {{ __('web.note') }}
+                                        </label>
+                                        <textarea type="number" name="note" id="bank_transfer_note" class="form-control-modern" required> </textarea>
+                                    </div>
+
                                     <button type="submit" class="btn-submit-modern">
                                         <i class="bi bi-check-circle"></i>
                                         {{ __('web.submit_withdrawal') }}
@@ -2537,6 +2552,13 @@
                                     </div>
 
                                     <input type="hidden" name="network_type" value="TRC20">
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="bank_transfer_note" class="form-label-modern">
+                                            {{ __('web.note') }}
+                                        </label>
+                                        <textarea type="number" name="note" id="bank_transfer_note" class="form-control-modern" required> </textarea>
+                                    </div>
 
                                     <button type="submit" class="btn-submit-modern">
                                         <i class="bi bi-check-circle"></i>

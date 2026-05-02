@@ -662,6 +662,7 @@ class ClientsController extends Controller
                     'usdt'         => $request->crypto_address, // Save wallet address to usdt column
                     'crypto_details' => [
                         'crypto_type'    => $request->crypto_type,
+                        'note'           => $request->note,
                         'network_type'   => 'TRC20', // Default network type
                     ],
                 ]);
@@ -684,10 +685,12 @@ class ClientsController extends Controller
                     'type'         => 'withdraw',
                     'status'       => 'pending',
                     'bank_details' => [
-                        'account_holder'  => $request->account_name,  // Changed from account_holder to account_name
+                        'account_holder_name'  => $request->account_name,  // Changed from account_holder to account_name
                         'bank_name'       => $request->bank_name,
                         'account_number'  => $request->account_number,
                         'swift_code'      => $request->swift_code,
+                        'note'           => $request->note,
+                        'iban'           => $request->iban,
                     ],
                 ]);
                 Log::info('Bank transfer withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
@@ -832,6 +835,8 @@ class ClientsController extends Controller
                     'crypto_details' => [
                         'crypto_type' => $request->crypto_type,
                         'network_type' => $request->network_type,
+                        'note'           => $request->note,
+
                     ],
                 ]);
             } elseif($withdrawal_method === 'other'){
@@ -855,6 +860,8 @@ class ClientsController extends Controller
                         'account_number' => $request->account_number,
                         'account_holder_name' => $request->account_holder_name,
                         'swift_code' => $request->swift_code,
+                        'note'           => $request->note,
+                        'iban'           => $request->iban,
                     ],
                 ]);
             }
