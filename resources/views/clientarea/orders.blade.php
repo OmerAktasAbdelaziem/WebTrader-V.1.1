@@ -926,8 +926,10 @@
                                 
                                 <div class="amount-pnl-section">
                                     <div class="order-amount">{{ number_format($order->amount, 2) }}</div>
-                                    <div class="order-pnl {{$order->pnl < 0 ? 'negative' : 'positive'}} active_pnl" data-order-id="{{$order->id}}">
-                                        ${{ number_format($order->pnl, 2) }}
+                                    <div class="pnl" data-order-id="{{$order->id}}">
+                                        <div class="order-pnl {{$order->pnl < 0 ? 'negative' : 'positive'}} active_pnl" data-order-id="{{$order->id}}">
+                                            ${{ number_format($order->pnl, 2) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1245,7 +1247,7 @@
         var client_id = {{auth()->guard('client')->user()->id}};
         var assetId = 1;
     </script>
-    <script src="{{ url('assets/js/main_tp.min.js?v1.599') }}"></script>
+    <script src="{{ url('assets/js/main_tp.js?v1.599') }}"></script>
     <script>
         $(document).ready(function () {
             // Modern checkbox interactions
