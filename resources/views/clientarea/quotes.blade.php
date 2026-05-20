@@ -2964,7 +2964,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let openPrice;
 
         if(!document.getElementById('newAmount').value || !stopLossInput.value){
-            expectedLoss.textContent = parseFloat(0).toFixed(4);
+            expectedLoss.textContent = parseFloat(0).toFixed(2);
             return;
         }
         let assetId = document.getElementById('asset-select').value;
@@ -2974,12 +2974,12 @@ document.addEventListener('DOMContentLoaded', function() {
             openPrice = document.getElementById('ask').value;
             //let loss = (openPrice - stopLossInput.value) / document.getElementById('newAmount').value;
             //loss = Math.abs(loss);
-            //expectedLoss.textContent = parseFloat(loss).toFixed(4);
+            //expectedLoss.textContent = parseFloat(loss).toFixed(2);
         }else{
             openPrice = document.getElementById('bid').value;
             //let loss = (stopLossInput.value - openPrice) / document.getElementById('newAmount').value;
             //loss = Math.abs(loss);
-            //expectedLoss.textContent = parseFloat(loss).toFixed(4);
+            //expectedLoss.textContent = parseFloat(loss).toFixed(2);
         }
 
         $.ajax({
@@ -2996,7 +2996,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 loss = Math.abs(response.pnl);
-                expectedLoss.textContent = - parseFloat(loss).toFixed(4);
+                expectedLoss.textContent = - parseFloat(loss).toFixed(2);
             },
             error: function(xhr, status, error) {
             }
@@ -3007,19 +3007,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function calcExpectedProfit() {
         let openPrice;
         if(!document.getElementById('newAmount').value || !takeProfitInput.value){
-            expectedProfit.textContent = parseFloat(0).toFixed(4);
+            expectedProfit.textContent = parseFloat(0).toFixed(2);
             return;
         }
         if(typeInput.value == 1){
             openPrice = document.getElementById('ask').value;
             //let profit = (takeProfitInput.value - openPrice) * document.getElementById('newAmount').value;
             //profit = Math.abs(profit);
-            //expectedProfit.textContent = parseFloat(profit).toFixed(4);
+            //expectedProfit.textContent = parseFloat(profit).toFixed(2);
         }else{
             openPrice = document.getElementById('bid').value;
             //let profit = (openPrice - takeProfitInput.value) * document.getElementById('newAmount').value;
             //profit = Math.abs(profit);
-            //expectedProfit.textContent = parseFloat(profit).toFixed(4);
+            //expectedProfit.textContent = parseFloat(profit).toFixed(2);
         }
 
         $.ajax({
@@ -3036,7 +3036,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 profit = Math.abs(response.pnl);
-                expectedProfit.textContent = parseFloat(profit).toFixed(4);
+                expectedProfit.textContent = parseFloat(profit).toFixed(2);
             },
             error: function(xhr, status, error) {
             }
@@ -3251,7 +3251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 requiredMargin.textContent = '-';
             },
             success: function(response) {
-                requiredMargin.textContent = response.required_margin;
+                requiredMargin.textContent = parseFloat(response.required_margin).toFixed(2);
             },
             error: function(xhr, status, error) {
             }

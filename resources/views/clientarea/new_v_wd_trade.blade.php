@@ -3231,7 +3231,7 @@
             let openPrice;
 
             if(!document.getElementById('newAmount').value || !stopLossInput.value){
-                expectedLoss.textContent = parseFloat(0).toFixed(4);
+                expectedLoss.textContent = parseFloat(0).toFixed(2);
                 return;
             }
             let assetId = {{$asset->id}};
@@ -3256,7 +3256,7 @@
                 },
                 success: function(response) {
                     loss = Math.abs(response.pnl);
-                    expectedLoss.textContent =  - parseFloat(loss).toFixed(4);
+                    expectedLoss.textContent =  - parseFloat(loss).toFixed(2);
                 },
                 error: function(xhr, status, error) {
                 }
@@ -3267,7 +3267,7 @@
         function calcExpectedProfit() {
             let openPrice;
             if(!document.getElementById('newAmount').value || !takeProfitInput.value){
-                expectedProfit.textContent = parseFloat(0).toFixed(4);
+                expectedProfit.textContent = parseFloat(0).toFixed(2);
                 return;
             }
             if(typeInput.value == 1){
@@ -3289,7 +3289,7 @@
                 },
                 success: function(response) {
                     profit = Math.abs(response.pnl);
-                    expectedProfit.textContent = parseFloat(profit).toFixed(4);
+                    expectedProfit.textContent = parseFloat(profit).toFixed(2);
                 },
                 error: function(xhr, status, error) {
                 }
@@ -3318,7 +3318,7 @@
                     requiredMargin.textContent = '-';
                 },
                 success: function(response) {
-                    requiredMargin.textContent = parseFloat(response.required_margin).toFixed(3);
+                    requiredMargin.textContent = parseFloat(response.required_margin).toFixed(2);
                 },
                 error: function(xhr, status, error) {
                 }
