@@ -15,7 +15,11 @@ class AssetGroup extends Model
         'name',
     ];
 
-    protected $casts = [
-        'asset_ids' => 'array',
-    ];
+    // protected $casts = [
+    //     'asset_ids' => 'array',
+    // ];
+    public function assetAssignments()
+    {
+        return $this->hasMany(AssetGroupAssignment::class, 'asset_group');
+    }
 }
