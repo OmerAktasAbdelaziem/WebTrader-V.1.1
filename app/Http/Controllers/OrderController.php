@@ -8,6 +8,7 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -56,15 +57,24 @@ class OrderController extends Controller
         }
 
         $order = Order::create($inputs);
-        $group_id = $user->asset_group_id;
+        $groupId = $user->asset_group_id;
+
+
+$assetGroupAssignment = DB::table('asset_group_assignments')
+    ->where('asset', $order->currency)
+    ->where('asset_group', $groupId)
+    ->first();
+
+    //echo $groupId.'<br><br>';
+//dd($assetGroupAssignment);
 
         if (str_starts_with($order->asset->symbol, 'USD') || (!strpos($order->asset->symbol, 'USD') && $order->asset->currency !== "USD")) {
-            $reqMargin = (($request->amount * $inputs['open_price'] * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$inputs['open_price']);
-        } else {//dd($order->asset->size[$group_id]);
-            $reqMargin = (($request->amount * $inputs['open_price'] * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$inputs['open_price']);
+            $reqMargin = (($request->amount * $inputs['open_price'] * $assetGroupAssignment->size) / $assetGroupAssignment->leverage) * (1/$inputs['open_price']);
+        } else {
+            $reqMargin = (($request->amount * $inputs['open_price'] * $assetGroupAssignment->size) / $assetGroupAssignment->leverage) * (1/$inputs['open_price']);
         }
-        if (($order->asset->is_percentage[$group_id]??0)==1) {
-            $reqMargin = ($request->amount * $inputs['open_price'] * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id];
+        if (($assetGroupAssignment->is_percentage??0)==1) {
+            $reqMargin = ($request->amount * $inputs['open_price'] * $assetGroupAssignment->size) / $assetGroupAssignment->leverage;
         }
 
         if (!$request->type) {
