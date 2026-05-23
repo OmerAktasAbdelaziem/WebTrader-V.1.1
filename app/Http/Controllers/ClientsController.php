@@ -1022,12 +1022,16 @@ class ClientsController extends Controller
         $asset_group_id = $user->asset_group_id;
         if ($asset_group_id) {
             $assetGroup       = AssetGroup::find($asset_group_id);
+            /*print_r($assetGroup->asset_ids);
+            echo '<br><br><br><br>';
+            print_r($assetGroup->assetAssignments->pluck('id'));die;*/
             if ($assetGroup) {
-                $forexAssets      = Asset::where('bid_price','!=',0)->where('category', 'Forex')  ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                $cryptoAssets     = Asset::where('bid_price','!=',0)->where('category', 'Crypto') ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
+                $forexAssets      = Asset::where('bid_price','!=',0)->where('category', 'Forex')  ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                $cryptoAssets     = Asset::where('bid_price','!=',0)->where('category', 'Crypto') ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                //dd($cryptoAssets);
+                $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
                 $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('id'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
             }
         }

@@ -1718,6 +1718,7 @@
                             <th class="text-center">{{__('web.buy')}}</th>
                         </tr>
                     </thead>
+                    
                     <tbody id="cryptoAssets">
                         @foreach($cryptoAssets as $index => $asset)
                             <tr class="asset-row" data-asset-id="{{ $asset->id }}">
