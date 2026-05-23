@@ -347,8 +347,8 @@ class WebTraderController extends Controller
             if ($asset_group_id) {
                 $assetGroup = AssetGroup::find($asset_group_id);
                 if ($assetGroup) {
-                    $assets = Asset::whereIn('id',$assetGroup->assetAssignments->pluck('id'))->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
-                    $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('id'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
+                    $assets = Asset::whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
+                    $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('asset'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('type', ['Crypto', 'Forex', 'Stocks','Indx'])->get();
                 }
             }
         }

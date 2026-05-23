@@ -1032,7 +1032,7 @@ class ClientsController extends Controller
                 $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
                 $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
                 $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
-                $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('id'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
+                $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('asset'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
             }
         }
 

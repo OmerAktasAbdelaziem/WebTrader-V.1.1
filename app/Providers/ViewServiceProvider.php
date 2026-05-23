@@ -83,12 +83,12 @@ class ViewServiceProvider extends ServiceProvider
             if ($asset_group_id) {
                 $assetGroup       = AssetGroup::find($asset_group_id);
                 if ($assetGroup && $assetGroup->assetAssignments) {
-                    $forexAssets      = Asset::where('bid_price','!=',0)->where('category', 'Forex')  ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                    $cryptoAssets     = Asset::where('bid_price','!=',0)->where('category', 'Crypto') ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                    $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                    $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                    $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->assetAssignments->pluck('id'))->get();
-                    $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('id'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
+                    $forexAssets      = Asset::where('bid_price','!=',0)->where('category', 'Forex')  ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                    $cryptoAssets     = Asset::where('bid_price','!=',0)->where('category', 'Crypto') ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                    $stocksAssets     = Asset::where('bid_price','!=',0)->where('category', 'Stocks') ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                    $indicesAssets    = Asset::where('bid_price','!=',0)->where('category', 'Indx')   ->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                    $commodityAssets  = Asset::where('bid_price','!=',0)->where('category', 'Commodity')->whereIn('id',$assetGroup->assetAssignments->pluck('asset'))->get();
+                    $favourite_assets = Asset::whereIn('id', $assetGroup->assetAssignments->pluck('asset'))->whereIn('id', $favourite_assets_ids)->where('bid_price','!=',0)->whereIn('category', ['Crypto','Forex', 'Stocks', 'Commodity','Indx'])->get();
                 }
             }
             
