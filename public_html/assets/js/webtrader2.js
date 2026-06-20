@@ -1217,7 +1217,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Country and Bank selection functionality
-    document.addEventListener("DOMContentLoaded", function () {
+   /*
     const countrySelect = document.getElementById("country_select");
     const bankSelect = document.getElementById("bank_select");
     const bankDetailsDisplay = document.getElementById("bankDetailsDisplay");
@@ -1359,7 +1359,148 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-});
+*/
+
+const countrySelect = document.getElementById("country_select");
+const bankSelect = document.getElementById("bank_select");
+const bankDetailsDisplay = document.getElementById("bankDetailsDisplay");
+
+if (countrySelect && bankSelect) {
+    countrySelect.addEventListener("change", function () {
+        const selectedCountry = this.value;
+
+        // تم نقل هذا السطر إلى الداخل لضمان قراءة البيانات في اللحظة التي يغير فيها العميل الدولة
+        const banksData = window.banksData || [];
+
+        // Clear and reset bank select
+        bankSelect.innerHTML = '<option value="">Choose a bank...</option>';
+        bankSelect.disabled = !selectedCountry;
+        bankDetailsDisplay.style.display = "none";
+
+        if (selectedCountry) {
+            // Filter banks by selected country (مع التعديل الخاص بنوع البيانات)
+            const countryBanks = banksData.filter(
+                (bank) => String(bank.country) === String(selectedCountry)
+            );
+
+            countryBanks.forEach((bank) => {
+                const option = document.createElement("option");
+                option.value = bank.id;
+                option.textContent = bank.bank_name || bank.name;
+
+                // Set all data attributes for bank details
+                option.setAttribute(
+                    "data-bank-name",
+                    bank.bank_name || bank.name || ""
+                );
+                option.setAttribute(
+                    "data-account-name",
+                    bank.account_name || bank.beneficiary_name || ""
+                );
+                option.setAttribute(
+                    "data-account-number",
+                    bank.account_number || ""
+                );
+                option.setAttribute("data-iban", bank.iban || "");
+                option.setAttribute(
+                    "data-swift-code",
+                    bank.swift_code || ""
+                );
+                option.setAttribute(
+                    "data-aba-routing",
+                    bank.aba_routing_number || bank.routing_number || ""
+                );
+                option.setAttribute(
+                    "data-beneficiary-address",
+                    bank.beneficiary_address || bank.address || ""
+                );
+                option.setAttribute(
+                    "data-beneficiary-country",
+                    bank.beneficiary_country || bank.country || ""
+                );
+                option.setAttribute(
+                    "data-bank-address",
+                    bank.bank_address || bank.address || ""
+                );
+
+                bankSelect.appendChild(option);
+            });
+        }
+    });
+
+    bankSelect.addEventListener("change", function () {
+        const selectedOption = this.options[this.selectedIndex];
+
+        if (selectedOption.value) {
+            // Get bank details from data attributes
+            const bankName = selectedOption.getAttribute("data-bank-name");
+            const accountName =
+                selectedOption.getAttribute("data-account-name");
+            const accountNumber = selectedOption.getAttribute(
+                "data-account-number"
+            );
+            const iban = selectedOption.getAttribute("data-iban");
+            const swiftCode =
+                selectedOption.getAttribute("data-swift-code");
+            const abaRouting =
+                selectedOption.getAttribute("data-aba-routing");
+            const beneficiaryAddress = selectedOption.getAttribute(
+                "data-beneficiary-address"
+            );
+            const beneficiaryCountry = selectedOption.getAttribute(
+                "data-beneficiary-country"
+            );
+            const bankAddress =
+                selectedOption.getAttribute("data-bank-address");
+
+            // Update display elements
+            document.getElementById("displayBankName").textContent =
+                bankName || "N/A";
+            document.getElementById("displayAccountName").textContent =
+                accountName || "N/A";
+            document.getElementById("displayAccountNumber").textContent =
+                accountNumber || "N/A";
+            document.getElementById("displayIban").textContent =
+                iban || "N/A";
+            document.getElementById("displaySwiftCode").textContent =
+                swiftCode || "N/A";
+            document.getElementById("displayAbaRouting").textContent =
+                abaRouting || "N/A";
+            document.getElementById(
+                "displayBeneficiaryAddress"
+            ).textContent = beneficiaryAddress || "N/A";
+            document.getElementById(
+                "displayBeneficiaryCountry"
+            ).textContent = beneficiaryCountry || "N/A";
+            document.getElementById("displayBankAddress").textContent =
+                bankAddress || "N/A";
+
+            // Show/hide rows based on data availability
+            const toggleRow = (rowId, value) => {
+                const row = document.getElementById(rowId);
+                if (row) {
+                    row.style.display =
+                        value && value.trim() !== "" && value !== "N/A"
+                            ? "flex"
+                            : "none";
+                }
+            };
+
+            toggleRow("ibanRow", iban);
+            toggleRow("swiftCodeRow", swiftCode);
+            toggleRow("abaRoutingRow", abaRouting);
+            toggleRow("beneficiaryAddressRow", beneficiaryAddress);
+            toggleRow("beneficiaryCountryRow", beneficiaryCountry);
+            toggleRow("bankAddressRow", bankAddress);
+
+            // Show the bank details card
+            bankDetailsDisplay.style.display = "block";
+        } else {
+            // Hide the bank details card
+            bankDetailsDisplay.style.display = "none";
+        }
+    });
+}
 
     // Crypto selection functionality
     const cryptoSelect = document.getElementById("crypto_type_select");
