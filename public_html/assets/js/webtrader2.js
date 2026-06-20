@@ -1217,6 +1217,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Country and Bank selection functionality
+    document.addEventListener("DOMContentLoaded", function () {
     const countrySelect = document.getElementById("country_select");
     const bankSelect = document.getElementById("bank_select");
     const bankDetailsDisplay = document.getElementById("bankDetailsDisplay");
@@ -1236,7 +1237,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (selectedCountry) {
                 // Filter banks by selected country
                 const countryBanks = banksData.filter(
-                    (bank) => bank.country === selectedCountry
+                    //(bank) => bank.country === selectedCountry
+                    (bank) => String(bank.country) === String(selectedCountry)
                 );
 
                 countryBanks.forEach((bank) => {
@@ -1357,6 +1359,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+});
 
     // Crypto selection functionality
     const cryptoSelect = document.getElementById("crypto_type_select");
