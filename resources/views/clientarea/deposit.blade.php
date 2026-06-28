@@ -65,17 +65,31 @@
                                 <div class="col-12">
                                     <label class="form-label">USDT TRC20 <span class="text-danger">*</span></label>
                                 </div>
-                                <div class="col-12">
-                                    <div id="cryptoQrCode" class="mb-3 d-flex justify-content-center align-items-center" style="display:none; min-height:170px;"></div>
-                                    <label for="wallet_address" class="form-label">{{__('web.wallet_address')}}</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="wallet_address" name="wallet_address" readonly>
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" id="copyWalletBtn">
-                                            <i class="iconify" data-icon="material-symbols:content-copy"></i>
-                                        </button>
+                                @if ($usdtWalletAddress)
+                                    <div class="col-12">
+                                        <div id="cryptoQrCode" class="mb-3 d-flex justify-content-center align-items-center" style="display:none; min-height:170px;"></div>
+                                        <label for="wallet_address" class="form-label">{{__('web.wallet_address')}}</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="wallet_address" name="wallet_address" readonly>
+                                            <button class="btn btn-outline-secondary btn-sm" type="button" id="copyWalletBtn">
+                                                <i class="iconify" data-icon="material-symbols:content-copy"></i>
+                                            </button>
+                                        </div>
+                                        <small class="form-text text-muted">{{__('web.copy_or_scan_wallet_address')}}</small>
                                     </div>
-                                    <small class="form-text text-muted">{{__('web.copy_or_scan_wallet_address')}}</small>
-                                </div>
+                                @else
+                                    <div class="col-12">
+                                        <div class="alert-warning p-3 rounded-3" style="color: var(--bs-warning-text-emphasis);">
+                                            <i class="iconify mb-1 me-2" data-icon="bi:exclamation-triangle"></i>
+                                            <strong>USDT Address Not Available</strong>
+                                            <p class="mb-0 mt-2" style="color: inherit;">Please contact our support team to set up your USDT deposit address.</p>
+                                            <small class="d-block mt-2" style="color: inherit !important;">
+                                                <i class="iconify mb-1 me-1" data-icon="bi:envelope"></i>
+                                                Contact support for assistance with cryptocurrency deposits.
+                                            </small>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Credit Card Fields -->

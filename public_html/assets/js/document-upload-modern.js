@@ -199,7 +199,7 @@ function createFileItem(file, index, type) {
     if (type == null) {
         type = index
         
-        if (type === 'kyc' && file.status !== 'pending') {
+        if (file.status !== 'pending') {
             removeFunc = null;
         }else{
             removeFunc = `deleteFile('${file.id}', '${type}')`;
