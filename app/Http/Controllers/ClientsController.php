@@ -106,11 +106,54 @@ class ClientsController extends Controller
         // Get finance data for balance display
         $finance = $this->get_financial_data($user->broker_id);
 
-        // Get USDT wallet address: pipelines.usdt, fallback to clients.usdt
+        // Get USDT wallet address: clients.usdt, fallback to pipelines.usdt 
         $usdtWalletAddress = null;
         
-        // First try pipeline USDT
-        if ($user->pipeline_id) {
+        // First try client's own USDT
+        if (!empty($user->usdt)) {
+            $clientUsdt = $user->usdt;
+            
+            // Handle JSON format for client USDT
+            if (is_string($clientUsdt)) {
+                $decodedUsdt = json_decode($clientUsdt, true);
+                if (is_array($decodedUsdt)) {
+                    // Get address based on client source or first available
+                    if ($user->source == 'BNC' && !empty($decodedUsdt['BNC'])) {
+                        $usdtWalletAddress = $decodedUsdt['BNC'];
+                    } elseif (!empty($decodedUsdt['phoenix'])) {
+                        $usdtWalletAddress = $decodedUsdt['phoenix'];
+                    } else {
+                        // Get the first non-null address
+                        foreach ($decodedUsdt as $key => $address) {
+                            if (!empty($address) && $address !== null) {
+                                $usdtWalletAddress = $address;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $usdtWalletAddress = trim($clientUsdt);
+                }
+            } elseif (is_array($clientUsdt)) {
+                // Handle if already decoded array
+                if ($user->source == 'BNC' && !empty($clientUsdt['BNC'])) {
+                    $usdtWalletAddress = $clientUsdt['BNC'];
+                } elseif (!empty($clientUsdt['phoenix'])) {
+                    $usdtWalletAddress = $clientUsdt['phoenix'];
+                } else {
+                    // Get the first non-null address
+                    foreach ($clientUsdt as $key => $address) {
+                        if (!empty($address) && $address !== null) {
+                            $usdtWalletAddress = $address;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fallback to pipeline USDT if client dosen't have usdt
+        if (!$usdtWalletAddress && $user->pipeline_id) {
             $pipeline = DB::table('pipelines')->where('id', $user->pipeline_id)->first();
             if ($pipeline && !empty($pipeline->usdt)) {
                 $pipelineUsdt = $pipeline->usdt;
@@ -149,49 +192,6 @@ class ClientsController extends Controller
                                 $usdtWalletAddress = $address;
                                 break;
                             }
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Fallback to client's own USDT if pipeline doesn't have one
-        if (!$usdtWalletAddress && !empty($user->usdt)) {
-            $clientUsdt = $user->usdt;
-            
-            // Handle JSON format for client USDT
-            if (is_string($clientUsdt)) {
-                $decodedUsdt = json_decode($clientUsdt, true);
-                if (is_array($decodedUsdt)) {
-                    // Get address based on client source or first available
-                    if ($user->source == 'BNC' && !empty($decodedUsdt['BNC'])) {
-                        $usdtWalletAddress = $decodedUsdt['BNC'];
-                    } elseif (!empty($decodedUsdt['phoenix'])) {
-                        $usdtWalletAddress = $decodedUsdt['phoenix'];
-                    } else {
-                        // Get the first non-null address
-                        foreach ($decodedUsdt as $key => $address) {
-                            if (!empty($address) && $address !== null) {
-                                $usdtWalletAddress = $address;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    $usdtWalletAddress = trim($clientUsdt);
-                }
-            } elseif (is_array($clientUsdt)) {
-                // Handle if already decoded array
-                if ($user->source == 'BNC' && !empty($clientUsdt['BNC'])) {
-                    $usdtWalletAddress = $clientUsdt['BNC'];
-                } elseif (!empty($clientUsdt['phoenix'])) {
-                    $usdtWalletAddress = $clientUsdt['phoenix'];
-                } else {
-                    // Get the first non-null address
-                    foreach ($clientUsdt as $key => $address) {
-                        if (!empty($address) && $address !== null) {
-                            $usdtWalletAddress = $address;
-                            break;
                         }
                     }
                 }
