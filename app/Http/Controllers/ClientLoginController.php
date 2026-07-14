@@ -25,7 +25,7 @@ class ClientLoginController extends Controller
         if ($lang = $request->lang) {
             Session::put('locale', $lang);
         }
-        return view('clientarea.login', compact('logoUrl'));
+        return view('clientarea.login', compact('logoUrl', 'pipeline'));
     }
 
     protected function authenticated()
@@ -74,7 +74,7 @@ class ClientLoginController extends Controller
         if ($lang = $request->lang) {
             Session::put('locale', $lang);
         }
-        return view('clientarea.signup', compact('logoUrl'));
+        return view('clientarea.signup', compact('logoUrl', 'pipeline'));
     }
 
     public function signup(Request $request)
