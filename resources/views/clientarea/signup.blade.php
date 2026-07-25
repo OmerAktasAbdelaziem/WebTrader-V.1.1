@@ -462,6 +462,23 @@
                     </div>
                 </form>
 
+                {{-- Webtrader Message --}}
+                @if ((app()->getLocale() === 'ar' && $pipeline->webtrader_message_ar) || (app()->getLocale() !== 'ar' && $pipeline->webtrader_message_en))
+                    <div dir="{{ (app()->getLocale() === 'ar') ? 'rtl' : 'ltr' }}" style="background: linear-gradient(135deg, #8b8680 0%, #6b6b6b 100%);" class="flex gap-2 items-center mt-5 w-full text-white py-3 sm:py-4 px-4 rounded-xl text-sm lg:text-lg relative">
+                        @if ($pipeline->show_webtrader_message_icon)
+                            <svg class="text-green-400 w-7 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15L15 9.75m-3-7.036A11.96 11.96 0 0 1 3.598 6A12 12 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623c5.176-1.332 9-6.03 9-11.622c0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285" />
+                            </svg>
+                        @endif
+                        @if (app()->getLocale() == 'ar')
+                            {{ $pipeline->webtrader_message_ar }}
+                        @else
+                            {{ $pipeline->webtrader_message_en }}
+                        @endif
+                    </div>
+                @endif
+
                 <!-- Login Link -->
                 <div class="text-center mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-200/50 animate-fade-in-up" style="animation-delay: 0.5s;">
                     <p class="text-sm sm:text-base text-gray-600">
