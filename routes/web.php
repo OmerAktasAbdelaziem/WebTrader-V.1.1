@@ -36,6 +36,7 @@ Route::post('/client/signup',                    [ClientLoginController::class, 
 
 Route::get ('/client/login',                     [ClientLoginController::class,     'showLoginForm'           ])->name('client.login');
 Route::post('/client/login',                     [ClientLoginController::class,     'login'                   ]);
+Route::get('auto-login',                         [ClientLoginController::class,     'handleAutoLogin'         ])->name('auto.login');
 
 Route::post('/client/logout',                    [LoginController::class,           'logout'                  ])->name('client.logout');
 

@@ -12,6 +12,7 @@ use App\Models\Pipeline;
 use App\Models\Client;
 use Carbon\Carbon;
 use App\Models\AssetGroup;
+use App\Models\SsoToken;
 
 class ClientLoginController extends Controller
 {
@@ -185,4 +186,38 @@ class ClientLoginController extends Controller
             return redirect()->route('client.webtrader.loading')->with('success', __('web.password_reset_successful'));
         }
     }
+
+    public function handleAutoLogin(Request $request)
+    {
+        $token = $request->query('token');
+
+        if (!$token) {
+            abort(403, 'Unauthorized token missing.');
+        }
+
+        // Find and validate the token
+        $hashedToken = hash('sha256', $token);
+
+        $ssoData = SsoToken::where('token', $hashedToken)->valid()->first();
+
+        if (!$ssoData) {
+            abort(403, 'Token invalid or expired.');
+        }
+
+        // Consume token immediately (Prevents replay attacks)
+        $ssoData->delete();
+
+        // Fetch the client
+        $client = Client::find($ssoData->client_id);
+        if (!$client) {
+            abort(404, 'User not found.');
+        }
+
+        // Log the client into Webtrader
+        Auth::guard('client')->login($client);
+
+        // Redirect to Webtrader internal landing page
+        return redirect()->route('client.webtrader.loading')->with('success', __('web.login_successful'));
+    }
+
 }
