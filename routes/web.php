@@ -14,11 +14,41 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 
 Route::get('lang/{lang}', function ($lang) {
     if (in_array($lang, ['en', 'ar', 'tr'])) {
         Session::put('locale', $lang);
     }
+    // Get the previous URL the user came from
+    $previousUrl = URL::previous();
+    
+    //  Parse the URL path
+    $path = parse_url($previousUrl, PHP_URL_PATH);
+    $segments = explode('/', trim($path, '/'));
+    $lastSegment = end($segments);
+
+    // If the previous URL ends with a language code, remove it
+    if (in_array($lastSegment, ['en', 'ar', 'tr'])) {
+        array_pop($segments);
+        $cleanPath = implode('/', $segments);
+        
+        // Rebuild the clean URL (keeping query parameters if any exist)
+        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+        $newUrl = url($cleanPath . "/$lang") . ($queryString ? '?' . $queryString : '');
+        if($cleanPath == 'client/signup' || $cleanPath == 'client/login'){
+            return redirect($newUrl);
+        }
+    }else{
+        $cleanPath = implode('/', $segments);
+        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+        $newUrl = url($cleanPath . "/$lang") . ($queryString ? '?' . $queryString : '');
+        if($cleanPath == 'client/signup' || $cleanPath == 'client/login'){
+            return redirect($newUrl);
+        }
+
+    }
+
     return Redirect::back();
 })->name('switch.lang');
 
@@ -31,10 +61,10 @@ Auth::routes();
 Route::get('', function () {
     return redirect()->route('client.webtrader');
 });
-Route::get ('/client/signup',                    [ClientLoginController::class,     'showSignupForm'          ])->name('client.signup');
+Route::get ('/client/signup/{lang?}',            [ClientLoginController::class,     'showSignupForm'          ])->name('client.signup');
 Route::post('/client/signup',                    [ClientLoginController::class,     'signup'                  ])->name('client.signup.submit');
 
-Route::get ('/client/login',                     [ClientLoginController::class,     'showLoginForm'           ])->name('client.login');
+Route::get ('/client/login/{lang?}',             [ClientLoginController::class,     'showLoginForm'           ])->name('client.login');
 Route::post('/client/login',                     [ClientLoginController::class,     'login'                   ]);
 Route::get('auto-login',                         [ClientLoginController::class,     'handleAutoLogin'         ])->name('auto.login');
 
