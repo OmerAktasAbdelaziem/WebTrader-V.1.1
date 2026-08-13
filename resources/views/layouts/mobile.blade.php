@@ -1321,7 +1321,7 @@
         </div>
     </div>
 </div>
-@if (!request()->routeIs('clientarea.quotes') && !isset(auth()->guard('client')->user()->options['cantOpen']))
+{{-- @if (!request()->routeIs('clientarea.quotes') && !isset(auth()->guard('client')->user()->options['cantOpen'])) --}}
     <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -1406,7 +1406,7 @@
             </div>
         </div>
     </div>
-@endif
+{{-- @endif --}}
 
 <script src="{{ url('assets/plugins/material-date-range-picker/dist/duDatepicker.min.js?v1.599') }}"></script>
 <script src="{{ url('assets/js/form-date-time-pickers.min.js?v1.599') }}"></script>
