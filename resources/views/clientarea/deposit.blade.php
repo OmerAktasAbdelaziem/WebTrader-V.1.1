@@ -25,6 +25,7 @@
                                     <option value="bank">{{__('web.bank_transfer')}}</option>
                                     <option value="credit_card">{{__('web.credit_card')}}</option>
                                     <option value="crypto">{{__('web.crypto')}}</option>
+                                    <option value="ewallet">{{__('web.ewallet')}}</option>
                                 </select>
                                 <small class="form-text text-muted">{{__('web.choose_deposit_method')}}</small>
                             </div>
@@ -112,6 +113,40 @@
                                 </div>
                             </div>
 
+                            <!-- ewallet Details Fields -->
+                            <div id="ewalletDetailsFields" style="display: none;">
+                                <div class="form-group-modern mb-3">
+                                    <label for="ewallet_country_select" class="form-label">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ __('web.select_country') }}
+                                    </label>
+                                    <select name="country" id="ewallet_country_select" class="form-select" required>
+                                        <option value="">{{ __('web.choose_country') }}</option>
+                                        
+                                        @php
+                                            $filteredCountries = $wallets->pluck('countries')->flatten()->unique('id');
+                                        @endphp
+
+                                        @foreach($filteredCountries as $country)
+                                            <option value="{{ $country->id }}">{{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group-modern mb-3">
+                                    <label for="ewallet_select" class="form-label">
+                                        {{ __('web.select_ewallet') }}
+                                    </label>
+                                    <select name="ewallet_id" id="ewallet_select" class="form-select" required disabled>
+                                        <option value="">{{ __('web.first_select_country') }}</option>
+                                    </select>
+                                </div>
+
+                                <div id="ewalletDetailsDisplay" style="display: none;">
+                                </div>
+
+                            </div>
+
                             <!-- Receipt Upload (required for bank and crypto, not for credit card) -->
                             <div class="col-12" id="receiptUpload">
                                 <label for="receipt" class="form-label">{{__('web.upload_receipt')}}</label>
@@ -197,6 +232,8 @@
                                                     {{ __('web.crypto') }}
                                                 @elseif($deposit->method == 'credit_card')
                                                     {{ __('web.credit_card') }}
+                                                @elseif($deposit->method === 'wallet')
+                                                    {{ __('web.ewallet') }}
                                                 @else
                                                     {{ $deposit->method }}
                                                 @endif
@@ -431,6 +468,9 @@
     }
 
     $(document).ready(function() {
+        window.ewalletData = @json($wallets ?? []);
+
+
         // Debug form submission
         $('form[action="{{ route('deposit.process') }}"]').on('submit', function(e) {
             console.log('=== DEPOSIT FORM SUBMISSION DEBUG ===');
@@ -518,6 +558,7 @@
             $('#bankDetails').hide();
             $('#receiptUpload').show();
             $('#receipt').prop('required', true);
+            $('#ewalletDetailsFields').hide();
             
             if (method === 'bank') {
                 $('#bankFields').show();
@@ -525,6 +566,10 @@
                 $('#cryptoFields').show();
             } else if (method === 'credit_card') {
                 $('#creditCardFields').show();
+                $('#receiptUpload').hide();
+                $('#receipt').prop('required', false);
+            } else if (method === 'ewallet') {
+                $('#ewalletDetailsFields').show();
                 $('#receiptUpload').hide();
                 $('#receipt').prop('required', false);
             }
@@ -723,6 +768,91 @@
             $('#cryptoQrCode').html(qrHtml).show();
         }
     });
+
+
+    // e-wallet
+    const ewallet_country_select = document.getElementById("ewallet_country_select");
+    const ewallet_select = document.getElementById("ewallet_select");
+    const ewalletDetailsDisplay = document.getElementById("ewalletDetailsDisplay");
+
+    if (ewallet_country_select && ewallet_select) {
+        ewallet_country_select.addEventListener("change", function () {
+            const selectedCountry = this.value;
+
+            const ewalletData = window.ewalletData || [];
+
+            // Clear and reset ewallet select
+            ewallet_select.innerHTML = '<option value="">Choose a wallet...</option>';
+            ewallet_select.disabled = !selectedCountry;
+            ewalletDetailsDisplay.style.display = "none";
+            ewalletDetailsDisplay.innerHTML = "";
+
+            if (selectedCountry) {
+                // Filter ewallet by selected country 
+                const countryewallet = ewalletData.filter((wallet) => {
+                    if (!wallet.countries || !Array.isArray(wallet.countries)) {
+                        return false;
+                    }
+                    return wallet.countries.some(
+                        (country) => String(country.id) === String(selectedCountry)
+                    );
+                });
+
+                countryewallet.forEach((ewallet) => {
+                        const option = document.createElement("option");
+                        option.value = ewallet.id;
+
+                        option.textContent = `${ewallet.address} - ${ewallet.network}`;
+
+                        option.setAttribute("data-fields", JSON.stringify(ewallet.fields || []));
+
+                        ewallet_select.appendChild(option);
+                    });
+                }
+        });
+
+        ewallet_select.addEventListener("change", function () {
+            const selectedOption = this.options[this.selectedIndex];
+
+            // Reset details container view state
+            ewalletDetailsDisplay.innerHTML = "";
+
+            if (selectedOption && selectedOption.value) {
+                // Retrieve and parse your encoded string back into a structural JSON object array
+                const fieldsJson = selectedOption.getAttribute("data-fields");
+                const fields = fieldsJson ? JSON.parse(fieldsJson) : [];
+
+                if (fields.length > 0) {
+                    // Loop through fields to generate customized dynamic inputs layout configurations
+                    fields.forEach((field) => {
+                        const fieldGroup = document.createElement("div");
+                        fieldGroup.className = "mb-3";
+
+                        // Determine primary display name based on the globally assigned locale state string
+                        const localizedFieldName = window.currentAppLocale === 'ar' 
+                            ? field.arabic_field_name 
+                            : field.english_field_name;
+
+                        fieldGroup.innerHTML = `
+                            <label class="form-label">${localizedFieldName}</label>
+                            <input type="text" class="form-control" name="extra_fields[${field.id}]" placeholder="..." required>
+                        `;
+                        ewalletDetailsDisplay.appendChild(fieldGroup);
+                    });
+
+                    // Show the container details block
+                    ewalletDetailsDisplay.style.display = "block";
+                } else {
+                    // Keep block hidden if the chosen wallet contains no customized extra data field specifications
+                    ewalletDetailsDisplay.style.display = "none";
+                }
+            } else {
+                ewalletDetailsDisplay.style.display = "none";
+            }
+        });
+    }
+
+
 </script>
 
 <style>

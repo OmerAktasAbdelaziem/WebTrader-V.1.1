@@ -13,6 +13,7 @@ class MoneyTrx extends Model
         'bank_details',
         'broker_id',
         'bank_id',
+        'wallet_id',
         'comment',
         'amount',
         'type',

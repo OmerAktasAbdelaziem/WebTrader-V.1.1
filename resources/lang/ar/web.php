@@ -973,4 +973,8 @@ return [
     'note' => 'ملاحظة',
     'other' => 'اخرى',
     'withdraw_other' => 'اسحب بطريقة اخرى',
+
+    'ewallet' => 'محفظة الكترونية',
+    'fast_secure_ewallet' => 'دفع سريع وامن',
+    'select_ewallet' => 'اختر محفظة',
 ];

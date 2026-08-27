@@ -904,6 +904,10 @@
 
 </head>
 <body>
+<script>
+    // Share the current Laravel runtime locale state with frontend scripts
+    window.currentAppLocale = "{{ app()->getLocale() }}";
+</script>
 
 <!-- Sidebar Navigation -->
 <div class="sidebar">
@@ -2071,6 +2075,76 @@
                     </form>
                 </div>
             </div>
+
+            <!-- E-Wallet Method -->
+            <div class="deposit-method-card ewallet-card">
+                <div class="method-header">
+                    <div class="method-icon credit-card-icon">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <div class="method-info">
+                        <h4>{{ __('web.ewallet') }}</h4>
+                        <p>{{ __('web.fast_secure_ewallet') }}</p>
+                        <div class="method-features">
+                            <span class="feature-badge credit-card">{{ __('web.instant') }}</span>
+                            <span class="feature-badge credit-card">{{ __('web.secure') }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="method-form">
+                    <form id="ewalletDepositForm" action="{{ route('deposit.process') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="payment_method" value="ewallet">
+                        
+                        <div class="form-group-modern mb-3">
+                            <label for="ewallet_deposit_amount" class="form-label-modern">
+                                <i class="bi bi-currency-dollar"></i>
+                                {{ __('web.amount_usd') }}
+                            </label>
+                            <input type="number" name="amount" id="ewallet_deposit_amount" class="form-control-modern" step="0.01" min="10" placeholder="10.00" required>
+                        </div>
+
+
+                        <div class="form-group-modern mb-3">
+                            <label for="ewallet_country_select" class="form-label-modern">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ __('web.select_country') }}
+                            </label>
+                            <select name="country" id="ewallet_country_select" class="form-control-modern" required>
+                                <option value="">{{ __('web.choose_country') }}</option>
+                                
+                                @php
+                                    $filteredCountries = $wallets->pluck('countries')->flatten()->unique('id');
+                                @endphp
+
+                                @foreach($filteredCountries as $country)
+                                    <option value="{{ $country->id }}">{{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-modern mb-3">
+                            <label for="ewallet_select" class="form-label-modern">
+                                {{ __('web.select_ewallet') }}
+                            </label>
+                            <select name="ewallet_id" id="ewallet_select" class="form-control-modern" required disabled>
+                                <option value="">{{ __('web.first_select_country') }}</option>
+                            </select>
+                        </div>
+                        
+                        <!-- ewallet Details Display -->
+                        <div id="ewalletDetailsDisplay" class="ewallet-details-card" style="display: none;">
+                        </div>
+
+
+                        <button type="submit" class="btn-deposit-submit credit-card-submit">
+                            <i class="bi bi-credit-card me-2"></i>
+                            <span>Process Payment</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Recent Deposits Section -->
@@ -2138,6 +2212,8 @@
                                                     {{ __('web.cryptocurrency') }}
                                                 @elseif($deposit->credit_card_details)
                                                     {{ __('web.credit_card') }}
+                                                @elseif($deposit->method === 'wallet')
+                                                    {{ __('web.ewallet') }}
                                                 @else
                                                     {{ __('web.bank_transfer') }}
                                                 @endif
@@ -4030,6 +4106,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Banks data for filtering
     window.banksData = @json($banks ?? []);
+
+    // Banks data for filtering
+    window.ewalletData = @json($wallets ?? []);
     
     // Notifications data
     window.notificationsData = @json($notifications ?? []);

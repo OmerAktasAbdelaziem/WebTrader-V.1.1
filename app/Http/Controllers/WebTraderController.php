@@ -6,10 +6,12 @@ use App\Models\Asset;
 use App\Models\AssetGroup;
 use App\Models\Bank;
 use App\Models\Chat_ah;
+use App\Models\Country;
 use App\Models\MoneyTrx;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -129,6 +131,9 @@ class WebTraderController extends Controller
 
         $balance = max(0, $finance['withdraw_balance'] ?? 0);
 
+        $pipelineId = config('app.pipeline_id');
+        $wallets = Wallet::where('pipeline_id', $pipelineId)->with(['countries', 'fields'])->get();
+
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
         } else {
@@ -151,7 +156,8 @@ class WebTraderController extends Controller
                 'tab',
                 'chat',
                 'notifications',
-                'balance'
+                'balance',
+                'wallets',
             ));
         }
     }

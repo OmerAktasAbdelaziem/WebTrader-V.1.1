@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Http;
 
 //Service
 use App\Http\Services\Api\Crm\CrmApiServiceInterface;
+use App\Models\MoneyTrxesExtraFieldAnswer;
+use App\Models\Wallet;
 
 class ClientsController extends Controller
 {
@@ -198,7 +200,11 @@ class ClientsController extends Controller
             }
         }
 
-        return view('clientarea.deposit', compact('countries', 'banks', 'pendingDeposits', 'nonPendingDeposits', 'allDeposits', 'finance', 'usdtWalletAddress'));
+        
+        $pipelineId = config('app.pipeline_id');
+        $wallets = Wallet::where('pipeline_id', $pipelineId)->with(['countries', 'fields'])->get();
+
+        return view('clientarea.deposit', compact('wallets', 'countries', 'banks', 'pendingDeposits', 'nonPendingDeposits', 'allDeposits', 'finance', 'usdtWalletAddress'));
     }
 
     public function getBanksByCountry(Request $request)
@@ -250,7 +256,8 @@ class ClientsController extends Controller
         $methodMapping = [
             'bank_transfer' => 'bank',
             'cryptocurrency' => 'crypto',
-            'credit_card' => 'credit_card'
+            'credit_card' => 'credit_card',
+            'ewallet' => 'ewallet'
         ];
         
         if (isset($methodMapping[$depositMethod])) {
@@ -263,7 +270,7 @@ class ClientsController extends Controller
         ]);
         
         // Validate that we have a valid deposit method
-        if (!in_array($depositMethod, ['bank', 'credit_card', 'crypto'])) {
+        if (!in_array($depositMethod, ['bank', 'credit_card', 'crypto', 'ewallet'])) {
             return redirect()->back()->with('error', 'Invalid deposit method selected.');
         }
         
@@ -458,6 +465,96 @@ class ClientsController extends Controller
                 return redirect()->back()->with('error', 'Failed to process crypto deposit. Error: ' . $e->getMessage());
             }
         }
+        
+        // Handle e-wallet transfer deposits
+        if ($depositMethod === 'ewallet') {
+            $request->validate([
+                'country'          => 'required|exists:countries,id',
+                'ewallet_id'        => 'required|exists:wallets,id',
+                'amount'           => 'required|numeric|min:0.01',
+                'extra_fields'     => 'nullable|array',
+                'extra_fields.*'   => 'required|string',
+            ]);
+
+            $walletId = $request->input('ewallet_id');
+            $wallet = Wallet::with('fields')->find($walletId);
+
+            $depositData = [
+                'broker_id'           => $user->broker_id,
+                'wallet_id'           => $wallet->id, 
+                'amount'              => $request->input('amount'),
+                'status'              => 'pending',
+                'type'                => 'deposit',
+                'method'              => 'wallet',
+                'usdt'                => null,
+                'bank_id'             => null,
+                'receipt'             => null,
+                'bank_details'        => null,
+                'credit_card_details' => null,
+            ];
+
+            try {
+                Log::info('=== ATTEMPTING TO CREATE WALLET DEPOSIT ===', [
+                    'depositData' => $depositData,
+                    'user_id'     => $user->id,
+                    'broker_id'   => $user->broker_id
+                ]);
+
+                $moneyTrx = DB::transaction(function () use ($depositData, $request, $wallet) {
+                    // Store the primary transaction record
+                    $trx = MoneyTrx::create($depositData);
+
+                    $extraFieldsAnswers = $request->input('extra_fields', []);
+                    $answersPayload = [];
+
+                    foreach ($extraFieldsAnswers as $fieldId => $clientAnswer) {
+                        // Find corresponding localized metadata context from the eager loaded wallet configuration fields
+                        $fieldMeta = $wallet->fields->firstWhere('id', $fieldId);
+                        
+                        if ($fieldMeta) {
+                            $answersPayload[] = [
+                                'money_trxes_id'    => $trx->id,
+                                'wallet_field_id'   => $fieldId,
+                                'field_text'        => app()->getLocale() === 'ar' ? $fieldMeta->arabic_field_name : $fieldMeta->english_field_name,                                
+                                'client_answer'     => $clientAnswer,
+                                'created_at'        => now(),
+                                'updated_at'        => now(),
+                            ];
+                        }
+                    }
+
+                    // Perform batch insert on the relational extra fields answers table if payload isn't empty
+                    if (!empty($answersPayload)) {
+                        MoneyTrxesExtraFieldAnswer::insert($answersPayload);
+                    }
+
+                    return $trx;
+                });
+
+                \Illuminate\Support\Facades\Log::info('=== WALLET DEPOSIT CREATED SUCCESSFULLY ===', [
+                    'transaction_id' => $moneyTrx->id,
+                    'broker_id'      => $user->broker_id,
+                    'method'         => $depositMethod,
+                    'amount'         => $moneyTrx->amount,
+                    'status'         => $moneyTrx->status,
+                    'answers_count'  => count($request->input('extra_fields', []))
+                ]);
+
+                return redirect()->back()->with('success', __('web.deposit_request_submitted_successfully'));
+
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('=== WALLET DEPOSIT CREATION FAILED ===', [
+                    'error'     => $e->getMessage(),
+                    'trace'     => $e->getTraceAsString(),
+                    'broker_id' => $user->broker_id,
+                    'data'      => $depositData,
+                    'line'      => $e->getLine(),
+                    'file'      => $e->getFile()
+                ]);
+                return redirect()->back()->with('error', 'Failed to process wallet deposit. Error: ' . $e->getMessage());
+            }
+        }
+
         else {
             return redirect()->back()->with('error', 'Invalid deposit method selected.');
         }

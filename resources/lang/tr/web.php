@@ -388,4 +388,9 @@ return [
     
     'you_have_no_access_to_this_account' => 'Bu hesaba erişiminiz yok.',
     'please_contact_us' => 'Lütfen bizimle iletişime geçin.',
+    
+    'ewallet' => 'E-wallet',
+    'fast_secure_ewallet' => 'Fast and secure payments',
+    'select_ewallet' => 'select a wallet',
+
 ];
