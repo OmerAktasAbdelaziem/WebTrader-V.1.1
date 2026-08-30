@@ -3,6 +3,12 @@
 @section('title', 'Deposit - WebTrader Mobile')
 
 @section('content')
+
+<script>
+    // Share the current Laravel runtime locale state with frontend scripts
+    window.currentAppLocale = "{{ app()->getLocale() }}";
+</script>
+
 <div class="container-fluid p-3">
     <div class="row">
         <div class="col-12">

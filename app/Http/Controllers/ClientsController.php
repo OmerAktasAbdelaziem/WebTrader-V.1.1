@@ -18,8 +18,10 @@ use Illuminate\Support\Facades\Http;
 
 //Service
 use App\Http\Services\Api\Crm\CrmApiServiceInterface;
+use App\Models\Country;
 use App\Models\MoneyTrxesExtraFieldAnswer;
 use App\Models\Wallet;
+use App\Models\WalletField;
 
 class ClientsController extends Controller
 {
@@ -202,7 +204,7 @@ class ClientsController extends Controller
 
         
         $pipelineId = config('app.pipeline_id');
-        $wallets = Wallet::where('pipeline_id', $pipelineId)->with(['countries', 'fields'])->get();
+        $wallets = Wallet::where('pipeline_id', $pipelineId)->where('type', 'deposit')->with(['countries', 'fields'])->get();
 
         return view('clientarea.deposit', compact('wallets', 'countries', 'banks', 'pendingDeposits', 'nonPendingDeposits', 'allDeposits', 'finance', 'usdtWalletAddress'));
     }
@@ -614,7 +616,13 @@ class ClientsController extends Controller
             return $withdrawal->normalized_status === 'rejected';
         });
 
-        return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance', 'balance'));
+        
+        $pipelineId = config('app.pipeline_id');
+        $wallets = Wallet::where('pipeline_id', $pipelineId)->where('type', 'withdrawal')->with(['countries', 'fields'])->get();
+        $allCountries = Country::get();
+        $defaultFields = WalletField::whereNull('wallet_id')->get();
+
+        return view('clientarea.withdraw', compact('allWithdrawals', 'acceptedWithdrawals', 'pendingWithdrawals', 'rejectedWithdrawals', 'finance', 'balance', 'wallets', 'allCountries', 'defaultFields'));
     }
 
     /**
@@ -686,7 +694,7 @@ class ClientsController extends Controller
         
         try {
             $request->validate([
-                'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency,other',
+                'payment_method'      => 'required|string|in:bank_transfer,cryptocurrency,other,ewallet',
                 'amount'              => 'required|numeric|min:1',
                 // Bank transfer fields
                 'account_name'        => $bankTransferRule,  // Changed from account_holder to account_name
@@ -697,6 +705,12 @@ class ClientsController extends Controller
                 'crypto_type'         => $cryptoRule,
                 'crypto_address'      => $cryptoRule,
                 'note'      => 'nullable|string|required_if:payment_method,other',
+
+                'country'          => 'required_if:payment_method,ewallet|exists:countries,id',
+                'ewallet_id'        => 'nullable|exists:wallets,id',
+                'extra_fields'     => 'nullable|array',
+                'extra_fields.*'   => 'required_if:payment_method,ewallet|string',
+
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
@@ -774,6 +788,54 @@ class ClientsController extends Controller
                     'note' => $request->note,
                 ]);
                 Log::info('other withdrawal created successfully', ['transaction_id' => $moneyTrx->id, 'broker_id' => $user->broker_id]);
+            }elseif($request->payment_method === 'ewallet'){
+                $walletId = $request->input('ewallet_id');
+                $wallet = Wallet::with('fields')->find($walletId);
+
+                $withdrawData = [
+                    'broker_id'           => $user->broker_id,
+                    'wallet_id'           => $wallet?->id, 
+                    'amount'              => $request->input('amount'), 
+                    'status'             => 'pending',
+                    'type'                => 'withdraw',
+                    'method'              => 'wallet',
+                ];
+                $moneyTrx = DB::transaction(function () use ($withdrawData, $request, $wallet) {
+                    // Store the primary transaction record
+                    $trx = MoneyTrx::create($withdrawData);
+
+                    $extraFieldsAnswers = $request->input('extra_fields', []);
+                    $answersPayload = [];
+
+                    foreach ($extraFieldsAnswers as $fieldId => $clientAnswer) {
+                        // Find corresponding localized metadata context from the eager loaded wallet configuration fields
+                        if($wallet){
+                            $fieldMeta = $wallet->fields->firstWhere('id', $fieldId);
+                        }else{
+                            $fieldMeta = WalletField::find($fieldId);
+                        }
+                        
+                        if ($fieldMeta) {
+                            $answersPayload[] = [
+                                'money_trxes_id'    => $trx->id,
+                                'wallet_field_id'   => $fieldId,
+                                'field_text'        => app()->getLocale() === 'ar' ? $fieldMeta->arabic_field_name : $fieldMeta->english_field_name,                                
+                                'client_answer'     => $clientAnswer,
+                                'created_at'        => now(),
+                                'updated_at'        => now(),
+                            ];
+                        }
+                    }
+
+                    // Perform batch insert on the relational extra fields answers table if payload isn't empty
+                    if (!empty($answersPayload)) {
+                        MoneyTrxesExtraFieldAnswer::insert($answersPayload);
+                    }
+
+                    return $trx;
+                });
+
+
             } else {
                 $moneyTrx = MoneyTrx::create([
                     'broker_id'    => $user->broker_id,
@@ -840,7 +902,7 @@ class ClientsController extends Controller
         
         // Define validation rules based on withdrawal method
         $rules = [
-            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency,other',
+            'withdrawal_method' => 'required|string|in:bank_transfer,cryptocurrency,other,ewallet',
             'amount' => 'required|numeric|min:10',
         ];
 
@@ -864,6 +926,14 @@ class ClientsController extends Controller
             case 'other':
                 $rules += [
                     'note' => 'required|string',
+                ];
+                break;
+            case 'ewallet':
+                $rules += [
+                    'country'          => 'required|exists:countries,id',
+                    'ewallet_id'        => 'nullable|exists:wallets,id',
+                    'extra_fields'     => 'nullable|array',
+                    'extra_fields.*'   => 'required|string',
                 ];
                 break;
         }
@@ -945,6 +1015,54 @@ class ClientsController extends Controller
                     'status' => 'pending',
                     'note' => $request->note,
                 ]);
+            } elseif($withdrawal_method === 'ewallet'){
+                $walletId = $request->input('ewallet_id');
+                $wallet = Wallet::with('fields')->find($walletId);
+
+                $withdrawData = [
+                    'broker_id'           => $user->broker_id,
+                    'wallet_id'           => $wallet?->id, 
+                    'amount'              => $request->input('amount'), 
+                    'status'             => 'pending',
+                    'type'                => 'withdraw',
+                    'method'              => 'wallet',
+                ];
+                $moneyTrx = DB::transaction(function () use ($withdrawData, $request, $wallet) {
+                    // Store the primary transaction record
+                    $trx = MoneyTrx::create($withdrawData);
+
+                    $extraFieldsAnswers = $request->input('extra_fields', []);
+                    $answersPayload = [];
+
+                    foreach ($extraFieldsAnswers as $fieldId => $clientAnswer) {
+                        // Find corresponding localized metadata context from the eager loaded wallet configuration fields
+                        if($wallet){
+                            $fieldMeta = $wallet->fields->firstWhere('id', $fieldId);
+                        }else{
+                            $fieldMeta = WalletField::find($fieldId);
+                        }
+                        
+                        if ($fieldMeta) {
+                            $answersPayload[] = [
+                                'money_trxes_id'    => $trx->id,
+                                'wallet_field_id'   => $fieldId,
+                                'field_text'        => app()->getLocale() === 'ar' ? $fieldMeta->arabic_field_name : $fieldMeta->english_field_name,                                
+                                'client_answer'     => $clientAnswer,
+                                'created_at'        => now(),
+                                'updated_at'        => now(),
+                            ];
+                        }
+                    }
+
+                    // Perform batch insert on the relational extra fields answers table if payload isn't empty
+                    if (!empty($answersPayload)) {
+                        MoneyTrxesExtraFieldAnswer::insert($answersPayload);
+                    }
+
+                    return $trx;
+                });
+
+
             } else {
                 $moneyTrx = MoneyTrx::create([
                     'broker_id' => $user->broker_id,
@@ -990,7 +1108,7 @@ class ClientsController extends Controller
                 'broker_id' => $user->broker_id,
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,

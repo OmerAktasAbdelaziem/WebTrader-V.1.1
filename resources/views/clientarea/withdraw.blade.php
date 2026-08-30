@@ -1,6 +1,12 @@
 @extends('layouts.mobile')
 
 @section('content')
+
+<script>
+    // Share the current Laravel runtime locale state with frontend scripts
+    window.currentAppLocale = "{{ app()->getLocale() }}";
+</script>
+
 <div class="container-fluid p-3">
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
@@ -35,6 +41,7 @@
                                     <option value="">{{__('web.choose_payment_method')}}</option>
                                     <option value="bank_transfer">{{__('web.bank_transfer')}}</option>
                                     <option value="cryptocurrency">{{__('web.cryptocurrency')}}</option>
+                                    <option value="ewallet">{{__('web.ewallet')}}</option>
                                     <option value="other">{{__('web.other')}}</option>
                                 </select>
                             </div>
@@ -79,7 +86,38 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            
+                            <!-- ewallet Details Fields -->
+                            <div id="ewalletDetailsFields" style="display: none;">
+                                <div class="form-group-modern mb-3">
+                                    <label for="ewallet_country_select" class="form-label">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ __('web.select_country') }}
+                                    </label>
+                                    <select name="country" id="ewallet_country_select" class="form-select" required>
+                                        <option value="">{{ __('web.choose_country') }}</option>
+                                        
+                                        @foreach($allCountries as $country)
+                                            <option value="{{ $country->id }}">{{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group-modern mb-3" id="ewallet_select_div">
+                                    <label for="ewallet_select" class="form-label">
+                                        {{ __('web.select_ewallet') }}
+                                    </label>
+                                    <select name="ewallet_id" id="ewallet_select" class="form-select" disabled>
+                                        <option value="">{{ __('web.first_select_country') }}</option>
+                                    </select>
+                                </div>
+
+                                <div id="ewalletDetailsDisplay" style="display: none;">
+                                </div>
+
+                            </div>
+
+                            <div class="col-12" id="notes_div">
                                 <label for="notes" class="form-label">{{__('web.notes')}} <span class="text-muted">({{__('web.optional')}})</span></label>
                                 <textarea class="form-control" id="notes" name="note" rows="2" placeholder="{{__('web.additional_notes')}}"></textarea>
                             </div>
@@ -141,6 +179,8 @@
                                                 PayPal
                                             @elseif($method == 'credit_card' || $method == 'card')
                                                 {{ __('web.credit_card') }}
+                                            @elseif($method === 'wallet')
+                                                {{ __('web.ewallet') }}
                                             @else
                                                 {{ $method ?: __('web.not_available') }}
                                             @endif
@@ -336,9 +376,14 @@ html[data-theme="dark"] .table thead th {
 
 <script>
 $(document).ready(function() {
+    window.ewalletData = @json($wallets ?? []);
+    window.defaultFields = @json($defaultFields ?? []);
+
     $('#payment_method').on('change', function() {
         const method = $(this).val();
         $('#bankTransferDetails, #cryptoDetails').hide();
+        $('#ewalletDetailsFields').hide();
+        $('#notes_div').show();
         if (method === 'bank_transfer') {
             $('#bankTransferDetails').show();
             $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', true);
@@ -347,6 +392,13 @@ $(document).ready(function() {
             $('#cryptoDetails').show();
             $('#crypto_type, #crypto_address').attr('required', true);
             $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', false);
+        } else if (method === 'ewallet') {
+            $('#ewalletDetailsFields').show();
+            $('#receiptUpload').hide();
+            $('#notes_div').hide();
+            $('#crypto_type, #crypto_address').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', false);
+
         } else {
             $('#bank_name, #account_number, #account_name, #swift_code, #crypto_type, #crypto_address, #iban').attr('required', false);
         }
@@ -364,5 +416,117 @@ $(document).ready(function() {
         $(".nav-link[data-bs-target='"+hash+"']").tab('show');
     }
 });
+
+
+    // e-wallet
+    const ewallet_country_select = document.getElementById("ewallet_country_select");
+    const ewallet_select = document.getElementById("ewallet_select");
+    const ewalletDetailsDisplay = document.getElementById("ewalletDetailsDisplay");
+
+    if (ewallet_country_select && ewallet_select) {
+        ewallet_country_select.addEventListener("change", function () {
+            const selectedCountry = this.value;
+
+            const ewalletData = window.ewalletData || [];
+
+            // Clear and reset ewallet select
+            ewallet_select.innerHTML = '<option value="">Choose a wallet...</option>';
+            ewallet_select.disabled = !selectedCountry;
+            ewalletDetailsDisplay.style.display = "none";
+            ewalletDetailsDisplay.innerHTML = "";
+
+            if (selectedCountry) {
+                // Filter ewallet by selected country 
+                const countryewallet = ewalletData.filter((wallet) => {
+                    if (!wallet.countries || !Array.isArray(wallet.countries)) {
+                        return false;
+                    }
+                    return wallet.countries.some(
+                        (country) => String(country.id) === String(selectedCountry)
+                    );
+                });
+
+                if (countryewallet.length) {
+                    document.getElementById("ewallet_select_div").classList.remove("d-none", "hidden");
+                    countryewallet.forEach((ewallet) => {
+                        const option = document.createElement("option");
+                        option.value = ewallet.id;
+
+                        option.textContent = ewallet.name;
+
+                        option.setAttribute("data-fields", JSON.stringify(ewallet.fields || []));
+
+                        ewallet_select.appendChild(option);
+                    });
+                }else{
+
+                    document.getElementById("ewallet_select_div").classList.add("d-none", "hidden");
+
+                    ewalletDetailsDisplay.innerHTML = "";
+
+                    // Loop through fields to generate customized dynamic inputs layout configurations
+                    defaultFields.forEach((field) => {
+                        const fieldGroup = document.createElement("div");
+                        fieldGroup.className = "mb-3";
+
+                        // Determine primary display name based on the globally assigned locale state string
+                        const localizedFieldName = window.currentAppLocale === 'ar' 
+                            ? field.arabic_field_name 
+                            : field.english_field_name;
+
+                        fieldGroup.innerHTML = `
+                            <label class="form-label">${localizedFieldName}</label>
+                            <input type="text" class="form-control" name="extra_fields[${field.id}]" placeholder="..." required>
+                        `;
+                        ewalletDetailsDisplay.appendChild(fieldGroup);
+                    });
+
+                    // Show the container details block
+                    ewalletDetailsDisplay.style.display = "block";
+                }
+            }
+        });
+
+        ewallet_select.addEventListener("change", function () {
+            const selectedOption = this.options[this.selectedIndex];
+
+            // Reset details container view state
+            ewalletDetailsDisplay.innerHTML = "";
+
+            if (selectedOption && selectedOption.value) {
+                // Retrieve and parse your encoded string back into a structural JSON object array
+                const fieldsJson = selectedOption.getAttribute("data-fields");
+                const fields = fieldsJson ? JSON.parse(fieldsJson) : [];
+
+                if (fields.length > 0) {
+                    // Loop through fields to generate customized dynamic inputs layout configurations
+                    fields.forEach((field) => {
+                        const fieldGroup = document.createElement("div");
+                        fieldGroup.className = "mb-3";
+
+                        // Determine primary display name based on the globally assigned locale state string
+                        const localizedFieldName = window.currentAppLocale === 'ar' 
+                            ? field.arabic_field_name 
+                            : field.english_field_name;
+
+                        fieldGroup.innerHTML = `
+                            <label class="form-label">${localizedFieldName}</label>
+                            <input type="text" class="form-control" name="extra_fields[${field.id}]" placeholder="..." required>
+                        `;
+                        ewalletDetailsDisplay.appendChild(fieldGroup);
+                    });
+
+                    // Show the container details block
+                    ewalletDetailsDisplay.style.display = "block";
+                } else {
+                    // Keep block hidden if the chosen wallet contains no customized extra data field specifications
+                    ewalletDetailsDisplay.style.display = "none";
+                }
+            } else {
+                ewalletDetailsDisplay.style.display = "none";
+            }
+        });
+    }
+
 </script>
 @endsection

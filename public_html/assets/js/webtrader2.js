@@ -1511,7 +1511,7 @@ if (countrySelect && bankSelect) {
         ewallet_country_select.addEventListener("change", function () {
             const selectedCountry = this.value;
 
-            const ewalletData = window.ewalletData || [];
+            const ewalletData = window.depositWallets || [];
 
             // Clear and reset ewallet select
             ewallet_select.innerHTML = '<option value="">Choose a wallet...</option>';
@@ -1580,6 +1580,117 @@ if (countrySelect && bankSelect) {
                 }
             } else {
                 ewalletDetailsDisplay.style.display = "none";
+            }
+        });
+    }
+
+    // withdrawal
+    const withdrawal_ewallet_country_select = document.getElementById("withdrawal_ewallet_country_select");
+    const withdrawal_ewallet_select = document.getElementById("withdrawal_ewallet_select");
+    const withdrawal_ewalletDetailsDisplay = document.getElementById("withdrawal_ewalletDetailsDisplay");
+
+    if (withdrawal_ewallet_country_select && withdrawal_ewallet_select) {
+        withdrawal_ewallet_country_select.addEventListener("change", function () {
+            const selectedCountry = this.value;
+
+            const ewalletData = window.withdrawalWallets || [];
+
+            // Clear and reset ewallet select
+            withdrawal_ewallet_select.innerHTML = '<option value="">Choose a wallet...</option>';
+            withdrawal_ewallet_select.disabled = !selectedCountry;
+            withdrawal_ewalletDetailsDisplay.style.display = "none";
+            withdrawal_ewalletDetailsDisplay.innerHTML = "";
+
+            if (selectedCountry) {
+                // Filter ewallet by selected country 
+                const countryewallet = ewalletData.filter((wallet) => {
+                    if (!wallet.countries || !Array.isArray(wallet.countries)) {
+                        return false;
+                    }
+                    return wallet.countries.some(
+                        (country) => String(country.id) === String(selectedCountry)
+                    );
+                });
+
+                if (countryewallet.length) {
+                    document.getElementById("withdrawal_ewallet_select_div").classList.remove("d-none", "hidden");
+
+                    countryewallet.forEach((ewallet) => {
+                        const option = document.createElement("option");
+                        option.value = ewallet.id;
+    
+                        option.textContent = ewallet.name;
+    
+                        option.setAttribute("data-fields", JSON.stringify(ewallet.fields || []));
+    
+                        withdrawal_ewallet_select.appendChild(option);
+                    });
+                }else{
+                    
+                    document.getElementById("withdrawal_ewallet_select_div").classList.add("d-none", "hidden");
+
+                    withdrawal_ewalletDetailsDisplay.innerHTML = "";
+
+                    // Loop through fields to generate customized dynamic inputs layout configurations
+                    defaultFields.forEach((field) => {
+                        const fieldGroup = document.createElement("div");
+                        fieldGroup.className = "mb-3";
+
+                        // Determine primary display name based on the globally assigned locale state string
+                        const localizedFieldName = window.currentAppLocale === 'ar' 
+                            ? field.arabic_field_name 
+                            : field.english_field_name;
+
+                        fieldGroup.innerHTML = `
+                            <label class="form-label-modern">${localizedFieldName}</label>
+                            <input type="text" class="form-control-modern" name="extra_fields[${field.id}]" placeholder="..." required>
+                        `;
+                        withdrawal_ewalletDetailsDisplay.appendChild(fieldGroup);
+                    });
+
+                    // Show the container details block
+                    withdrawal_ewalletDetailsDisplay.style.display = "block";
+                }
+            }
+        });
+
+        withdrawal_ewallet_select.addEventListener("change", function () {
+            const selectedOption = this.options[this.selectedIndex];
+
+            // Reset details container view state
+            withdrawal_ewalletDetailsDisplay.innerHTML = "";
+
+            if (selectedOption && selectedOption.value) {
+                // Retrieve and parse your encoded string back into a structural JSON object array
+                const fieldsJson = selectedOption.getAttribute("data-fields");
+                const fields = fieldsJson ? JSON.parse(fieldsJson) : [];
+
+                if (fields.length > 0) {
+                    // Loop through fields to generate customized dynamic inputs layout configurations
+                    fields.forEach((field) => {
+                        const fieldGroup = document.createElement("div");
+                        fieldGroup.className = "mb-3";
+
+                        // Determine primary display name based on the globally assigned locale state string
+                        const localizedFieldName = window.currentAppLocale === 'ar' 
+                            ? field.arabic_field_name 
+                            : field.english_field_name;
+
+                        fieldGroup.innerHTML = `
+                            <label class="form-label-modern">${localizedFieldName}</label>
+                            <input type="text" class="form-control-modern" name="extra_fields[${field.id}]" placeholder="..." required>
+                        `;
+                        withdrawal_ewalletDetailsDisplay.appendChild(fieldGroup);
+                    });
+
+                    // Show the container details block
+                    withdrawal_ewalletDetailsDisplay.style.display = "block";
+                } else {
+                    // Keep block hidden if the chosen wallet contains no customized extra data field specifications
+                    withdrawal_ewalletDetailsDisplay.style.display = "none";
+                }
+            } else {
+                withdrawal_ewalletDetailsDisplay.style.display = "none";
             }
         });
     }

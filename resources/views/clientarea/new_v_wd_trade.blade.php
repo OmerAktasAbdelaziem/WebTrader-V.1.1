@@ -2115,7 +2115,7 @@
                                 <option value="">{{ __('web.choose_country') }}</option>
                                 
                                 @php
-                                    $filteredCountries = $wallets->pluck('countries')->flatten()->unique('id');
+                                    $filteredCountries = $depositWallets->pluck('countries')->flatten()->unique('id');
                                 @endphp
 
                                 @foreach($filteredCountries as $country)
@@ -2691,6 +2691,73 @@
                                 </form>
                             </div>
                         </div>
+
+                        <!-- E-wallet -->
+                        <div class="withdrawal-method-card ewallet-card">
+                            <div class="method-header">
+                                <div class="method-icon credit-card-icon">
+                                    <i class="bi bi-credit-card"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h4>{{ __('web.ewallet') }}</h4>
+                                    <p>{{ __('web.fast_secure_ewallet') }}</p>
+                                    <div class="method-features">
+                                        <span class="feature-badge credit-card">{{ __('web.instant') }}</span>
+                                        <span class="feature-badge credit-card">{{ __('web.secure') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="method-form">
+                                <form id="EwalletWithdrawalForm" action="{{ route('client.withdrawal.store') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="withdrawal_method" value="ewallet">
+                                    
+                                    <div class="form-group-modern mb-3">
+                                        <label for="ewallet_withdrawal_amount" class="form-label-modern">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            {{ __('web.amount_usd') }}
+                                        </label>
+                                        <input type="number" name="amount" id="ewallet_withdrawal_amount" class="form-control-modern" step="0.01" min="10" placeholder="10.00" required>
+                                    </div>
+
+
+                                    <div class="form-group-modern mb-3">
+                                        <label for="withdrawal_ewallet_country_select" class="form-label-modern">
+                                            <i class="bi bi-geo-alt"></i>
+                                            {{ __('web.select_country') }}
+                                        </label>
+                                        <select name="country" id="withdrawal_ewallet_country_select" class="form-control-modern" required>
+                                            <option value="">{{ __('web.choose_country') }}</option>
+                                            
+                                            @foreach($allCountries as $country)
+                                                <option value="{{ $country->id }}">{{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group-modern mb-3" id="withdrawal_ewallet_select_div">
+                                        <label for="withdrawal_ewallet_select" class="form-label-modern">
+                                            {{ __('web.select_ewallet') }}
+                                        </label>
+                                        <select name="ewallet_id" id="withdrawal_ewallet_select" class="form-control-modern" disabled>
+                                            <option value="">{{ __('web.first_select_country') }}</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- ewallet Details Display -->
+                                    <div id="withdrawal_ewalletDetailsDisplay" class="ewallet-details-card" style="display: none;">
+                                    </div>
+
+
+                                    <button type="submit" class="btn-submit-modern credit-card-submit">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ __('web.submit_withdrawal') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
                     </div>
                     
                     <div class="row mb-4">
@@ -2806,6 +2873,8 @@
                                                                 USDT
                                                             @elseif ($withdrawal->method === 'other')
                                                                 Other
+                                                            @elseif($withdrawal->method === 'wallet')
+                                                                {{ __('web.ewallet') }}
                                                             @else
                                                                 Bank Transfer
                                                             @endif
@@ -4108,7 +4177,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.banksData = @json($banks ?? []);
 
     // Banks data for filtering
-    window.ewalletData = @json($wallets ?? []);
+    window.depositWallets = @json($depositWallets ?? []);
+    window.withdrawalWallets = @json($withdrawalWallets ?? []);
+    window.defaultFields = @json($defaultFields ?? []);
     
     // Notifications data
     window.notificationsData = @json($notifications ?? []);

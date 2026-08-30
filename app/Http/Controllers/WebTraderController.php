@@ -12,6 +12,7 @@ use App\Models\Notification;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\WalletField;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -132,7 +133,10 @@ class WebTraderController extends Controller
         $balance = max(0, $finance['withdraw_balance'] ?? 0);
 
         $pipelineId = config('app.pipeline_id');
-        $wallets = Wallet::where('pipeline_id', $pipelineId)->with(['countries', 'fields'])->get();
+        $depositWallets = Wallet::where('pipeline_id', $pipelineId)->where('type', 'deposit')->with(['countries', 'fields'])->get();
+        $withdrawalWallets = Wallet::where('pipeline_id', $pipelineId)->where('type', 'withdrawal')->with(['countries', 'fields'])->get();
+        $allCountries = Country::get();
+        $defaultFields = WalletField::whereNull('wallet_id')->get();
 
         if ($isMobile || $isTablet) {
             return redirect()->route('clientarea.quotes');
@@ -157,7 +161,10 @@ class WebTraderController extends Controller
                 'chat',
                 'notifications',
                 'balance',
-                'wallets',
+                'depositWallets',
+                'withdrawalWallets',
+                'allCountries',
+                'defaultFields'
             ));
         }
     }
