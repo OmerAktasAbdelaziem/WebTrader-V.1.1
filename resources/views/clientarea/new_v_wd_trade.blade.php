@@ -1366,8 +1366,27 @@
                 <div class="header-text">
                     <h1>{{ __('web.account_dashboard') }}</h1>
                     <p>{{ __('web.overview_trading_account') }}</p>
+
+                    @php
+                        $client = auth('client')->user();
+                        $kyc = true;
+                        $acceptedKycExists = \App\Models\ClientDocument::where('client_id', $client->id)->where('type', 'kyc')->where('status', 'accepted')->exists();
+
+                    @endphp
+                    @if (isset($client->options['isVerified']) && $acceptedKycExists)
+                        <p class="mt-2">
+                            <svg style="color: #05ab18" xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 16 16">
+                                <path d="M0 0h16v16H0z" fill="none" />
+                                <path fill="currentColor" d="m11.335 2.065l.076.153l.577 1.533c.045.12.14.216.261.261l1.48.555c.65.244.999.938.826 1.595l-.042.13l-.688 1.523a.45.45 0 0 0 0 .37l.653 1.439a1.34 1.34 0 0 1-.543 1.711l-.153.076l-1.533.577a.45.45 0 0 0-.261.261l-.555 1.48a1.34 1.34 0 0 1-1.595.826l-.13-.042l-1.523-.688a.45.45 0 0 0-.37 0l-1.439.654a1.34 1.34 0 0 1-1.711-.544l-.076-.153l-.577-1.533a.45.45 0 0 0-.261-.261l-1.48-.555a1.34 1.34 0 0 1-.826-1.595l.042-.13l.689-1.523a.45.45 0 0 0 0-.37l-.654-1.439a1.34 1.34 0 0 1 .543-1.711l.153-.076l1.533-.577a.45.45 0 0 0 .261-.261l.555-1.48a1.34 1.34 0 0 1 1.595-.826l.13.042l1.523.689a.45.45 0 0 0 .37 0l1.439-.654a1.34 1.34 0 0 1 1.711.543m-1.171 3.64L6.978 9.348L5.816 8.184a.447.447 0 1 0-.632.632l1.5 1.5a.447.447 0 0 0 .652-.022l3.5-4a.447.447 0 0 0-.672-.588" />
+                            </svg>
+                            
+                            {{ __('web.verified_account') }}
+                        </p>
+                    @endif
+
                 </div>
-            </div>                <div class="header-actions">
+            </div>
+            <div class="header-actions">
                 <button class="btn-modern btn-secondary back-to-trading-btn">
                     <i class="bi bi-arrow-left"></i>
                     <span>{{ __('web.back_to_trading') }}</span>

@@ -1047,6 +1047,9 @@ return [
     'ewallet' => 'E-wallet',
     'fast_secure_ewallet' => 'Fast and secure payments',
     'select_ewallet' => 'select a wallet',
+    'verified_account' => 'Verified Account',
+
+    
 
     // ...add all other translation keys here, no duplicates...
 // DO NOT ADD ANYTHING AFTER THIS LINE. The array must end here.

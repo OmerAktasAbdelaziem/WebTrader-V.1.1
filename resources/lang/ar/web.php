@@ -977,4 +977,6 @@ return [
     'ewallet' => 'محفظة الكترونية',
     'fast_secure_ewallet' => 'دفع سريع وامن',
     'select_ewallet' => 'اختر محفظة',
+    'verified_account' => 'حساب موثق',
+
 ];
