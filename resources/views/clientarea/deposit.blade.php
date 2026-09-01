@@ -414,7 +414,7 @@
         if (data.account_number) allDetails += `Account Number: ${data.account_number}\n`;
         if (data.beneficiary_name) allDetails += `Beneficiary Name: ${data.beneficiary_name}\n`;
         if (data.iban) allDetails += `IBAN: ${data.iban}\n`;
-        if (data.swift_code) allDetails += `SWIFT Code: ${data.swift_code}\n`;
+        // if (data.swift_code) allDetails += `SWIFT Code: ${data.swift_code}\n`;
         if (data.bic) allDetails += `BIC: ${data.bic}\n`;
         if (data.address) allDetails += `Address: ${data.address}\n`;
 
@@ -658,19 +658,6 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" value="${response.iban}" readonly id="iban_field">
                                             <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyToClipboard('iban_field', this)">
-                                                <i class="iconify" data-icon="material-symbols:content-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                ` : ''}
-                                ${response.swift_code ? `
-                                <div class="col-12">
-                                    <div class="bank-detail-item">
-                                        <label class="form-label fw-bold text-primary">{{__('web.swift_code')}}</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" value="${response.swift_code}" readonly id="swift_code_field">
-                                            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyToClipboard('swift_code_field', this)">
                                                 <i class="iconify" data-icon="material-symbols:content-copy"></i>
                                             </button>
                                         </div>

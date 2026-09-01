@@ -1718,7 +1718,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="detail-item" id="swiftCodeRow" style="display: none;">
+                                {{-- <div class="detail-item" id="swiftCodeRow" style="display: none;">
                                     <span class="detail-label">SWIFT Code:</span>
                                     <div class="detail-value-container">
                                         <div class="detail-value" id="displaySwiftCode">-</div>
@@ -1726,7 +1726,7 @@
                                             <i class="bi bi-copy"></i> Copy
                                         </button>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="detail-item" id="abaRoutingRow" style="display: none;">
                                     <span class="detail-label">ABA Routing Number:</span>
                                     <div class="detail-value-container">
@@ -2540,13 +2540,13 @@
                                         <input type="text" name="account_holder_name" id="account_holder_name" class="form-control-modern" placeholder="{{ __('web.enter_account_holder_name') }}" required>
                                     </div>
 
-                                    <div class="form-group-modern mb-3">
+                                    {{-- <div class="form-group-modern mb-3">
                                         <label for="swift_code" class="form-label-modern">
                                             <i class="bi bi-globe"></i>
                                             {{ __('web.swift') }}
                                         </label>
                                         <input type="text" name="swift_code" id="swift_code" class="form-control-modern" placeholder="{{ __('web.enter_swift_code') }}" required>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="form-group-modern mb-3">
                                         <label for="iban" class="form-label-modern">
@@ -3163,10 +3163,10 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="swift_code" class="form-label text-white" style="font-size: 1.05rem;">{{ __('web.swift_routing_code') }}</label>
                                 <input type="text" name="swift_code" id="swift_code" class="form-control bg-dark text-white border-secondary" style="font-size: 1.05rem;" required>
-                            </div>
+                            </div> --}}
 
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="button" class="btn btn-secondary" style="font-size: 1.05rem;" data-bs-dismiss="modal">{{ __('web.cancel') }}</button>

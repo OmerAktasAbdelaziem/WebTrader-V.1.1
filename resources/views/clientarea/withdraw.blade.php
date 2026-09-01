@@ -60,10 +60,10 @@
                                         <label for="account_name" class="form-label">{{__('web.account_name')}}</label>
                                         <input type="text" class="form-control" id="account_name" name="account_name" placeholder="e.g. John Doe" required>
                                     </div>
-                                    <div class="col-12 col-md-6">
+                                    {{-- <div class="col-12 col-md-6">
                                         <label for="swift_code" class="form-label">{{__('web.swift')}}</label>
                                         <input type="text" class="form-control" id="swift_code" name="swift_code" placeholder="e.g. HSBCHKHHHKH" required>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-12 col-md-6">
                                         <label for="iban" class="form-label">{{__('web.iban')}}</label>
                                         <input type="text" class="form-control" id="iban" name="iban" placeholder="e.g. GB33BUKB20201555555555" required>
@@ -386,21 +386,21 @@ $(document).ready(function() {
         $('#notes_div').show();
         if (method === 'bank_transfer') {
             $('#bankTransferDetails').show();
-            $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', true);
+            $('#bank_name, #account_number, #account_name, #iban').attr('required', true);
             $('#crypto_type, #crypto_address').attr('required', false);
         } else if (method === 'cryptocurrency') {
             $('#cryptoDetails').show();
             $('#crypto_type, #crypto_address').attr('required', true);
-            $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #iban').attr('required', false);
         } else if (method === 'ewallet') {
             $('#ewalletDetailsFields').show();
             $('#receiptUpload').hide();
             $('#notes_div').hide();
             $('#crypto_type, #crypto_address').attr('required', false);
-            $('#bank_name, #account_number, #account_name, #swift_code, #iban').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #iban').attr('required', false);
 
         } else {
-            $('#bank_name, #account_number, #account_name, #swift_code, #crypto_type, #crypto_address, #iban').attr('required', false);
+            $('#bank_name, #account_number, #account_name, #crypto_type, #crypto_address, #iban').attr('required', false);
         }
     });
     $('#amount').on('input', function() {
