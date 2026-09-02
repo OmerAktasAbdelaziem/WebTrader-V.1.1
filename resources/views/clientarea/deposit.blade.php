@@ -795,7 +795,7 @@
                         const option = document.createElement("option");
                         option.value = ewallet.id;
 
-                        option.textContent = `${ewallet.address} - ${ewallet.network}`;
+                        option.textContent = ewallet.name;
 
                         option.setAttribute("data-fields", JSON.stringify(ewallet.fields || []));
 
@@ -826,9 +826,15 @@
                             ? field.arabic_field_name 
                             : field.english_field_name;
 
+                        const localizedFieldValue = window.currentAppLocale === 'ar' 
+                            ? field.arabic_field_value 
+                            : field.english_field_value;
+
                         fieldGroup.innerHTML = `
                             <label class="form-label">${localizedFieldName}</label>
-                            <input type="text" class="form-control" name="extra_fields[${field.id}]" placeholder="..." required>
+                            
+                            <input type="hidden" name="extra_fields[${field.id}]" value="${localizedFieldValue}">
+                            <p class="form-control">${localizedFieldValue}</p>
                         `;
                         ewalletDetailsDisplay.appendChild(fieldGroup);
                     });
