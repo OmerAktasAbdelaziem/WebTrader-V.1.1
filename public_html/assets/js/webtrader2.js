@@ -1534,7 +1534,9 @@ if (countrySelect && bankSelect) {
                         const option = document.createElement("option");
                         option.value = ewallet.id;
 
-                        option.textContent = ewallet.name;
+                        option.textContent = window.currentAppLocale === 'ar' 
+                        ? ewallet.name_ar
+                        : ewallet.name_en;
 
                         option.setAttribute("data-fields", JSON.stringify(ewallet.fields || []));
 
@@ -1624,7 +1626,9 @@ if (countrySelect && bankSelect) {
                         const option = document.createElement("option");
                         option.value = ewallet.id;
     
-                        option.textContent = ewallet.name;
+                        option.textContent = window.currentAppLocale === 'ar' 
+                        ? ewallet.name_ar
+                        : ewallet.name_en;
     
                         option.setAttribute("data-fields", JSON.stringify(ewallet.fields || []));
     

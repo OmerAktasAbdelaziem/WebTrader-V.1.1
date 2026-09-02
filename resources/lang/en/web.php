@@ -1044,7 +1044,7 @@ return [
     'you_have_no_access_to_this_account' => 'You have no access to this account',
     'please_contact_us' => 'Please contact us',
 
-    'ewallet' => 'E-wallet',
+    'ewallet' => 'Wallet',
     'fast_secure_ewallet' => 'Fast and secure payments',
     'select_ewallet' => 'select a wallet',
     'verified_account' => 'Verified Account',
