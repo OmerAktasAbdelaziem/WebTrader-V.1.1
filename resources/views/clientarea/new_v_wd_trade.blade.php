@@ -2156,6 +2156,18 @@
                         <div id="ewalletDetailsDisplay" class="ewallet-details-card" style="display: none;">
                         </div>
 
+                        <div class="form-group">
+                            <label for="ewallet_receipt" class="form-label">Upload Receipt</label>
+                            <div class="file-upload-area">
+                                <input type="file" name="receipt" id="ewallet_receipt" class="file-input" accept=".pdf,.png,.jpg,.jpeg" required>
+                                <div class="file-upload-content">
+                                    <i class="bi bi-cloud-upload"></i>
+                                    <p>Click to upload or drag and drop</p>
+                                    <small>PDF, PNG, JPG, JPEG (Max 5MB)</small>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <button type="submit" class="btn-deposit-submit credit-card-submit">
                             <i class="bi bi-credit-card me-2"></i>

@@ -1572,9 +1572,13 @@ if (countrySelect && bankSelect) {
                             : field.english_field_value;
 
                         fieldGroup.innerHTML = `
-                            <label class="form-label-modern">${localizedFieldName}</label>
                             <input type="hidden" name="extra_fields[${field.id}]" value="${localizedFieldValue}">
-                            <p class="form-control-modern">${localizedFieldValue}</p>
+                            <div class="input-group" style="flex-wrap: inherit; margin-left: 0;">
+                                <p class="form-control-modern">${localizedFieldValue}</p>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyToClipboard('${localizedFieldValue}')"  style="margin-top: 0;margin-bottom: 1rem;padding: 1rem;border: 0;background: rgba(255, 255, 255, 0.05);color: #FFF;border: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" data-icon="material-symbols:content-copy"><path fill="currentColor" d="M9 18q-.825 0-1.412-.587T7 16V4q0-.825.588-1.412T9 2h9q.825 0 1.413.588T20 4v12q0 .825-.587 1.413T18 18zm-4 4q-.825 0-1.412-.587T3 20V6h2v14h11v2z"></path></svg>
+                                </button>
+                            </div>
                         `;
                         ewalletDetailsDisplay.appendChild(fieldGroup);
                     });

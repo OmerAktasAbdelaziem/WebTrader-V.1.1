@@ -472,11 +472,14 @@ class ClientsController extends Controller
         if ($depositMethod === 'ewallet') {
             $request->validate([
                 'country'          => 'required|exists:countries,id',
-                'ewallet_id'        => 'required|exists:wallets,id',
+                'ewallet_id'       => 'required|exists:wallets,id',
                 'amount'           => 'required|numeric|min:0.01',
                 'extra_fields'     => 'nullable|array',
                 'extra_fields.*'   => 'required|string',
+                'receipt'          => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
+
+            $receiptPath = $request->file('receipt')->store('public/receipts');
 
             $walletId = $request->input('ewallet_id');
             $wallet = Wallet::with('fields')->find($walletId);
@@ -490,7 +493,7 @@ class ClientsController extends Controller
                 'method'              => 'wallet',
                 'usdt'                => null,
                 'bank_id'             => null,
-                'receipt'             => null,
+                'receipt'             => url(str_replace('public/', 'storage/', $receiptPath)),
                 'bank_details'        => null,
                 'credit_card_details' => null,
             ];

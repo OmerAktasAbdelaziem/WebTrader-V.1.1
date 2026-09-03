@@ -576,8 +576,6 @@
                 $('#receipt').prop('required', false);
             } else if (method === 'ewallet') {
                 $('#ewalletDetailsFields').show();
-                $('#receiptUpload').hide();
-                $('#receipt').prop('required', false);
             }
         });
 
@@ -835,8 +833,13 @@
                         fieldGroup.innerHTML = `
                             <label class="form-label">${localizedFieldName}</label>
                             
-                            <input type="hidden" name="extra_fields[${field.id}]" value="${localizedFieldValue}">
-                            <p class="form-control">${localizedFieldValue}</p>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="extra_fields[${field.id}]" value="${localizedFieldValue}" readonly id="extra_fields-${field.id}">
+                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyToClipboard('extra_fields-${field.id}', this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" data-icon="material-symbols:content-copy"><path fill="currentColor" d="M9 18q-.825 0-1.412-.587T7 16V4q0-.825.588-1.412T9 2h9q.825 0 1.413.588T20 4v12q0 .825-.587 1.413T18 18zm-4 4q-.825 0-1.412-.587T3 20V6h2v14h11v2z"></path></svg>
+                                </button>
+                            </div>
+
                         `;
                         ewalletDetailsDisplay.appendChild(fieldGroup);
                     });
